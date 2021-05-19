@@ -49,9 +49,12 @@ docker-compose up
 
 ## Local environment URLS:
 
-* Services (Django) URL: http://localhost:8000
-* Dashboard URL: http://localhost:9000
-* Storefront URL: http://localhost:9001
+Services (Django) URL: http://localhost:8000
+
+Dashboard URL: http://localhost:9000
+* Login with admin@example.com / admin
+
+Storefront URL: http://localhost:9001
 
 Mailhog URL: http//localhost:8025
 * Use Mailhog to view emails sent by the platform.

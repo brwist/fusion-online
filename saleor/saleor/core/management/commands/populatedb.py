@@ -93,30 +93,30 @@ class Command(BaseCommand):
             "saleor.payment.gateways.dummy_credit_card.plugin."
             "DummyCreditCardGatewayPlugin",
         ]
-        self.make_database_faster()
-        create_images = not options["withoutimages"]
-        for msg in create_shipping_zones():
-            self.stdout.write(msg)
-        create_warehouses()
-        self.stdout.write("Created warehouses")
-        create_products_by_schema(self.placeholders_dir, create_images)
-        self.stdout.write("Created products")
-        for msg in create_product_sales(5):
-            self.stdout.write(msg)
-        for msg in create_vouchers():
-            self.stdout.write(msg)
-        for msg in create_gift_card():
-            self.stdout.write(msg)
-        for msg in create_users(20):
-            self.stdout.write(msg)
-        for msg in create_orders(20):
-            self.stdout.write(msg)
-        for msg in set_homepage_collection():
-            self.stdout.write(msg)
-        for msg in create_page():
-            self.stdout.write(msg)
-        for msg in create_menus():
-            self.stdout.write(msg)
+        #self.make_database_faster()
+        #create_images = not options["withoutimages"]
+        #for msg in create_shipping_zones():
+        #    self.stdout.write(msg)
+        #create_warehouses()
+        #self.stdout.write("Created warehouses")
+        #create_products_by_schema(self.placeholders_dir, create_images)
+        #self.stdout.write("Created products")
+        #for msg in create_product_sales(5):
+        #    self.stdout.write(msg)
+        #for msg in create_vouchers():
+        #    self.stdout.write(msg)
+        #for msg in create_gift_card():
+        #    self.stdout.write(msg)
+        #for msg in create_users(20):
+        #    self.stdout.write(msg)
+        #for msg in create_orders(20):
+        #    self.stdout.write(msg)
+        #for msg in set_homepage_collection():
+        #    self.stdout.write(msg)
+        #for msg in create_page():
+        #    self.stdout.write(msg)
+        #for msg in create_menus():
+        #    self.stdout.write(msg)
 
         if options["createsuperuser"]:
             credentials = {"email": "admin@example.com", "password": "admin"}
