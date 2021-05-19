@@ -145,7 +145,8 @@ const useStyles = makeStyles(
         left: "50%",
         position: "absolute",
         top: "50%",
-        transform: "translate(-50%,-50%)"
+        transform: "translate(-50%,-50%)",
+        width: "90%"
       },
       background: theme.palette.primary.main,
       display: "block",
@@ -162,7 +163,7 @@ const useStyles = makeStyles(
       "& svg": {
         margin: 0,
         padding: 0,
-        width: "80px"
+        width: "60px"
       }
     },
     menu: {
