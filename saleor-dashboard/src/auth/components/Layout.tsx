@@ -1,6 +1,6 @@
-import backgroundArt from "@assets/images/login-background.svg";
-import saleorDarkLogo from "@assets/images/logo-dark.svg";
-import saleorLightLogo from "@assets/images/logo-light.svg";
+import backgroundArt from "@assets/images/fusionww-logo-only-white.svg";
+import fusionDarkLogo from "@assets/images/fusionww-logo-color-green.svg";
+import fusionLightLogo from "@assets/images/fusionww-logo-color-green.svg";
 import { makeStyles } from "@material-ui/core/styles";
 import useTheme from "@saleor/hooks/useTheme";
 import React from "react";
@@ -41,7 +41,7 @@ const useStyles = makeStyles(
       width: "100%"
     },
     root: {
-      [theme.breakpoints.up("lg")]: {
+      [theme.breakpoints.up("md")]: {
         gridTemplateColumns: "376px 1fr"
       },
       "@media (min-width: 1440px)": {
@@ -54,14 +54,16 @@ const useStyles = makeStyles(
       width: "100vw"
     },
     sidebar: {
-      [theme.breakpoints.up("lg")]: {
-        display: "block"
+      [theme.breakpoints.up("md")]: {
+        display: "block",
+        backgroundColor: theme.palette.primary.light
       },
       display: "none"
     },
     sidebarArt: {
       "& svg": {
-        width: "100%"
+        width: "90%",
+        transform: "translate(108px,259px)"
       }
     }
   }),
@@ -85,7 +87,7 @@ const Layout: React.FC = props => {
         <div className={classes.mainPanelContent}>
           <SVG
             className={classes.logo}
-            src={isDark ? saleorDarkLogo : saleorLightLogo}
+            src={isDark ? fusionDarkLogo : fusionLightLogo}
           />
           {children}
         </div>
