@@ -22,7 +22,7 @@ export const commonMessages = defineMessages({
     defaultMessage: "Description"
   },
   discounts: {
-    defaultMessage: "Discounts"
+    defaultMessage: "Special Offers"
   },
   drafts: {
     defaultMessage: "Drafts"
@@ -208,8 +208,8 @@ export const sectionNames = defineMessages({
     description: "orders section name"
   },
   pages: {
-    defaultMessage: "Pages",
-    description: "pages section name"
+    defaultMessage: "Content",
+    description: "content section name"
   },
   permissionGroups: {
     defaultMessage: "Permission Groups",
@@ -244,7 +244,7 @@ export const sectionNames = defineMessages({
     description: "site settings section name"
   },
   staff: {
-    defaultMessage: "Staff Members",
+    defaultMessage: "Users",
     description: "staff section name"
   },
   taxes: {

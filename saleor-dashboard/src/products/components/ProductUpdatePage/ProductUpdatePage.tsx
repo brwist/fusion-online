@@ -178,7 +178,7 @@ export const ProductUpdatePage: React.FC<ProductUpdatePageProps> = ({
                   initialDescription={initialDescription}
                   onChange={change}
                 />
-                <CardSpacer />
+                {/* <CardSpacer />
                 <ProductImages
                   images={images}
                   placeholderImage={placeholderImage}
@@ -186,7 +186,7 @@ export const ProductUpdatePage: React.FC<ProductUpdatePageProps> = ({
                   onImageReorder={onImageReorder}
                   onImageEdit={onImageEdit}
                   onImageUpload={onImageUpload}
-                />
+                /> */}
                 <CardSpacer />
                 {data.attributes.length > 0 && (
                   <ProductAttributes
