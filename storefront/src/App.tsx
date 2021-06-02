@@ -2,6 +2,9 @@ import React from 'react';
 import {useAuth, useProductList} from '@saleor/sdk'
 import './App.css';
 
+import SearchForm from './SearchForm'
+
+
 function App() {
   const { authenticated, user, signIn } = useAuth();
  
@@ -23,10 +26,12 @@ function App() {
  
   if (authenticated && user) {
     return( 
-      <div>
+      <div style={{margin: '30px'}}>
         <span>Signed in as {user.email}</span>
         <h2>Products</h2>
         <ol>{productList.data?.map(product => <li key={product.id}>{product.name}</li>)}</ol>
+        <h2>Search</h2>
+        <SearchForm />
       </div>
     );
   } else {

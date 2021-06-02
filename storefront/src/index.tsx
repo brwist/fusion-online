@@ -4,6 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SaleorProvider } from "@saleor/sdk";
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
+
+const client = new ApolloClient({
+  uri: "http://localhost:8000/graphql/",
+  cache: new InMemoryCache()
+});
  
 const config = { apiUrl: "http://localhost:8000/graphql/" };
 const apolloConfig = {
@@ -16,9 +23,11 @@ const apolloConfig = {
 
 ReactDOM.render(
   <React.StrictMode>
+    <ApolloProvider client={client}>
     <SaleorProvider config={config} apolloConfig={apolloConfig}>
       <App />
     </SaleorProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
