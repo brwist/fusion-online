@@ -4,7 +4,7 @@ import {useProductListQuery, ProductListQueryVariables} from './generated/graphq
 
 const AdvancedSearchResults = ({filter}: ProductListQueryVariables) => {
     const { loading, error, data} = useProductListQuery({
-        variables: {filter: filter}
+        variables: {filter: filter, first: 100}
     });
 
     if (loading) return <p>Loading...</p>;

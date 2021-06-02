@@ -10,15 +10,32 @@ interface IChecked {
   [index: string]: boolean;
 }
 
-const ProductFilters = ({attributeFilterHandler}: (attributes: AttributeInput[]) => void) => {
+const ProductFilters = ({attributeFilterHandler}: any) => {
   const { loading, error, data} = useInitialProductFilterDataQuery({
     variables: {categories: [], collections: [], productTypes: [] }
 });
   const [checked, setChecked] = useState<IChecked>({})
+  const [attributes, setAttributes] = useState<Array<AttributeInput>>([])
 
   const checkHandler = (event: any) => {
     setChecked({ ...checked, [event.target.name]: event.target.checked });
   };
+
+
+  const onChangeHandler = (event: any) => {
+    checkHandler(event)
+    const filterName = event.target.name
+    const filterData = filterName.split('_')
+    if(filterName.startsWith('attribute')) {
+      if (!checked[filterName]) {
+          setAttributes([...attributes, {slug: filterData[1], value: filterData[2]}])
+          attributeFilterHandler([...attributes, {slug: filterData[1], value: filterData[2]}])
+      } else {
+        setAttributes(attributes.filter(attribute => attribute.slug !== filterData[1]))
+        attributeFilterHandler(attributes.filter(attribute => attribute.slug !== filterData[1]))
+      }
+    }
+  }
 
 
   if (loading) return <p>Loading...</p>;
@@ -33,11 +50,11 @@ const ProductFilters = ({attributeFilterHandler}: (attributes: AttributeInput[])
               <FormLabel component="legend">{node.name}</FormLabel>
               <FormGroup>
                 {node.values?.map((value: any) => {
-                  const filterName = `attribute-${node.slug}-${value.slug}`
+                  const filterName = `attribute_${node.slug}_${value.slug}`
                   return (
                     <FormControlLabel
                     key={value.id}
-                    control={<Checkbox checked={checked[filterName] || false} onChange={checkHandler} name={filterName} />}
+                    control={<Checkbox checked={checked[filterName] || false} onChange={onChangeHandler} name={filterName} />}
                     label={value.name}
                   />
                   )
@@ -49,13 +66,13 @@ const ProductFilters = ({attributeFilterHandler}: (attributes: AttributeInput[])
         })}
         <div>
         {data.categories?.edges.map( ({node}) => {
-          const filterName = `category-${node.id}`
+          const filterName = `category_${node.id}`
           return (
             <FormControl component="fieldset" key={node.id}>
               <FormLabel component="legend">Category</FormLabel>
               <FormGroup>
               <FormControlLabel
-                    control={<Checkbox checked={checked[filterName]} onChange={checkHandler} name={filterName} />}
+                    control={<Checkbox checked={checked[filterName]} onChange={onChangeHandler} name={filterName} />}
                     label={node.name}
               />
               </FormGroup>

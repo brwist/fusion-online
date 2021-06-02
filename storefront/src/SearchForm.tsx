@@ -15,9 +15,11 @@ const SearchForm = () => {
         setAttributeFilters(attributes)
     }
 
+    const ProductFiltersProps = {attributeFilterHandler: attributeFilterHandler}
+
     return (
         <div>
-            <ProductFilters attributeFilterHandler={attributeFilterHandler}/>
+            <ProductFilters {...ProductFiltersProps}/>
             <form 
                 onSubmit={(event: React.FormEvent) =>{
                     event.preventDefault()
