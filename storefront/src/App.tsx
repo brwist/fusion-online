@@ -1,8 +1,8 @@
 import React from 'react';
 import {useAuth, useProductList} from '@saleor/sdk'
-import './App.css';
+import './App.scss';
 
-import SearchForm from './SearchForm'
+import SearchForm from './components/Search/SearchForm'
 
 
 function App() {

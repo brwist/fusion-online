@@ -4,7 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { useInitialProductFilterDataQuery, AttributeInput } from './generated/graphql';
+import { useInitialProductFilterDataQuery, AttributeInput } from '../../generated/graphql';
 
 interface IChecked {
   [index: string]: boolean;

@@ -1,9 +1,10 @@
 import React from 'react';
-import {useSearchResultsQuery, SearchResultsQueryVariables} from './generated/graphql'
 
-const SearchResults = ({query}: SearchResultsQueryVariables) => {
-    const { loading, error, data} = useSearchResultsQuery({
-        variables: {query: query}
+import {useProductListQuery, ProductListQueryVariables} from '../../generated/graphql'
+
+const AdvancedSearchResults = ({filter}: ProductListQueryVariables) => {
+    const { loading, error, data} = useProductListQuery({
+        variables: {filter: filter, first: 100}
     });
 
     if (loading) return <p>Loading...</p>;
@@ -26,4 +27,4 @@ const SearchResults = ({query}: SearchResultsQueryVariables) => {
   return null
 };
 
-export default SearchResults;
+export default AdvancedSearchResults;

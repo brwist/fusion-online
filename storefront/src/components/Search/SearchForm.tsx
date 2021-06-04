@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import SearchResults from './SearchResults'
 import AdvancedSearchResults from './AdvancedSearchResults'
 import ProductFilters from './ProductFilters'
-import {AttributeInput} from './generated/graphql'
+import {AttributeInput} from '../../generated/graphql'
 
 const SearchForm = () => {
     const [searchQuery, setSearchQuery] = useState("")
