@@ -1,5 +1,5 @@
-import saleorDarkLogoSmall from "@assets/images/logo-dark-small.svg";
-import saleorDarkLogo from "@assets/images/logo-dark.svg";
+import fusionLogoWhite from "@assets/images/fusionww-logo-color-white.svg";
+import fusionLogoOnlyWhite from "@assets/images/fusionww-logo-only-white.svg";
 import menuArrowIcon from "@assets/images/menu-arrow-icon.svg";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -145,9 +145,10 @@ const useStyles = makeStyles(
         left: "50%",
         position: "absolute",
         top: "50%",
-        transform: "translate(-50%,-50%)"
+        transform: "translate(-50%,-50%)",
+        width: "90%"
       },
-      background: theme.palette.secondary.main,
+      background: theme.palette.primary.main,
       display: "block",
       height: 80,
       position: "relative"
@@ -162,7 +163,7 @@ const useStyles = makeStyles(
       "& svg": {
         margin: 0,
         padding: 0,
-        width: "80px"
+        width: "60px"
       }
     },
     menu: {
@@ -390,7 +391,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   })}
                 >
                   <SVG
-                    src={isMenuSmall ? saleorDarkLogoSmall : saleorDarkLogo}
+                    src={isMenuSmall ? fusionLogoOnlyWhite : fusionLogoWhite}
                   />
                 </div>
                 <Hidden smDown>
@@ -444,19 +445,19 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                       <div ref={appHeaderAnchor} />
                       <div className={classes.spacer} />
                       <div className={classes.userBar}>
-                        <ThemeSwitch
+                        {/* <ThemeSwitch
                           className={classes.darkThemeSwitch}
                           checked={isDark}
                           onClick={toggleTheme}
-                        />
-                        <Hidden smDown>
+                        /> */}
+                        {/* <Hidden smDown>
                           <NavigatorButton
                             isMac={navigator.platform
                               .toLowerCase()
                               .includes("mac")}
                             onClick={() => setNavigatorVisibility(true)}
                           />
-                        </Hidden>
+                        </Hidden> */}
                         <div className={classes.userMenuContainer} ref={anchor}>
                           <Chip
                             avatar={

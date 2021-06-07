@@ -4,6 +4,10 @@ import customerIcon from "@assets/images/menu-customers-icon.svg";
 import discountsIcon from "@assets/images/menu-discounts-icon.svg";
 import homeIcon from "@assets/images/menu-home-icon.svg";
 import ordersIcon from "@assets/images/menu-orders-icon.svg";
+import contentIcon from "@assets/images/menu-content-icon.svg";
+import usersIcon from "@assets/images/menu-users-icon.svg";
+// import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+// import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
 import translationIcon from "@assets/images/menu-translation-icon.svg";
 import { commonMessages, sectionNames } from "@saleor/intl";
 import { IntlShape } from "react-intl";
@@ -16,6 +20,8 @@ import { saleListUrl, voucherListUrl } from "../../discounts/urls";
 import { orderDraftListUrl, orderListUrl } from "../../orders/urls";
 import { productListUrl } from "../../products/urls";
 import { languageListUrl } from "../../translations/urls";
+import { pageListUrl } from "../../pages/urls";
+import { staffListUrl } from "../../staff/urls";
 import { PermissionEnum } from "../../types/globalTypes";
 
 export interface IMenuItem {
@@ -97,7 +103,7 @@ function createMenuStructure(intl: IntlShape): IMenuItem[] {
     },
 
     {
-      ariaLabel: "discounts",
+      ariaLabel: "special offers",
       children: [
         {
           ariaLabel: "sales",
@@ -118,21 +124,37 @@ function createMenuStructure(intl: IntlShape): IMenuItem[] {
       testingContextId: "discounts"
     },
     {
-      ariaLabel: "apps",
-      icon: appsIcon,
-      label: intl.formatMessage(sectionNames.apps),
-      permission: PermissionEnum.MANAGE_APPS,
-      testingContextId: "apps",
-      url: appsListPath
+      ariaLabel: "users",
+      icon: usersIcon,
+      label: intl.formatMessage(sectionNames.staff),
+      permission: PermissionEnum.MANAGE_STAFF,
+      testingContextId: "staff",
+      url: staffListUrl()
     },
     {
-      ariaLabel: "translations",
-      icon: translationIcon,
-      label: intl.formatMessage(sectionNames.translations),
-      permission: PermissionEnum.MANAGE_TRANSLATIONS,
-      testingContextId: "translations",
-      url: languageListUrl
-    }
+      ariaLabel: "content",
+      icon: contentIcon,
+      label: intl.formatMessage(sectionNames.pages),
+      permission: PermissionEnum.MANAGE_PAGES,
+      testingContextId: "pages",
+      url: pageListUrl()
+    },
+    // {
+    //   ariaLabel: "apps",
+    //   icon: appsIcon,
+    //   label: intl.formatMessage(sectionNames.apps),
+    //   permission: PermissionEnum.MANAGE_APPS,
+    //   testingContextId: "apps",
+    //   url: appsListPath
+    // },
+    // {
+    //   ariaLabel: "translations",
+    //   icon: translationIcon,
+    //   label: intl.formatMessage(sectionNames.translations),
+    //   permission: PermissionEnum.MANAGE_TRANSLATIONS,
+    //   testingContextId: "translations",
+    //   url: languageListUrl
+    // }
   ];
 }
 

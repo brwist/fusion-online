@@ -165,14 +165,14 @@ export const CategoryUpdatePage: React.FC<CategoryUpdatePageProps> = ({
               errors={errors}
               onChange={change}
             />
-            <CardSpacer />
+            {/* <CardSpacer />
             <CategoryBackground
               data={data}
               onImageUpload={onImageUpload}
               onImageDelete={onImageDelete}
               image={maybe(() => category.backgroundImage)}
               onChange={change}
-            />
+            /> */}
             <CardSpacer />
             <SeoForm
               helperText={intl.formatMessage({

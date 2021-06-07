@@ -97,8 +97,8 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
                   errors={errors}
                   onChange={change}
                 />
-                <CardSpacer />
-                <CollectionImage
+                {/* <CardSpacer /> */}
+                {/* <CollectionImage
                   image={
                     data.backgroundImage.url
                       ? {
@@ -132,7 +132,7 @@ const CollectionCreatePage: React.FC<CollectionCreatePageProps> = ({
                   }
                   onChange={change}
                   data={data}
-                />
+                /> */}
                 <CardSpacer />
                 <SeoForm
                   allowEmptySlug={true}

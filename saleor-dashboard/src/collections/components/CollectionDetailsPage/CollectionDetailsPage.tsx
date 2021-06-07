@@ -127,14 +127,14 @@ const CollectionDetailsPage: React.FC<CollectionDetailsPageProps> = ({
                   errors={errors}
                   onChange={change}
                 />
-                <CardSpacer />
+                {/* <CardSpacer />
                 <CollectionImage
                   data={data}
                   image={maybe(() => collection.backgroundImage)}
                   onImageDelete={onImageDelete}
                   onImageUpload={onImageUpload}
                   onChange={change}
-                />
+                /> */}
                 <CardSpacer />
                 <Metadata data={data} onChange={changeMetadata} />
                 <CardSpacer />
