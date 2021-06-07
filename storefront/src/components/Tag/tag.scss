@@ -1,0 +1,22 @@
+@import "~bootstrap/scss/bootstrap";
+@import "../../globalStyles/variables.scss";
+
+.tag {
+  border-radius: 21.7px;
+  background-color: $gray;
+  border: none;
+
+  &:hover {
+    background-color: $navy;
+  }
+
+  &.tag--lg {
+    font-size: 15px;
+    padding: 10px 25px;
+  }
+
+  &.tag--sm {
+    font-size: 12px;
+    padding: 5px 15px;
+  }
+}
