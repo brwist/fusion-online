@@ -1,0 +1,21 @@
+/* ===============================================================
+    Buttons
+	- Bootstrap Button Overrides
+   =============================================================== */
+
+.btn {
+    text-transform: uppercase;
+
+    &.disabled:not(.btn-link),
+    &:disabled:not(.btn-link) {
+        background-color: $gray-400;
+        border-color: $gray-400;
+        color: $white;
+    }
+
+    &.btn-link {
+        &:focus {
+            box-shadow: none;
+        }
+    }
+}

@@ -1,0 +1,227 @@
+@import '~bootstrap/scss/functions';
+
+// /* ===============================================================
+//    VARIABLES
+//    - Bootstrap variable overrides AND CUSTOM site variables
+//      (not 100% replica of original bootstrap variables stylesheet)
+//    - Copy only the Bootstrap variables you want to override and
+//      paste below, keeping them in appropriate sections.
+//    - Be sure to remove the !default after each variable.
+//    - Bootstrap variables file lives in
+//      ../node_modules/bootstrap/scss/_variables.scss
+// =============================================================== */
+
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+$enable-responsive-font-sizes: true;
+
+//
+// Color system
+//
+
+// // Gray Overrides
+$white: #fff !default;
+$gray-100: #f4f6f8;
+$gray-200: #e9ecef !default;
+$gray-300: #dee0e2;
+$gray-400: #c8cacb;
+$gray-500: #b1b5b9;
+$gray-600: #8e949a;
+$gray-700: #484c51;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #090a0b;
+
+// // Brand Color Overrides
+$blue: #007bb3;
+$indigo: #6610f2 !default;
+$purple: #6f42c1 !default;
+$pink: #e83e8c !default;
+$red: #d10000;
+$orange: #fd7e14 !default;
+$yellow: #ffc107 !default;
+$green: #66cc66;
+$teal: #20c997 !default;
+$cyan: #17a2b8 !default;
+
+// // Brand Colors
+$primary: $green;
+$secondary: $black;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$light: $gray-300;
+$dark: $gray-800 !default;
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold: 162;
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg: $white;
+$body-color: $black;
+
+// Links
+//
+// Style anchor elements.
+
+$link-color: $primary;
+$link-decoration: none;
+$link-hover-color: darken($link-color, 15%);
+$link-hover-decoration: none;
+
+// Fonts
+//
+// Font, line-height, and color for body text, headings, and more.
+
+$font-family-sans-serif: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-family-serif: Georgia, 'Times New Roman', Times, serif;
+// //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+$font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace;
+$font-family-base: $font-family-sans-serif;
+
+$font-size-base: 1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg: ($font-size-base * 1.25) !default;
+$font-size-sm: ($font-size-base * 0.875) !default;
+
+$h1-font-size: 48px;
+$h2-font-size: 34px;
+$h3-font-size: 26px;
+$h4-font-size: 18px;
+$h5-font-size: 16px;
+$h6-font-size: 14px;
+
+// //** Font Weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+$font-weight-base: $font-weight-normal;
+
+// //** Paragraphs
+$paragraph-margin-bottom: 1em;
+
+// //** Unit-less `line-height` for use in components like buttons.
+$line-height-base: 1.428571429; // 20/14
+// //** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+$line-height-computed: floor(($font-size-base * $line-height-base)); // ~20px
+
+// //** By default, this inherits from the `<body>`.
+$headings-font-family: $font-family-serif;
+$headings-font-weight: $font-weight-bold;
+$headings-line-height: 1.1;
+$headings-color: $body-color;
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+// // Custom Padding
+$padding-sm: 20px;
+$padding: 40px;
+$padding-md: 80px;
+$padding-lg: 100px;
+
+// // Line Height
+$line-height-lg: 1.3333333; // extra decimals for Win 8.1 Chrome
+$line-height-sm: 1; // 20
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+) !default;
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+) !default;
+
+// Grid columns
+//
+// Set the number of columns and specify the width of the gutters.
+
+$grid-columns: 12 !default;
+$grid-gutter-width: 30px !default;
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+$component-active-color: $white !default;
+
+$border-width: 1px !default;
+$border-color: $gray-500;
+
+$border-radius: 0;
+$border-radius-lg: 0;
+$border-radius-sm: 0;
+$border-radius-round: 50%;
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+$input-btn-padding-y: 1rem;
+$input-btn-padding-x: 1rem;
+
+$input-btn-font-size: 13px;
+$input-btn-focus-color: rgba($black, 0.1);
+
+$input-btn-padding-y-sm: 0.782rem;
+$input-btn-padding-x-sm: 1rem;
+$input-btn-font-size-sm: $input-btn-font-size;
+
+$input-btn-padding-y-lg: 1.125rem;
+$input-btn-padding-x-lg: 3rem;
+$input-btn-font-size-lg: $input-btn-font-size;
+
+// Forms
+
+$input-placeholder-color: $gray-600 !default;
+$input-plaintext-color: $body-color !default;
+$input-color: $gray-700;
+$input-border-color: $gray-500;
+$input-focus-border-color: $black;
+$form-group-margin-bottom: 32px;
+$form-feedback-tooltip-font-size: 12px;
+$custom-control-indicator-checked-color: $component-active-color !default;
+$custom-control-indicator-border-color: $gray-400;
+$custom-control-indicator-border-width: 1px;
+$custom-control-indicator-size: 1.25rem;
+$custom-checkbox-indicator-border-radius: 3px;
+$custom-checkbox-indicator-icon-checked: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><path fill='#{$custom-control-indicator-checked-color}' d='M435.848 83.466L172.804 346.51l-96.652-96.652c-4.686-4.686-12.284-4.686-16.971 0l-28.284 28.284c-4.686 4.686-4.686 12.284 0 16.971l133.421 133.421c4.686 4.686 12.284 4.686 16.971 0l299.813-299.813c4.686-4.686 4.686-12.284 0-16.971l-28.284-28.284c-4.686-4.686-12.284-4.686-16.97 0z'/></svg>");
+
+// Navbar
+
+$navbar-brand-font-size: 0.9375rem;
+$navbar-toggler-font-size: 14px;
+$navbar-light-color: $black;
+$navbar-light-hover-color: $black;
+$navbar-light-active-color: $black;
+$navbar-toggler-padding-x: 0.5rem;
+$navbar-light-toggler-border-color: transparent;
+
+// Badges
+
+$badge-padding-y: 0.25em !default;
+$badge-padding-x: 0.5em;
+$badge-border-radius: $border-radius-round;
