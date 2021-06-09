@@ -33,7 +33,7 @@ $gray-600: #8e949a;
 $gray-700: #484c51;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
-$black: #090a0b;
+$black: #0c0c11;
 
 // // Brand Color Overrides
 $blue: #007bb3;
@@ -112,8 +112,8 @@ $line-height-base: 1.428571429; // 20/14
 $line-height-computed: floor(($font-size-base * $line-height-base)); // ~20px
 
 // //** By default, this inherits from the `<body>`.
-$headings-font-family: $font-family-serif;
-$headings-font-weight: $font-weight-bold;
+$headings-font-family: $font-family-sans-serif;
+$headings-font-weight: $font-weight-normal;
 $headings-line-height: 1.1;
 $headings-color: $body-color;
 
@@ -180,14 +180,14 @@ $border-radius-round: 50%;
 //
 // Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
 
-$input-btn-padding-y: 1rem;
+$input-btn-padding-y: 0.782rem;
 $input-btn-padding-x: 1rem;
 
 $input-btn-font-size: 13px;
 $input-btn-focus-color: rgba($black, 0.1);
 
-$input-btn-padding-y-sm: 0.782rem;
-$input-btn-padding-x-sm: 1rem;
+$input-btn-padding-y-sm: $input-btn-padding-y;
+$input-btn-padding-x-sm: $input-btn-padding-x;
 $input-btn-font-size-sm: $input-btn-font-size;
 
 $input-btn-padding-y-lg: 1.125rem;
@@ -225,3 +225,9 @@ $navbar-light-toggler-border-color: transparent;
 $badge-padding-y: 0.25em !default;
 $badge-padding-x: 0.5em;
 $badge-border-radius: $border-radius-round;
+
+// Cards
+
+$card-spacer-y: 0.75rem !default;
+$card-spacer-x: 1.5rem 0.75rem;
+$card-border-width: 0;
