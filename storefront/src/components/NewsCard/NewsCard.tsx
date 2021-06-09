@@ -3,9 +3,11 @@ import { Card, Button } from 'react-bootstrap';
 import CardImg from '../../img/fidel-fernando-DubQVeFFbFQ-unsplash.jpg';
 
 export interface NewsCardProps {
-  date: string,
+  date: string;
   title: string;
   text: string;
+  buttonSize?: 'sm' | 'lg';
+  buttonVariant?: 'primary' | 'secondary';
   buttonLabel: string;
   onClick?: () => void;
 }
@@ -14,6 +16,8 @@ export const NewsCard: React.FC<NewsCardProps> = ({
   date,
   title,
   text,
+  buttonSize,
+  buttonVariant = 'primary',
   buttonLabel,
   ...props
 }) => {
@@ -26,7 +30,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
         <Card.Text>
           {text}
         </Card.Text>
-        <Button variant="primary">
+        <Button variant={buttonVariant} size={buttonSize}>
           {buttonLabel}
         </Button>
       </Card.Body>

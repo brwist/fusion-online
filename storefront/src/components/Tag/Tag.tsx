@@ -5,19 +5,21 @@ import './tag.scss';
 
 export interface TagProps {
   size?: 'sm' | 'lg';
+  variant?: 'primary' | 'secondary',
   label: string;
   onClick?: () => void;
 }
 
 export const Tag: React.FC<TagProps> = ({
   size = 'lg',
+  variant = 'secondary',
   label,
   ...props
 }) => {
   return (
     <Badge
       pill
-      variant="dark"
+      variant={variant}
       className={['tag', `tag--${size}`].join(' ')}
     >
       {label}
