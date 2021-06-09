@@ -12,6 +12,7 @@ const Template: Story<NewsCardProps> = (args) => <NewsCard {...args} />;
 
 export const Card = Template.bind({});
 Card.args = {
+  date: 'Sept 16, 2022',
   title: 'This is a News Card',
   text: 'Some quick example text to build on the card title and make up the bulk of the card content.',
   buttonLabel: 'Read More'
