@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
+import { Badge } from 'react-bootstrap';
 
 import './tag.scss';
 
@@ -15,12 +15,12 @@ export const Tag: React.FC<TagProps> = ({
   ...props
 }) => {
   return (
-    <Button
+    <Badge
+      pill
+      variant="dark"
       className={['tag', `tag--${size}`].join(' ')}
-      size={size}
-      {...props}
     >
       {label}
-    </Button>
+    </Badge>
   );
 };

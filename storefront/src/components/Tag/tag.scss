@@ -1,21 +1,21 @@
 @import '../../globalStyles/common';
 
-// .tag {
-//   border-radius: 21.7px;
-//   background-color: $gray;
-//   border: none;
+.tag {
+    //   border-radius: 21.7px;
+    //   background-color: $gray;
+    //   border: none;
 
-//   &:hover {
-//     background-color: $navy;
-//   }
+    //   &:hover {
+    //     background-color: $navy;
+    //   }
 
-//   &.tag--lg {
-//     font-size: 15px;
-//     padding: 10px 25px;
-//   }
+    &.tag--lg {
+        font-size: 15px;
+        padding: 10px 25px;
+    }
 
-//   &.tag--sm {
-//     font-size: 12px;
-//     padding: 5px 15px;
-//   }
-// }
+    &.tag--sm {
+        font-size: 12px;
+        padding: 5px 15px;
+    }
+}
