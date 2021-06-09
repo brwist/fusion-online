@@ -1,0 +1,142 @@
+@import '../../globalStyles/variables';
+
+.form-signin {
+    padding: 32px;
+    background: $navy;
+    color: $white;
+
+    h3 {
+        text-transform: uppercase;
+        color: $white;
+    }
+
+    a {
+        color: $white;
+
+        &:hover {
+            color: $link-hover-color;
+        }
+    }
+
+    .form-text {
+        font-size: 100%;
+    }
+
+    .form-group {
+        position: relative;
+
+        input {
+            background-color: transparent;
+            border-top-color: transparent;
+            border-left-color: transparent;
+            border-right-color: transparent;
+            border-bottom-color: $white;
+            color: $white;
+        }
+
+        input,
+        label {
+            // height: 3.125rem;
+            padding: $input-btn-padding-y $input-btn-padding-x
+                $input-btn-padding-y 0;
+        }
+
+        label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100%;
+            margin-bottom: 0; /* Override default `<label>` margin */
+            // line-height: 1.5;
+            color: $white;
+            pointer-events: none;
+            cursor: text; /* Match the input under the label */
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: all 0.1s ease-in-out;
+        }
+
+        input::-webkit-input-placeholder {
+            color: transparent;
+        }
+
+        input::-moz-placeholder {
+            color: transparent;
+        }
+
+        input:-ms-input-placeholder {
+            color: transparent;
+        }
+
+        input::-ms-input-placeholder {
+            color: transparent;
+        }
+
+        input::placeholder {
+            color: transparent;
+        }
+
+        input:not(:-moz-placeholder-shown) {
+            padding-top: 1.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        input:not(:-ms-input-placeholder) {
+            padding-top: 1.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        input:not(:placeholder-shown) {
+            padding-top: 1.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        input:not(:-moz-placeholder-shown) ~ label {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            font-size: 12px;
+            color: $white;
+        }
+
+        input:not(:-ms-input-placeholder) ~ label {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            font-size: 12px;
+            color: $white;
+        }
+
+        input:not(:placeholder-shown) ~ label {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            font-size: 12px;
+            color: $white;
+        }
+
+        input:-webkit-autofill ~ label {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            font-size: 12px;
+            color: $white;
+        }
+
+        /* Fallback for Edge
+-------------------------------------------------- */
+        @supports (-ms-ime-align: auto) {
+            & {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-direction: column-reverse;
+                flex-direction: column-reverse;
+            }
+
+            label {
+                position: static;
+            }
+
+            input::-ms-input-placeholder {
+                color: $white;
+            }
+        }
+    }
+}

@@ -13,3 +13,7 @@ select,
 textarea {
     @extend .form-control;
 }
+
+label {
+    text-transform: uppercase;
+}
