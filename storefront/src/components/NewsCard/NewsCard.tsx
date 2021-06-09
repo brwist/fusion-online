@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import CardImg from '../../img/fidel-fernando-DubQVeFFbFQ-unsplash.jpg';
 
+import './newscard.scss';
+
 export interface NewsCardProps {
   date: string;
   title: string;
