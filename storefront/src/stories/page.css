@@ -8,7 +8,7 @@ section {
     color: #333;
 }
 
-h2 {
+/* h2 {
     font-weight: 900;
     font-size: 32px;
     line-height: 1;
@@ -21,10 +21,10 @@ p {
     margin: 1em 0;
 }
 
-/* a {
+a {
   text-decoration: none;
   color: #1ea7fd;
-} */
+}
 
 ul {
     padding-left: 30px;
@@ -33,7 +33,7 @@ ul {
 
 li {
     margin-bottom: 8px;
-}
+} */
 
 .tip {
     display: inline-block;

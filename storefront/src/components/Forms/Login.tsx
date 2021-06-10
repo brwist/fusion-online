@@ -12,15 +12,17 @@ export const Login: React.FC<LoginProps> = ({
     <div className="form-signin">
       <h3 className="mb-4">Sign In</h3>
 
-      <Form>
+      <Form className="floating-labels">
         <Form.Group controlId="first-name">
-          <Form.Control type="text" placeholder="First Name" />
+          <Form.Control type="text" placeholder="First Name" className="is-valid" />
           <Form.Label>First Name*</Form.Label>
+          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group controlId="password">
           <Form.Control type="password" placeholder="Password" />
           <Form.Label>Password*</Form.Label>
+          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Text className="mb-3">

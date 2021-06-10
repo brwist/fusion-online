@@ -92,12 +92,12 @@ $font-size-lg: ($font-size-base * 1.25) !default;
 $font-size-sm: ($font-size-base * 0.875) !default;
 $small-font-size: $font-size-sm;
 
-$h1-font-size: 48px;
-$h2-font-size: 34px;
-$h3-font-size: 26px;
-$h4-font-size: 18px;
-$h5-font-size: 16px;
-$h6-font-size: 14px;
+$h1-font-size: 40px;
+$h2-font-size: 30px;
+$h3-font-size: 25px;
+$h4-font-size: 22px;
+$h5-font-size: 18px;
+$h6-font-size: 16px;
 
 // //** Font Weights
 $font-weight-light: 300;
@@ -115,7 +115,7 @@ $line-height-computed: floor(($font-size-base * $line-height-base)); // ~20px
 
 // //** By default, this inherits from the `<body>`.
 $headings-font-family: $font-family-sans-serif;
-$headings-font-weight: $font-weight-normal;
+$headings-font-weight: $font-weight-light;
 $headings-line-height: 1.1;
 $headings-color: $body-color;
 
@@ -199,7 +199,15 @@ $input-btn-font-size-lg: $input-btn-font-size;
 // Forms
 
 $input-focus-box-shadow: none;
-$form-group-margin-bottom: 32px;
+$form-group-margin-bottom: 24px;
+$custom-select-focus-box-shadow: none;
+$custom-select-bg-size: 13px 17px; // In pixels because image dimensions
+$custom-select-indicator-color: $primary;
+$custom-select-indicator: str-replace(
+    url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"%3E%3Cpath fill="#{$custom-select-indicator-color}" d="M443.5 162.6l-7.1-7.1c-4.7-4.7-12.3-4.7-17 0L224 351 28.5 155.5c-4.7-4.7-12.3-4.7-17 0l-7.1 7.1c-4.7 4.7-4.7 12.3 0 17l211 211.1c4.7 4.7 12.3 4.7 17 0l211-211.1c4.8-4.7 4.8-12.3.1-17z"/%3E%3C/svg%3E'),
+    '#',
+    '%23'
+);
 
 // Navbar
 
