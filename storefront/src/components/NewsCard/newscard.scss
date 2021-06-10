@@ -1,1 +1,7 @@
 @import '../../globalStyles/variables';
+
+.news-card {
+    .card {
+        border-width: 0;
+    }
+}

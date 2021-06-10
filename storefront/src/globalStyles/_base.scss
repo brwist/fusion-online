@@ -37,6 +37,10 @@ h6 {
     &:first-child {
         margin-top: 0;
     }
+
+    a {
+        color: $body-color;
+    }
 }
 
 /* Paragraphs */
@@ -46,4 +50,8 @@ p {
 
 a {
     transition: $transition-base;
+}
+
+strong {
+    font-weight: $font-weight-bold;
 }

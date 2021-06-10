@@ -4,6 +4,14 @@
    =============================================================== */
 
 .card {
-    max-width: 300px;
+    max-width: 320px;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $card-spacer-x;
+        background: transparent;
+    }
 }

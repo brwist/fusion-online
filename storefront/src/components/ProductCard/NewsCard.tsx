@@ -24,13 +24,11 @@ export const NewsCard: React.FC<NewsCardProps> = ({
   ...props
 }) => {
   return (
-    <Card className="news-card">
+    <Card>
       <Card.Img variant="top" src={CardImg} />
       <Card.Body>
         <Card.Subtitle className="mb-3">{date}</Card.Subtitle>
-        <Card.Title as="h3">
-          <a href="#">{title}</a>
-        </Card.Title>
+        <Card.Title as="h3">{title}</Card.Title>
         <Card.Text>
           {text}
         </Card.Text>
