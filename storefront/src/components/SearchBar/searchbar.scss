@@ -1,0 +1,27 @@
+@import '../../globalStyles/common';
+
+.search-bar {
+    margin-bottom: 24px;
+    padding: 24px;
+    background: $navy;
+
+    form {
+        position: relative;
+    }
+
+    #search-products {
+        padding-left: 48px;
+        font-size: 22px;
+        font-weight: $font-weight-light;
+    }
+
+    .search-submit {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        border: 0;
+        background: transparent;
+        font-size: 20px;
+    }
+}

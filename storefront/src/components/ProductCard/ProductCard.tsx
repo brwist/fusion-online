@@ -2,7 +2,8 @@ import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { Tag } from '../../components/Tag/Tag';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as farFaBookmark } from '@fortawesome/free-regular-svg-icons';
+import { faBookmark as fasFaBookmark } from '@fortawesome/free-solid-svg-icons';
 
 import './productcard.scss';
 
@@ -58,7 +59,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {buttonLabel}
         </Button>
         <Button variant="text">
-          <FontAwesomeIcon icon={faBookmark} className="mr-1" /> Add to List
+          <FontAwesomeIcon icon={farFaBookmark} className="mr-1" /> Add to List
         </Button>
       </Card.Footer>
     </Card>
