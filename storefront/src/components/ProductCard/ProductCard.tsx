@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { Tag } from '../../components/Tag/Tag';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBookmark } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBookmark } from '@fortawesome/free-regular-svg-icons';
 
 import './productcard.scss';
 
@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </Card.Title>
         <Card.Text>
           <div className="small mb-3">
-            Spec Code: 123456  |  Ordering Code: 123456
+            Spec Code: 123456 | Ordering Code: 123456
           </div>
           <div className="d-flex justify-content-between">
             <div>

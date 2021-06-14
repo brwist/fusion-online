@@ -1,0 +1,14 @@
+.table {
+    thead {
+        tr {
+            background: $navy;
+            font-size: 12px;
+            color: $white;
+            text-transform: uppercase;
+        }
+    }
+
+    td:not(:first-child) {
+        vertical-align: middle;
+    }
+}
