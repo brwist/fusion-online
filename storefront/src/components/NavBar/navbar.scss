@@ -1,0 +1,93 @@
+@import '../../globalStyles/common';
+
+/* ==============================================================
+   HEADER
+   - Styles for anything that resides in the header
+   ============================================================== */
+
+#header {
+    .navbar-collapse {
+        flex-grow: 0;
+        flex-wrap: wrap;
+    }
+
+    .navbar-brand {
+        img {
+            width: 278px;
+            height: 72px;
+        }
+    }
+
+    .navbar {
+        .navbar-collapse {
+            @include media-breakpoint-up(lg) {
+                flex-direction: column-reverse;
+            }
+
+            .navbar-nav {
+                width: 100%;
+                justify-content: flex-end;
+
+                // First level
+                > .nav-item {
+                    &.dropdown > a {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+
+                    > a {
+                        font-weight: $font-weight-bold;
+                        text-transform: uppercase;
+
+                        @include media-breakpoint-up(lg) {
+                            padding: 1rem 1.5rem;
+                        }
+
+                        span {
+                            text-transform: none;
+                        }
+
+                        &::after {
+                            width: 12px;
+                            height: 10px;
+                            margin-left: 5px;
+                            border: 0;
+                            background: $custom-select-indicator no-repeat;
+                        }
+                    }
+
+                    // Second level
+                    .dropdown-menu {
+                        @include media-breakpoint-down(md) {
+                            padding: 0;
+                            background: transparent;
+                            border: 0;
+
+                            a {
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+
+                &#utility-nav {
+                    @include media-breakpoint-up(lg) {
+                        padding-right: 1rem;
+                    }
+
+                    > .nav-item {
+                        > a {
+                            font-weight: $font-weight-light;
+                            font-size: 12px;
+
+                            @include media-breakpoint-up(lg) {
+                                padding: 1rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
