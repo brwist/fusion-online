@@ -12,15 +12,28 @@ export const SearchContainer = () => {
   const { loading, error, data} = useProductListQuery({
     variables: {filter: {search: searchQuery}, first: 100}
 });
-
-  let results;
+  let results: any = [];
   if (data) {
-    results = data.products?.edges || [];
+    results = data.products?.edges.map(({node}) => {
+      return {
+        otherData: {
+          saved: false,
+          brand: "Intel",
+          sku: 123456, 
+          specCode: 1234,
+          orderingCode: 1234,
+          status: "Incoming Stock",
+          qtyAvailable: 10000,
+          price: 100.00
+        },
+        productData: node
+      }
+    }) || []
   }
   return ( 
     <div>
       <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
-      <SearchResults loading={loading} searchResultsData={[]}/>
+      <SearchResults loading={loading} searchResultsData={results}/>
     </div>
   )
 }

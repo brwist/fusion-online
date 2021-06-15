@@ -23,36 +23,33 @@ Default.args = {
     price: 100.00,
   },
   productData: {
-    node: {
-      id: "UHJvZHVjdDo3",
-      name: "Intel® Celeron® Processor N3010",
-      description: "",
-      descriptionJson: "",
-      productType: {
-        id: "UHJvZHVjdFR5cGU6NA==",
-        name: "Intel® Celeron® Processor N Series",
-        hasVariants: false,
-        slug: 'intel',
-        isShippingRequired: true,
-        isDigital: false,
-        privateMetadata: [],
-        metadata:[],
-        privateMeta: [],
-        meta: []
-      },
+    id: "UHJvZHVjdDo3",
+    name: "Intel® Celeron® Processor N3010",
+    description: "",
+    descriptionJson: "",
+    productType: {
+      id: "UHJvZHVjdFR5cGU6NA==",
+      name: "Intel® Celeron® Processor N Series",
+      hasVariants: false,
       slug: 'intel',
-      chargeTaxes: false,
-      visibleInListings: true,
+      isShippingRequired: true,
+      isDigital: false,
       privateMetadata: [],
       metadata:[],
       privateMeta: [],
-      meta: [],
-      url: 'string',
-      attributes: [],
-      isPublished: true
+      meta: []
     },
-    cursor: "string"
-  }
+    slug: 'intel',
+    chargeTaxes: false,
+    visibleInListings: true,
+    privateMetadata: [],
+    metadata:[],
+    privateMeta: [],
+    meta: [],
+    url: 'string',
+    attributes: [],
+    isPublished: true
+  },
 };
 
 export const Saved = Template.bind({});

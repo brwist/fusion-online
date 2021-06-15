@@ -21,7 +21,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   if (searchResultsData?.length === 0) {
     return <h5 className="search-results">No Results</h5>
   }
-
   return (
     <div className="search-results">
       <Table striped borderless responsive>
@@ -39,7 +38,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
           {searchResultsData?.map(({otherData, productData}) => {
             return (
               <SearchResultRow
-                key={productData.node.id}
+                key={productData.id}
                 otherData={otherData}
                 productData={productData}
               />

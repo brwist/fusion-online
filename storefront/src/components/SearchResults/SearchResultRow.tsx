@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/free-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/free-solid-svg-icons';
 
-import { ProductCountableEdge } from '../../generated/graphql'
+import { Product } from '../../generated/graphql'
 
 import './searchresults.scss';
 
@@ -19,8 +19,7 @@ export interface SearchResultRowProps {
     qtyAvailable: number,
     price: number
   },
-  productData: ProductCountableEdge, 
-
+  productData: Product, 
 }
 export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {  
   saved,
@@ -43,7 +42,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
       <div className="small">
         <strong>{brand}</strong> {sku}
       </div>
-      <a href="#">{productData.node.name}</a>
+      <a href="#">{productData.name}</a>
       <div className="small mt-1">
         Spec Code: {specCode} | Ordering Code: {orderingCode}
       </div>
