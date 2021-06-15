@@ -63,7 +63,7 @@ Mailhog URL: http//localhost:8025
 
 1. From the storefront directory, install dependencies:
 ```
-cd storefront & npm install
+cd storefront && npm install
 ```
 2. Start Storybook:
 - This project uses Storybook as a tool for UI development. 
