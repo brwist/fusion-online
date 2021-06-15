@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/fusion-logo.svg';
 
 import './navbar.scss';

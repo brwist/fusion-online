@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as farFaBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as fasFaBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import './searchresults.scss';
 
