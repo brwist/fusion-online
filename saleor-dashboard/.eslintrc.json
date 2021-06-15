@@ -10,8 +10,7 @@
   "plugins": [
     "@typescript-eslint",
     "import",
-    "local-rules",
-    "simple-import-sort"
+    "local-rules"
   ],
   "rules": {
     "@typescript-eslint/adjacent-overload-signatures": "error",
@@ -61,6 +60,7 @@
     "@typescript-eslint/triple-slash-reference": "error",
     "@typescript-eslint/type-annotation-spacing": "off",
     "@typescript-eslint/unified-signatures": "error",
+    "@typescript-eslint/no-unused-variable": "off",
     "arrow-body-style": "error",
     "arrow-parens": ["off", "as-needed"],
     "camelcase": "off",
@@ -144,7 +144,7 @@
     "no-undef-init": "error",
     "no-underscore-dangle": "off",
     "no-unsafe-finally": "error",
-    "no-unused-expressions": "error",
+    "no-unused-expressions": "off",
     "no-unused-labels": "error",
     "no-var": "error",
     "object-shorthand": "error",
@@ -153,7 +153,6 @@
     "prefer-object-spread": "error",
     "quote-props": "off",
     "radix": "error",
-    "simple-import-sort/sort": ["error"],
     "sort-imports": "off", // imports are handled by simple-import-sort/sort
     "sort-keys": "warn",
     "space-before-function-paren": "off",
