@@ -30,13 +30,13 @@
 
                 // First level
                 > .nav-item {
-                    &.dropdown > a {
+                    &.dropdown > .nav-link {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
                     }
 
-                    > a {
+                    > .nav-link {
                         font-weight: $font-weight-bold;
                         text-transform: uppercase;
 
@@ -59,14 +59,19 @@
 
                     // Second level
                     .dropdown-menu {
+                        border: 0;
+                        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+
                         @include media-breakpoint-down(md) {
                             padding: 0;
                             background: transparent;
                             border: 0;
+                        }
 
-                            a {
-                                font-size: 14px;
-                            }
+                        > .dropdown-item {
+                            padding: 0.5rem 1rem;
+                            font-size: 12px;
+                            text-transform: uppercase;
                         }
                     }
                 }
@@ -77,7 +82,7 @@
                     }
 
                     > .nav-item {
-                        > a {
+                        > .nav-link {
                             font-weight: $font-weight-light;
                             font-size: 12px;
 

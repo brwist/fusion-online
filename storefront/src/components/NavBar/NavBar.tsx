@@ -54,9 +54,13 @@ export const NavBar: React.FC<NavBarProps> = ({
                 </Nav.Link>
               </Nav.Item>
               <NavDropdown as="li" title="My Account" id="account-dropdown">
-                <NavDropdown.Item href="#">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#">Another action</NavDropdown.Item>
-                <NavDropdown.Item href="#">Something</NavDropdown.Item>
+                <NavDropdown.Item href="#">Orders &amp; RFPs</NavDropdown.Item>
+                <NavDropdown.Item href="#">Spend Report</NavDropdown.Item>
+                <NavDropdown.Item href="#">Payments</NavDropdown.Item>
+                <NavDropdown.Item href="#">Shipping</NavDropdown.Item>
+                <NavDropdown.Item href="#">Manage Profile</NavDropdown.Item>
+                <NavDropdown.Item href="#">Saved Parts</NavDropdown.Item>
+                <NavDropdown.Item href="#">Sign Out</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown as="li" title="My Parts" id="parts-dropdown">
                 <NavDropdown.Item href="#">Action</NavDropdown.Item>
