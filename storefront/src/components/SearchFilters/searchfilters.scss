@@ -1,0 +1,23 @@
+@import '../../globalStyles/common';
+
+.search-filters {
+    .filter-heading {
+        margin-bottom: 8px;
+        font-weight: $font-weight-bold;
+        text-transform: uppercase;
+    }
+
+    .filter-group {
+        margin-bottom: 32px;
+        font-size: 12px;
+
+        li {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        label {
+            line-height: 1.25rem;
+        }
+    }
+}
