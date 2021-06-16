@@ -13,11 +13,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/search">
-              <div style={{margin: '30px'}}>
-            <h2>Products</h2>
-            <ol>{productList.data?.map(product => <li key={product.id}>{product.name}</li>)}</ol>
             <SearchContainer />
-          </div>
           </Route>
         </Switch>
       </BrowserRouter>

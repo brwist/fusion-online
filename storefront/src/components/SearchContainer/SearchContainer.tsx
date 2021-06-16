@@ -25,7 +25,7 @@ export const SearchContainer = () => {
     }) || []
   }
   return ( 
-    <div>
+    <div className="m-3">
       <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
       <SearchResults loading={loading} searchResultsData={results}/>
     </div>
