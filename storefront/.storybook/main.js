@@ -1,4 +1,7 @@
 module.exports = {
+  typescript: {
+    reactDocgen: 'react-docgen',
+  },
   "stories": [
     "../src/**/*.stories.mdx",
     "../src/**/*.stories.@(js|jsx|ts|tsx)"
@@ -10,3 +13,4 @@ module.exports = {
     "@storybook/preset-create-react-app"
   ]
 }
+

@@ -2,7 +2,7 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
 import { SearchResults, SearchResultsProps } from '../components/SearchResults/SearchResults';
-import * as SearchResultRowStories from './SearchResultsRow.stories';
+import {productDataSample} from './productDataSample'
 
 export default {
   title: 'Search/Search Results Table',
@@ -14,11 +14,19 @@ const Template: Story<SearchResultsProps> = (args) => <SearchResults {...args} /
 export const Default = Template.bind({});
 Default.args = {
   loading: false,
-  searchResultsData: [
-    // {result: {...SearchResultRowStories.Default.args?.result, sku: 123}},
-    // {result: {...SearchResultRowStories.Saved.args?.result, sku: 456}},
-    // {result: {...SearchResultRowStories.Default.args?.result, sku: 789}},
-    // {result: {...SearchResultRowStories.Default.args?.result, sku: 1234}}
+searchResultsData: [
+    {otherData: {saved: false, status: "Incoming Stock"},
+      productData: productDataSample
+    },
+    {otherData: {saved: true, status: "Incoming Stock"},
+      productData: productDataSample
+    },
+    {otherData: {saved: false, status: "Incoming Stock"},
+      productData: productDataSample
+    },
+    {otherData: {saved: false, status: "Incoming Stock"},
+      productData: productDataSample
+    },
   ]
 };
 

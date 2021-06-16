@@ -10,29 +10,27 @@ import './searchresults.scss';
 
 export interface SearchResultRowProps {
   otherData: {
-    saved: boolean | undefined,
-    brand: string,
-    sku: number, 
-    specCode: number,
-    orderingCode: number,
-    status: string,
-    qtyAvailable: number,
-    price: number
+    saved: boolean,
+    status?: string | undefined,
   },
   productData: Product, 
 }
 export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {  
   saved,
-  brand,
-  sku,
-  specCode,
-  orderingCode,
-  status,
-  qtyAvailable,
-  price},
-  productData
-
+  status},
+  productData: {
+    name,
+    variants,
+    attributes,
+    pricing
+  }
 }) => {
+  function getAttributeValue (slugName: string): any {
+    const matchingAttribute = attributes.filter(
+      ({attribute: {slug}}) => slug === slugName)
+    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
+  }
+
   return (<tr>
     <td className="pr-0">
       {saved ? <FontAwesomeIcon icon={fasFaBookmark} className="text-primary" />
@@ -40,16 +38,16 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
     </td>
     <td>
       <div className="small">
-        <strong>{brand}</strong> {sku}
+        <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
       </div>
-      <a href="#">{productData.name}</a>
+      <a href="#">{name}</a>
       <div className="small mt-1">
-        Spec Code: {specCode} | Ordering Code: {orderingCode}
+        Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
     </td>
     <td className="text-center">{status}</td>
-    <td className="text-center">{qtyAvailable}</td>
-    <td className="text-center">{price}</td>
+    <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
+    <td className="text-center">${pricing?.priceRangeUndiscounted?.start?.gross.amount}</td>
     <td className="text-center">
       <Button>
         Select Quantity
