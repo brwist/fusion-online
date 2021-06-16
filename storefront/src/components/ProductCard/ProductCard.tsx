@@ -40,7 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <div className="d-flex justify-content-between">
             <div>
-              <div className="font-weight-bold">AVAILABLE QTY</div>
+              <div className="font-weight-bold">Available Qty</div>
               <div className="text-larger">10,000</div>
             </div>
             <div className="text-right">

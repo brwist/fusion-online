@@ -55,6 +55,8 @@ a {
     transition: $transition-base;
 }
 
-strong {
-    font-weight: $font-weight-bold;
+strong,
+.strong,
+.font-weight-bold {
+    text-transform: uppercase;
 }
