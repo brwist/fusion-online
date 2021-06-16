@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import './App.scss';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
+import { NavBar } from './components/NavBar/NavBar'
 
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/search">
+            <NavBar />
             <SearchContainer />
           </Route>
         </Switch>

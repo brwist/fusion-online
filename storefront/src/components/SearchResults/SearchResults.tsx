@@ -15,11 +15,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
 }) => {
 
   if (loading) {
-    return <h5 className="search-results">Loading...</h5>
+    return <h5>Loading...</h5>
   }
   
   if (searchResultsData?.length === 0) {
-    return <h5 className="search-results">No Results</h5>
+    return <h5>No Results</h5>
   }
   return (
     <div className="search-results">
