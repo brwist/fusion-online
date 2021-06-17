@@ -4,7 +4,7 @@ import { Story, Meta } from '@storybook/react';
 import { SearchFilters, SearchFiltersProps } from '../components/SearchFilters/SearchFilters';
 
 export default {
-  title: 'Search Filters',
+  title: 'Search/Search Filters',
   component: SearchFilters
 } as Meta;
 
