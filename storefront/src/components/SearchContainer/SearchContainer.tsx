@@ -1,8 +1,9 @@
 import React, {useState} from 'react'
-
+import {Row, Col} from 'react-bootstrap';
 import {SearchResults} from '../SearchResults/SearchResults';
 import {SearchBar} from '../SearchBar/SearchBar';
 import {useProductListQuery} from '../../generated/graphql'
+import {SearchFilters} from '../SearchFilters/SearchFilters'
 
 
 export interface SearchContainerProps {};
@@ -26,8 +27,15 @@ export const SearchContainer = () => {
   }
   return ( 
     <div className="m-3">
-      <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
-      <SearchResults loading={loading} searchResultsData={results}/>
+      <Row>
+        <Col xs={1} className="d-flex align-items-center">
+          <SearchFilters />
+        </Col>
+        <Col>
+          <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
+          <SearchResults loading={loading} searchResultsData={results}/>
+        </Col>
+      </Row>
     </div>
   )
 }
