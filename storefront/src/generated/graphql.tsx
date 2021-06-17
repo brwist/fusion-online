@@ -12230,6 +12230,11 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   name
+  variants {
+    sku
+    quantityAvailable
+    __typename
+  }
   thumbnail {
     url
     __typename
@@ -12261,6 +12266,7 @@ export const ProductListDocument = gql`
         attributes {
           attribute {
             id
+            slug
             __typename
           }
           values {

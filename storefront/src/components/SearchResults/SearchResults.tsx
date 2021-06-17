@@ -1,10 +1,7 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
-import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
+import { Table } from 'react-bootstrap';
 
-import { SearchResultRow, SearchResultRowProps } from './SearchResultRow';
+import {SearchResultRow, SearchResultRowProps} from './SearchResultRow'
 
 import './searchresults.scss';
 
@@ -18,11 +15,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
 }) => {
 
   if (loading) {
-    return <h5 className="search-results">Loading...</h5>
+    return <h5>Loading...</h5>
   }
 
   if (searchResultsData?.length === 0) {
-    return <h5 className="search-results">No Results</h5>
+    return <h5>No Results</h5>
   }
   return (
     <div className="search-results">
