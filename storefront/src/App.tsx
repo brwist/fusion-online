@@ -1,18 +1,21 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import './App.scss';
-
+import { Container } from 'react-bootstrap';
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
-import { NavBar } from './components/NavBar/NavBar'
+import { NavBar } from './components/NavBar/NavBar';
+
+import './App.scss';
 
 
 function App() {
-    return( 
+    return(
       <BrowserRouter>
         <Switch>
           <Route path="/search">
             <NavBar />
-            <SearchContainer />
+            <Container>
+              <SearchContainer />
+            </Container>
           </Route>
         </Switch>
       </BrowserRouter>
