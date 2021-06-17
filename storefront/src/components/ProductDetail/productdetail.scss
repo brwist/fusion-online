@@ -1,4 +1,21 @@
 @import '../../globalStyles/common';
 
 .product-detail {
+    h1 {
+        text-transform: none;
+    }
+
+    svg {
+        polygon.active {
+            fill: $primary;
+        }
+    }
+
+    .btn.btn-outline-dark {
+        background-color: $white;
+
+        &:hover {
+            background-color: $dark;
+        }
+    }
 }

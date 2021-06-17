@@ -13,9 +13,9 @@ export interface SearchResultRowProps {
     saved: boolean,
     status?: string | undefined,
   },
-  productData: Product, 
+  productData: Product,
 }
-export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {  
+export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
   saved,
   status},
   productData: {
