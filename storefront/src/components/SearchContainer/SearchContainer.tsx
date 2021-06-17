@@ -30,7 +30,7 @@ export const SearchContainer = () => {
   return ( 
     <div className="m-3">
       <Row>
-        <Col xs={2} className="d-flex align-items-center">
+        <Col xs={2}>
           <SearchFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>
         </Col>
         <Col>
