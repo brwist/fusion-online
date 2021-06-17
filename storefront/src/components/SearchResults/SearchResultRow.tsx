@@ -1,8 +1,8 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as farFaBookmark } from '@fortawesome/free-regular-svg-icons';
-import { faBookmark as fasFaBookmark } from '@fortawesome/free-solid-svg-icons';
+import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import { Product } from '../../generated/graphql'
 
@@ -12,16 +12,16 @@ export interface SearchResultRowProps {
   otherData: {
     saved: boolean | undefined,
     brand: string,
-    sku: number, 
+    sku: number,
     specCode: number,
     orderingCode: number,
     status: string,
     qtyAvailable: number,
     price: number
   },
-  productData: Product, 
+  productData: Product,
 }
-export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {  
+export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
   saved,
   brand,
   sku,
