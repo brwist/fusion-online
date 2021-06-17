@@ -17,7 +17,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   if (loading) {
     return <h5>Loading...</h5>
   }
-  
+
   if (searchResultsData?.length === 0) {
     return <h5>No Results</h5>
   }
