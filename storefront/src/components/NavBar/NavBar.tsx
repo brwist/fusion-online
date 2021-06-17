@@ -15,7 +15,7 @@ export const NavBar: React.FC<NavBarProps> = ({
     <header id="header">
       <Navbar bg="light" variant="light" expand="lg" className="justify-content-between">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
             <img
               src={LogoImg}
               alt="Fusion Worldwide"
@@ -45,7 +45,7 @@ export const NavBar: React.FC<NavBarProps> = ({
 
             <Nav as="ul" id="utility-nav" className="mr-auto">
               <Nav.Item as="li">
-                <Nav.Link href="#">
+                <Nav.Link href="/search">
                   Part Search
                   <FontAwesomeIcon
                     icon={faSearch}
