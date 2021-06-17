@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>demand-scale</title>
+    <g id="Member" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Components" transform="translate(-160.000000, -2982.000000)" fill="#DDDDDD">
+            <g id="CPU---Single-Order" transform="translate(160.000000, 2894.000000)">
+                <g id="demand-scale" transform="translate(0.000000, 88.000000)">
+                    <polygon id="Rectangle" points="44.3705139 0 51.3705139 0 43 14.2763062 36 14.2763062"></polygon>
+                    <polygon id="Rectangle" points="35.3705139 0 42.3705139 0 34 14.2763062 27 14.2763062"></polygon>
+                    <polygon id="Rectangle" points="26.3705139 0 33.3705139 0 25 14.2763062 18 14.2763062"></polygon>
+                    <polygon id="Rectangle" points="17.3705139 0 24.3705139 0 16 14.2763062 9 14.2763062"></polygon>
+                    <polygon id="Rectangle" points="8.37051392 0 15.3705139 0 7 14.2763062 1.00255103e-14 14.2763062"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -12,7 +12,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
     <Card className="add-to-cart-card">
       <Card.Body>
         <Card.Subtitle className="mb-4">
-          <div className="font-weight-bold">Availability/Lead Time</div>
+          <div className="font-weight-bold mb-2">Availability/Lead Time</div>
           10,000 units in stock. Ready to ship.
         </Card.Subtitle>
         <Card.Text>
