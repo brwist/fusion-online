@@ -1,11 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
-import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import './addtocart.scss';
-import { grey } from '@material-ui/core/colors';
 
 export interface AddToCartProps {}
 
