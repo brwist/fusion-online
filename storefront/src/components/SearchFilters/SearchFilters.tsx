@@ -31,9 +31,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         }])
     } else {
       setCurrentFilters(currentFilters.filter(
-        ({slug}) => slug !== event?.currentTarget.name));
+        ({values, slug}) => !(slug === event.currentTarget.name && values?.includes(event.currentTarget.value))));
       setFilters(currentFilters.filter(
-        ({slug}) => slug !== event?.currentTarget.name))
+        ({values, slug}) => !(slug === event.currentTarget.name && values?.includes(event.currentTarget.value))));
     }
   }
 
