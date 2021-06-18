@@ -1,10 +1,10 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button'
+import { Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
-import { Product } from '../../generated/graphql'
+import { Product } from '../../generated/graphql';
 
 import './searchresults.scss';
 
@@ -49,7 +49,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
     <td className="text-center">${pricing?.priceRangeUndiscounted?.start?.gross.amount}</td>
     <td className="text-center">
-      <Button>
+      <Button variant="primary" size="sm">
         Select Quantity
       </Button>
     </td>

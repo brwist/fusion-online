@@ -20,3 +20,25 @@
         }
     }
 }
+
+.open-rfqs {
+    thead {
+        .progress {
+            width: 66%;
+            display: inline-flex;
+            vertical-align: top;
+        }
+
+        a {
+            color: $white;
+        }
+    }
+
+    .rfq-item {
+        margin-bottom: 32px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}

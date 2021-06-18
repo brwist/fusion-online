@@ -27,8 +27,8 @@ export const SearchContainer = () => {
       }
     }) || []
   }
-  return ( 
-    <div className="m-3">
+  return (
+    <div className="my-3">
       <Row>
         <Col xs={2}>
           <SearchFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>

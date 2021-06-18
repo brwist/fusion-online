@@ -1,7 +1,6 @@
 import React from 'react';
-import { Table } from 'react-bootstrap';
-
-import {SearchResultRow, SearchResultRowProps} from './SearchResultRow'
+import { Card, Table } from 'react-bootstrap';
+import {SearchResultRow, SearchResultRowProps} from './SearchResultRow';
 
 import './searchresults.scss';
 
@@ -22,7 +21,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
     return <h5>No Results</h5>
   }
   return (
-    <div className="search-results">
+    <Card className="search-results">
       <Table striped borderless responsive>
         <thead>
           <tr>
@@ -46,6 +45,6 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
           })}
         </tbody>
       </Table>
-    </div>
+    </Card>
   );
 };

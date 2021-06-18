@@ -1,5 +1,9 @@
 @import '../../globalStyles/common';
 
 .search-results {
-    box-shadow: $default-shadow;
+    .table {
+        td:not(:first-child) {
+            vertical-align: middle;
+        }
+    }
 }
