@@ -11,7 +11,10 @@ function App() {
     return(
       <BrowserRouter>
         <Switch>
-          <Route path="/search">
+          <Route exact path="/">
+            <NavBar />
+          </Route>
+          <Route exact path="/search">
             <NavBar />
             <Container>
               <SearchContainer />
