@@ -12230,6 +12230,8 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   name
+  description
+  descriptionJson
   variants {
     sku
     quantityAvailable
