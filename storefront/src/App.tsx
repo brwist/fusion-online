@@ -9,13 +9,10 @@ import './App.scss';
 
 function App() {
     return(
-      <BrowserRouter>
+     <BrowserRouter>
+        <NavBar />
         <Switch>
-          <Route exact path="/">
-            <NavBar />
-          </Route>
           <Route exact path="/search">
-            <NavBar />
             <Container>
               <SearchContainer />
             </Container>
