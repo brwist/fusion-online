@@ -24,7 +24,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="search-bar">
-      <Form>
+      <Form onSubmit={(e) => e.preventDefault()}>
         <Form.Group controlId="search-products" className="m-0">
           <Form.Label className="sr-only">Search by Part Name, Number or Keyword</Form.Label>
           <Form.Control 
