@@ -12,6 +12,13 @@
         text-transform: none;
     }
 
+    .card-body {
+        hr {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+    }
+
     .card-footer {
         display: flex;
         justify-content: space-between;
@@ -22,10 +29,5 @@
 
     .table {
         margin-bottom: 0;
-    }
-
-    hr {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
     }
 }
