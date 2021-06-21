@@ -5,10 +5,10 @@
 
 .card {
     // max-width: 350px;
+    margin-bottom: $grid-gutter-width;
     box-shadow: $default-shadow;
 
-    .card-title,
-    .card-subtitle {
+    .card-title {
         text-transform: none;
     }
 
@@ -22,5 +22,10 @@
 
     .table {
         margin-bottom: 0;
+    }
+
+    hr {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 }

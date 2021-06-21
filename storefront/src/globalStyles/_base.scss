@@ -26,8 +26,6 @@ video {
 }
 
 /* Headings */
-h1,
-.h1,
 h2,
 .h2,
 h3,
@@ -44,6 +42,11 @@ h6,
     &:first-child {
         margin-top: 0;
     }
+}
+
+h6,
+.h6 {
+    font-weight: $font-weight-bold;
 }
 
 /* Paragraphs */
