@@ -11,7 +11,7 @@ input[type='number'],
 input[type='tel'],
 select,
 textarea {
-    @extend .form-control;
+    // @extend .form-control;
 }
 
 label {
@@ -111,7 +111,7 @@ label {
     }
 
     /* Fallback for Edge
--------------------------------------------------- */
+    -------------------------------------------------- */
     @supports (-ms-ime-align: auto) {
         & {
             display: -ms-flexbox;

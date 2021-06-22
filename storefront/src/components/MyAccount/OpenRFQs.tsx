@@ -11,7 +11,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
   return (
     <Card className="open-rfqs">
       <Table borderless responsive>
-        <thead>
+        <thead className="bg-dark text-white">
           <tr>
             <th>RFQ Number <a href="#">123456789</a></th>
             <th>Monday 00, 0000</th>
@@ -73,7 +73,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
               </div>
             </td>
             <td>
-              <Button variant="primary" size="sm">
+              <Button variant="primary">
                 Cancel
               </Button>
             </td>

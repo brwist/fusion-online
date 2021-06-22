@@ -1,0 +1,9 @@
+@import '../../globalStyles/common';
+
+.cart {
+    .table {
+        td:not(:first-child) {
+            vertical-align: middle;
+        }
+    }
+}

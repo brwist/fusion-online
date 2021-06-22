@@ -49,7 +49,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
     <td className="text-center">${pricing?.priceRangeUndiscounted?.start?.gross.amount}</td>
     <td className="text-center">
-      <Button variant="primary" size="sm">
+      <Button variant="primary">
         Select Quantity
       </Button>
     </td>

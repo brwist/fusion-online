@@ -18,7 +18,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
           <a href="#">SEE ALL ORDERS</a>
           <h1 className="mt-1 mb-0">Order Details</h1>
         </div>
-        <Button variant="primary" size="sm">
+        <Button variant="primary">
           Download Invoice
         </Button>
       </header>
@@ -111,7 +111,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               City, State 01234, US
             </Col>
             <Col lg={4} className="text-right">
-              <Button variant="primary" size="sm">
+              <Button variant="primary">
                 Track Package
               </Button>
             </Col>

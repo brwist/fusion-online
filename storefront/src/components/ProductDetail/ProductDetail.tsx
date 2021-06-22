@@ -39,7 +39,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               High Demand
             </div>
           </div>
-          <Button variant="primary" size="sm">
+          <Button variant="primary">
             <FontAwesomeIcon icon={farFaBookmark} className="mr-1" /> Add to List
           </Button>
         </header>
@@ -70,15 +70,15 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               <div className="font-weight-bold">Packaging</div>
               Packaging Option 1
               <div className="packaging-options mt-2">
-                <Button variant="primary" size="sm">
+                <Button variant="primary">
                   Packaging Option 1<br />
                   $00.00
                 </Button>
-                <Button variant="outline-dark" size="sm">
+                <Button variant="outline-dark">
                   Packaging Option 2<br />
                   $00.00
                 </Button>
-                <Button variant="outline-dark" size="sm">
+                <Button variant="outline-dark">
                   Packaging Option 3<br />
                   $00.00
                 </Button>

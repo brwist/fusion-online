@@ -23,7 +23,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   return (
     <Card className="search-results">
       <Table striped borderless responsive>
-        <thead>
+        <thead className="bg-dark text-white">
           <tr>
             <th></th>
             <th>Product</th>

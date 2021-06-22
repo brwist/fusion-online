@@ -9,7 +9,7 @@ import './productcard.scss';
 
 export interface ProductCardProps {
   title: string;
-  buttonSize?: 'sm' | 'lg';
+  buttonSize?: '' | 'sm' | 'lg';
   buttonVariant?: 'primary' | 'secondary';
   buttonLabel: string;
   onClick?: () => void;
@@ -58,7 +58,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <Button variant={buttonVariant} size={buttonSize}>
           {buttonLabel}
         </Button>
-        <Button variant="text">
+        <Button variant="link">
           <FontAwesomeIcon icon={farFaBookmark} className="mr-1" /> Add to List
         </Button>
       </Card.Footer>

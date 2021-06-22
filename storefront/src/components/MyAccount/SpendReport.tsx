@@ -34,7 +34,7 @@ export const SpendReport: React.FC<SpendReportProps> = ({
       <Card>
         <Table borderless striped responsive>
           <thead>
-            <tr>
+            <tr className="bg-dark text-white">
               <th>Commodity</th>
               <th>CPU</th>
               <th>Finished Goods</th>

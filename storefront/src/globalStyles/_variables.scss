@@ -89,7 +89,7 @@ $font-family-base: $font-family-sans-serif;
 
 $font-size-base: 0.9375rem; // Assumes the browser default, typically `16px`
 $font-size-lg: ($font-size-base * 1.25) !default;
-$font-size-sm: ($font-size-base * 0.875) !default;
+$font-size-sm: ($font-size-base * 0.8) !default;
 $small-font-size: $font-size-sm;
 
 $h1-font-size: 40px;
@@ -189,7 +189,7 @@ $input-btn-padding-x: 1rem;
 $input-btn-font-size: 13px;
 $input-btn-focus-color: rgba($black, 0.1);
 
-$input-btn-padding-y-sm: $input-btn-padding-y;
+$input-btn-padding-y-sm: 0.5rem;
 $input-btn-padding-x-sm: $input-btn-padding-x;
 $input-btn-font-size-sm: $input-btn-font-size;
 

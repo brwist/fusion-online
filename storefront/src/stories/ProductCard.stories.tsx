@@ -13,7 +13,7 @@ const Template: Story<ProductCardProps> = (args) => <ProductCard {...args} />;
 export const Card = Template.bind({});
 Card.args = {
   title: 'Intel® Pentium® Gold 7505 Processor',
-  buttonSize: 'sm',
+  buttonSize: '',
   buttonVariant: 'primary',
   buttonLabel: 'Select Quantity'
 };
