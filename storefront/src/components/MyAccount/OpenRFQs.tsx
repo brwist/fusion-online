@@ -26,7 +26,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
         </thead>
         <tbody>
           <tr>
-            <td colSpan="2">
+            <td colSpan={2}>
               <div className="rfq-item">
                 <div>
                   <strong>INTEL</strong> 123456789

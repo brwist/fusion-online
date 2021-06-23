@@ -46,7 +46,7 @@ export const SpendReport: React.FC<SpendReportProps> = ({
           <tbody>
             <tr>
               <td className="font-weight-bold">DELL COMPUTER (5194)</td>
-              <td colSpan="5"><hr className="my-2" /></td>
+              <td colSpan={5}><hr className="my-2" /></td>
             </tr>
             <tr>
               <td>JAN</td>

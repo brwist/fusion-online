@@ -15,7 +15,7 @@ Card.args = {
   date: 'Sept 16, 2022',
   title: 'This is a News Card',
   text: 'Some quick example text to build on the card title and make up the bulk of the card content.',
-  buttonSize: '',
+  buttonSize: 'sm',
   buttonVariant: 'primary',
   buttonLabel: 'Read More'
 };
