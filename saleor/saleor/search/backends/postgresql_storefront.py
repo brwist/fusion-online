@@ -16,7 +16,7 @@ def search(phrase):
 
     """
     name_sim = TrigramSimilarity("name", phrase)
-    ft_in_description = Q(description__search=phrase)
+    ft_in_description = Q(description_json__blocks__0__text__icontains=phrase)
     ft_by_sku = Q(variants__sku__search=phrase)
     ft_by_attribute = Q(attributes__values__name__search=phrase)
     name_similar = Q(name_sim__gt=0.2)
