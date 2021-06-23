@@ -6,10 +6,12 @@ import LogoImg from '../../img/fusion-logo.svg';
 
 import './navbar.scss';
 
-export interface NavBarProps {}
+export interface NavBarProps {
+  signOut(): void
+}
 
 export const NavBar: React.FC<NavBarProps> = ({
-  ...props
+  signOut
 }) => {
   return (
     <header id="header">
@@ -60,7 +62,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 <NavDropdown.Item href="#">Shipping</NavDropdown.Item>
                 <NavDropdown.Item href="#">Manage Profile</NavDropdown.Item>
                 <NavDropdown.Item href="#">Saved Parts</NavDropdown.Item>
-                <NavDropdown.Item href="#">Sign Out</NavDropdown.Item>
+                <NavDropdown.Item onClick={() => signOut()} href="#">Sign Out</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown as="li" title="My Parts" id="parts-dropdown">
                 <NavDropdown.Item href="#">Action</NavDropdown.Item>
