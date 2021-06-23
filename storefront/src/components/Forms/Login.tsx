@@ -13,14 +13,14 @@ export const Login: React.FC<LoginProps> = ({
       <h3 className="mb-4">Sign In</h3>
 
       <Form className="floating-labels">
-        <Form.Group controlId="first-name">
-          <Form.Control type="text" placeholder="First Name" className="is-valid" />
-          <Form.Label>First Name*</Form.Label>
+        <Form.Group controlId="email">
+          <Form.Control type="email" placeholder="Email" required className="is-valid" />
+          <Form.Label>Email*</Form.Label>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group controlId="password">
-          <Form.Control type="password" placeholder="Password" />
+          <Form.Control type="password" placeholder="Password" required />
           <Form.Label>Password*</Form.Label>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
@@ -32,7 +32,7 @@ export const Login: React.FC<LoginProps> = ({
         </Form.Text>
 
         <Form.Group>
-          <Button variant="primary" type="submit" block>
+          <Button variant="primary" size="lg" type="submit" block>
             Sign In
           </Button>
         </Form.Group>

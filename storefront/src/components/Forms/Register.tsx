@@ -55,7 +55,7 @@ export const Register: React.FC<RegisterProps> = ({
               <Form.Label>Select Geographic Region*</Form.Label>
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="primary" size="lg" type="submit">
               Register
             </Button>
           </Form>
