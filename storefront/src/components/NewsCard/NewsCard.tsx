@@ -8,7 +8,7 @@ export interface NewsCardProps {
   date: string;
   title: string;
   text: string;
-  buttonSize?: '' | 'sm' | 'lg';
+  buttonSize?: 'sm' | 'lg';
   buttonVariant?: 'primary' | 'secondary';
   buttonLabel: string;
   onClick?: () => void;

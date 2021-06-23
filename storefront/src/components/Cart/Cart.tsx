@@ -1,4 +1,4 @@
-import { React, useContext } from 'react';
+import React, {useContext } from 'react';
 import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
@@ -11,7 +11,7 @@ export interface CartProps {}
 export const Cart: React.FC<CartProps> = ({
   ...props
 }) => {
-  function ContextAwareToggle({ eventKey, callback }) {
+  function ContextAwareToggle({ eventKey, callback }: any) {
     const currentEventKey = useContext(AccordionContext);
 
     const decoratedOnClick = useAccordionToggle(
