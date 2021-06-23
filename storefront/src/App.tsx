@@ -1,5 +1,6 @@
-import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import React, {useState} from 'react';
+import { useAuth } from "@saleor/sdk";
+import { BrowserRouter, Switch, Route} from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { NavBar } from './components/NavBar/NavBar';
@@ -9,21 +10,37 @@ import './App.scss';
 
 
 function App() {
-    return(
-     <BrowserRouter>
-        <Switch>
-          <Route exact path ="/">
-            <HomePage />
-          </Route>
-          <Route exact path="/search">
-            <NavBar />
-            <Container>
-              <SearchContainer />
-            </Container>
-          </Route>
-        </Switch>
-      </BrowserRouter>
-    );
+  const [errors, setErrors] = useState()
+  const { authenticated, user, signIn } = useAuth();
+  const handleSignIn = async (email: string, password: string) => {
+    const { data, dataError } = await signIn(email, password);
+
+    if (dataError) {
+      /**
+       * Unable to sign in.
+       **/
+      setErrors(dataError.error)
+      console.log("Sign In Error:", dataError)
+    } else if (data) {
+      /**
+       * User signed in successfully.
+       **/
+      console.log("Sign In Successful:", data)
+    }
+  };
+
+  return(
+      authenticated && user ? (
+        <BrowserRouter>
+          <NavBar/>
+          <Switch>
+            <Route exact path="/search" component={SearchContainer}/>
+          </Switch>
+        </BrowserRouter>
+        ): (
+          <HomePage handleSignIn={handleSignIn} errors={errors}/>
+        )
+  );
 }
 
 export default App;

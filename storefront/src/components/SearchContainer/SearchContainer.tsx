@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Row, Col} from 'react-bootstrap';
+import {Row, Col, Container} from 'react-bootstrap';
 import {SearchResults} from '../SearchResults/SearchResults';
 import {SearchBar} from '../SearchBar/SearchBar';
 import {useProductListQuery, AttributeInput} from '../../generated/graphql'
@@ -28,6 +28,7 @@ export const SearchContainer = () => {
     }) || []
   }
   return (
+    <Container>
     <div className="my-3">
       <Row>
         <Col xs={2}>
@@ -39,5 +40,6 @@ export const SearchContainer = () => {
         </Col>
       </Row>
     </div>
+    </Container>
   )
 }
