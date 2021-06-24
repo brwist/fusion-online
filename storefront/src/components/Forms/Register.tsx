@@ -4,7 +4,7 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import './register.scss';
 
 export interface RegisterProps {
-  handleRegistration(email: string, password: string): void
+  handleRegistration(email: string, password: string): Promise<{data: any}>
 }
 
 
@@ -19,7 +19,7 @@ export const Register: React.FC<RegisterProps> = ({
     region: "",
     password: "password"
   })
-
+  const [errors, setErrors] = useState([])
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
@@ -27,10 +27,23 @@ export const Register: React.FC<RegisterProps> = ({
     })
   }
 
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
-    console.log("formValues", formValues)
+  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
-    handleRegistration(formValues.email, formValues.password)
+    const {data} = await handleRegistration(formValues.email, formValues.password)
+    console.log('registration response', data)
+    if (data.error) {
+      setErrors(data.error)
+    } else {
+      setFormValues({
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        region: "",
+        password: "password"
+      })
+      alert('Email confirmation link sent. Please check your inbox.')
+    }
   }
 
   return (
@@ -43,6 +56,9 @@ export const Register: React.FC<RegisterProps> = ({
         </Col>
 
         <Col md={6}>
+        {errors.length > 0 && errors.map((error: any) => {
+          return <p className="text-danger">{error.message}</p>
+        })}
           <Form className="floating-labels" onSubmit={handleSubmit}>
             <Form.Group controlId="first-name">
               <Form.Control

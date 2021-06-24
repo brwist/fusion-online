@@ -9,7 +9,7 @@ import './homepage.scss';
 
 export interface HomePageProps {
   handleSignIn(email: string, password: string): void,
-  handleRegistration(email: string, password: string): void,
+  handleRegistration(email: string, password: string): Promise<{data: {}}>,
   errors: any
 }
 export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, handleRegistration, errors }) => {
