@@ -1,13 +1,38 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 
 import './register.scss';
 
-export interface RegisterProps {}
+export interface RegisterProps {
+  handleRegistration(email: string, password: string): void
+}
+
 
 export const Register: React.FC<RegisterProps> = ({
-  ...props
+  handleRegistration
 }) => {
+  const [formValues, setFormValues] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    region: "",
+    password: "password"
+  })
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValues({
+      ...formValues,
+      [event.currentTarget.name]: event.currentTarget.value
+    })
+  }
+
+  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    console.log("formValues", formValues)
+    event.preventDefault()
+    handleRegistration(formValues.email, formValues.password)
+  }
+
   return (
     <div className="form-register">
       <Row>
@@ -18,33 +43,64 @@ export const Register: React.FC<RegisterProps> = ({
         </Col>
 
         <Col md={6}>
-          <Form className="floating-labels">
+          <Form className="floating-labels" onSubmit={handleSubmit}>
             <Form.Group controlId="first-name">
-              <Form.Control type="text" placeholder="First Name" />
+              <Form.Control
+                type="text"
+                placeholder="First Name"
+                name="firstName"
+                value={formValues.firstName}
+                onChange={handleChange}
+                />
               <Form.Label>First Name*</Form.Label>
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="last-name">
-              <Form.Control type="text" placeholder="Last Name" />
+              <Form.Control
+                type="text"
+                placeholder="Last Name"
+                name="lastName"
+                value={formValues.lastName}
+                onChange={handleChange}
+              />
               <Form.Label>Last Name*</Form.Label>
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group controlId="email">
-              <Form.Control type="email" placeholder="Email" />
+            <Form.Group controlId="registration-email">
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                name="email"
+                value={formValues.email}
+                onChange={handleChange}
+              />
               <Form.Label>Email*</Form.Label>
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="company-name">
-              <Form.Control type="text" placeholder="Company Name" />
+              <Form.Control
+                type="text"
+                placeholder="Company Name"
+                name="company"
+                value={formValues.company}
+                onChange={handleChange}
+              />
               <Form.Label>Company Name*</Form.Label>
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group controlId="geo-region">
-              <Form.Control as="select" custom required>
+              <Form.Control
+                as="select"
+                custom
+                required
+                name="region"
+                value={formValues.region}
+                onChange={handleChange}
+              >
                 <option disabled selected hidden></option>
                 <option>Region 1</option>
                 <option>Region 2</option>
@@ -55,7 +111,12 @@ export const Register: React.FC<RegisterProps> = ({
               <Form.Label>Select Geographic Region*</Form.Label>
             </Form.Group>
 
-            <Button variant="primary" size="lg" type="submit">
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              onSubmit={handleSubmit}
+            >
               Register
             </Button>
           </Form>

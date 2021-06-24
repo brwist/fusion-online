@@ -8,8 +8,9 @@ import { HomePage } from './components/HomePage/HomePage';
 import './App.scss';
 
 function App() {
-  const [errors, setErrors] = useState();
-  const { authenticated, user, signIn, signOut } = useAuth();
+  const [errors, setErrors] = useState()
+  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -27,6 +28,12 @@ function App() {
     }
   };
 
+  const handleRegistration = async (email: string, password: string) => {
+    const registration = await registerAccount(email, password, 'http://localhost:3000/')
+    console.log("registerAccount:", registration)
+    // const {data, dataError} = await registerAccount(email, password, 'http://localhost:3000/')
+  }
+
   return(
       authenticated && user ? (
         <BrowserRouter>
@@ -36,7 +43,10 @@ function App() {
           </Switch>
         </BrowserRouter>
         ): (
-          <HomePage handleSignIn={handleSignIn} errors={errors} />
+          <HomePage 
+            handleSignIn={handleSignIn}
+            handleRegistration={handleRegistration}
+            errors={errors}/>
         )
   );
 }

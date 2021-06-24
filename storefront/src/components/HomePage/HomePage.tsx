@@ -9,9 +9,10 @@ import './homepage.scss';
 
 export interface HomePageProps {
   handleSignIn(email: string, password: string): void,
+  handleRegistration(email: string, password: string): void,
   errors: any
 }
-export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, errors }) => {
+export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, handleRegistration, errors }) => {
   return (
     <div className="home">
       <div className="hero">
@@ -43,7 +44,7 @@ export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, errors }) => {
           </Col>
         </Row>
 
-        <Register />
+        <Register handleRegistration={handleRegistration} />
       </Container>
 
       <Footer />
