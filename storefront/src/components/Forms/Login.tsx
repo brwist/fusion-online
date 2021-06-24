@@ -40,7 +40,7 @@ export const Login: React.FC<LoginProps> = ({
 
       <div className="text-center">
         Don't have an account?<br />
-        <a href="#" className="font-weight-bold">
+        <a href="#" className="font-weight-bold text-capitalize">
           Register Now
         </a>
       </div>

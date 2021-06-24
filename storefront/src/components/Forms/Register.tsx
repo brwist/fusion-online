@@ -11,7 +11,7 @@ export const Register: React.FC<RegisterProps> = ({
   return (
     <div className="form-register">
       <Row>
-        <Col md={6}>
+        <Col md={6} className="pr-md-5">
           <h4 className="tagged">Lorem Ipsum Dolor</h4>
           <h3>Lorem ipsum dolor sit amet, consectetur</h3>
           <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing elit. Quam id leo in vitae turpis massa sed elementum. Faucibus in ornare quam viverra orci sagittis eu volutpat odio.</p>

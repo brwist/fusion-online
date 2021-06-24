@@ -13,7 +13,7 @@ export const NavBar: React.FC<NavBarProps> = ({
 }) => {
   return (
     <header id="header">
-      <Navbar bg="light" variant="light" expand="lg" className="justify-content-between">
+      <Navbar variant="light" expand="lg" className="justify-content-between">
         <Container>
           <Navbar.Brand href="/">
             <img
@@ -23,7 +23,7 @@ export const NavBar: React.FC<NavBarProps> = ({
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse id="navbar-nav">
-            <Nav as="ul" id="main-nav" className="mr-auto">
+            <Nav as="ul" id="main-nav">
               <Nav.Item as="li" className="active">
                 <Nav.Link href="#">CPU<span>s</span></Nav.Link>
               </Nav.Item>
@@ -43,7 +43,7 @@ export const NavBar: React.FC<NavBarProps> = ({
               </Nav.Item>
             </Nav>
 
-            <Nav as="ul" id="utility-nav" className="mr-auto">
+            <Nav as="ul" id="utility-nav">
               <Nav.Item as="li">
                 <Nav.Link href="/search">
                   Part Search

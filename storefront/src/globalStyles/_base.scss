@@ -6,6 +6,11 @@
    - MISC items can also go here (not ideal)
 ============================================================== */
 
+html,
+body {
+    overflow-x: hidden;
+}
+
 /* Smoother fonts */
 body {
     -webkit-font-smoothing: antialiased;
@@ -49,6 +54,23 @@ h6,
 h6,
 .h6 {
     font-weight: $font-weight-bold;
+}
+
+.tagged {
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+
+    &::before {
+        content: '';
+        display: inline-block;
+        width: 24px;
+        height: 14px;
+        margin-right: 8px;
+        background: url(../img/heading-tag.svg) no-repeat;
+    }
 }
 
 /* Paragraphs */

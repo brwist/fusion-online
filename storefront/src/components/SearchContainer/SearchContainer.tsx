@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
-import {Row, Col} from 'react-bootstrap';
-import {SearchResults} from '../SearchResults/SearchResults';
-import {SearchBar} from '../SearchBar/SearchBar';
-import {useProductListQuery, AttributeInput} from '../../generated/graphql'
-import {SearchFilters} from '../SearchFilters/SearchFilters'
+import React, { useState } from 'react'
+import { Container, Row, Col } from 'react-bootstrap';
+import { SearchResults } from '../SearchResults/SearchResults';
+import { SearchBar } from '../SearchBar/SearchBar';
+import { useProductListQuery, AttributeInput } from '../../generated/graphql';
+import { SearchFilters } from '../SearchFilters/SearchFilters';
 
 
 export interface SearchContainerProps {};
@@ -28,9 +28,9 @@ export const SearchContainer = () => {
     }) || []
   }
   return (
-    <div className="my-3">
+    <Container>
       <Row>
-        <Col xs={2}>
+        <Col lg={2}>
           <SearchFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>
         </Col>
         <Col>
@@ -38,6 +38,6 @@ export const SearchContainer = () => {
           <SearchResults loading={loading} searchResultsData={results}/>
         </Col>
       </Row>
-    </div>
+    </Container>
   )
 }

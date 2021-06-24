@@ -19,6 +19,9 @@
     }
 
     .navbar {
+        width: 100%;
+        position: absolute;
+
         .navbar-collapse {
             @include media-breakpoint-up(lg) {
                 flex-direction: column-reverse;
@@ -94,5 +97,9 @@
                 }
             }
         }
+    }
+
+    & + .container {
+        margin-top: 180px;
     }
 }
