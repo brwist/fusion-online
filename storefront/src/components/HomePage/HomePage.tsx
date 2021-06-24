@@ -7,8 +7,11 @@ import { Footer } from '../Footer/Footer';
 
 import './homepage.scss';
 
-export interface HomePageProps {}
-export const HomePage: React.FC<HomePageProps> = ({ ...props}) => {
+export interface HomePageProps {
+  handleSignIn(email: string, password: string): void,
+  errors: any
+}
+export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, errors }) => {
   return (
     <div className="home">
       <div className="hero">
@@ -36,7 +39,7 @@ export const HomePage: React.FC<HomePageProps> = ({ ...props}) => {
             <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing elit. Quam id leo in vitae turpis massa sed elementum. Faucibus in ornare quam viverra orci sagittis eu volutpat odio. Sed tempus urna et pharetra pharetra.</p>
           </Col>
           <Col md={4}>
-            <Login />
+            <Login handleSignIn={handleSignIn} errors={errors} />
           </Col>
         </Row>
 
