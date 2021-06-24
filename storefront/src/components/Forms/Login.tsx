@@ -15,16 +15,25 @@ export const Login: React.FC<LoginProps> = ({
     email: "",
     password: ""
   })
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormValues({
+      ...formValues,
+      [event.currentTarget.name]: event.currentTarget.value
+    })
+  }
+
+  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    handleSignIn(formValues.email, formValues.password)
+  }
   return (
     <div className="form-signin">
       <h3 className="mb-4">Sign In</h3>
 
       <Form
         className="floating-labels"
-        onSubmit={(e) => {
-          e.preventDefault()
-          handleSignIn(formValues.email, formValues.password)
-        }}
+        onSubmit={handleSubmit}
       >
         {errors?.map((error: any) => {
           return <p className="text-danger">{error.message}</p>
@@ -35,11 +44,9 @@ export const Login: React.FC<LoginProps> = ({
             placeholder="Email"
             required
             className="is-valid"
+            name="email"
             value={formValues.email}
-            onChange={(e) => setFormValues({
-              ...formValues,
-              email: e.currentTarget.value 
-            })}
+            onChange={handleChange}
           />
           <Form.Label>Email*</Form.Label>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -50,11 +57,9 @@ export const Login: React.FC<LoginProps> = ({
             type="password"
             placeholder="Password"
             required
+            name="password"
             value={formValues.password}
-            onChange={(e) => setFormValues({
-              ...formValues,
-              password: e.currentTarget.value 
-            })}
+            onChange={handleChange}
           />
           <Form.Label>Password*</Form.Label>
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -72,10 +77,7 @@ export const Login: React.FC<LoginProps> = ({
             size="lg"
             type="submit"
             block
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSignIn(formValues.email, formValues.password)
-            }}
+            onSubmit={handleSubmit}
           >
             Sign In
           </Button>

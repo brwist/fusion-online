@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from "@saleor/sdk";
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route, useLocation} from 'react-router-dom';
+
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { NavBar } from './components/NavBar/NavBar';
 import { HomePage } from './components/HomePage/HomePage';
+import { useAccountConfirmationMutation} from './generated/graphql'
 
 import './App.scss';
 
 function App() {
-  const [errors, setErrors] = useState();
-  const { authenticated, user, signIn, signOut } = useAuth();
+  const [errors, setErrors] = useState()
+  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -27,16 +29,40 @@ function App() {
     }
   };
 
+  const handleRegistration = async (email: string, password: string) => {
+    const {data, dataError} = await registerAccount(email, password, 'http://localhost:3000/')
+    return dataError ? { data: dataError} : {data}
+  }
+  const search = useLocation()?.search
+  const email = new URLSearchParams(search)?.get('email')
+  const token = new URLSearchParams(search)?.get('token')
+  const [confirmAccount, {data}] = useAccountConfirmationMutation({
+  })
+
+  if (email && token) {
+    confirmAccount({
+      variables: { email, token}
+    })
+    if (data?.confirmAccount?.errors.length === 0) {
+      console.log('Account confirmed')
+    } else {
+      console.error(data?.confirmAccount?.errors)
+    }
+  }
+
   return(
       authenticated && user ? (
-        <BrowserRouter>
+          <>
           <NavBar signOut={signOut} />
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
           </Switch>
-        </BrowserRouter>
+          </>
         ): (
-          <HomePage handleSignIn={handleSignIn} errors={errors} />
+          <HomePage 
+            handleSignIn={handleSignIn}
+            handleRegistration={handleRegistration}
+            errors={errors}/>
         )
   );
 }
