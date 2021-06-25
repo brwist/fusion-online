@@ -1,9 +1,11 @@
 import React from 'react';
+import {useParams} from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
+import {useProductDetailsQuery} from '../../generated/graphql';
 
 import './productdetail.scss';
 
@@ -12,13 +14,17 @@ export interface ProductDetailProps {}
 export const ProductDetail: React.FC<ProductDetailProps> = ({
   ...props
 }) => {
+  const {id} = useParams<{id: string}>()
+  const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
+  if (data) {
+    console.log(data)
+  }
   return (
-    <div className="product-detail">
-      <Container>
+    <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
             <a href="#">GO BACK</a>
-            <h1 className="my-3">Intel<sup>®</sup> Pentium<sup>®</sup> Gold 7505 Processor</h1>
+            <h1 className="my-3">{data?.product?.name}</h1>
             <div className="small">
               <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                 <title>demand-scale</title>
@@ -46,26 +52,14 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
         <Row className="justify-content-between">
           <Col lg={6}>
-            <div className="mb-4">
-              <div className="font-weight-bold">INTEL</div>
-              Model No: 123456789
-            </div>
-            <div className="mb-4">
-              <div className="font-weight-bold">Family</div>
-              Pentium
-            </div>
-            <div className="mb-4">
-              <div className="font-weight-bold">Type</div>
-              Desktop
-            </div>
-            <div className="mb-4">
-              <div className="font-weight-bold">Spec Code</div>
-              123456789
-            </div>
-            <div className="mb-4">
-              <div className="font-weight-bold">Ordering Code</div>
-              123456789
-            </div>
+            {data?.product?.attributes.map(({attribute, values}) => {
+              return (
+               <div className="mb-4">
+                  <div className="font-weight-bold">{attribute.name}</div>
+                    {values[0]?.name}
+                </div>
+              )
+            })}
             <div className="mb-4">
               <div className="font-weight-bold">Packaging</div>
               Packaging Option 1
@@ -97,7 +91,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <AddToCart />
           </Col>
         </Row>
-      </Container>
-    </div>
+    </Container>
   );
 };

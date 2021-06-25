@@ -26,7 +26,7 @@ export const NavBar: React.FC<NavBarProps> = ({
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse id="navbar-nav">
             <Nav as="ul" id="main-nav">
-              <Nav.Item as="li" className="active">
+              <Nav.Item as="li">
                 <Nav.Link href="#">CPU<span>s</span></Nav.Link>
               </Nav.Item>
               <Nav.Item as="li">

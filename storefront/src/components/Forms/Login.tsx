@@ -43,7 +43,6 @@ export const Login: React.FC<LoginProps> = ({
             type="email"
             placeholder="Email"
             required
-            className="is-valid"
             name="email"
             value={formValues.email}
             onChange={handleChange}

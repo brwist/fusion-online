@@ -20,6 +20,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
   status},
   productData: {
     name,
+    id,
     variants,
     attributes,
     pricing
@@ -40,7 +41,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
       <div className="small">
         <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
       </div>
-      <a href="#">{name}</a>
+      <a href={`/products/${id}`}>{name}</a>
       <div className="small mt-1">
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
