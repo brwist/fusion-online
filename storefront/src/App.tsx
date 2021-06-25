@@ -3,6 +3,7 @@ import { useAuth } from "@saleor/sdk";
 import { Switch, Route, useLocation} from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
+import { ProductDetail } from './components/ProductDetail/ProductDetail'
 import { NavBar } from './components/NavBar/NavBar';
 import { HomePage } from './components/HomePage/HomePage';
 import { useAccountConfirmationMutation} from './generated/graphql'
@@ -56,6 +57,7 @@ function App() {
           <NavBar signOut={signOut} />
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
+            <Route exact path="/products/:id" component={ProductDetail} />
           </Switch>
           </>
         ): (

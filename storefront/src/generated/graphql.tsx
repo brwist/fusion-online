@@ -12624,3 +12624,178 @@ export function useAccountConfirmationMutation(baseOptions: Apollo.MutationHookO
   const options = {...defaultOptions, ...baseOptions}
   return Apollo.useMutation<AccountConfirm, AccountConfirmVariables>(AccountConfirmDocument, options);
 }
+
+export const ProductDetailsDocument = gql `
+  fragment BasicProductFields on Product {
+    id
+    name
+    thumbnail {
+      url
+      alt
+      __typename
+    }
+    thumbnail2x: thumbnail(size: 510) {
+      url
+      __typename
+    }
+    __typename
+  }
+
+  fragment SelectedAttributeFields on SelectedAttribute {
+    attribute {
+      id
+      name
+      __typename
+    }
+    values {
+      id
+      name
+      __typename
+    }
+    __typename
+  }
+
+  fragment Price on TaxedMoney {
+    gross {
+      amount
+      currency
+      __typename
+    }
+    net {
+      amount
+      currency
+      __typename
+    }
+    __typename
+  }
+
+  fragment ProductVariantFields on ProductVariant {
+    id
+    sku
+    name
+    isAvailable
+    quantityAvailable(countryCode: $countryCode)
+    images {
+      id
+      url
+      alt
+      __typename
+    }
+    pricing {
+      onSale
+      priceUndiscounted {
+        ...Price
+        __typename
+      }
+      price {
+        ...Price
+        __typename
+      }
+      __typename
+    }
+    attributes {
+      attribute {
+        id
+        name
+        slug
+        __typename
+      }
+      values {
+        id
+        name
+        value: name
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+
+  fragment ProductPricingField on Product {
+    pricing {
+      onSale
+      priceRangeUndiscounted {
+        start {
+          ...Price
+          __typename
+        }
+        stop {
+          ...Price
+          __typename
+        }
+        __typename
+      }
+      priceRange {
+        start {
+          ...Price
+          __typename
+        }
+        stop {
+          ...Price
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+
+  query ProductDetails($id: ID!, $countryCode: CountryCode) {
+    product(id: $id) {
+      ...BasicProductFields
+      ...ProductPricingField
+      descriptionJson
+      category {
+        id
+        name
+        products(first: 3) {
+          edges {
+            node {
+              ...BasicProductFields
+              ...ProductPricingField
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      images {
+        id
+        alt
+        url
+        __typename
+      }
+      attributes {
+        ...SelectedAttributeFields
+        __typename
+      }
+      variants {
+        ...ProductVariantFields
+        __typename
+      }
+      seoDescription
+      seoTitle
+      isAvailable
+      isAvailableForPurchase
+      availableForPurchase
+      __typename
+    }
+  }`
+  
+  
+  export type ProductDetailsQueryVariables = Exact<{
+    id: Maybe<Scalars['ID']>;
+    countryCode?: Maybe<Scalars['String']>;
+  }>;
+
+  export type ProductDetailsQuery = (
+    { __typename?: 'Query' }
+  & { product?: Maybe<Product>})
+  
+  export function useProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>) {
+    const options = {...defaultOptions, ...baseOptions}
+    return Apollo.useQuery(ProductDetailsDocument, options);
+  }
