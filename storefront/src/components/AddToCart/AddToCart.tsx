@@ -1,19 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Row, Col, Card, Button, Form } from 'react-bootstrap';
 
 import './addtocart.scss';
+import { ProductVariant } from '../../generated/graphql'
 
-export interface AddToCartProps {}
+export interface AddToCartProps {
+  variant: ProductVariant | undefined | null
+}
 
 export const AddToCart: React.FC<AddToCartProps> = ({
-  ...props
+  variant
 }) => {
+  const [quantitySelected, setQuantitySelected] = useState(1)
   return (
     <Card className="add-to-cart-card">
       <Card.Body>
         <Card.Subtitle className="mb-4">
           <div className="font-weight-bold mb-2">Availability/Lead Time</div>
-          10,000 units in stock. Ready to ship.
+          {variant?.quantityAvailable} units in stock. Ready to ship.
         </Card.Subtitle>
         <Card.Text>
           <div className="d-flex justify-content-between">
@@ -48,6 +52,10 @@ export const AddToCart: React.FC<AddToCartProps> = ({
               <Form.Control
                 type="number"
                 id="quantity"
+                min={0}
+                max={variant?.quantityAvailable}
+                value={quantitySelected}
+                onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
               />
             </Col>
           </Row>
@@ -56,14 +64,16 @@ export const AddToCart: React.FC<AddToCartProps> = ({
               Unit Price
             </Col>
             <Col sm={6} className="text-right">
-              $000.00/<span className="text-muted text-lowercase">unit</span>
+              ${variant?.pricing?.price?.gross.amount.toFixed(2)}/<span className="text-muted text-lowercase">unit</span>
             </Col>
           </Row>
         </Card.Text>
         <hr />
         <div className="mb-3 d-flex justify-content-between align-items-center">
           <div className="font-weight-bold">Total</div>
-          <div className="font-weight-bold text-larger">$9,985</div>
+          <div className="font-weight-bold text-larger">
+            ${variant?.pricing?.price?.gross.amount? (quantitySelected * variant?.pricing?.price?.gross.amount).toFixed(2) : 0}
+          </div>
         </div>
         <Button variant="primary" size="lg" block>
           Add To Cart
