@@ -54,7 +54,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <Col lg={6}>
             {data?.product?.attributes.map(({attribute, values}) => {
               return (
-               <div className="mb-4">
+               <div className="mb-4" key={attribute.id}>
                   <div className="font-weight-bold">{attribute.name}</div>
                     {values[0]?.name}
                 </div>
@@ -88,7 +88,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           </Col>
           <Col lg={4}>
-            <AddToCart />
+            <AddToCart variant={data?.product?.variants && data?.product?.variants[0]}/>
           </Col>
         </Row>
     </Container>
