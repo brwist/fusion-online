@@ -13,7 +13,7 @@ import './App.scss';
 
 function App() {
   const [errors, setErrors] = useState()
-  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -60,7 +60,10 @@ function App() {
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
             <Route exact path="/account">
-              <AccountPage signOut={signOut}/>
+              <AccountPage
+                signOut={signOut}
+                user={user}
+              />
             </Route>
           </Switch>
           </>

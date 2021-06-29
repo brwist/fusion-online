@@ -7,11 +7,17 @@ import { OrderDetails } from './OrderDetails';
 import './myaccount.scss'
 
 export interface AccountPageProps {
-  signOut(): void
+  signOut(): void,
+  user: {
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string, 
+  }
 }
 
 export const AccountPage: React.FC<AccountPageProps> = ({
-  signOut
+  signOut, user
 }) => {
   const [tabContent, setTabContent] = useState(<OrderDetails />)
 
@@ -21,7 +27,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
   return (
     <Container>
-      <SectionHeader subheading="My Account" heading="Hello, Steve"/>
+      <SectionHeader subheading="My Account" heading={`Hello, ${user.email}`}/>
       <Row>
       <Col xs={2}>
         <MyAccountNav
