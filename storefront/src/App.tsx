@@ -7,6 +7,7 @@ import { ProductDetail } from './components/ProductDetail/ProductDetail'
 import { NavBar } from './components/NavBar/NavBar';
 import { HomePage } from './components/HomePage/HomePage';
 import { useAccountConfirmationMutation} from './generated/graphql'
+import {AccountPage} from './components/MyAccount/AccountPage'
 
 import './App.scss';
 
@@ -58,6 +59,9 @@ function App() {
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/account">
+              <AccountPage signOut={signOut}/>
+            </Route>
           </Switch>
           </>
         ): (
