@@ -3,6 +3,7 @@ import { Nav } from 'react-bootstrap';
 import { SpendReport } from './SpendReport';
 import { OpenRFQs } from './OpenRFQs';
 import { OrderDetails } from './OrderDetails';
+import { ManageProfile } from './ManageProfile';
 
 import './myaccount.scss';
 
@@ -106,7 +107,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
         </Nav.Item>
         <Nav.Item as="li">
           <Nav.Link
-            onClick={() => handleClick("manageProfile", <></>)}
+            onClick={() => handleClick("manageProfile", <ManageProfile />)}
             active={activeTab.manageProfile}
           >MANAGE PROFILE</Nav.Link>
         </Nav.Item>
