@@ -34,8 +34,8 @@
 @import '~bootstrap/scss/progress';
 // @import '~bootstrap/scss/media';
 // @import '~bootstrap/scss/list-group';
-// @import '~bootstrap/scss/close';
-// @import '~bootstrap/scss/modal';
+@import '~bootstrap/scss/close';
+@import '~bootstrap/scss/modal';
 // @import '~bootstrap/scss/tooltip';
 // @import '~bootstrap/scss/popover';
 // @import '~bootstrap/scss/carousel';
@@ -53,3 +53,4 @@
 @import 'components/forms';
 @import 'components/cards';
 @import 'components/tables';
+@import 'components/modals';
