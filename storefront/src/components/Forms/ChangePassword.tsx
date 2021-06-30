@@ -11,16 +11,19 @@ export interface ChangePasswordProps {
       { data: PasswordChange | null; error: ApolloErrorWithUserInput | null; }, 
       PasswordChangeVariables | undefined
     >,
+  error: any[] | undefined
 }
 
 export const ChangePassword: React.FC<ChangePasswordProps> = ({
-  setPasswordChange
+  setPasswordChange, error
 }) => {
   const [formValues, setFormValues] = useState({
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: ""
   })
+
+  const [successMessage, setSuccessMessage] = useState(<></>)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
@@ -35,11 +38,15 @@ export const ChangePassword: React.FC<ChangePasswordProps> = ({
       oldPassword: formValues.currentPassword,
       newPassword: formValues.newPassword
     })
+    setSuccessMessage(<p className="text-success">Your password has been changed.</p>)
     setFormValues({
       currentPassword: "",
       newPassword: "",
       confirmNewPassword: ""
     })
+    setTimeout(() => {
+      setSuccessMessage(<></>)
+    }, 5000)
   }
 
   return (
@@ -49,6 +56,8 @@ export const ChangePassword: React.FC<ChangePasswordProps> = ({
           Change Password
         </Card.Title>
         <Card.Text>
+          {successMessage}
+          {error?.map(({message}) => <p key={message} className="text-danger">{message}</p>)}
           <Form onSubmit={handleSubmit}>
             <Form.Group controlId="currentPassword">
               <Form.Label>Current Password*</Form.Label>
