@@ -23,6 +23,9 @@ urlpatterns = [
         handle_plugin_webhook,
         name="plugins",
     ),
+
+    # Fusion Online custom patterns
+    url(r"^fo-api/", include("saleor.fusion_online.api.urls")),
 ]
 
 if settings.DEBUG:

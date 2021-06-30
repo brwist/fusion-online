@@ -254,7 +254,10 @@ INSTALLED_APPS = [
     "saleor.wishlist",
     "saleor.app",
     "saleor.fusion_online.rfq",
+    "saleor.fusion_online.api",
     # External apps
+    "rest_framework",
+    "rest_framework_api_key",
     "versatileimagefield",
     "django_measurement",
     "django_prices",
@@ -584,3 +587,12 @@ JWT_TTL_REFRESH = timedelta(seconds=parse(os.environ.get("JWT_TTL_REFRESH", "30 
 JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
     seconds=parse(os.environ.get("JWT_TTL_REQUEST_EMAIL_CHANGE", "1 hour")),
 )
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework_api_key.permissions.HasAPIKey",
+    ]
+}
