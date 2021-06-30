@@ -12673,6 +12673,10 @@ export const ProductDetailsDocument = gql `
     id
     sku
     name
+    metadata {
+      key
+      value
+    }
     isAvailable
     quantityAvailable(countryCode: $countryCode)
     images {
@@ -12746,6 +12750,10 @@ export const ProductDetailsDocument = gql `
       ...BasicProductFields
       ...ProductPricingField
       descriptionJson
+      metadata {
+        key
+        value
+      }
       category {
         id
         name
