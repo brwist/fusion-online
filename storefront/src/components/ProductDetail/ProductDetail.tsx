@@ -84,7 +84,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <div className="mb-4">
               <div className="font-weight-bold">Market Insight</div>
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing elit. Quam id leo in vitae turpis massa sed elementum.
+              {data?.product?.metadata[0]?.value}
             </div>
           </Col>
           <Col lg={4}>

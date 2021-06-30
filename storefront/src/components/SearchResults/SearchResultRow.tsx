@@ -62,7 +62,7 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
       <Modal
         show={show}
         onHide={handleClose}
-        size="md"
+        size="lg"
         centered
       >
         <Form>

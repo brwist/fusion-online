@@ -1,0 +1,10 @@
+@import '../../globalStyles/common';
+
+.section-header {
+    svg {
+        polygon.active {
+            fill: $primary;
+        }
+    }
+  text-transform: uppercase;
+}
