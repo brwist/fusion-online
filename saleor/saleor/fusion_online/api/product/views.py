@@ -9,10 +9,11 @@ def handler(request):
     data = JSONParser().parse(request)
 
     serializer = ProductSerializer(data=data)
-
-    if not serializer.is_valid():
-        return JsonResponse(serializer.errors, status=400)
-    else:
-        serializer.save()
-    
-    return Response({"hello": "world"})
+    try:
+        if not serializer.is_valid():
+            return JsonResponse(serializer.errors, status=400)
+        else:
+            result = serializer.save()
+            return Response({"fo_ref_id": result.pk})
+    except Exception as e:
+        return Response({"error": True, "message": str(e)}, status=500)
