@@ -15,24 +15,24 @@ This project is a shallowly cloned fork of the Saleor Platform 2.11.0 project. I
 $ docker-compose build
 ```
 
-2. Apply Django migrations:
+2. Start everything (services)
+```
+$ docker-compose up
+```
+
+3. Apply Django migrations:
 ```
 $ docker-compose run --rm api python3 manage.py migrate
 ```
 
-3. Collect static files:
+4. Collect static files:
 ```
 $ docker-compose run --rm api python3 manage.py collectstatic --noinput
 ```
 
-4. Populate the database with example data and create the admin user:
+5. Populate the database with example data and create the admin user:
 ```
 $ docker-compose run --rm api python3 manage.py populatedb --createsuperuser
-```
-
-5. Start everything (services, dashboard and storefront)
-```
-docker-compose up
 ```
 
 ## Starting and stopping everything:
@@ -72,3 +72,24 @@ cd storefront && npm install
 ```
 npm run storybook
 ```
+
+## Things that should actually be scripts
+
+### Creating an API Key for the Fusion Online API
+
+From the project root start a django shell session:
+
+```
+$ docker-compose run --rm api bash
+$ python3 manage.py shell
+```
+
+In the django shell run the following statements:
+
+```
+>>> from rest_framework_api_key.models import APIKey
+>>> api_key, key = APIKey.objects.create_key(name="rms-service")
+>>> key
+```
+
+That last statement will print out the key that was generated.
