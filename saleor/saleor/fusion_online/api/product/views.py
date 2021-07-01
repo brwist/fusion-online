@@ -12,5 +12,7 @@ def handler(request):
 
     if not serializer.is_valid():
         return JsonResponse(serializer.errors, status=400)
+    else:
+        serializer.save()
     
     return Response({"hello": "world"})
