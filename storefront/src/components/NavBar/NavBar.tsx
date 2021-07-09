@@ -3,6 +3,7 @@ import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch } from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/fusion-logo.svg';
+import { useCategoryList } from '@saleor/sdk'
 
 import './navbar.scss';
 
@@ -13,6 +14,7 @@ export interface NavBarProps {
 export const NavBar: React.FC<NavBarProps> = ({
   signOut
 }) => {
+  const {data} = useCategoryList({first: 10})
   return (
     <header id="header">
       <Navbar variant="light" expand="lg" className="justify-content-between">
@@ -26,18 +28,13 @@ export const NavBar: React.FC<NavBarProps> = ({
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse id="navbar-nav">
             <Nav as="ul" id="main-nav">
-              <Nav.Item as="li">
-                <Nav.Link href="#">CPU<span>s</span></Nav.Link>
-              </Nav.Item>
-              <Nav.Item as="li">
-                <Nav.Link href="#">GPU<span>s</span></Nav.Link>
-              </Nav.Item>
-              <Nav.Item as="li">
-                <Nav.Link href="#">Memory</Nav.Link>
-              </Nav.Item>
-              <Nav.Item as="li">
-                <Nav.Link href="#">Storage</Nav.Link>
-              </Nav.Item>
+              {data?.map(({id, name}) => {
+                return (
+                  <Nav.Item as="li">
+                    <Nav.Link href={`/categories/${id}`}>{name}</Nav.Link>
+                  </Nav.Item>
+                )
+              })}
               <Nav.Item as="li">
                 <Nav.Link href="#">
                   <FontAwesomeIcon icon={faShoppingCart} /> (3)

@@ -7,6 +7,7 @@ import { ProductDetail } from './components/ProductDetail/ProductDetail'
 import { NavBar } from './components/NavBar/NavBar';
 import { HomePage } from './components/HomePage/HomePage';
 import { useAccountConfirmationMutation} from './generated/graphql'
+import { CategoryPage } from './components/CategoryPage/CategoryPage'
 
 import './App.scss';
 
@@ -58,6 +59,7 @@ function App() {
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/categories/:id" component={CategoryPage} />
           </Switch>
           </>
         ): (
