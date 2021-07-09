@@ -19,6 +19,7 @@ import { customerListUrl } from "../../customers/urls";
 import { saleListUrl, voucherListUrl } from "../../discounts/urls";
 import { orderDraftListUrl, orderListUrl } from "../../orders/urls";
 import { productListUrl } from "../../products/urls";
+import { pricingListUrl } from "../../pricing/urls";
 import { languageListUrl } from "../../translations/urls";
 import { pageListUrl } from "../../pages/urls";
 import { staffListUrl } from "../../staff/urls";
@@ -63,6 +64,12 @@ function createMenuStructure(intl: IntlShape): IMenuItem[] {
           label: intl.formatMessage(sectionNames.collections),
           testingContextId: "collections",
           url: collectionListUrl()
+        },
+        {
+          ariaLabel: "pricing",
+          label: intl.formatMessage(sectionNames.pricing),
+          testingContextId: "pricing",
+          url: pricingListUrl()
         }
       ],
       icon: catalogIcon,
