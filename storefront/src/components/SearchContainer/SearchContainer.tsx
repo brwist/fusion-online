@@ -3,7 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { ProductTable } from '../ProductTable/ProductTable';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { useProductListQuery, AttributeInput } from '../../generated/graphql';
-import { SearchFilters } from '../SearchFilters/SearchFilters';
+import { ProductFilters } from '../ProductFilters/ProductFilters';
 
 
 export interface SearchContainerProps {};
@@ -12,7 +12,7 @@ export const SearchContainer = () => {
   const [searchQuery, setSearchquery] = useState('')
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([])
   const { loading, error, data} = useProductListQuery({
-    variables: {filter: {search: searchQuery, attributes: attributes}, first: 100}
+    variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
 });
 
   let results: any = [];
@@ -31,7 +31,7 @@ export const SearchContainer = () => {
     <Container>
       <Row>
         <Col lg={2}>
-          <SearchFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>
+          <ProductFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>
         </Col>
         <Col>
           <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>

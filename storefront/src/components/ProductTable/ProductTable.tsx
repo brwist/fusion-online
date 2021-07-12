@@ -18,7 +18,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   }
 
   if (productData?.length === 0) {
-    return <h5>No Results</h5>
+    return <h5>No Products</h5>
   }
   return (
     <Card className="search-results">

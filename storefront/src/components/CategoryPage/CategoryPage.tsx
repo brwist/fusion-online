@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useParams} from 'react-router-dom'
-import { Container } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { useCategoryDetails } from '@saleor/sdk'
-import { useProductListQuery } from '../../generated/graphql'
+
+import { useProductListQuery, AttributeInput } from '../../generated/graphql'
+import { ProductTable } from '../ProductTable/ProductTable'
+import { ProductFilters } from '../ProductFilters/ProductFilters'
 
 import './categorypage.scss'
 
@@ -11,13 +14,44 @@ export interface CategoryPageProps {
 }
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({...props}) => {
-  const {id} = useParams<{id: string}>()
-  const category = useCategoryDetails({id: id})
-  const productList = useProductListQuery({variables: {filter: {categories: [id], isPublished: true}, first: 100}})
-  console.log(productList.data)
+  const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
+  const {id} = useParams<{id: string}>();
+  const category = useCategoryDetails({id: id});
+  const productList = useProductListQuery({
+    variables: {filter: {categories: [id], isPublished: true, attributes: attributes}, first: 100}
+  });
+  
+  let productData: any = [];
+  if (productList.data) {
+    productData = productList.data.products?.edges.map(({node}) => {
+      return {
+        otherData: {
+          saved: false,
+          status: "Incoming Stock"
+        },
+        product: node
+      }
+    }) || []
+  }
   return (
     <Container>
-      <h1>{category.data?.name}</h1>
+      <Row>
+        <h1>{category.data?.name}</h1>
+      </Row>
+      <Row>
+        <Col lg={2}>
+          <ProductFilters
+            setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}
+            categoryId={id}
+          />
+        </Col>
+        <Col>
+          <ProductTable 
+            loading={productList.loading}
+            productData={productData}
+          />
+        </Col>
+      </Row>
     </Container>
   )
 }

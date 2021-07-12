@@ -3,17 +3,17 @@ import { Story, Meta } from '@storybook/react';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 
-import { SearchFilters, SearchFiltersProps } from '../components/SearchFilters/SearchFilters';
+import { ProductFilters, ProductFiltersProps } from '../components/ProductFilters/ProductFilters';
 
 export default {
-  title: 'Search/Search Filters',
-  component: SearchFilters
+  title: 'Products/Product Filters',
+  component: ProductFilters
 } as Meta;
 
-const Template: Story<SearchFiltersProps> = (args) => <ApolloProvider client={new ApolloClient({
+const Template: Story<ProductFiltersProps> = (args) => <ApolloProvider client={new ApolloClient({
   uri: "http://localhost:8000/graphql/",
   cache: new InMemoryCache()
-})}><SearchFilters {...args} /></ApolloProvider>;
+})}><ProductFilters {...args} /></ApolloProvider>;
 
 export const Default = Template.bind({});
 Default.args = {};
