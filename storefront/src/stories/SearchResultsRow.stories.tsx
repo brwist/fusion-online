@@ -1,15 +1,15 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
-import { SearchResultRow, SearchResultRowProps } from '../components/SearchResults/SearchResultRow';
+import { ProductTableRow, ProductTableRowProps } from '../components/ProductTable/ProductTableRow';
 import {productDataSample} from './productDataSample'
 
 export default {
   title: 'Search/Search Results Row',
-  component: SearchResultRow
+  component: ProductTableRow
 } as Meta;
 
-const Template: Story<SearchResultRowProps> = (args) => <SearchResultRow {...args} />;
+const Template: Story<ProductTableRowProps> = (args) => <ProductTableRow {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
@@ -17,7 +17,7 @@ Default.args = {
     saved: false,
     status: "Incoming Stock",
   },
-  productData: productDataSample
+  products: productDataSample
 };
 
 export const Saved = Template.bind({});
@@ -26,5 +26,5 @@ Saved.args = {
     status: "Incoming Stock",
     saved: true
   },
-  productData: productDataSample
+  products: productDataSample
 };

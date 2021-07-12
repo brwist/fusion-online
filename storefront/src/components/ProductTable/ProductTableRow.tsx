@@ -6,19 +6,19 @@ import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import { Product } from '../../generated/graphql';
 
-import './searchresults.scss';
+import './producttable.scss';
 
-export interface SearchResultRowProps {
+export interface ProductTableRowProps {
   otherData: {
     saved: boolean,
     status?: string | undefined,
   },
-  productData: Product,
+  products: Product,
 }
-export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
+export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   saved,
   status},
-  productData: {
+  products: {
     name,
     id,
     variants,

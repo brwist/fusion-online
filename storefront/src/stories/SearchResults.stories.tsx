@@ -1,31 +1,31 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
-import { SearchResults, SearchResultsProps } from '../components/SearchResults/SearchResults';
+import { ProductTable, ProductTableProps } from '../components/ProductTable/ProductTable';
 import {productDataSample} from './productDataSample'
 
 export default {
   title: 'Search/Search Results Table',
-  component: SearchResults
+  component: ProductTable
 } as Meta;
 
-const Template: Story<SearchResultsProps> = (args) => <SearchResults {...args} />;
+const Template: Story<ProductTableProps> = (args) => <ProductTable {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
   loading: false,
-searchResultsData: [
+productData: [
     {otherData: {saved: false, status: "Incoming Stock"},
-      productData: productDataSample
+      products: productDataSample
     },
     {otherData: {saved: true, status: "Incoming Stock"},
-      productData: productDataSample
+      products: productDataSample
     },
     {otherData: {saved: false, status: "Incoming Stock"},
-      productData: productDataSample
+      products: productDataSample
     },
     {otherData: {saved: false, status: "Incoming Stock"},
-      productData: productDataSample
+      products: productDataSample
     },
   ]
 };
@@ -38,5 +38,5 @@ Loading.args = {
 export const Empty = Template.bind({});
 Empty.args = {
   loading: false,
-  searchResultsData: []
+  productData: []
 };

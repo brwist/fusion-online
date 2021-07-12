@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap';
-import { SearchResults } from '../SearchResults/SearchResults';
+import { ProductTable } from '../ProductTable/ProductTable';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { useProductListQuery, AttributeInput } from '../../generated/graphql';
 import { SearchFilters } from '../SearchFilters/SearchFilters';
@@ -23,7 +23,7 @@ export const SearchContainer = () => {
           saved: false,
           status: "Incoming Stock",
         },
-        productData: node
+        products: node
       }
     }) || []
   }
@@ -35,7 +35,7 @@ export const SearchContainer = () => {
         </Col>
         <Col>
           <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
-          <SearchResults loading={loading} searchResultsData={results}/>
+          <ProductTable loading={loading} productData={results}/>
         </Col>
       </Row>
     </Container>
