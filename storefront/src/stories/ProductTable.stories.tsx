@@ -5,7 +5,7 @@ import { ProductTable, ProductTableProps } from '../components/ProductTable/Prod
 import {productDataSample} from './productDataSample'
 
 export default {
-  title: 'Search/Search Results Table',
+  title: 'Products/Product Table',
   component: ProductTable
 } as Meta;
 
@@ -16,16 +16,16 @@ Default.args = {
   loading: false,
 productData: [
     {otherData: {saved: false, status: "Incoming Stock"},
-      products: productDataSample
+      product: productDataSample
     },
     {otherData: {saved: true, status: "Incoming Stock"},
-      products: productDataSample
+      product: productDataSample
     },
     {otherData: {saved: false, status: "Incoming Stock"},
-      products: productDataSample
+      product: productDataSample
     },
     {otherData: {saved: false, status: "Incoming Stock"},
-      products: productDataSample
+      product: productDataSample
     },
   ]
 };

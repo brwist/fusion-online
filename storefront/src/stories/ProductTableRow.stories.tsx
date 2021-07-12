@@ -5,7 +5,7 @@ import { ProductTableRow, ProductTableRowProps } from '../components/ProductTabl
 import {productDataSample} from './productDataSample'
 
 export default {
-  title: 'Search/Search Results Row',
+  title: 'Products/Product Table Row',
   component: ProductTableRow
 } as Meta;
 
@@ -17,7 +17,7 @@ Default.args = {
     saved: false,
     status: "Incoming Stock",
   },
-  products: productDataSample
+  product: productDataSample
 };
 
 export const Saved = Template.bind({});
@@ -26,5 +26,5 @@ Saved.args = {
     status: "Incoming Stock",
     saved: true
   },
-  products: productDataSample
+  product: productDataSample
 };

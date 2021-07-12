@@ -34,12 +34,12 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {productData?.map(({otherData, products}) => {
+          {productData?.map(({otherData, product}) => {
             return (
               <ProductTableRow
-                key={products.id}
+                key={product.id}
                 otherData={otherData}
-                products={products}
+                product={product}
               />
             )
           })}

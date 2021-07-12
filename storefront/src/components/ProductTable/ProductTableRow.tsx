@@ -13,12 +13,12 @@ export interface ProductTableRowProps {
     saved: boolean,
     status?: string | undefined,
   },
-  products: Product,
+  product: Product,
 }
 export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   saved,
   status},
-  products: {
+  product: {
     name,
     id,
     variants,

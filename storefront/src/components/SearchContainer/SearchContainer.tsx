@@ -23,7 +23,7 @@ export const SearchContainer = () => {
           saved: false,
           status: "Incoming Stock",
         },
-        products: node
+        product: node
       }
     }) || []
   }
