@@ -10,5 +10,5 @@ export default {
 
 const Template: Story<CartProps> = (args) => <Cart {...args} />;
 
-export const Accordion = Template.bind({});
-Accordion.args = {};
+export const Page = Template.bind({});
+Page.args = {};
