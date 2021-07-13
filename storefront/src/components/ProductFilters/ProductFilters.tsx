@@ -13,9 +13,8 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   setFilters, categoryId
 }) => {
   const { loading, error, data} = useInitialProductFilterDataQuery({
-    variables: {categories: categoryId ? [categoryId] : [], collections: [], productTypes: [] }
+    variables: {categories: categoryId ? [categoryId] : [], collections: [], productTypes: [], inCategory: categoryId }
   });
-  const excludedFilters = ['ordering-code', 'spec-code', 'model'];
   const [currentFilters, setCurrentFilters] = useState<Array<AttributeInput>>([])
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,12 +40,10 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error retrieving product filters</p>;
   if (data) {
-    const filters = data.attributes?.edges.filter(({node: {slug}}) => {
-      return slug && !excludedFilters.includes(slug)});
     return (
       <div className="search-filters">
         <Form>
-          {filters?.map(({node: {id, name, slug, values}}) => {
+          {data.attributes?.edges.map(({node: {id, name, slug, values}}) => {
             return (
               <React.Fragment key={id}>
                 <div className="filter-heading">
