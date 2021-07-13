@@ -12353,6 +12353,7 @@ export type InitialProductFilterDataQueryVariables = Exact<{
   categories?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
   collections?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
   productTypes?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+  inCategory?: Scalars['ID'];
 }>;
 
 
@@ -12434,8 +12435,8 @@ export type SearchResultsQuery = (
 );
 
 export const InitialProductFilterDataDocument = gql`
-    query InitialProductFilterData($categories: [ID!], $collections: [ID!], $productTypes: [ID!]) {
-  attributes(first: 100, filter: {filterableInDashboard: true}) {
+    query InitialProductFilterData($categories: [ID!], $collections: [ID!], $productTypes: [ID!], $inCategory: ID) {
+  attributes(first: 100, filter: {filterableInStorefront: true, inCategory: $inCategory}) {
     edges {
       node {
         id
