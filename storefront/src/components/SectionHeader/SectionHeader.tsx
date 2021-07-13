@@ -13,7 +13,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({subheading, heading
       <div>
         <div className="small section-header pb-3">
           <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-            <g id="Member" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <g id="Member" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
               <g id="Components" transform="translate(-160.000000, -2982.000000)" fill="#DDDDDD">
                 <g id="CPU---Single-Order" transform="translate(160.000000, 2894.000000)">
                   <g id="subheading-scale" transform="translate(0.000000, 88.000000)">

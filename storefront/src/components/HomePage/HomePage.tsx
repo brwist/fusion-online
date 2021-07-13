@@ -5,6 +5,7 @@ import { SearchBar } from '../SearchBar/SearchBar';
 import { Tag } from '../Tag/Tag';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { NewsCard } from '../NewsCard/NewsCard';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 import "./homepage.scss"
 
@@ -14,7 +15,7 @@ export interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({...props}) => {
   return (
     <Container>
-      <h1>Home Page</h1>
+      <SectionHeader subheading="Lorem Impsum Dolor" heading="Fusion Product Portal" />
       <SearchBar updateSearchQuery={(searchString) => console.log(searchString) }/>
       <Row>
         <Col className="my-auto" md="auto">
