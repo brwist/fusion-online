@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
+import {useCart} from '@saleor/sdk'
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
@@ -7,10 +8,26 @@ import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid
 
 import './cart.scss';
 
-export interface CartProps {}
+export interface CartProps {
+  discount: any,
+  items: any,
+  removeItem: any,
+  shippingPrice: any,
+  subtotalPrice: any,
+  totalPrice: any,
+  updateItem: any,
+  subtractItem: any
+}
 
 export const Cart: React.FC<CartProps> = ({
-  ...props
+  discount,
+  items,
+  removeItem,
+  shippingPrice,
+  subtotalPrice,
+  totalPrice,
+  updateItem,
+  subtractItem
 }) => {
   function ContextAwareToggle({ eventKey, callback }: any) {
     const currentEventKey = useContext(AccordionContext);
@@ -33,6 +50,9 @@ export const Cart: React.FC<CartProps> = ({
     );
   }
 
+  console.log("Items", items)
+  console.log("subtotal", subtotalPrice)
+  console.log("total", totalPrice)
   return (
     <Container>
     <div className="cart">
@@ -62,7 +82,7 @@ export const Cart: React.FC<CartProps> = ({
                           PRODUCTS:
                         </Col>
                         <Col sm={6} className="font-weight-bold px-1">
-                          3
+                          {items?.length}
                         </Col>
                       </Row>
                       <Row className="mx-n1 small">
@@ -78,7 +98,7 @@ export const Cart: React.FC<CartProps> = ({
                           SUBTOTAL:
                         </Col>
                         <Col sm={6} className="font-weight-bold px-1">
-                          $0000.00
+                          {subtotalPrice}
                         </Col>
                       </Row>
                     </div>

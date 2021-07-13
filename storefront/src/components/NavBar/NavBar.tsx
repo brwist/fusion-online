@@ -8,11 +8,12 @@ import { useCategoryList } from '@saleor/sdk'
 import './navbar.scss';
 
 export interface NavBarProps {
-  signOut(): void
+  signOut(): void,
+  cartItemsNum: number
 }
 
 export const NavBar: React.FC<NavBarProps> = ({
-  signOut
+  signOut, cartItemsNum
 }) => {
   const {data} = useCategoryList({first: 10})
   return (
@@ -37,7 +38,7 @@ export const NavBar: React.FC<NavBarProps> = ({
               })}
               <Nav.Item as="li">
                 <Nav.Link href="/cart">
-                  <FontAwesomeIcon icon={faShoppingCart} /> (3)
+                  <FontAwesomeIcon icon={faShoppingCart} /> {`(${cartItemsNum})`}
                 </Nav.Link>
               </Nav.Item>
             </Nav>

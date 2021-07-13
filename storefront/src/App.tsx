@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from "@saleor/sdk";
+import { useAuth, useCart } from "@saleor/sdk";
 import { Switch, Route, useLocation} from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
@@ -18,6 +18,17 @@ import './App.scss';
 function App() {
   const [errors, setErrors] = useState()
   const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
+  const { 
+    addItem,
+    discount,
+    items,
+    removeItem,
+    shippingPrice,
+    subtotalPrice,
+    totalPrice,
+    updateItem,
+    subtractItem 
+  } = useCart();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -59,13 +70,28 @@ function App() {
   return(
       authenticated && user ? (
           <>
-          <NavBar signOut={signOut} />
+          <NavBar signOut={signOut} cartItemsNum={items?.length || 0}/>
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route exact path="/search" component={SearchContainer} />
-            <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/products/:id" >
+              <ProductDetail
+                addItem={addItem}
+              />
+            </Route>
             <Route exact path="/categories/:id" component={CategoryPage} />
-            <Route exact path="/cart" component={Cart} />
+            <Route exact path="/cart">
+              <Cart
+                discount={discount}
+                items={items}
+                removeItem={removeItem}
+                shippingPrice={shippingPrice}
+                subtotalPrice={subtotalPrice}
+                totalPrice={totalPrice}
+                updateItem={updateItem}
+                subtractItem={subtractItem} 
+              />
+            </Route>
             <Route exact path="/account">
               <AccountPage
                 signOut={signOut}

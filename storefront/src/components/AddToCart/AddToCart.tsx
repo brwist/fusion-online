@@ -5,13 +5,15 @@ import './addtocart.scss';
 import { ProductVariant } from '../../generated/graphql'
 
 export interface AddToCartProps {
-  variant: ProductVariant | undefined | null
+  variant: ProductVariant | undefined | null,
+  addItem: any
 }
 
 export const AddToCart: React.FC<AddToCartProps> = ({
-  variant
+  variant, addItem
 }) => {
   const [quantitySelected, setQuantitySelected] = useState(1)
+  console.log(variant)
   return (
     <Card className="add-to-cart-card">
       <Card.Body>
@@ -75,7 +77,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
             ${variant?.pricing?.price?.gross.amount? (quantitySelected * variant?.pricing?.price?.gross.amount).toFixed(2) : 0}
           </div>
         </div>
-        <Button variant="primary" size="lg" block>
+        <Button onClick={() => addItem(variant?.id, quantitySelected)}variant="primary" size="lg" block>
           Add To Cart
         </Button>
       </Card.Body>
