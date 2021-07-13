@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext } from 'react-bootstrap';
+import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
@@ -34,6 +34,7 @@ export const Cart: React.FC<CartProps> = ({
   }
 
   return (
+    <Container>
     <div className="cart">
       <header>
         <Button variant="link">
@@ -442,5 +443,6 @@ export const Cart: React.FC<CartProps> = ({
         </Col>
       </Row>
     </div>
+    </Container>
   );
 };

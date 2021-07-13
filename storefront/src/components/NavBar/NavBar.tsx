@@ -36,7 +36,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 )
               })}
               <Nav.Item as="li">
-                <Nav.Link href="#">
+                <Nav.Link href="/cart">
                   <FontAwesomeIcon icon={faShoppingCart} /> (3)
                 </Nav.Link>
               </Nav.Item>

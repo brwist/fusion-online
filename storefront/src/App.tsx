@@ -3,14 +3,15 @@ import { useAuth } from "@saleor/sdk";
 import { Switch, Route, useLocation} from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
-import { ProductDetail } from './components/ProductDetail/ProductDetail'
+import { ProductDetail } from './components/ProductDetail/ProductDetail';
 import { NavBar } from './components/NavBar/NavBar';
 import { LoginPage } from './components/LoginPage/LoginPage';
-import { useAccountConfirmationMutation} from './generated/graphql'
-import { CategoryPage } from './components/CategoryPage/CategoryPage'
+import { useAccountConfirmationMutation} from './generated/graphql';
+import { CategoryPage } from './components/CategoryPage/CategoryPage';
 import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from "./components/Footer/Footer";
-import {AccountPage} from './components/MyAccount/AccountPage'
+import {AccountPage} from './components/MyAccount/AccountPage';
+import { Cart } from './components/Cart/Cart';
 
 import './App.scss';
 
@@ -64,6 +65,7 @@ function App() {
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
             <Route exact path="/categories/:id" component={CategoryPage} />
+            <Route exact path="/cart" component={Cart} />
             <Route exact path="/account">
               <AccountPage
                 signOut={signOut}
