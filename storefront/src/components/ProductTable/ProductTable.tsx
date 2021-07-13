@@ -1,24 +1,24 @@
 import React from 'react';
 import { Card, Table } from 'react-bootstrap';
-import {SearchResultRow, SearchResultRowProps} from './SearchResultRow';
+import {ProductTableRow, ProductTableRowProps} from './ProductTableRow';
 
-import './searchresults.scss';
+import './producttable.scss';
 
-export interface SearchResultsProps {
+export interface ProductTableProps {
   loading: boolean,
-  searchResultsData: Array<SearchResultRowProps>
+  productData: Array<ProductTableRowProps>
 }
 
-export const SearchResults: React.FC<SearchResultsProps> = ({
-  loading, searchResultsData
+export const ProductTable: React.FC<ProductTableProps> = ({
+  loading, productData
 }) => {
 
   if (loading) {
     return <h5>Loading...</h5>
   }
 
-  if (searchResultsData?.length === 0) {
-    return <h5>No Results</h5>
+  if (productData?.length === 0) {
+    return <h5>No Products</h5>
   }
   return (
     <Card className="search-results">
@@ -34,12 +34,12 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
           </tr>
         </thead>
         <tbody>
-          {searchResultsData?.map(({otherData, productData}) => {
+          {productData?.map(({otherData, product}) => {
             return (
-              <SearchResultRow
-                key={productData.id}
+              <ProductTableRow
+                key={product.id}
                 otherData={otherData}
-                productData={productData}
+                product={product}
               />
             )
           })}

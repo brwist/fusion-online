@@ -1,53 +1,162 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
-import { Login } from '../Forms/Login';
-import { Register } from '../Forms/Register';
-import { Footer } from '../Footer/Footer';
+import { SearchBar } from '../SearchBar/SearchBar';
+import { Tag } from '../Tag/Tag';
+import { ProductCard } from '../ProductCard/ProductCard';
+import { NewsCard } from '../NewsCard/NewsCard';
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
-import './homepage.scss';
+import "./homepage.scss"
 
 export interface HomePageProps {
-  handleSignIn(email: string, password: string): void,
-  handleRegistration(email: string, password: string): Promise<{data: {}}>,
-  errors: any
+
 }
-export const HomePage: React.FC<HomePageProps> = ({ handleSignIn, handleRegistration, errors }) => {
+export const HomePage: React.FC<HomePageProps> = ({...props}) => {
   return (
-    <div className="home">
-      <div className="hero">
-        <Container>
-          <Row>
-            <Col md={6}>
-              <div className="content">
-                <h4 className="tagged">Lorem Ipsum Dolor</h4>
-                <h1>Fusion Product Portal</h1>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
-      <Container>
-        <Row className="sign-in">
-          <Col md={8} className="content">
-            <Row>
-              <Col md={6}>
-                <h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit</h2>
-              </Col>
-            </Row>
-
-            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing elit. Quam id leo in vitae turpis massa sed elementum. Faucibus in ornare quam viverra orci sagittis eu volutpat odio. Sed tempus urna et pharetra pharetra.</p>
-          </Col>
-          <Col md={4}>
-            <Login handleSignIn={handleSignIn} errors={errors} />
-          </Col>
-        </Row>
-
-        <Register handleRegistration={handleRegistration} />
-      </Container>
-
-      <Footer />
-    </div>
+    <Container>
+      <SectionHeader subheading="Lorem Impsum Dolor" heading="Fusion Product Portal" />
+      <SearchBar updateSearchQuery={(searchString) => console.log(searchString) }/>
+      <Row>
+        <Col className="my-auto" md="auto">
+          <h3 className="my-auto">Recent Searches:</h3>
+        </Col>
+        <Col md="auto">
+          <Tag label="Intel Pentium"/>
+        </Col>
+        <Col md="auto">
+          <Tag label="Intel Pentium"/>
+        </Col>
+        <Col md="auto">
+          <Tag label="Intel Pentium"/>
+        </Col>
+        <Col md="auto">
+          <Tag label="Intel Pentium"/>
+        </Col>
+        <Col md="auto">
+          <Tag label="Intel Pentium"/>
+        </Col>
+      </Row>
+      <Row className="mt-5">
+        <Col className="my-auto">
+          <h3 className="my-auto">Recent Orders:</h3>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <Button className="btn-view-all" size="lg">
+            View All
+          </Button>
+        </Col>
+      </Row>
+      <Row className="my-3">
+        <Col>
+          <ProductCard 
+            title="Intel Pentium Gold 7505 Processor"
+            buttonLabel="View Order"
+          />
+        </Col>
+        <Col>
+          <ProductCard 
+            title="Intel Pentium Gold 7505 Processor"
+            buttonLabel="View Order"
+          />
+        </Col>
+        <Col>
+          <ProductCard 
+            title="Intel Pentium Gold 7505 Processor"
+            buttonLabel="View Order"
+          />
+        </Col>
+        <Col>
+          <ProductCard 
+            title="Intel Pentium Gold 7505 Processor"
+            buttonLabel="View Order"
+          />
+        </Col>
+      </Row>
+      <Row>
+      <Col className="my-auto">
+          <h6 className="my-auto">Latest News:</h6>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <Button className="btn-view-all" size="lg">
+            View All
+          </Button>
+        </Col>
+      </Row>
+      <Row className="my-3">
+      <Col>
+          <NewsCard
+            date="Sept. 16, 2022"
+            title="Lorem Ipsum"
+            text="Suspendisse potenti. Pellentesque mattis 
+            mattis posuere. Curabitur id metus tristique, 
+            porttitor turpis et, rhoncus mauris. Mauris ac 
+            viverra sem. Aliquam quam tellus, egestas vitae 
+            neque nec, posuere tempus velit. Nam lobortis 
+            eros quam. Fusce ut vehicula odio. Nam ornare 
+            dui vel lectus ornare, nec interdum velit 
+            pharetra. Morbi ac libero erat. Vestibulum ante 
+            ipsum primis in faucibus orci luctus et ultrices 
+            posuere cubilia curae; Nam gravida ligula non 
+            varius vestibulum. Donec eleifend congue massa."
+            buttonLabel="Read More"
+          />
+        </Col>
+        <Col>
+          <NewsCard
+            date="Sept. 16, 2022"
+            title="Lorem Ipsum"
+            text="Suspendisse potenti. Pellentesque mattis 
+            mattis posuere. Curabitur id metus tristique, 
+            porttitor turpis et, rhoncus mauris. Mauris ac 
+            viverra sem. Aliquam quam tellus, egestas vitae 
+            neque nec, posuere tempus velit. Nam lobortis 
+            eros quam. Fusce ut vehicula odio. Nam ornare 
+            dui vel lectus ornare, nec interdum velit 
+            pharetra. Morbi ac libero erat. Vestibulum ante 
+            ipsum primis in faucibus orci luctus et ultrices 
+            posuere cubilia curae; Nam gravida ligula non 
+            varius vestibulum. Donec eleifend congue massa."
+            buttonLabel="Read More"
+          />
+        </Col>
+        <Col>
+          <NewsCard
+            date="Sept. 16, 2022"
+            title="Lorem Ipsum"
+            text="Suspendisse potenti. Pellentesque mattis 
+            mattis posuere. Curabitur id metus tristique, 
+            porttitor turpis et, rhoncus mauris. Mauris ac 
+            viverra sem. Aliquam quam tellus, egestas vitae 
+            neque nec, posuere tempus velit. Nam lobortis 
+            eros quam. Fusce ut vehicula odio. Nam ornare 
+            dui vel lectus ornare, nec interdum velit 
+            pharetra. Morbi ac libero erat. Vestibulum ante 
+            ipsum primis in faucibus orci luctus et ultrices 
+            posuere cubilia curae; Nam gravida ligula non 
+            varius vestibulum. Donec eleifend congue massa."
+            buttonLabel="Read More"
+          />
+        </Col>
+        <Col>
+          <NewsCard
+            date="Sept. 16, 2022"
+            title="Lorem Ipsum"
+            text="Suspendisse potenti. Pellentesque mattis 
+            mattis posuere. Curabitur id metus tristique, 
+            porttitor turpis et, rhoncus mauris. Mauris ac 
+            viverra sem. Aliquam quam tellus, egestas vitae 
+            neque nec, posuere tempus velit. Nam lobortis 
+            eros quam. Fusce ut vehicula odio. Nam ornare 
+            dui vel lectus ornare, nec interdum velit 
+            pharetra. Morbi ac libero erat. Vestibulum ante 
+            ipsum primis in faucibus orci luctus et ultrices 
+            posuere cubilia curae; Nam gravida ligula non 
+            varius vestibulum. Donec eleifend congue massa."
+            buttonLabel="Read More"
+          />
+        </Col>
+      </Row>
+    </Container>
   )
 }
