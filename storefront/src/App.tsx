@@ -8,12 +8,13 @@ import { NavBar } from './components/NavBar/NavBar';
 import { HomePage } from './components/HomePage/HomePage';
 import { useAccountConfirmationMutation} from './generated/graphql'
 import { CategoryPage } from './components/CategoryPage/CategoryPage'
+import {AccountPage} from './components/MyAccount/AccountPage'
 
 import './App.scss';
 
 function App() {
   const [errors, setErrors] = useState()
-  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -59,7 +60,16 @@ function App() {
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
+<<<<<<< HEAD
             <Route exact path="/categories/:id" component={CategoryPage} />
+=======
+            <Route exact path="/account">
+              <AccountPage
+                signOut={signOut}
+                user={user}
+              />
+            </Route>
+>>>>>>> e289e1d8fe4f7bf603fa4160ec3fc06f2e2fa5e1
           </Switch>
           </>
         ): (
