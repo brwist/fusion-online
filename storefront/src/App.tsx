@@ -5,8 +5,10 @@ import { Switch, Route, useLocation} from 'react-router-dom';
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { ProductDetail } from './components/ProductDetail/ProductDetail'
 import { NavBar } from './components/NavBar/NavBar';
-import { HomePage } from './components/HomePage/HomePage';
+import { LoginPage } from './components/LoginPage/LoginPage';
 import { useAccountConfirmationMutation} from './generated/graphql'
+import { HomePage } from './components/HomePage/HomePage';
+import { Footer } from "./components/Footer/Footer";
 import {AccountPage} from './components/MyAccount/AccountPage'
 
 import './App.scss';
@@ -57,6 +59,7 @@ function App() {
           <>
           <NavBar signOut={signOut} />
           <Switch>
+            <Route exact path="/" component={HomePage} />
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
             <Route exact path="/account">
@@ -66,9 +69,10 @@ function App() {
               />
             </Route>
           </Switch>
+          <Footer />
           </>
         ): (
-          <HomePage 
+          <LoginPage
             handleSignIn={handleSignIn}
             handleRegistration={handleRegistration}
             errors={errors}/>
