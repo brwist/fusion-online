@@ -1,5 +1,5 @@
 import React from 'react';
-import {useParams} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,6 +15,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   ...props
 }) => {
   const {id} = useParams<{id: string}>()
+  const history = useHistory()
   const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
   if (data) {
     console.log(data)
@@ -23,7 +24,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
-            <a href="#">GO BACK</a>
+            <button className="btn-go-back btn btn-link" onClick={() => history.goBack()}>GO BACK</button>
             <h1 className="my-3">{data?.product?.name}</h1>
             <div className="small">
               <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
