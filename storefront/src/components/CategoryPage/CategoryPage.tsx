@@ -6,6 +6,7 @@ import { useCategoryDetails } from '@saleor/sdk'
 import { useProductListQuery, AttributeInput } from '../../generated/graphql'
 import { ProductTable } from '../ProductTable/ProductTable'
 import { ProductFilters } from '../ProductFilters/ProductFilters'
+import { SectionHeader } from '../SectionHeader/SectionHeader'
 
 import './categorypage.scss'
 
@@ -35,9 +36,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({...props}) => {
   }
   return (
     <Container>
-      <Row>
-        <h1>{category.data?.name}</h1>
-      </Row>
+        <SectionHeader subheading="Shop" heading={category.data?.name || ""}/>
       <Row>
         <Col lg={2}>
           <ProductFilters

@@ -60,16 +60,13 @@ function App() {
           <Switch>
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
-<<<<<<< HEAD
             <Route exact path="/categories/:id" component={CategoryPage} />
-=======
             <Route exact path="/account">
               <AccountPage
                 signOut={signOut}
                 user={user}
               />
             </Route>
->>>>>>> e289e1d8fe4f7bf603fa4160ec3fc06f2e2fa5e1
           </Switch>
           </>
         ): (

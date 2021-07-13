@@ -30,7 +30,7 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Nav as="ul" id="main-nav">
               {data?.map(({id, name}) => {
                 return (
-                  <Nav.Item as="li">
+                  <Nav.Item key={id} as="li">
                     <Nav.Link href={`/categories/${id}`}>{name}</Nav.Link>
                   </Nav.Item>
                 )
