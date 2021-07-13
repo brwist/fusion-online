@@ -9,10 +9,10 @@ export interface SectionHeaderProps {
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({subheading, heading}) => {
   return (
-    <header className="my-5 pb-2 border-bottom d-flex justify-content-between align-items-center">
+    <header className="mb-5 border-bottom d-flex justify-content-between align-items-center">
       <div>
         <div className="small section-header pb-3">
-          <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+          <svg width="35px" height="15px" viewBox="0 0 35 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
             <g id="Member" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
               <g id="Components" transform="translate(-160.000000, -2982.000000)" fill="#DDDDDD">
                 <g id="CPU---Single-Order" transform="translate(160.000000, 2894.000000)">
