@@ -1,18 +1,19 @@
-import React, {useState, useEffect, ReactEventHandler, SyntheticEvent} from 'react';
+import React, {useState } from 'react';
 import { Form } from 'react-bootstrap';
 
-import './searchfilters.scss';
+import './productfilters.scss';
 import {useInitialProductFilterDataQuery, AttributeInput} from '../../generated/graphql';
 
-export interface SearchFiltersProps {
-  setFilters(filters: AttributeInput[]): void
+export interface ProductFiltersProps {
+  setFilters(filters: AttributeInput[]): void,
+  categoryId?: string
 }
 
-export const SearchFilters: React.FC<SearchFiltersProps> = ({
-  setFilters
+export const ProductFilters: React.FC<ProductFiltersProps> = ({
+  setFilters, categoryId
 }) => {
   const { loading, error, data} = useInitialProductFilterDataQuery({
-    variables: {categories: [], collections: [], productTypes: [] }
+    variables: {categories: categoryId ? [categoryId] : [], collections: [], productTypes: [] }
   });
   const excludedFilters = ['ordering-code', 'spec-code', 'model'];
   const [currentFilters, setCurrentFilters] = useState<Array<AttributeInput>>([])

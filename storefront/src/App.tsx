@@ -7,6 +7,7 @@ import { ProductDetail } from './components/ProductDetail/ProductDetail'
 import { NavBar } from './components/NavBar/NavBar';
 import { LoginPage } from './components/LoginPage/LoginPage';
 import { useAccountConfirmationMutation} from './generated/graphql'
+import { CategoryPage } from './components/CategoryPage/CategoryPage'
 import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from "./components/Footer/Footer";
 import {AccountPage} from './components/MyAccount/AccountPage'
@@ -62,6 +63,7 @@ function App() {
             <Route exact path="/" component={HomePage} />
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/categories/:id" component={CategoryPage} />
             <Route exact path="/account">
               <AccountPage
                 signOut={signOut}
