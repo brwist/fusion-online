@@ -9,12 +9,13 @@ import { LoginPage } from './components/LoginPage/LoginPage';
 import { useAccountConfirmationMutation} from './generated/graphql'
 import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from "./components/Footer/Footer";
+import {AccountPage} from './components/MyAccount/AccountPage'
 
 import './App.scss';
 
 function App() {
   const [errors, setErrors] = useState()
-  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -61,6 +62,12 @@ function App() {
             <Route exact path="/" component={HomePage} />
             <Route exact path="/search" component={SearchContainer} />
             <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/account">
+              <AccountPage
+                signOut={signOut}
+                user={user}
+              />
+            </Route>
           </Switch>
           <Footer />
           </>
