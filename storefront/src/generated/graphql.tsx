@@ -12160,7 +12160,11 @@ export type ProductFragmentFragment = (
   )>, productType: (
     { __typename: 'ProductType' }
     & Pick<ProductType, 'id' | 'name' | 'hasVariants'>
-  ) }
+  ), variants: Array<(
+    {__typename: 'ProductVariant'}
+    & Pick<ProductVariant, 'id' | 'sku' | 'quantityAvailable' >
+  )>
+}
 );
 
 export type ProductListQueryVariables = Exact<{
@@ -12233,6 +12237,7 @@ export const ProductFragmentFragmentDoc = gql`
   description
   descriptionJson
   variants {
+    id
     sku
     quantityAvailable
     __typename
