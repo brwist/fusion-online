@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
-
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
-import {useProductListQuery } from '../../generated/graphql';
+import {useCartProductDetailsQuery } from '../../generated/graphql';
 
 import './cart.scss';
 
@@ -50,28 +49,38 @@ export const Cart: React.FC<CartProps> = ({
       </Button>
     );
   }
-  console.log("itemIds", items?.map(({variant}: any) => variant.id))
-  const {data} = useProductListQuery({variables: {
+
+  const [quantityField, setQuantityField]: any = useState()
+
+  useEffect(() => {
+    if (items) {
+      const fields: any = {}
+      items.forEach(({variant, quantity}: any) => {
+        fields[`${variant.id}`] = quantity
+      })
+      setQuantityField(fields)
+    }
+  }, [items])
+
+  const {data} = useCartProductDetailsQuery({variables: {
     first: 100,
-    filter: {ids: items?.map(({variant}: any) => variant.id)}
-  }})
-    console.log(data)
-    const calculateSubtotal = () => {
-      return (data?.products?.edges.reduce((acc, curr, index) => {
-        const currPrice = curr.node.pricing?.priceRangeUndiscounted?.start?.gross?.amount || 0;
-        const currQuantity = items?.find((item: any) => curr.node.variants
-          .find((variant: any) => variant.id === item.variant.id))?.quantity || 0
-        return acc + (currPrice * currQuantity)
-      }, 0))?.toFixed(2)
-    }
+    ids: items?.map(({variant}: any) => variant.id)
+  } })
 
-    console.log("Items", items)
+  const calculateSubtotal = () => {
+    return (data?.productVariants?.edges.reduce((acc, curr) => {
+      const currPrice = curr.node.pricing?.price?.gross?.amount || 0;
+      const currQuantity = items?.find((item: any) => curr.node.id === item.variant.id)
+      ?.quantity || 0
+      return acc + (currPrice * currQuantity)
+    }, 0))?.toFixed(2)
+  }
 
-    const getAttributeValue = (slugName: string, attributes: any): any => {
-      const matchingAttribute = attributes.filter(
-        ({attribute}: any) => attribute.slug === slugName)
-      return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
-    }
+  const getAttributeValue = (slugName: string, attributes: any): any => {
+    const matchingAttribute = attributes.filter(
+      ({attribute}: any) => attribute.slug === slugName)
+    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
+  }
 
     return (
       <Container>
@@ -161,7 +170,8 @@ export const Cart: React.FC<CartProps> = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {data?.products?.edges?.map(({node: {id, name, attributes, variants, pricing}}) => {
+                      {data?.productVariants?.edges?.map(({node: {id, name, sku, quantityAvailable, product, price, pricing}}) => {
+                        const quantitySelected = items?.find((item: any) => item.variant.id === id).quantity || 1;
                         return (
                           <tr key={id}>
                             <td className="text-center">
@@ -169,34 +179,62 @@ export const Cart: React.FC<CartProps> = ({
                             </td>
                             <td>
                               <div className="small">
-                                <strong className="text-uppercase">{getAttributeValue("manufacturer", attributes)}</strong> 123456789
+                                <strong className="text-uppercase">{getAttributeValue("manufacturer", product?.attributes)}</strong> {sku}
                               </div>
-                              <a href={`/products/${id}`}>{name}</a>
+                              <a href={`/products/${product.id}`}>{product.name}</a>
                               <div className="small mt-1">
-                                Spec Code: {getAttributeValue("spec-code", attributes)} | Ordering Code: {getAttributeValue("ordering-code", attributes)}
+                                Spec Code: {getAttributeValue("spec-code", product?.attributes)} | Ordering Code: {getAttributeValue("ordering-code", product?.attributes)}
                               </div>
                             </td>
-                            <td className="text-center font-weight-bold">1,000</td>
+                            <td className="text-center font-weight-bold">{quantityAvailable}</td>
                             <td className="text-center">
                               <Form.Row className="align-items-center">
                                 <Col sm={6}>
                                   <Form.Group controlId="qty-1" className="m-0">
                                     <Form.Label className="sr-only">Qty</Form.Label>
-                                    <Form.Control style={{'width': '60px'}} size="sm" type="text" placeholder="" value="100" />
+                                    <Form.Control
+                                      style={{'width': '60px'}}
+                                      size="sm"
+                                      type="text"
+                                      min={1}
+                                      max={quantityAvailable}
+                                      placeholder=""
+                                      name={id}
+                                      onChange={(e) => {
+                                        console.log(e.target.value);
+                                        if (parseInt(e.target.value) > 0) {
+                                          updateItem(id, parseInt(e.target.value))
+                                        } else {
+                                          setQuantityField({
+                                            ...quantityField,
+                                            [e.target.name]: e.target.value
+                                          })
+                                        }
+                                        }}
+                                      value={quantityField? quantityField[id]: 1} />
                                   </Form.Group>
                                 </Col>
                                 <Col sm={6} className="p-0">
                                   <a href="#" className="small">SPLIT</a>
+                                  <button
+                                    className="btn btn-link"
+                                    style={{fontSize: '12px'}}
+                                    onClick={() => removeItem(id) }
+                                  >Remove</button>
                                 </Col>
                               </Form.Row>
                             </td>
-                            <td className="text-right">
-                              <div className="small">
-                                <s>$10,000</s>
-                              </div>
-                              <div className="font-weight-bold text-primary">$000.00</div>
-                            </td>
-                            <td className="text-right font-weight-bold">$000.00</td>
+                            
+                              {pricing?.onSale ? 
+                              <td className="text-right">
+                                <div className="small">
+                                  <s>${(pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}</s>
+                                </div>
+                                <div className="font-weight-bold text-primary">${(pricing?.price?.gross.amount || 0).toFixed(2)}</div>
+                              </td> :
+                              <td className="text-right">${(pricing?.price?.gross.amount || 0).toFixed(2)}</td>
+                            }
+                            <td className="text-right font-weight-bold">${(quantitySelected * (pricing?.price?.gross.amount || 0)).toFixed(2)}</td>
                           </tr>
                         )
                       })}

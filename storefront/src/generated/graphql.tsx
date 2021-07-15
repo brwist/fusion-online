@@ -12813,3 +12813,94 @@ export const ProductDetailsDocument = gql `
     const options = {...defaultOptions, ...baseOptions}
     return Apollo.useQuery(ProductDetailsDocument, options);
   }
+
+  export const CartProductDetailsDocument = gql`
+  fragment Price on TaxedMoney {
+    gross {
+      amount
+      currency
+      __typename
+    }
+    net {
+      amount
+      currency
+      __typename
+    }
+    __typename
+  }
+  query CartProductDetails($ids: [ID!], $first: Int) {
+    productVariants(ids: $ids, first: $first) {
+      edges {
+        node {
+          id
+          name
+          sku
+          quantityAvailable
+          pricing {
+            onSale
+            priceUndiscounted {
+              ...Price
+              __typename
+            }
+            price {
+              ...Price
+              __typename
+            }
+            __typename
+          }
+          product {
+            id
+            name
+            thumbnail {
+              url
+              alt
+              __typename
+            }
+            thumbnail2x: thumbnail(size: 510) {
+              url
+              __typename
+            }
+            attributes {
+              attribute {
+                id
+                name
+                slug
+                __typename
+              }
+              values {
+                id
+                name
+                value: name
+                __typename
+              }
+              __typename
+            }
+          }
+          __typename
+        }
+        __typename
+      }
+    }
+  }`
+
+  export type CartProductDetailsQueryVariables = Exact<{
+    first?: Maybe<Scalars['Int']>;
+    ids: Maybe<Array<Scalars['ID']>>;
+  }>;
+  
+  
+  export type CartProductDetailsQuery = (
+    { __typename?: 'Query' }
+    & { productVariants?: Maybe<(
+      & { edges: Array<(
+        { __typename: 'ProductVariantCountableEdge' }
+        & { node: Maybe<ProductVariant>
+          & {product: Maybe<Product> }
+        })>
+      })>}
+  );
+
+  export function useCartProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>) {
+    const options = {...defaultOptions, ...baseOptions}
+    return Apollo.useQuery(CartProductDetailsDocument, options);
+  }
