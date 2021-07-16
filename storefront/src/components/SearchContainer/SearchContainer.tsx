@@ -6,9 +6,11 @@ import { useProductListQuery, AttributeInput } from '../../generated/graphql';
 import { ProductFilters } from '../ProductFilters/ProductFilters';
 
 
-export interface SearchContainerProps {};
+export interface SearchContainerProps {
+  addItem: any
+};
 
-export const SearchContainer = () => {
+export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
   const [searchQuery, setSearchquery] = useState('')
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([])
   const { loading, error, data} = useProductListQuery({
@@ -35,7 +37,7 @@ export const SearchContainer = () => {
         </Col>
         <Col>
           <SearchBar updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
-          <ProductTable loading={loading} productData={results}/>
+          <ProductTable loading={loading} productData={results} addItem={addItem}/>
         </Col>
       </Row>
     </Container>
