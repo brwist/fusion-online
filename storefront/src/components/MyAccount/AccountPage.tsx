@@ -1,9 +1,13 @@
-import React, {useState} from 'react'
+import React from 'react'
+import { Switch, Route} from 'react-router-dom'
 import { Container, Col, Row } from 'react-bootstrap';
 
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { MyAccountNav } from './MyAccountNav';
 import { OrderDetails } from './OrderDetails';
+import { SpendReport } from './SpendReport';
+import { ManageProfile } from './ManageProfile';
+import { OpenRFQs } from './OpenRFQs'
 import './myaccount.scss'
 
 export interface AccountPageProps {
@@ -19,11 +23,6 @@ export interface AccountPageProps {
 export const AccountPage: React.FC<AccountPageProps> = ({
   signOut, user
 }) => {
-  const [tabContent, setTabContent] = useState(<OrderDetails />)
-
-  const updateTabContent = (Component: JSX.Element) => {
-    setTabContent(Component)
-  }
 
   return (
     <Container>
@@ -31,12 +30,16 @@ export const AccountPage: React.FC<AccountPageProps> = ({
       <Row>
       <Col xs={2}>
         <MyAccountNav
-          updateTabContent={updateTabContent}
           signOut={signOut}
         />
       </Col>
       <Col xs={10}>
-        {tabContent}
+        <Switch>
+          <Route exact path="/account/orders-rfps" component={OrderDetails}/>
+          <Route exact path="/account/spend-report" component={SpendReport}/>
+          <Route exact path="/account/manage-profile" component={ManageProfile}/>
+          <Route exact path="/account/open-rfqs" component={OpenRFQs}/>
+        </Switch>
       </Col>
       </Row>
     </Container>
