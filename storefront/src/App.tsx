@@ -94,7 +94,7 @@ function App() {
                 subtractItem={subtractItem} 
               />
             </Route>
-            <Route exact path="/account">
+            <Route path="/account/:slug">
               <AccountPage
                 signOut={signOut}
                 user={user}
