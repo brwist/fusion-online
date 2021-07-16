@@ -79,7 +79,9 @@ function App() {
                 addItem={addItem}
               />
             </Route>
-            <Route exact path="/categories/:id" component={CategoryPage} />
+            <Route exact path="/categories/:id" >
+              <CategoryPage addItem={addItem}/>
+            </Route>
             <Route exact path="/cart">
               <Cart
                 discount={discount}

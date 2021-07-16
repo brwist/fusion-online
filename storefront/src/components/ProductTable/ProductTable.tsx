@@ -6,17 +6,18 @@ import './producttable.scss';
 
 export interface ProductTableProps {
   loading: boolean,
-  productData: Array<ProductTableRowProps>
+  productData: Array<ProductTableRowProps>,
+  addItem?: any
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
-  loading, productData
+  loading, productData, addItem
 }) => {
 
   if (loading) {
     return <h5>Loading...</h5>
   }
-
+  console.log(productData)
   if (productData?.length === 0) {
     return <h5>No Products</h5>
   }
@@ -40,6 +41,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 key={product.id}
                 otherData={otherData}
                 product={product}
+                addItem={addItem}
               />
             )
           })}
