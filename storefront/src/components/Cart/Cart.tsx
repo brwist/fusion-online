@@ -82,6 +82,7 @@ export const Cart: React.FC<CartProps> = ({
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
+  if (items?.length > 0) {
     return (
       <Container>
       <div className="cart">
@@ -457,4 +458,12 @@ export const Cart: React.FC<CartProps> = ({
       </div>
       </Container>
     );
+  } else {
+    return (
+      <Container>
+        <h4>Your cart is empty.</h4>
+      </Container>
+    )
+
+  }
 };
