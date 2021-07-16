@@ -82,7 +82,12 @@ export const Cart: React.FC<CartProps> = ({
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
-  if (items?.length > 0) {
+  if (items?.length === 0) {
+    return (      
+    <Container>
+      <h5>Your cart is empty.</h5>
+    </Container>)
+  } else if (items && data) {
     return (
       <Container>
       <div className="cart">
@@ -452,7 +457,7 @@ export const Cart: React.FC<CartProps> = ({
           </Col>
 
           <Col lg={3}>
-            <OrderSummary />
+            <OrderSummary subtotal={calculateSubtotal() || 0} />
           </Col>
         </Row>
       </div>
@@ -461,9 +466,8 @@ export const Cart: React.FC<CartProps> = ({
   } else {
     return (
       <Container>
-        <h4>Your cart is empty.</h4>
+        <h5>Loading Cart...</h5>
       </Container>
     )
-
   }
 };
