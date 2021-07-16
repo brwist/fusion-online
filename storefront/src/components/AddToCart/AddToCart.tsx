@@ -1,18 +1,30 @@
 import React, {useState} from 'react';
-import { Row, Col, Card, Button, Form } from 'react-bootstrap';
+import { Row, Col, Card, Button, Form, Alert } from 'react-bootstrap';
 
 import './addtocart.scss';
 import { ProductVariant } from '../../generated/graphql'
 
 export interface AddToCartProps {
-  variant: ProductVariant | undefined | null
+  variant: ProductVariant | undefined | null,
+  addItem: any
 }
 
 export const AddToCart: React.FC<AddToCartProps> = ({
-  variant
+  variant, addItem
 }) => {
   const [quantitySelected, setQuantitySelected] = useState(1)
+  const [show, setShow] = useState(false)
+  
+  const addToCart = () => {
+    addItem(variant?.id, quantitySelected)
+    setShow(true)
+  }
+  console.log(variant)
   return (
+    <>
+      <Alert variant="primary" show={show} dismissible onClose={() => setShow(false)}>
+        Item has been added to your cart!
+      </Alert>
     <Card className="add-to-cart-card">
       <Card.Body>
         <Card.Subtitle className="mb-4">
@@ -75,7 +87,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
             ${variant?.pricing?.price?.gross.amount? (quantitySelected * variant?.pricing?.price?.gross.amount).toFixed(2) : 0}
           </div>
         </div>
-        <Button variant="primary" size="lg" block>
+        <Button onClick={addToCart} disabled={show} variant="primary" size="lg" block>
           Add To Cart
         </Button>
       </Card.Body>
@@ -90,5 +102,6 @@ export const AddToCart: React.FC<AddToCartProps> = ({
         />
       </Card.Footer>
     </Card>
+    </>
   );
 };

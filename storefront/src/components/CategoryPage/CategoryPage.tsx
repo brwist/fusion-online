@@ -11,10 +11,10 @@ import { SectionHeader } from '../SectionHeader/SectionHeader'
 import './categorypage.scss'
 
 export interface CategoryPageProps {
-
+  addItem: any
 }
 
-export const CategoryPage: React.FC<CategoryPageProps> = ({...props}) => {
+export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
   const {id} = useParams<{id: string}>();
   const category = useCategoryDetails({id: id});
@@ -48,6 +48,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({...props}) => {
           <ProductTable 
             loading={productList.loading}
             productData={productData}
+            addItem={addItem}
           />
         </Col>
       </Row>

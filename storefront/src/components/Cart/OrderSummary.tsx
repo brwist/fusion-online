@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 
-export interface OrderSummaryProps {}
+export interface OrderSummaryProps {
+  subtotal: string | 0
+}
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
-  ...props
+  subtotal
 }) => {
   return (
     <Card className="order-summary">
@@ -17,13 +19,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             <tbody>
               <tr>
                 <td>Shipment 1</td>
-                <td className="text-right font-weight-bold">$000.00</td>
+                <td className="text-right font-weight-bold">${subtotal}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <td className="font-weight-bold text-capitalize">Subtotal</td>
-                <td className="text-right font-weight-bold">$000.00</td>
+                <td className="text-right font-weight-bold">${subtotal}</td>
               </tr>
             </tfoot>
           </Table>

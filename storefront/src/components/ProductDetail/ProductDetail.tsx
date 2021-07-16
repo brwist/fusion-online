@@ -9,10 +9,12 @@ import {useProductDetailsQuery} from '../../generated/graphql';
 
 import './productdetail.scss';
 
-export interface ProductDetailProps {}
+export interface ProductDetailProps {
+  addItem: any
+}
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
-  ...props
+  addItem
 }) => {
   const {id} = useParams<{id: string}>()
   const history = useHistory()
@@ -20,6 +22,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   if (data) {
     console.log(data)
   }
+  
   return (
     <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
@@ -89,7 +92,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           </Col>
           <Col lg={4}>
-            <AddToCart variant={data?.product?.variants && data?.product?.variants[0]}/>
+            <AddToCart 
+              variant={data?.product?.variants && data?.product?.variants[0]}
+              addItem={addItem}
+            />
           </Col>
         </Row>
     </Container>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Table, Form } from 'react-bootstrap';
+import { Button, Modal, Table, Form, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faShoppingCart } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
@@ -14,6 +14,7 @@ export interface ProductTableRowProps {
     status?: string | undefined,
   },
   product: Product,
+  addItem?: any
 }
 export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   saved,
@@ -24,12 +25,28 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     variants,
     attributes,
     pricing
-  }
+  },
+  addItem
 }) => {
   const [show, setShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [quantitySelected, setQuantitySelected] = useState(1)
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleAddToCart = (event: React.SyntheticEvent) => {
+    event.preventDefault()
+    if(variants && variants[0]) {
+      addItem(variants[0].id, quantitySelected)
+    }
+    setShowAlert(true)
+    setTimeout(() => {
+      handleClose()
+      setShowAlert(false)
+    }, 3500)
+  }
+
+  const unitPrice = (pricing?.priceRangeUndiscounted?.start?.gross.amount || 0).toFixed(2)
 
   function getAttributeValue (slugName: string): any {
     const matchingAttribute = attributes.filter(
@@ -53,7 +70,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     </td>
     <td className="text-center">{status}</td>
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
-    <td className="text-center">${pricing?.priceRangeUndiscounted?.start?.gross.amount}</td>
+    <td className="text-center">${unitPrice}</td>
     <td className="text-center">
       <Button variant="primary" onClick={handleShow}>
         Select Quantity
@@ -70,6 +87,16 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
             <Modal.Title className="mb-0">Select Quantity to Order</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Alert 
+              variant="primary"
+              show={showAlert}
+              dismissible
+              onClose={() => {
+                setShowAlert(false)
+                handleClose()
+              }}>
+              Item has been added to your cart!
+            </Alert>
             <Table borderless className="mb-0">
               <thead>
                 <tr>
@@ -81,15 +108,23 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
               </thead>
               <tbody>
                 <tr>
-                  <td>10,000</td>
+                  <td>{variants && variants[0]?.quantityAvailable}</td>
                   <td>
                     <Form.Group controlId="quantity">
                       <Form.Label className="sr-only">Quantity</Form.Label>
-                      <Form.Control type="number" style={{'maxWidth' : '80px'}} required />
+                      <Form.Control 
+                        type="number"
+                        style={{'maxWidth' : '80px'}}
+                        required 
+                        min={1}
+                        max={(variants && variants[0]?.quantityAvailable )|| 1}
+                        value={quantitySelected}
+                        onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
+                      />
                     </Form.Group>
                   </td>
-                  <td>$000.00</td>
-                  <td>$000.00</td>
+                  <td>${unitPrice}</td>
+                  <td>${(quantitySelected * parseInt(unitPrice)).toFixed(2)}</td>
                 </tr>
               </tbody>
             </Table>
@@ -97,7 +132,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
             <em>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</em>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" variant="primary" onClick={handleClose}>
+            <Button disabled={showAlert} type="submit" variant="primary" onClick={handleAddToCart}>
               Add to Order <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
             <Button variant="link" onClick={handleClose}>
