@@ -25,6 +25,14 @@ const fontFamily = '"Inter", "roboto", "sans-serif"';
 export default (colors: IThemeColors): Theme =>
   createMuiTheme({
     overrides: {
+      MuiCssBaseline: {
+        "@global": {
+          a: {
+            color: colors.primary,
+            textDecoration: "none"
+          }
+        }
+      },
       MuiButton: {
         contained: {
           "&$disabled": {
@@ -419,7 +427,8 @@ export default (colors: IThemeColors): Theme =>
           paddingTop: 8
         },
         head: {
-          fontSize: "1rem"
+          fontSize: "1rem",
+          fontWeight: 600
         },
         paddingCheckbox: {
           "&:first-child": {
@@ -431,6 +440,11 @@ export default (colors: IThemeColors): Theme =>
             width: 52
           }
         },
+        sizeSmall: {
+          paddingTop: 8,
+          paddingBottom: 8,
+          fontSize: 12
+        },
         root: {
           "&:first-child": {
             "&:not($paddingCheckbox)": {
@@ -438,9 +452,12 @@ export default (colors: IThemeColors): Theme =>
               textAlign: "left" as "left"
             }
           },
-          borderBottomColor: colors.paperBorder,
-          height: 56,
-          padding: "4px 24px"
+          ".borderless &": {
+            borderBottom: 0
+          },
+          borderBottomColor: colors.paperBorder
+          // height: 56,
+          // padding: "4px 24px"
         }
       },
       MuiTableRow: {
