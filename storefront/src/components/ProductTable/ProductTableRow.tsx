@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Modal, Table, Form, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faShoppingCart } from '@fortawesome/pro-regular-svg-icons';
@@ -63,7 +64,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
       <div className="small">
         <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
       </div>
-      <a href={`/products/${id}`}>{name}</a>
+      <Link style={{textDecoration: "underline"}} to={`/products/${id}`}>{name}</Link>
       <div className="small mt-1">
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
