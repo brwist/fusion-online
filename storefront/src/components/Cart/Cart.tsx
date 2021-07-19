@@ -95,8 +95,10 @@ export const Cart: React.FC<CartProps> = ({
           <Button variant="link">
             <FontAwesomeIcon icon={farFaBookmark} size="lg" className="mr-1" /> Move All to Parts List
           </Button>
-          <Button variant="link">
-            <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove List
+          <Button variant="link" onClick={() => items.forEach(
+              (item: {variant: {id: string}}) => removeItem(item.variant.id)
+            )}>
+            <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove All
           </Button>
         </header>
 
