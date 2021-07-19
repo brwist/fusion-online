@@ -1,121 +1,105 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {NavLink, useParams } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
-import { SpendReport } from './SpendReport';
-import { OpenRFQs } from './OpenRFQs';
-import { OrderDetails } from './OrderDetails';
-import { ManageProfile } from './ManageProfile';
 
 import './myaccount.scss';
 
 export interface MyAccountNavProps {
-  updateTabContent(Component: JSX.Element): void,
   signOut(): void
 }
 
 export const MyAccountNav: React.FC<MyAccountNavProps> = ({
-  updateTabContent, signOut
+  signOut
 }) => {
-  const [activeTab, setActiveTab] = useState({
-    ordersRfqs: true,
-    openOrders: false,
-    scheduledOrders: false,
-    pastOrders: false,
-    openRfqs: false,
-    pastRfqs: false,
-    spendReport: false,
-    payments: false,
-    shipping: false,
-    manageProfile: false,
-    savedParts: false,
-  })
-  
-  const handleClick = (tabName: string, component: JSX.Element) => {
-    updateTabContent(component)
-    setActiveTab({
-      ordersRfqs: false,
-      openOrders: false,
-      scheduledOrders: false,
-      pastOrders: false,
-      openRfqs: false,
-      pastRfqs: false,
-      spendReport: false,
-      payments: false,
-      shipping: false,
-      manageProfile: false,
-      savedParts: false,
-      [tabName]: true
-    })
-  }
+
+  const {slug} = useParams<{slug: string}>()
+  console.log(slug)
   return (
     <div className="my-account-nav">
       <Nav as="ul" className="flex-column">
         <Nav.Item as="li">
-          <Nav.Link
-            onClick={() => handleClick("ordersRfqs", <OrderDetails />)}
-            active={activeTab.ordersRfqs}
-          >ORDERS &amp; RFQs</Nav.Link>
+          <Nav.Link><NavLink 
+            to="/account/orders-rfps"
+            activeStyle={{color: "#66cc66"}}
+          >
+            ORDERS &amp; RFQs </NavLink></Nav.Link>
           <Nav as="ul" className="flex-column">
             <Nav.Item as="li">
-              <Nav.Link
-                onClick={() => handleClick("openOrders", <></>)}
-                active={activeTab.openOrders}
-              >OPEN ORDERS</Nav.Link>
+              <Nav.Link>
+              <NavLink 
+                to="/account/open-orders"
+                activeStyle={{color: "#66cc66"}}
+              >
+                OPEN ORDERS</NavLink></Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link
-                onClick={() => handleClick("scheduledOrders", <></>)}
-                active={activeTab.scheduledOrders}
-              >SCHEDULED ORDERS</Nav.Link>
+              <Nav.Link>
+              <NavLink 
+                to="/account/scheduled-orders"
+                activeStyle={{color: "#66cc66"}}
+              >
+                SCHEDULED ORDERS</NavLink></Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link
-                onClick={() => handleClick("pastOrders", <></>)}
-                active={activeTab.pastOrders}
-              >PAST ORDERS</Nav.Link>
+              <Nav.Link>
+              <NavLink 
+                to="/account/past-orders"
+                activeStyle={{color: "#66cc66"}}
+              >
+                PAST ORDERS</NavLink></Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link
-                onClick={() => handleClick("openRfqs", <OpenRFQs />)}
-                active={activeTab.openRfqs}
-              >OPEN RFQs</Nav.Link>
+              <Nav.Link>
+              <NavLink 
+                to="/account/open-rfqs"
+                activeStyle={{color: "#66cc66"}}
+              >
+                OPEN RFQs</NavLink></Nav.Link>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link
-                onClick={() => handleClick("pastRfqs", <></>)}
-                active={activeTab.pastRfqs}
-              >PAST RFQs</Nav.Link>
+              <Nav.Link>
+              <NavLink 
+                to="/account/past-rfqs"
+                activeStyle={{color: "#66cc66"}}
+              >
+                PAST RFQs</NavLink></Nav.Link>
             </Nav.Item>
           </Nav>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link
-            onClick={() => handleClick("spendReport", <SpendReport />)}
-            active={activeTab.spendReport}
-          >SPEND REPORT</Nav.Link>
+          <Nav.Link>
+          <NavLink 
+            to="/account/spend-report"
+            activeStyle={{color: "#66cc66"}}
+          >SPEND REPORT</NavLink></Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link 
-            onClick={() => handleClick("payments", <></>)}
-            active={activeTab.payments}
-          >PAYMENTS</Nav.Link>
+          <Nav.Link>
+          <NavLink 
+            to="/account/payments"
+            activeStyle={{color: "#66cc66"}}
+          >PAYMENTS</NavLink></Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link
-            onClick={() => handleClick("shipping", <></>)}
-            active={activeTab.shipping}
-          >SHIPPING</Nav.Link>
+          <Nav.Link>
+          <NavLink 
+            to="/account/shipping"
+            activeStyle={{color: "#66cc66"}}
+          >SHIPPING</NavLink></Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link
-            onClick={() => handleClick("manageProfile", <ManageProfile />)}
-            active={activeTab.manageProfile}
-          >MANAGE PROFILE</Nav.Link>
+          <Nav.Link>
+          <NavLink 
+            to="/account/manage-profile"
+            activeStyle={{color: "#66cc66"}}
+          >MANAGE PROFILE</NavLink></Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link
-            onClick={() => handleClick("savedParts", <></>)}
-            active={activeTab.savedParts}
-          >SAVED PARTS</Nav.Link>
+          <Nav.Link>
+          <NavLink 
+            to="/account/saved-parts"
+            activeStyle={{color: "#66cc66"}}
+          >SAVED PARTS</NavLink></Nav.Link>
         </Nav.Item>
         <Nav.Item as="li">
           <Nav.Link onClick={() => signOut()}>SIGN OUT</Nav.Link>
