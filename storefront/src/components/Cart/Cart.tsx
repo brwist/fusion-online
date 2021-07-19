@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
+import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container, Dropdown } from 'react-bootstrap';
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
@@ -161,10 +161,21 @@ export const Cart: React.FC<CartProps> = ({
                         </Form.Control>
                       </Col>
                     </Form.Group>
-
-                    <Button variant="link" className="p-0">
-                      <FontAwesomeIcon icon={faEllipsisH} size="lg" className="my-2" />
-                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle className="dropdown-custom" as="a">
+                        <Button variant="link" className="p-0">
+                          <FontAwesomeIcon icon={faEllipsisH} size="lg" className="my-2" />
+                        </Button> 
+                      </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item>
+                        <Button variant="link" className="small">Clone Shipment</Button>
+                      </Dropdown.Item>
+                      <Dropdown.Item>
+                        <Button variant="link" className="small">Remove Shipment</Button>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                    </Dropdown>
                   </div>
 
                 </Card.Header>

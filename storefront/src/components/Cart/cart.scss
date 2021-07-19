@@ -6,4 +6,7 @@
             vertical-align: middle;
         }
     }
+    a.dropdown-custom.dropdown-toggle::after {
+            display: none;
+        }
 }
