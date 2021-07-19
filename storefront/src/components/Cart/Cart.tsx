@@ -223,12 +223,11 @@ export const Cart: React.FC<CartProps> = ({
                                   </Form.Group>
                                 </Col>
                                 <Col sm={6} className="p-0">
-                                  <a href="#" className="small">SPLIT</a>
-                                  <button
-                                    className="btn btn-link"
-                                    style={{fontSize: '12px'}}
+                                  <Button variant="link" className="small">SPLIT</Button>
+                                  <Button
+                                    variant="link" className="small"
                                     onClick={() => removeItem(id) }
-                                  >Remove</button>
+                                  >Remove</Button>
                                 </Col>
                               </Form.Row>
                             </td>
