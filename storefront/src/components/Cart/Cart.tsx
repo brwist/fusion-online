@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
 import {useCartProductDetailsQuery } from '../../generated/graphql';
+import { SectionHeader } from '../SectionHeader/SectionHeader'
 
 import './cart.scss';
 
@@ -85,11 +86,13 @@ export const Cart: React.FC<CartProps> = ({
   if (items?.length === 0) {
     return (      
     <Container>
+      <SectionHeader subheading="checkout" heading="Cart" />
       <h5>Your cart is empty.</h5>
     </Container>)
   } else if (items && data) {
     return (
       <Container>
+      <SectionHeader subheading="checkout" heading="Cart" />
       <div className="cart">
         <header>
           <Button variant="link">
