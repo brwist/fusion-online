@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, Link, useParams } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -20,19 +20,19 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
     <div className="my-account-nav">
       <Nav as="ul" className="flex-column">
         <Nav.Item as="li">
-          <NavLink
+          <Link
             className="nav-link"
             role="button"
-            to="/account/order-details"
+            to="/account/orders/open-orders"
           >
             ORDERS &amp; RFQs
-          </NavLink>
+          </Link>
           <Nav as="ul" className="flex-column">
             <Nav.Item as="li">
               <NavLink
                 className="nav-link"
                 role="button"
-                to="/account/open-orders"
+                to="/account/orders/open-orders"
               >
                 OPEN ORDERS
               </NavLink>
@@ -41,7 +41,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
               <NavLink
                 className="nav-link"
                 role="button"
-                to="/account/scheduled-orders"
+                to="/account/orders/scheduled-orders"
               >
                 SCHEDULED ORDERS
               </NavLink>
@@ -50,7 +50,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
               <NavLink
                 className="nav-link"
                 role="button"
-                to="/account/past-orders"
+                to="/account/orders/past-orders"
               >
                 PAST ORDERS
               </NavLink>
@@ -59,8 +59,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
               <NavLink
                 className="nav-link"
                 role="button"
-                to="/account/orders"
-                onClick={() => onChangeOrdersTab('open-rfqs')}
+                to="/account/orders/open-rfqs"
               >
                 OPEN RFQs
               </NavLink>
@@ -69,8 +68,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
               <NavLink
                 className="nav-link"
                 role="button"
-                to="/account/orders"
-                onClick={() => onChangeOrdersTab('past-rfqs')}
+                to="/account/orders/past-rfqs"
               >
                 PAST RFQs
               </NavLink>

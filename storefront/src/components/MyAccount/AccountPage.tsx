@@ -41,9 +41,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
             <Route exact path="/account/order-details" component={OrderDetails} />
             <Route exact path="/account/spend-report" component={SpendReport} />
             <Route exact path="/account/manage-profile" component={ManageProfile} />
-            <Route exact path="/account/orders">
-              <Orders navKey={ordersNavKey} onChangeTab={setOrdersNavKey} />
-            </Route>
+            <Route path="/account/orders/:slug" component={Orders}/>
           </Switch>
         </Col>
       </Row>

@@ -1,33 +1,42 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { Tabs, Tab } from 'react-bootstrap';
+import React from 'react';
+import {Switch, Route, NavLink} from 'react-router-dom'
+import {Nav } from 'react-bootstrap';
 import { OpenRFQs } from './OpenRFQs';
+import {OrderDetails} from './OrderDetails';
 
 import './myaccount.scss';
 
 export interface OrdersProps {
-  navKey: string;
-  onChangeTab?: Dispatch<SetStateAction<any>>;
+
 }
 
 export const Orders: React.FC<OrdersProps> = ({
-  navKey, onChangeTab
+
 }) => {
 
   return (
-    <Tabs
-      activeKey={navKey}
-      onSelect={onChangeTab}
-      className="mb-3"
-    >
-      <Tab eventKey="open-orders" title="Open Orders">
-        Open Orders
-      </Tab>
-      <Tab eventKey="open-rfqs" title="Open RFQs">
-        <OpenRFQs />
-      </Tab>
-      <Tab eventKey="past-rfqs" title="Past RFQs">
-        Past RFQs
-      </Tab>
-    </Tabs>
+    <>
+    <Nav as="ul" className="flex-row">
+      <Nav.Item as="li">
+        <NavLink 
+          to="/account/orders/open-orders"
+          activeStyle={{color: "#66cc66"}}
+          className="nav-link"
+        >Open Orders</NavLink>
+      </Nav.Item>
+      <Nav.Item as="li">
+        <NavLink 
+          to="/account/orders/open-rfqs"
+          activeStyle={{color: "#66cc66"}}
+          className="nav-link"
+        >Open RFQs</NavLink>
+      </Nav.Item>
+    </Nav>
+    <Switch>
+      <Route exact path="/account/orders/open-orders" component={OrderDetails}/>
+      <Route exact path="/account/orders/open-rfqs" component={OpenRFQs}/>
+    </Switch>
+    </>
+
   );
 };
