@@ -15,7 +15,7 @@ export interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({...props}) => {
   return (
     <Container>
-      <SectionHeader subheading="Lorem Impsum Dolor" heading="Fusion Product Portal" />
+      <SectionHeader subheading="Lorem Impsum Dolor" heading="RocketChips Product Portal" />
       <SearchBar updateSearchQuery={(searchString) => console.log(searchString) }/>
       <Row>
         <Col className="my-auto" md="auto">

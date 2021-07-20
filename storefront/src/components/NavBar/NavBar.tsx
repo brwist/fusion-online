@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch } from '@fortawesome/pro-regular-svg-icons';
-import LogoImg from '../../img/fusion-logo.svg';
+import LogoImg from '../../img/rocketChips.png';
 import { useCategoryList } from '@saleor/sdk'
 
 import './navbar.scss';
