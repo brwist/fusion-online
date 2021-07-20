@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
-
 import { ChangePassword } from '../Forms/ChangePassword';
 import { NotificationPreferences} from '../Forms/NotificationPreferences';
 import { usePasswordChange } from "@saleor/sdk";
@@ -17,7 +16,7 @@ export const ManageProfile: React.FC<ManageProfileProps> = ({
   return (
     <div className="manage-profile">
       <header className="my-3 d-flex justify-content-between align-items-center">
-        <h1 className="m-0">Manage Profile</h1>
+        <h2 className="h3 m-0">Manage Profile</h2>
       </header>
       <Row>
         <Col lg={6}>

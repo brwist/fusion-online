@@ -11,7 +11,7 @@ export const SpendReport: React.FC<SpendReportProps> = ({
   return (
     <div className="spend-report">
       <header className="my-3 d-flex justify-content-between align-items-center">
-        <h1 className="m-0">Spend Report</h1>
+        <h2 className="h3 m-0">Spend Report</h2>
 
         <Form>
           <Form.Group as={Row} controlId="year" className="mb-0">
