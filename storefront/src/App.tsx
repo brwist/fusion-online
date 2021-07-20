@@ -73,7 +73,7 @@ function App() {
           <NavBar signOut={signOut} cartItemsNum={items?.length || 0}/>
           <Switch>
             <Route exact path="/" component={HomePage} />
-            <Route exact path="/search">
+            <Route path="/search">
               <SearchContainer addItem={addItem} />
             </Route>
             <Route exact path="/products/:id" >

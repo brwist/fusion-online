@@ -1,4 +1,5 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom'
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import { SearchBar } from '../SearchBar/SearchBar';
@@ -13,6 +14,7 @@ export interface HomePageProps {
 
 }
 export const HomePage: React.FC<HomePageProps> = ({...props}) => {
+  const history = useHistory()
   return (
     <Container>
       <SectionHeader subheading="Lorem Impsum Dolor" heading="RocketChips Product Portal" />
