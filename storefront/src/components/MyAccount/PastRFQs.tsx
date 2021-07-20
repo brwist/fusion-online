@@ -3,13 +3,13 @@ import { Card, Table, Button, ProgressBar } from 'react-bootstrap';
 
 import './myaccount.scss';
 
-export interface OpenRFQsProps {}
+export interface PastRFQsProps {}
 
-export const OpenRFQs: React.FC<OpenRFQsProps> = ({
+export const PastRFQs: React.FC<PastRFQsProps> = ({
   ...props
 }) => {
   return (
-    <Card className="open-rfqs">
+    <Card className="past-rfqs">
       <Table borderless responsive>
         <thead className="bg-dark text-white">
           <tr>
