@@ -1,105 +1,126 @@
-import React from 'react';
-import {NavLink, useParams } from 'react-router-dom'
+import React, { Dispatch, SetStateAction } from 'react';
+import { NavLink, useParams } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 
 import './myaccount.scss';
 
 export interface MyAccountNavProps {
-  signOut(): void
+  signOut(): void;
+  ordersNavKey: string;
+  onChangeOrdersTab: Dispatch<SetStateAction<any>>;
 }
 
 export const MyAccountNav: React.FC<MyAccountNavProps> = ({
-  signOut
+  signOut, ordersNavKey, onChangeOrdersTab
 }) => {
+  const {slug} = useParams<{slug: string}>();
+  console.log(slug);
 
-  const {slug} = useParams<{slug: string}>()
-  console.log(slug)
   return (
     <div className="my-account-nav">
       <Nav as="ul" className="flex-column">
         <Nav.Item as="li">
-          <Nav.Link><NavLink 
-            to="/account/orders-rfps"
-            activeStyle={{color: "#66cc66"}}
+          <NavLink
+            className="nav-link"
+            role="button"
+            to="/account/order-details"
           >
-            ORDERS &amp; RFQs </NavLink></Nav.Link>
+            ORDERS &amp; RFQs
+          </NavLink>
           <Nav as="ul" className="flex-column">
             <Nav.Item as="li">
-              <Nav.Link>
-              <NavLink 
+              <NavLink
+                className="nav-link"
+                role="button"
                 to="/account/open-orders"
-                activeStyle={{color: "#66cc66"}}
               >
-                OPEN ORDERS</NavLink></Nav.Link>
+                OPEN ORDERS
+              </NavLink>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link>
-              <NavLink 
+              <NavLink
+                className="nav-link"
+                role="button"
                 to="/account/scheduled-orders"
-                activeStyle={{color: "#66cc66"}}
               >
-                SCHEDULED ORDERS</NavLink></Nav.Link>
+                SCHEDULED ORDERS
+              </NavLink>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link>
-              <NavLink 
+              <NavLink
+                className="nav-link"
+                role="button"
                 to="/account/past-orders"
-                activeStyle={{color: "#66cc66"}}
               >
-                PAST ORDERS</NavLink></Nav.Link>
+                PAST ORDERS
+              </NavLink>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link>
-              <NavLink 
-                to="/account/open-rfqs"
-                activeStyle={{color: "#66cc66"}}
+              <NavLink
+                className="nav-link"
+                role="button"
+                to="/account/orders"
+                onClick={() => onChangeOrdersTab('open-rfqs')}
               >
-                OPEN RFQs</NavLink></Nav.Link>
+                OPEN RFQs
+              </NavLink>
             </Nav.Item>
             <Nav.Item as="li">
-              <Nav.Link>
-              <NavLink 
-                to="/account/past-rfqs"
-                activeStyle={{color: "#66cc66"}}
+              <NavLink
+                className="nav-link"
+                role="button"
+                to="/account/orders"
+                onClick={() => onChangeOrdersTab('past-rfqs')}
               >
-                PAST RFQs</NavLink></Nav.Link>
+                PAST RFQs
+              </NavLink>
             </Nav.Item>
           </Nav>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link>
-          <NavLink 
+          <NavLink
+            className="nav-link"
+            role="button"
             to="/account/spend-report"
-            activeStyle={{color: "#66cc66"}}
-          >SPEND REPORT</NavLink></Nav.Link>
+          >
+            SPEND REPORT
+          </NavLink>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link>
-          <NavLink 
+          <NavLink
+            className="nav-link"
+            role="button"
             to="/account/payments"
-            activeStyle={{color: "#66cc66"}}
-          >PAYMENTS</NavLink></Nav.Link>
+          >
+            PAYMENTS
+          </NavLink>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link>
-          <NavLink 
+          <NavLink
+            className="nav-link"
+            role="button"
             to="/account/shipping"
-            activeStyle={{color: "#66cc66"}}
-          >SHIPPING</NavLink></Nav.Link>
+          >
+            SHIPPING
+          </NavLink>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link>
-          <NavLink 
+          <NavLink
+            className="nav-link"
+            role="button"
             to="/account/manage-profile"
-            activeStyle={{color: "#66cc66"}}
-          >MANAGE PROFILE</NavLink></Nav.Link>
+          >
+            MANAGE PROFILE
+          </NavLink>
         </Nav.Item>
         <Nav.Item as="li">
-          <Nav.Link>
-          <NavLink 
+          <NavLink
+            className="nav-link"
+            role="button"
             to="/account/saved-parts"
-            activeStyle={{color: "#66cc66"}}
-          >SAVED PARTS</NavLink></Nav.Link>
+          >
+            SAVED PARTS
+          </NavLink>
         </Nav.Item>
         <Nav.Item as="li">
           <Nav.Link onClick={() => signOut()}>SIGN OUT</Nav.Link>
