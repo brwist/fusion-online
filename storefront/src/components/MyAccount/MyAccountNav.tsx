@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { NavLink, Link, useParams } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 
@@ -6,12 +6,10 @@ import './myaccount.scss';
 
 export interface MyAccountNavProps {
   signOut(): void;
-  ordersNavKey: string;
-  onChangeOrdersTab: Dispatch<SetStateAction<any>>;
 }
 
 export const MyAccountNav: React.FC<MyAccountNavProps> = ({
-  signOut, ordersNavKey, onChangeOrdersTab
+  signOut
 }) => {
   const {slug} = useParams<{slug: string}>();
   console.log(slug);
@@ -20,13 +18,13 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
     <div className="my-account-nav">
       <Nav as="ul" className="flex-column">
         <Nav.Item as="li">
-          <Link
+          <NavLink
             className="nav-link"
             role="button"
-            to="/account/orders/open-orders"
+            to="/account/order-details"
           >
             ORDERS &amp; RFQs
-          </Link>
+          </NavLink>
           <Nav as="ul" className="flex-column">
             <Nav.Item as="li">
               <NavLink

@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { Switch, Route} from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 
@@ -23,25 +23,22 @@ export interface AccountPageProps {
 export const AccountPage: React.FC<AccountPageProps> = ({
   signOut, user
 }) => {
-  const [ordersNavKey, setOrdersNavKey] = useState<any>('open-orders');
 
   return (
     <Container>
       <SectionHeader subheading="My Account" heading={`Hello, ${user.email}`} />
       <Row>
-        <Col xs={2}>
+        <Col md={3}>
           <MyAccountNav
             signOut={signOut}
-            ordersNavKey={ordersNavKey}
-            onChangeOrdersTab={setOrdersNavKey}
           />
         </Col>
-        <Col xs={10}>
+        <Col md={9}>
           <Switch>
             <Route exact path="/account/order-details" component={OrderDetails} />
             <Route exact path="/account/spend-report" component={SpendReport} />
             <Route exact path="/account/manage-profile" component={ManageProfile} />
-            <Route path="/account/orders/:slug" component={Orders}/>
+            <Route path="/account/orders/:slug" component={Orders} />
           </Switch>
         </Col>
       </Row>
