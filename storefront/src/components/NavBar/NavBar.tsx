@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch } from '@fortawesome/pro-regular-svg-icons';
-import LogoImg from '../../img/fusion-logo.svg';
+import LogoImg from '../../img/rocketChips.png';
 import { useCategoryList } from '@saleor/sdk'
 
 import './navbar.scss';
@@ -20,11 +21,13 @@ export const NavBar: React.FC<NavBarProps> = ({
     <header id="header">
       <Navbar variant="light" expand="lg" className="justify-content-between">
         <Container>
-          <Navbar.Brand href="/">
+          <Navbar.Brand>
+            <Link to="/">
             <img
               src={LogoImg}
               alt="Fusion Worldwide"
             />
+            </Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse id="navbar-nav">
@@ -32,35 +35,41 @@ export const NavBar: React.FC<NavBarProps> = ({
               {data?.map(({id, name}) => {
                 return (
                   <Nav.Item key={id} as="li">
-                    <Nav.Link href={`/categories/${id}`}>{name}</Nav.Link>
+                    <Nav.Link>
+                      <Link to={`/categories/${id}`}>{name}</Link>
+                      </Nav.Link>
                   </Nav.Item>
                 )
               })}
               <Nav.Item as="li">
-                <Nav.Link href="/cart">
+                <Nav.Link>
+                  <Link to="/cart">
                   <FontAwesomeIcon icon={faShoppingCart} /> {`(${cartItemsNum})`}
+                  </Link>
                 </Nav.Link>
               </Nav.Item>
             </Nav>
 
             <Nav as="ul" id="utility-nav">
               <Nav.Item as="li">
-                <Nav.Link href="/search">
+                <Nav.Link>
+                  <Link to="/search">
                   Part Search
                   <FontAwesomeIcon
                     icon={faSearch}
                     className="ml-2"
                   />
+                  </Link>
                 </Nav.Link>
               </Nav.Item>
               <NavDropdown as="li" title="My Account" id="account-dropdown">
-                <NavDropdown.Item href="/account/orders-rfps">Orders &amp; RFPs</NavDropdown.Item>
-                <NavDropdown.Item href="/account/spend-report">Spend Report</NavDropdown.Item>
-                <NavDropdown.Item href="/account/payments">Payments</NavDropdown.Item>
-                <NavDropdown.Item href="/account/shipping">Shipping</NavDropdown.Item>
-                <NavDropdown.Item href="/account/manage-profile">Manage Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/account/saved-parts">Saved Parts</NavDropdown.Item>
-                <NavDropdown.Item onClick={() => signOut()} href="#">Sign Out</NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/orders-rfps">Orders &amp; RFPs</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/spend-report">Spend Report</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/payments">Payments</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/manage-profile">Manage Profile</Link></NavDropdown.Item>
+                <NavDropdown.Item><Link to="/account/saved-parts">Saved Parts</Link></NavDropdown.Item>
+                <NavDropdown.Item onClick={() => signOut()}>Sign Out</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown as="li" title="My Parts" id="parts-dropdown">
                 <NavDropdown.Item href="#">Action</NavDropdown.Item>

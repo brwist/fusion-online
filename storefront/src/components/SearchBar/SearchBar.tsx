@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useLocation, useHistory} from 'react-router-dom'
 import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
@@ -9,13 +10,15 @@ export interface SearchBarProps {
   /**
    * handler from searchContainer that sets the searchQuery
    */
-  updateSearchQuery(searchString: string): void 
+  updateSearchQuery(searchString: string): void
+  initialSearchQuery?: string | null
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-  updateSearchQuery
+  updateSearchQuery, initialSearchQuery
 }) => {
-  const [searchString, setSearchString] = useState("")
+  const history = useHistory();
+  const [searchString, setSearchString] = useState(initialSearchQuery || "")
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.currentTarget.value)
@@ -24,7 +27,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   return (
     <div className="search-bar">
-      <Form onSubmit={(e) => e.preventDefault()}>
+      <Form onSubmit={(e) => {
+        e.preventDefault()
+        history.push(`/search?q=${encodeURI(searchString)}`)
+      }}>
         <Form.Group controlId="search-products" className="m-0">
           <Form.Label className="sr-only">Search by Part Name, Number or Keyword</Form.Label>
           <Form.Control 
@@ -35,7 +41,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           />
         </Form.Group>
 
-        <button type="submit" className="search-submit">
+        <button type="submit" className="search-submit" onClick={
+          (e) => {
+            e.preventDefault()
+            history.push(`/search?q=${searchString}`)
+          }
+        }>
           <FontAwesomeIcon icon={faSearch} />
         </button>
       </Form>

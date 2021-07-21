@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
+import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container, Dropdown } from 'react-bootstrap';
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
 import {useCartProductDetailsQuery } from '../../generated/graphql';
+import { SectionHeader } from '../SectionHeader/SectionHeader'
 
 import './cart.scss';
 
@@ -85,18 +86,22 @@ export const Cart: React.FC<CartProps> = ({
   if (items?.length === 0) {
     return (      
     <Container>
+      <SectionHeader subheading="checkout" heading="Cart" />
       <h5>Your cart is empty.</h5>
     </Container>)
   } else if (items && data) {
     return (
       <Container>
+      <SectionHeader subheading="checkout" heading="Cart" />
       <div className="cart">
         <header>
           <Button variant="link">
             <FontAwesomeIcon icon={farFaBookmark} size="lg" className="mr-1" /> Move All to Parts List
           </Button>
-          <Button variant="link">
-            <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove List
+          <Button variant="link" onClick={() => items.forEach(
+              (item: {variant: {id: string}}) => removeItem(item.variant.id)
+            )}>
+            <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove All
           </Button>
         </header>
 
@@ -156,10 +161,21 @@ export const Cart: React.FC<CartProps> = ({
                         </Form.Control>
                       </Col>
                     </Form.Group>
-
-                    <Button variant="link" className="p-0">
-                      <FontAwesomeIcon icon={faEllipsisH} size="lg" className="my-2" />
-                    </Button>
+                    <Dropdown>
+                      <Dropdown.Toggle className="dropdown-custom" as="a">
+                        <Button variant="link" className="p-0">
+                          <FontAwesomeIcon icon={faEllipsisH} size="lg" className="my-2" />
+                        </Button> 
+                      </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item>
+                        <Button variant="link" className="small">Clone Shipment</Button>
+                      </Dropdown.Item>
+                      <Dropdown.Item>
+                        <Button variant="link" className="small">Remove Shipment</Button>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                    </Dropdown>
                   </div>
 
                 </Card.Header>
@@ -221,12 +237,11 @@ export const Cart: React.FC<CartProps> = ({
                                   </Form.Group>
                                 </Col>
                                 <Col sm={6} className="p-0">
-                                  <a href="#" className="small">SPLIT</a>
-                                  <button
-                                    className="btn btn-link"
-                                    style={{fontSize: '12px'}}
+                                  <Button variant="link" className="small">SPLIT</Button>
+                                  <Button
+                                    variant="link" className="small"
                                     onClick={() => removeItem(id) }
-                                  >Remove</button>
+                                  >Remove</Button>
                                 </Col>
                               </Form.Row>
                             </td>
