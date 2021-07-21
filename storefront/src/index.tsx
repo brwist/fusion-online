@@ -9,11 +9,11 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 
 const client = new ApolloClient({
-  uri: "http://localhost:8000/graphql/",
+  uri: process.env.REACT_APP_GRAPHQL_URL,
   cache: new InMemoryCache()
 });
  
-const config = { apiUrl: "http://localhost:8000/graphql/" };
+const config = { apiUrl: process.env.REACT_APP_GRAPHQL_URL || '' };
 const apolloConfig = {
   /* 
     Optional custom Apollo client config.
