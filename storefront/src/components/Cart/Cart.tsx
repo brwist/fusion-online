@@ -218,10 +218,9 @@ export const Cart: React.FC<CartProps> = ({
                                       <Form.Control
                                         style={{'width': '60px'}}
                                         size="sm"
-                                        type="text"
+                                        type="number"
                                         min={1}
                                         max={quantityAvailable}
-                                        placeholder=""
                                         name={id}
                                         onChange={(e) => {
                                           console.log(e.target.value);
@@ -238,16 +237,18 @@ export const Cart: React.FC<CartProps> = ({
                                     </Form.Group>
                                   </Col>
                                   <Col sm={6} className="p-0">
-                                    <Button variant="link" className="small">SPLIT</Button>
+                                    <Button variant="link" className="small p-0">Split</Button>
                                     <Button
-                                      variant="link" className="small"
+                                      variant="link" className="small p-0"
                                       onClick={() => removeItem(id) }
-                                    >Remove</Button>
+                                    >
+                                      Remove
+                                    </Button>
                                   </Col>
                                 </Form.Row>
                               </td>
 
-                                {pricing?.onSale ?
+                              {pricing?.onSale ?
                                 <td className="text-right">
                                   <div className="small">
                                     <s>${(pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}</s>
