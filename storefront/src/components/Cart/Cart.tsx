@@ -83,7 +83,7 @@ export const Cart: React.FC<CartProps> = ({
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
-  if (items?.length === 0) {
+  if (!items || items?.length === 0) {
     return (
       <Container>
         <SectionHeader subheading="checkout" heading="Cart" />
