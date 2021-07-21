@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { Card, Table, Button } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -18,7 +18,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
             <th>Monday 00, 0000</th>
             <th>$0000.00</th>
             <th className="text-center">
-              <Link to="/">See Details</Link>
+              <Link to="/account/orders/open-orders/1">See Details</Link>
             </th>
           </tr>
         </thead>
