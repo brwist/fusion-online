@@ -239,6 +239,7 @@ class Product(SeoModel, ModelWithMetadata, PublishableModel):
     product_type = models.ForeignKey(
         ProductType, related_name="products", on_delete=models.CASCADE
     )
+    mpn = models.CharField(max_length=50, default="BBB")
     name = models.CharField(max_length=250)
     slug = models.SlugField(max_length=255, unique=True, allow_unicode=True)
     description = models.TextField(blank=True)
