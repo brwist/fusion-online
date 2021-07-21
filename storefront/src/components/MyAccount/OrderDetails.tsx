@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory, Link, useLocation } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
@@ -13,11 +13,18 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
   ...props
 }) => {
   const history = useHistory()
+  const location = useLocation()
+  const getAllOrdersPath = () => {
+    const path = location.pathname.split('/')
+    path.pop()
+    return path.join("/")
+  }
+  getAllOrdersPath()
   return (
     <div className="order-details">
       <header className="my-3 d-flex justify-content-between align-items-center">
         <div>
-          <Button variant="link" className="btn-see-all" onClick={() => history.goBack()}>SEE ALL ORDERS</Button>
+          <Button variant="link" className="btn-see-all" onClick={() => history.push(getAllOrdersPath())}>SEE ALL ORDERS</Button>
           <h2 className="h3 mt-1 mb-0">Order Details</h2>
         </div>
         <Button variant="primary">
