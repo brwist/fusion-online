@@ -1,13 +1,15 @@
 import React from 'react';
 import { Switch, Route} from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
-
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { MyAccountNav } from './MyAccountNav';
 import { OrderDetails } from './OrderDetails';
 import { SpendReport } from './SpendReport';
+import { Payments } from './Payments';
+import { Shipping } from './Shipping';
 import { ManageProfile } from './ManageProfile';
 import { Orders } from './Orders';
+
 import './myaccount.scss'
 
 export interface AccountPageProps {
@@ -37,6 +39,8 @@ export const AccountPage: React.FC<AccountPageProps> = ({
           <Switch>
             <Route exact path="/account/order-details" component={OrderDetails} />
             <Route exact path="/account/spend-report" component={SpendReport} />
+            <Route exact path="/account/payments" component={Payments} />
+            <Route exact path="/account/shipping" component={Shipping} />
             <Route exact path="/account/manage-profile" component={ManageProfile} />
             <Route path="/account/orders/:slug" component={Orders} />
           </Switch>

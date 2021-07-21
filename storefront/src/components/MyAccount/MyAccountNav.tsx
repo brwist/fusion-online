@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link, useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 
 import './myaccount.scss';

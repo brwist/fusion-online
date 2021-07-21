@@ -16,7 +16,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
       <header className="my-3 d-flex justify-content-between align-items-center">
         <div>
           <a href="#">SEE ALL ORDERS</a>
-          <h1 className="mt-1 mb-0">Order Details</h1>
+          <h2 className="h3 mt-1 mb-0">Order Details</h2>
         </div>
         <Button variant="primary">
           Download Invoice

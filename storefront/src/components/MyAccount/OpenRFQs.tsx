@@ -67,9 +67,9 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
               </div>
               <div className="mb-3">
                 <div className="font-weight-bold small">Shipping Address</div>
-                  Full Name<br />
-                  123 Main St.<br />
-                  City, State 01234, US
+                Full Name<br />
+                123 Main St.<br />
+                City, State 01234, US
               </div>
             </td>
             <td className="text-center">
