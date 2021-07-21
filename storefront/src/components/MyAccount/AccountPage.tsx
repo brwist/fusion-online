@@ -37,12 +37,11 @@ export const AccountPage: React.FC<AccountPageProps> = ({
         </Col>
         <Col md={9}>
           <Switch>
-            <Route exact path="/account/order-details" component={OrderDetails} />
             <Route exact path="/account/spend-report" component={SpendReport} />
             <Route exact path="/account/payments" component={Payments} />
             <Route exact path="/account/shipping" component={Shipping} />
             <Route exact path="/account/manage-profile" component={ManageProfile} />
-            <Route path="/account/orders/:slug" component={Orders} />
+            <Route path="/account/orders" component={Orders} />
           </Switch>
         </Col>
       </Row>

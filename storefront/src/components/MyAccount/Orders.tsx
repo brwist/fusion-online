@@ -72,6 +72,7 @@ export const Orders: React.FC<OrdersProps> = ({
       <Route exact path="/account/orders/past-orders" component={PastOrders} />
       <Route exact path="/account/orders/open-rfqs" component={OpenRFQs} />
       <Route exact path="/account/orders/past-rfqs" component={PastRFQs} />
+      <Route exact path="/account/orders" component={OpenOrders} />
     </Switch>
     </>
 

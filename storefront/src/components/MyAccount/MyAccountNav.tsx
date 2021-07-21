@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -11,9 +11,6 @@ export interface MyAccountNavProps {
 export const MyAccountNav: React.FC<MyAccountNavProps> = ({
   signOut
 }) => {
-  const {slug} = useParams<{slug: string}>();
-  console.log(slug);
-
   return (
     <div className="my-account-nav">
       <Nav as="ul" className="flex-column">
@@ -21,7 +18,10 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
           <NavLink
             className="nav-link"
             role="button"
-            to="/account/order-details"
+            to="/account/orders/open-orders"
+            isActive={(match, location) => {
+              return location.pathname.startsWith("/account/orders")
+            }}
           >
             ORDERS &amp; RFQs
           </NavLink>
