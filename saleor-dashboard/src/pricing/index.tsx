@@ -6,10 +6,10 @@ import { getArrayQueryParam } from "@saleor/utils/urls";
 
 import {
   ProductListUrlQueryParams,
-  ProductListUrlSortField,
+  ProductListUrlSortField
 } from "../products/urls";
 import ProductListComponent from "../products/views/ProductList";
-import { pricingListPath} from "./urls";
+import { pricingListPath } from "./urls";
 
 const ProductList: React.FC<RouteComponentProps<any>> = ({ location }) => {
   const qs = parseQs(location.search.substr(1));
@@ -27,14 +27,8 @@ const ProductList: React.FC<RouteComponentProps<any>> = ({ location }) => {
   return <ProductListComponent params={params} />;
 };
 
-const Component = () => {
-
-  return (
-    <Route
-      exact path={pricingListPath}
-      component={ProductList}
-    />
-  );
-};
+const Component = () => (
+  <Route exact path={pricingListPath} component={ProductList} />
+);
 
 export default Component;
