@@ -1,9 +1,10 @@
 import React from 'react';
-import { useHistory, Link, useLocation } from 'react-router-dom'
+import { useHistory, Link, useLocation, useParams } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
+import {useOrderDetails} from '@saleor/sdk'
 
 import './myaccount.scss';
 
@@ -19,7 +20,9 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
     path.pop()
     return path.join("/")
   }
-  getAllOrdersPath()
+  const {id} = useParams<{id: string}>()
+  const {data} = useOrderDetails({token: id})
+  console.log("order details", data)
   return (
     <div className="order-details">
       <header className="my-3 d-flex justify-content-between align-items-center">
@@ -36,13 +39,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
         <Card.Body>
           <Row>
             <Col lg={4}>
-              <strong>Order Number:</strong> 123456789
+              <strong>Order Number:</strong> {data?.number}
             </Col>
             <Col lg={4}>
               <strong>Purchase Date:</strong> Mon 00, 0000
             </Col>
             <Col lg={4} className="text-right">
-              <strong>Total:</strong> $0000.00
+              <strong>Total:</strong> ${data?.total?.gross.amount}
             </Col>
           </Row>
         </Card.Body>
@@ -68,7 +71,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   Product Total
                 </Col>
                 <Col className="text-right">
-                  $0000.00
+                  ${data?.subtotal?.gross.amount}
                 </Col>
               </Row>
               <Row>
@@ -76,7 +79,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   Shipping
                 </Col>
                 <Col className="text-right">
-                  Free
+                  ${data?.shippingPrice?.gross.amount}
                 </Col>
               </Row>
               <Row>
@@ -92,7 +95,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   <strong>Order Total</strong>
                 </Col>
                 <Col className="text-right">
-                  <strong>$0000.00</strong>
+                  <strong>${data?.total?.gross.amount}</strong>
                 </Col>
               </Row>
             </Col>
@@ -115,9 +118,9 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="font-weight-bold">
                 Shipping Address
               </div>
-              Full Name<br />
-              123 Main St.<br />
-              City, State 01234, US
+              {data?.shippingAddress?.firstName} {data?.shippingAddress?.lastName}<br />
+              {data?.shippingAddress?.streetAddress1} {data?.shippingAddress?.streetAddress2}<br />
+              {data?.shippingAddress?.city}, {data?.shippingAddress?.countryArea} {data?.shippingAddress?.postalCode}, {data?.shippingAddress?.country.code}
             </Col>
             <Col lg={4} className="text-right">
               <Button variant="primary">
