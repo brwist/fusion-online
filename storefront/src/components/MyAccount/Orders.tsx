@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
 import { OpenOrders } from './OpenOrders';
+import { OrderDetails } from './OrderDetails';
 import { ScheduledOrders } from './ScheduledOrders';
 import { PastOrders } from './PastOrders';
 import { OpenRFQs } from './OpenRFQs';
@@ -68,10 +69,14 @@ export const Orders: React.FC<OrdersProps> = ({
     </Nav>
     <Switch>
       <Route exact path="/account/orders/open-orders" component={OpenOrders} />
+      <Route exact path="/account/orders/open-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/scheduled-orders" component={ScheduledOrders} />
+      <Route exact path="/account/orders/scheduled-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/past-orders" component={PastOrders} />
+      <Route exact path="/account/orders/past-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/open-rfqs" component={OpenRFQs} />
       <Route exact path="/account/orders/past-rfqs" component={PastRFQs} />
+      <Route exact path="/account/orders" component={OpenOrders} />
     </Switch>
     </>
 

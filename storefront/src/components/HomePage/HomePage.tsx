@@ -1,5 +1,5 @@
 import React from 'react';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import { SearchBar } from '../SearchBar/SearchBar';
@@ -8,13 +8,13 @@ import { ProductCard } from '../ProductCard/ProductCard';
 import { NewsCard } from '../NewsCard/NewsCard';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 
-import "./homepage.scss"
+import "./homepage.scss";
 
 export interface HomePageProps {
 
 }
 export const HomePage: React.FC<HomePageProps> = ({...props}) => {
-  const history = useHistory()
+  const history = useHistory();
   return (
     <Container>
       <SectionHeader subheading="Lorem Impsum Dolor" heading="RocketChips Product Portal" />
@@ -44,7 +44,7 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <h3 className="my-auto">Recent Orders:</h3>
         </Col>
         <Col className="d-flex justify-content-end">
-          <Button className="btn-view-all" size="lg">
+          <Button className="btn-view-all" onClick={() => history.push('/account/orders/open-orders')} size="lg">
             View All
           </Button>
         </Col>
@@ -54,24 +54,28 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <ProductCard 
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
+            onClick={() => history.push('/account/orders/open-orders/1')}
           />
         </Col>
         <Col>
           <ProductCard 
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
+            onClick={() => history.push('/account/orders/open-orders/2')}
           />
         </Col>
         <Col>
           <ProductCard 
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
+            onClick={() => history.push('/account/orders/open-orders/3')}
           />
         </Col>
         <Col>
           <ProductCard 
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
+            onClick={() => history.push('/account/orders/open-orders/4')}
           />
         </Col>
       </Row>

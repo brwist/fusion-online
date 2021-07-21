@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { ChangePassword } from '../Forms/ChangePassword';
-import { NotificationPreferences} from '../Forms/NotificationPreferences';
+import { NotificationPreferences } from '../Forms/NotificationPreferences';
 import { usePasswordChange } from "@saleor/sdk";
 
 import './myaccount.scss';

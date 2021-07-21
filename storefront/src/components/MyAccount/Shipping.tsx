@@ -19,14 +19,14 @@ export const Shipping: React.FC<ShippingProps> = ({
         <Card.Body>
           <Row>
             <Col>
-              <div className="mb-4">
+              <div className="mb-2">
                 Full Name<br />
                 123 Main St.<br />
                 City, State 01234, US<br />
                 (000) 000-0000
               </div>
-              <div className="small">
-                <a href="#">EDIT CARD</a> | <a href="#">REMOVE CARD</a>
+              <div>
+                <Button variant="link" className="small px-0">EDIT ADDRESS</Button> | <Button variant="link" className="small px-0">REMOVE ADDRESS</Button>
               </div>
             </Col>
             <Col className="text-right">
@@ -40,14 +40,14 @@ export const Shipping: React.FC<ShippingProps> = ({
         <Card.Body>
           <Row>
             <Col>
-              <div className="mb-4">
+              <div className="mb-2">
                 Full Name<br />
                 123 Main St.<br />
                 City, State 01234, US<br />
                 (000) 000-0000
               </div>
-              <div className="small">
-                <a href="#">EDIT CARD</a> | <a href="#">REMOVE CARD</a>
+              <div>
+                <Button variant="link" className="small px-0">EDIT ADDRESS</Button> | <Button variant="link" className="small px-0">REMOVE ADDRESS</Button>
               </div>
             </Col>
           </Row>
