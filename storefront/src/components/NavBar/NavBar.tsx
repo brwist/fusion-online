@@ -57,7 +57,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 </Link>
               </Nav.Item>
               <NavDropdown as="li" title="My Account" id="account-dropdown">
-                <NavDropdown.Item as="div"><Link to="/account/orders/open-orders">Orders &amp; RFPs</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/orders/open-orders">Orders &amp; RFQs</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/spend-report">Spend Report</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/payments">Payments</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
