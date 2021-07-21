@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Table, Button, ProgressBar } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -13,14 +14,14 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
       <Table borderless responsive>
         <thead className="bg-dark text-white">
           <tr>
-            <th>RFQ Number <a href="#">123456789</a></th>
+            <th>RFQ Number <Link to="/">123456789</Link></th>
             <th>Monday 00, 0000</th>
             <th style={{'width': '300px'}}>
               Progress
               <ProgressBar now={30} className="ml-2" />
             </th>
             <th className="text-center">
-              <a href="#">See Details</a>
+              <Link to="/">See Details</Link>
             </th>
           </tr>
         </thead>
@@ -32,7 +33,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
                   <strong>INTEL</strong> 123456789
                 </div>
                 <div>
-                  <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                  <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
                 </div>
                 <div className="small mb-2">
                   CIPN: AB1234567
@@ -48,7 +49,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
                   <strong>INTEL</strong> 123456789
                 </div>
                 <div>
-                  <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                  <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
                 </div>
                 <div className="small mb-2">
                   CIPN: AB1234567

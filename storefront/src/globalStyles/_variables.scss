@@ -75,7 +75,7 @@ $body-color: $black;
 $link-color: $body-color;
 $link-decoration: underline;
 $link-hover-color: darken($primary, 15%);
-$link-hover-decoration: none;
+$link-hover-decoration: underline;
 
 // Fonts
 //

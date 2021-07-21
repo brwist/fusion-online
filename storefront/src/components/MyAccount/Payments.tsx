@@ -19,12 +19,12 @@ export const Payments: React.FC<PaymentsProps> = ({
         <Card.Body>
           <Row>
             <Col>
-              <div className="mb-4">
+              <div className="mb-2">
                 <strong className="transform-uppercase">American Express ****1234</strong><br />
                 <small>Expires 00/0000</small>
               </div>
-              <div className="small">
-                <a href="#">EDIT CARD</a> | <a href="#">REMOVE CARD</a>
+              <div>
+                <Button variant="link" className="small px-0">EDIT CARD</Button> | <Button variant="link" className="small px-0">REMOVE CARD</Button>
               </div>
             </Col>
             <Col>
