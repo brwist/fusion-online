@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
@@ -126,7 +126,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="small">
                 <strong className="text-uppercase">INTEL</strong> 123456789
               </div>
-              <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               <div className="small mt-1">
                 Spec Code: 123456 | Ordering Code: 123456
               </div>
@@ -164,7 +164,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="small">
                 <strong className="text-uppercase">INTEL</strong> 123456789
               </div>
-              <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               <div className="small mt-1">
                 Spec Code: 123456 | Ordering Code: 123456
               </div>

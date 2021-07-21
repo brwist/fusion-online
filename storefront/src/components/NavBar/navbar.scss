@@ -42,6 +42,7 @@
                     > .nav-link {
                         font-weight: $font-weight-bold;
                         text-transform: uppercase;
+                        text-decoration: none;
 
                         @include media-breakpoint-up(lg) {
                             padding: 1rem 1.5rem;
@@ -75,6 +76,10 @@
                             padding: 0.5rem 1rem;
                             font-size: 12px;
                             text-transform: uppercase;
+
+                            a {
+                                text-decoration: none;
+                            }
                         }
                     }
                 }

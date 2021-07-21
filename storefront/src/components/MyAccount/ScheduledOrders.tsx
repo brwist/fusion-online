@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Table, Button } from 'react-bootstrap';
+import { Card, Table } from 'react-bootstrap';
 
 import './myaccount.scss';
 
@@ -15,7 +15,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
         <Table borderless responsive>
           <thead className="bg-dark text-white">
             <tr>
-              <th>RFQ Number <a href="#">123456789</a></th>
+              <th>RFQ Number <Link to="/">123456789</Link></th>
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
@@ -117,7 +117,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
       <Table borderless responsive>
           <thead className="bg-dark text-white">
             <tr>
-              <th>RFQ Number <a href="#">123456789</a></th>
+              <th>RFQ Number <Link to="/">123456789</Link></th>
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
