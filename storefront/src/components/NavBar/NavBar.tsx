@@ -23,10 +23,10 @@ export const NavBar: React.FC<NavBarProps> = ({
         <Container>
           <Navbar.Brand>
             <Link to="/">
-            <img
-              src={LogoImg}
-              alt="Fusion Worldwide"
-            />
+              <img
+                src={LogoImg}
+                alt="RocketChips"
+              />
             </Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" />
@@ -35,62 +35,56 @@ export const NavBar: React.FC<NavBarProps> = ({
               {data?.map(({id, name}) => {
                 return (
                   <Nav.Item key={id} as="li">
-                    <Nav.Link>
-                      <Link to={`/categories/${id}`}>{name}</Link>
-                      </Nav.Link>
+                    <Link className="nav-link" to={`/categories/${id}`}>{name}</Link>
                   </Nav.Item>
                 )
               })}
               <Nav.Item as="li">
-                <Nav.Link>
-                  <Link to="/cart">
+                <Link className="nav-link" to="/cart">
                   <FontAwesomeIcon icon={faShoppingCart} /> {`(${cartItemsNum})`}
-                  </Link>
-                </Nav.Link>
+                </Link>
               </Nav.Item>
             </Nav>
 
             <Nav as="ul" id="utility-nav">
               <Nav.Item as="li">
-                <Nav.Link>
-                  <Link to="/search">
+                <Link className="nav-link" to="/search">
                   Part Search
                   <FontAwesomeIcon
                     icon={faSearch}
                     className="ml-2"
                   />
-                  </Link>
-                </Nav.Link>
+                </Link>
               </Nav.Item>
               <NavDropdown as="li" title="My Account" id="account-dropdown">
-                <NavDropdown.Item><Link to="/account/orders-rfps">Orders &amp; RFPs</Link></NavDropdown.Item>
-                <NavDropdown.Item><Link to="/account/spend-report">Spend Report</Link></NavDropdown.Item>
-                <NavDropdown.Item><Link to="/account/payments">Payments</Link></NavDropdown.Item>
-                <NavDropdown.Item><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
-                <NavDropdown.Item><Link to="/account/manage-profile">Manage Profile</Link></NavDropdown.Item>
-                <NavDropdown.Item><Link to="/account/saved-parts">Saved Parts</Link></NavDropdown.Item>
-                <NavDropdown.Item onClick={() => signOut()}>Sign Out</NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/orders/open-orders">Orders &amp; RFPs</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/spend-report">Spend Report</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/payments">Payments</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/manage-profile">Manage Profile</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/saved-parts">Saved Parts</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div" onClick={() => signOut()}>Sign Out</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown as="li" title="My Parts" id="parts-dropdown">
-                <NavDropdown.Item href="#">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#">Another action</NavDropdown.Item>
-                <NavDropdown.Item href="#">Something</NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/saved-parts">All Lists</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div">List 1</NavDropdown.Item>
+                <NavDropdown.Item as="div">List 2</NavDropdown.Item>
               </NavDropdown>
               <Nav.Item as="li">
-                <Nav.Link
-                  href="#"
-                  className="px-2 text-muted"
+                <Link
+                  to="/"
+                  className="nav-link px-2 text-muted"
                 >
                   DE
-                </Nav.Link>
+                </Link>
               </Nav.Item>
               <Nav.Item as="li">
-                <Nav.Link
-                  href="#"
-                  className="px-2 text-muted"
+                <Link
+                  to="/"
+                  className="nav-link px-2 text-muted"
                 >
                   KO
-                </Nav.Link>
+                </Link>
               </Nav.Item>
             </Nav>
           </Navbar.Collapse>

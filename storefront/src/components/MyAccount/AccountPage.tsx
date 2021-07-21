@@ -3,11 +3,11 @@ import { Switch, Route} from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { MyAccountNav } from './MyAccountNav';
-import { OrderDetails } from './OrderDetails';
 import { SpendReport } from './SpendReport';
 import { Payments } from './Payments';
 import { Shipping } from './Shipping';
 import { ManageProfile } from './ManageProfile';
+import { SavedParts } from './SavedParts';
 import { Orders } from './Orders';
 
 import './myaccount.scss'
@@ -37,12 +37,12 @@ export const AccountPage: React.FC<AccountPageProps> = ({
         </Col>
         <Col md={9}>
           <Switch>
-            <Route exact path="/account/order-details" component={OrderDetails} />
             <Route exact path="/account/spend-report" component={SpendReport} />
             <Route exact path="/account/payments" component={Payments} />
             <Route exact path="/account/shipping" component={Shipping} />
             <Route exact path="/account/manage-profile" component={ManageProfile} />
-            <Route path="/account/orders/:slug" component={Orders} />
+            <Route path="/account/orders" component={Orders} />
+            <Route exact path="/account/saved-parts" component={SavedParts} />
           </Switch>
         </Col>
       </Row>

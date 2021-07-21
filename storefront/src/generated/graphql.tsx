@@ -7885,6 +7885,7 @@ export type Product = Node & ObjectWithMetadata & {
   seoTitle?: Maybe<Scalars['String']>;
   seoDescription?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  mpn: Scalars['String'];
   description: Scalars['String'];
   descriptionJson: Scalars['JSONString'];
   publicationDate?: Maybe<Scalars['Date']>;
@@ -12234,6 +12235,7 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   name
+  mpn
   description
   descriptionJson
   variants {
@@ -12635,6 +12637,7 @@ export const ProductDetailsDocument = gql `
   fragment BasicProductFields on Product {
     id
     name
+    mpn
     thumbnail {
       url
       alt

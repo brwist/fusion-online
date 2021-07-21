@@ -47,6 +47,7 @@ import PageSection from "./pages";
 import PermissionGroupSection from "./permissionGroups";
 import PluginsSection from "./plugins";
 import ProductSection from "./products";
+import PricingSection from "./pricing";
 import ProductTypesSection from "./productTypes";
 import ShippingSection from "./shipping";
 import SiteSettingsSection from "./siteSettings";
@@ -248,6 +249,11 @@ const Routes: React.FC = () => {
                 permissions={[PermissionEnum.MANAGE_PRODUCTS]}
                 path={warehouseSection}
                 component={WarehouseSection}
+              />
+              <SectionRoute
+                permissions={[PermissionEnum.MANAGE_PRODUCTS]}
+                path="/pricing"
+                component={PricingSection}
               />
               {createConfigurationMenu(intl).filter(menu =>
                 menu.menuItems.map(item => hasPermission(item.permission, user))

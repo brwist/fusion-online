@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import { Card, Table, Button } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -13,11 +14,11 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
       <Table borderless striped responsive>
         <thead className="bg-dark text-white">
           <tr>
-            <th>RFQ Number <a href="#">123456789</a></th>
+            <th>RFQ Number <Link to="/">123456789</Link></th>
             <th>Monday 00, 0000</th>
             <th>$0000.00</th>
             <th className="text-center">
-              <a href="#">See Details</a>
+              <Link to="/account/orders/open-orders/1">See Details</Link>
             </th>
           </tr>
         </thead>
@@ -28,7 +29,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                 <strong>INTEL</strong> 123456789
               </div>
               <div>
-                <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               </div>
               <div className="small mb-2">
                 CIPN: AB1234567
@@ -57,7 +58,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                 <strong>INTEL</strong> 123456789
               </div>
               <div>
-                <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               </div>
               <div className="small mb-2">
                 CIPN: AB1234567
@@ -86,7 +87,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                 <strong>INTEL</strong> 123456789
               </div>
               <div>
-                <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               </div>
               <div className="small mb-2">
                 CIPN: AB1234567
