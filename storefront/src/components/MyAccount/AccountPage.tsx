@@ -3,7 +3,6 @@ import { Switch, Route} from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { MyAccountNav } from './MyAccountNav';
-import { OrderDetails } from './OrderDetails';
 import { SpendReport } from './SpendReport';
 import { Payments } from './Payments';
 import { Shipping } from './Shipping';

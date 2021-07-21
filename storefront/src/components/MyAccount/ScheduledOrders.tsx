@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Table, Button } from 'react-bootstrap';
 
 import './myaccount.scss';
@@ -18,7 +19,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <a href="#">See Details</a>
+                <Link to="/account/orders/scheduled-orders/2">See Details</Link>
               </th>
             </tr>
           </thead>
@@ -120,7 +121,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <a href="#">See Details</a>
+                <Link to="/account/orders/scheduled-orders/3">See Details</Link>
               </th>
             </tr>
           </thead>
