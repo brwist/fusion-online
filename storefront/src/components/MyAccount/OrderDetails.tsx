@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
@@ -12,11 +12,12 @@ export interface OrderDetailsProps {}
 export const OrderDetails: React.FC<OrderDetailsProps> = ({
   ...props
 }) => {
+  const history = useHistory()
   return (
     <div className="order-details">
       <header className="my-3 d-flex justify-content-between align-items-center">
         <div>
-          <Link to="/" className="small">SEE ALL ORDERS</Link>
+          <Button variant="link" className="btn-see-all" onClick={() => history.goBack()}>SEE ALL ORDERS</Button>
           <h2 className="h3 mt-1 mb-0">Order Details</h2>
         </div>
         <Button variant="primary">

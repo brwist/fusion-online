@@ -20,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   buttonSize,
   buttonVariant = 'primary',
   buttonLabel,
+  onClick,
   ...props
 }) => {
   return (
@@ -55,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </Card.Text>
       </Card.Body>
       <Card.Footer>
-        <Button variant={buttonVariant} size={buttonSize}>
+        <Button variant={buttonVariant} size={buttonSize} onClick={onClick}>
           {buttonLabel}
         </Button>
         <Button variant="link">

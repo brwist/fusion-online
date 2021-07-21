@@ -266,6 +266,10 @@ export const sectionNames = defineMessages({
   webhooks: {
     defaultMessage: "Webhooks",
     description: "webhooks section name"
+  },
+  pricing: {
+    defaultMessage: "Pricing",
+    description: "pricing section name"
   }
 });
 

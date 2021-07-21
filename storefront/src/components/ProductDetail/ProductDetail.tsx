@@ -27,7 +27,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
-            <button className="btn-go-back btn btn-link" onClick={() => history.goBack()}>GO BACK</button>
+            <Button variant="link" className="btn-go-back" onClick={() => history.goBack()}>GO BACK</Button>
             <h1 className="my-3">{data?.product?.name}</h1>
             <div className="small">
               <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">

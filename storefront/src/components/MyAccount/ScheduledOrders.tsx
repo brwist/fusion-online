@@ -19,7 +19,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <Link to="/">See Details</Link>
+                <Link to="/account/orders/scheduled-orders/2">See Details</Link>
               </th>
             </tr>
           </thead>
@@ -121,7 +121,7 @@ export const ScheduledOrders: React.FC<ScheduledOrdersProps> = ({
               <th colSpan={2}>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <Link to="/">See Details</Link>
+                <Link to="/account/orders/scheduled-orders/3">See Details</Link>
               </th>
             </tr>
           </thead>

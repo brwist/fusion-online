@@ -19,7 +19,7 @@ export const PastOrders: React.FC<PastOrdersProps> = ({
               <th>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <Link to="/">See Details</Link>
+                <Link to="/account/orders/past-orders/4">See Details</Link>
               </th>
             </tr>
           </thead>
@@ -65,7 +65,7 @@ export const PastOrders: React.FC<PastOrdersProps> = ({
               <th>Monday 00, 0000</th>
               <th>$0000.00</th>
               <th className="text-center">
-                <Link to="/">See Details</Link>
+                <Link to="/account/orders/past-orders/5">See Details</Link>
               </th>
             </tr>
           </thead>

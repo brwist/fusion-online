@@ -57,7 +57,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 </Link>
               </Nav.Item>
               <NavDropdown as="li" title="My Account" id="account-dropdown">
-                <NavDropdown.Item as="div"><Link to="/account/orders-rfps">Orders &amp; RFPs</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/orders/open-orders">Orders &amp; RFPs</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/spend-report">Spend Report</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/payments">Payments</Link></NavDropdown.Item>
                 <NavDropdown.Item as="div"><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
@@ -66,9 +66,9 @@ export const NavBar: React.FC<NavBarProps> = ({
                 <NavDropdown.Item as="div" onClick={() => signOut()}>Sign Out</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown as="li" title="My Parts" id="parts-dropdown">
-                <NavDropdown.Item as="div">Action</NavDropdown.Item>
-                <NavDropdown.Item as="div">Another action</NavDropdown.Item>
-                <NavDropdown.Item as="div">Something</NavDropdown.Item>
+                <NavDropdown.Item as="div"><Link to="/account/saved-parts">All Lists</Link></NavDropdown.Item>
+                <NavDropdown.Item as="div">List 1</NavDropdown.Item>
+                <NavDropdown.Item as="div">List 2</NavDropdown.Item>
               </NavDropdown>
               <Nav.Item as="li">
                 <Link
