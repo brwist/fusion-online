@@ -1,10 +1,13 @@
 import React from 'react';
 import { useHistory, Link, useLocation, useParams } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
+import moment from 'moment';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import {useOrderDetails} from '@saleor/sdk'
+import {useUserOrderByTokenQuery} from '../../generated/graphql'
 
 import './myaccount.scss';
 
@@ -21,7 +24,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
     return path.join("/")
   }
   const {id} = useParams<{id: string}>()
-  const {data} = useOrderDetails({token: id})
+  const {data} = useUserOrderByTokenQuery({variables: {token: id}})
   console.log("order details", data)
   return (
     <div className="order-details">
@@ -39,13 +42,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
         <Card.Body>
           <Row>
             <Col lg={4}>
-              <strong>Order Number:</strong> {data?.number}
+              <strong>Order Number:</strong> {data?.orderByToken?.number}
             </Col>
             <Col lg={4}>
-              <strong>Purchase Date:</strong> Mon 00, 0000
+              <strong>Purchase Date:</strong> {moment(data?.orderByToken?.created).format('MMM DD, YYY')}
             </Col>
             <Col lg={4} className="text-right">
-              <strong>Total:</strong> ${data?.total?.gross.amount}
+              <strong>Total:</strong> ${data?.orderByToken?.total?.gross.amount}
             </Col>
           </Row>
         </Card.Body>
@@ -57,13 +60,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
 
           <Row>
             <Col lg={4} className="small">
-              American Express<br />
-              ****1234
+              {data?.orderByToken?.payments && data?.orderByToken?.payments[0]?.creditCard?.brand}<br />
+              ****{data?.orderByToken?.payments && data?.orderByToken?.payments[0]?.creditCard?.lastDigits}
             </Col>
             <Col lg={4}>
-              Full Name<br />
-              123 Main St.<br />
-              City, State 01234, US
+              {data?.orderByToken?.billingAddress?.firstName} {data?.orderByToken?.billingAddress?.lastName}<br />
+              {data?.orderByToken?.billingAddress?.streetAddress1} {data?.orderByToken?.billingAddress?.streetAddress2}<br />
+              {data?.orderByToken?.billingAddress?.city}, {data?.orderByToken?.billingAddress?.countryArea} {data?.orderByToken?.billingAddress?.postalCode}, {data?.orderByToken?.billingAddress?.country.code}
             </Col>
             <Col lg={4}>
               <Row>
@@ -71,7 +74,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   Product Total
                 </Col>
                 <Col className="text-right">
-                  ${data?.subtotal?.gross.amount}
+                  ${data?.orderByToken?.subtotal?.gross.amount}
                 </Col>
               </Row>
               <Row>
@@ -79,7 +82,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   Shipping
                 </Col>
                 <Col className="text-right">
-                  ${data?.shippingPrice?.gross.amount}
+                  ${(data?.orderByToken?.shippingPrice?.gross.amount)?.toFixed(2)}
                 </Col>
               </Row>
               <Row>
@@ -87,7 +90,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   Sales, Tax, Fees &amp; Surcharges
                 </Col>
                 <Col className="text-right">
-                  $0.00
+                  $00.00
                 </Col>
               </Row>
               <Row>
@@ -95,7 +98,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                   <strong>Order Total</strong>
                 </Col>
                 <Col className="text-right">
-                  <strong>${data?.total?.gross.amount}</strong>
+                  <strong>${data?.orderByToken?.total?.gross.amount}</strong>
                 </Col>
               </Row>
             </Col>
@@ -112,15 +115,18 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="font-weight-bold">
                 Ship Date:
               </div>
-              Mon 00, 0000
+              {data?.orderByToken?.status === 'FULFILLED' ? 
+                moment(data?.orderByToken?.fulfillments[0]?.created).format('MMM DD, YYYY') :
+                data?.orderByToken?.statusDisplay
+              }
             </Col>
             <Col lg={4}>
               <div className="font-weight-bold">
                 Shipping Address
               </div>
-              {data?.shippingAddress?.firstName} {data?.shippingAddress?.lastName}<br />
-              {data?.shippingAddress?.streetAddress1} {data?.shippingAddress?.streetAddress2}<br />
-              {data?.shippingAddress?.city}, {data?.shippingAddress?.countryArea} {data?.shippingAddress?.postalCode}, {data?.shippingAddress?.country.code}
+              {data?.orderByToken?.shippingAddress?.firstName} {data?.orderByToken?.shippingAddress?.lastName}<br />
+              {data?.orderByToken?.shippingAddress?.streetAddress1} {data?.orderByToken?.shippingAddress?.streetAddress2}<br />
+              {data?.orderByToken?.shippingAddress?.city}, {data?.orderByToken?.shippingAddress?.countryArea} {data?.orderByToken?.shippingAddress?.postalCode}, {data?.orderByToken?.shippingAddress?.country.code}
             </Col>
             <Col lg={4} className="text-right">
               <Button variant="primary">
@@ -130,83 +136,53 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
           </Row>
 
           <hr />
-
-          <Row className="mb-5">
-            <Col lg={4}>
-              <div className="small">
-                <strong className="text-uppercase">INTEL</strong> 123456789
-              </div>
-              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-              <div className="small mt-1">
-                Spec Code: 123456 | Ordering Code: 123456
-              </div>
-              <div className="small">
-                CIPN: AB1234567
-              </div>
-            </Col>
-            <Col lg={3}>
-              <div className="font-weight-bold">
-                Per Unit Price
-              </div>
-              <div>
-                <strong className="text-primary">$9,985</strong>/unit
-              </div>
-            </Col>
-            <Col lg={1} className="text-center">
-              <div className="font-weight-bold">
-                Qty
-              </div>
-              100
-            </Col>
-            <Col lg={3} className="text-right">
-              <div className="font-weight-bold">
-                Product Total
-              </div>
-              $0000.00
-            </Col>
-            <Col lg={1} className="text-right">
-              <FontAwesomeIcon icon={farFaBookmark} />
-            </Col>
-          </Row>
-
-          <Row className="">
-            <Col lg={4}>
-              <div className="small">
-                <strong className="text-uppercase">INTEL</strong> 123456789
-              </div>
-              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-              <div className="small mt-1">
-                Spec Code: 123456 | Ordering Code: 123456
-              </div>
-              <div className="small">
-                CIPN: AB1234567
-              </div>
-            </Col>
-            <Col lg={3}>
-              <div className="font-weight-bold">
-                Per Unit Price
-              </div>
-              <div>
-                <strong className="text-primary">$9,985</strong>/unit
-              </div>
-            </Col>
-            <Col lg={1} className="text-center">
-              <div className="font-weight-bold">
-                Qty
-              </div>
-              100
-            </Col>
-            <Col lg={3} className="text-right">
-              <div className="font-weight-bold">
-                Product Total
-              </div>
-              $0000.00
-            </Col>
-            <Col lg={1} className="text-right">
-              <FontAwesomeIcon icon={farFaBookmark} />
-            </Col>
-          </Row>
-
+            {data?.orderByToken?.lines.map((line) => {
+              return (
+                <Row key={line?.id} className="mb-5">
+                  <Col lg={4}>
+                    <div className="small">
+                      <strong className="text-uppercase">{line?.variant?.product?.attributes?.find(({attribute}) => attribute.slug === 'manufacturer')
+                        ?.values[0]?.name
+                      }</strong> {line?.productSku}
+                    </div>
+                    <Link to={`/products/${line?.variant?.id}`}>{line?.productName}</Link>
+                    <div className="small mt-1">
+                      Spec Code: {line?.variant?.product?.attributes?.find(({attribute}) => attribute.slug === 'spec-code')
+                        ?.values[0]?.name
+                      } | Ordering Code: {line?.variant?.product?.attributes?.find(({attribute}) => attribute.slug === 'ordering-code')
+                        ?.values[0]?.name
+                      }
+                    </div>
+                    <div className="small">
+                      CIPN: AB1234567
+                    </div>
+                  </Col>
+                  <Col lg={3}>
+                    <div className="font-weight-bold">
+                      Per Unit Price
+                    </div>
+                    <div>
+                      <strong className="text-primary">${line?.unitPrice?.gross.amount}</strong>/unit
+                    </div>
+                  </Col>
+                  <Col lg={1} className="text-center">
+                    <div className="font-weight-bold">
+                      Qty
+                    </div>
+                    {line?.quantity}
+                  </Col>
+                  <Col lg={3} className="text-right">
+                    <div className="font-weight-bold">
+                      Product Total
+                    </div>
+                    ${line?.totalPrice?.gross.amount}
+                  </Col>
+                  <Col lg={1} className="text-right">
+                    <FontAwesomeIcon icon={farFaBookmark} />
+                  </Col>
+                </Row>
+              )
+            })}
           <hr />
 
           <div className="font-weight-bold">

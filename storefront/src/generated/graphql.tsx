@@ -13017,3 +13017,209 @@ export const ProductDetailsDocument = gql `
     const options = {...defaultOptions, ...baseOptions}
     return Apollo.useQuery(OrdersByUserDocument, options);
   }
+
+  export const UserOrderByTokenDocument = gql `
+  fragment OrderPrice on TaxedMoney {
+    gross {
+      amount
+      currency
+      __typename
+    }
+    __typename
+    tax {
+      amount
+    }
+  }
+  
+  fragment Address on Address {
+    id
+    firstName
+    lastName
+    companyName
+    streetAddress1
+    streetAddress2
+    city
+    postalCode
+    country {
+      code
+      country
+      __typename
+    }
+    countryArea
+    phone
+    isDefaultBillingAddress
+    isDefaultShippingAddress
+    __typename
+  }
+  
+  fragment Price on TaxedMoney {
+    gross {
+      amount
+      currency
+      __typename
+    }
+    net {
+      __typename
+    }
+    __typename
+  }
+  
+  fragment ProductVariant on ProductVariant {
+    id
+    name
+    sku
+    quantityAvailable
+    isAvailable
+    pricing {
+      onSale
+      priceUndiscounted {
+        ...Price
+        __typename
+      }
+      price {
+        ...Price
+        __typename
+      }
+      __typename
+    }
+    attributes {
+      attribute {
+        id
+        __typename
+        slug
+      }
+      values {
+        id
+        name
+        value: name
+        __typename
+      }
+      __typename
+    }
+    product {
+      id
+      name
+      productType {
+        id
+        isShippingRequired
+        __typename
+      }
+      attributes {
+        attribute {
+          slug
+        }
+        values {
+          name
+        }
+      }
+      __typename
+    }
+    __typename
+  }
+  
+  fragment OrderDetail on Order {
+    userEmail
+    paymentStatus
+    paymentStatusDisplay
+    status
+    statusDisplay
+    id
+    token
+    number
+    shippingAddress {
+      ...Address
+      __typename
+    }
+    lines {
+      productName
+      quantity
+      variant {
+        ...ProductVariant
+        __typename
+      }
+      unitPrice {
+        currency
+        ...OrderPrice
+        __typename
+      }
+      totalPrice {
+        currency
+        ...OrderPrice
+        __typename
+        tax {
+          amount
+        }
+      }
+      __typename
+      id
+      productSku
+    }
+    subtotal {
+      ...OrderPrice
+      __typename
+    }
+    total {
+      ...OrderPrice
+      __typename
+    }
+    shippingPrice {
+      ...OrderPrice
+      __typename
+    }
+    __typename
+    created
+    customerNote
+    payments {
+      creditCard {
+        brand
+        expMonth
+        expYear
+        firstDigits
+        lastDigits
+      }
+    }
+    billingAddress {
+      ...Address
+    }
+    fulfillments {
+      created
+      fulfillmentOrder
+      trackingNumber
+      statusDisplay
+    }
+  }
+  
+  fragment InvoiceFragment on Invoice {
+    id
+    number
+    createdAt
+    url
+    status
+    __typename
+  }
+  
+  query UserOrderByToken($token: UUID!) {
+    orderByToken(token: $token) {
+      ...OrderDetail
+      invoices {
+        ...InvoiceFragment
+        __typename
+      }
+      __typename
+    }
+  }
+  `
+  export type UserOrderByTokenQueryVariables = Exact<{
+    token: Scalars['UUID'];
+  }>;
+  
+  
+  export type UserOrderByTokenQuery = (
+    { __typename?: 'Query' }
+    & {orderByToken?: Maybe<Order>}
+  );
+
+  export function useUserOrderByTokenQuery(baseOptions?: Apollo.QueryHookOptions<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>) {
+    const options = {...defaultOptions, ...baseOptions}
+    return Apollo.useQuery(UserOrderByTokenDocument, options);
+  }
