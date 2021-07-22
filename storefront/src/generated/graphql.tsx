@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { OrdersByUser, OrdersByUser_me_orders_edges_node } from '@saleor/sdk/lib/queries/gqlTypes/OrdersByUser';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
@@ -12906,4 +12907,113 @@ export const ProductDetailsDocument = gql `
   export function useCartProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>) {
     const options = {...defaultOptions, ...baseOptions}
     return Apollo.useQuery(CartProductDetailsDocument, options);
+  }
+
+  export const OrdersByUserDocument = gql `
+  query OrdersByUser($perPage: Int!, $after: String) {
+    me {
+      id
+      orders(first: $perPage, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+          __typename
+        }
+        edges {
+          node {
+            id
+            token
+            number
+            statusDisplay
+            created
+            total {
+              gross {
+                amount
+                currency
+                __typename
+              }
+              net {
+                amount
+                currency
+                __typename
+              }
+              __typename
+            }
+            lines {
+              id
+              variant {
+                id
+                __typename
+                quantityAvailable
+                product {
+                  name
+                  id
+                  __typename
+                  mpn
+                  attributes {
+                    attribute {
+                      id
+                      name
+                    }
+                    values {
+                      id
+                      name
+                    }
+                  }
+                }
+              }
+              __typename
+              productName
+              productSku
+              quantity
+              totalPrice {
+                gross {
+                  amount
+                }
+              }
+              unitPrice {
+                gross {
+                  amount
+                }
+              }
+            }
+            __typename
+            shippingAddress {
+              city
+              companyName
+              country {
+                code
+                country
+              }
+              countryArea
+              firstName
+              lastName
+              postalCode
+              streetAddress1
+              streetAddress2
+            }
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+  `
+
+  export type OrdersByUserQueryVariables = Exact<{
+    perPage: Scalars['Int'];
+    after?: Maybe<Scalars['String']>;
+  }>;
+  
+  
+  export type OrdersByUserQuery = (
+    { __typename?: 'Query' }
+    & {me?: Maybe<User>}
+  );
+
+  export function useOrdersByUserQuery(baseOptions?: Apollo.QueryHookOptions<OrdersByUserQuery, OrdersByUserQueryVariables>) {
+    const options = {...defaultOptions, ...baseOptions}
+    return Apollo.useQuery(OrdersByUserDocument, options);
   }
