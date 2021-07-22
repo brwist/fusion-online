@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Card, Table, Button } from 'react-bootstrap';
+import { Card, Table, Button, Container } from 'react-bootstrap';
+import moment from 'moment';
 
 import './myaccount.scss';
-import { OrdersByUser_me_orders_edges } from '@saleor/sdk/lib/queries/gqlTypes/OrdersByUser';
+import { OrderCountableEdge } from '../../generated/graphql';
 
 
 export interface OpenOrdersProps {
-  orders: OrdersByUser_me_orders_edges[]
+  orders: OrderCountableEdge[]
 }
 
 export const OpenOrders: React.FC<OpenOrdersProps> = ({
@@ -15,14 +16,15 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
 }) => {
   if (orders.length > 0) {
   return (
-    <Card className="open-orders">
-      {orders.map(({node: {created, lines, id, statusDisplay, token, number, total}}: OrdersByUser_me_orders_edges) => {
-        return (
-        <Table key={id} borderless striped responsive>
+    <>
+    {orders.map(({node: {created, lines, id, statusDisplay, token, number, shippingAddress, total}}: OrderCountableEdge)=> {
+      return (
+        <Card key={id} className="open-orders">
+        <Table borderless striped responsive>
         <thead className="bg-dark text-white">
           <tr>
             <th>RFQ Number <Link to="/">123456789</Link></th>
-            <th>{created}</th>
+            <th>{moment(created).format('MMM DD, YYYY')}</th>
             <th>${total?.gross.amount}</th>
             <th className="text-center">
               <Link to={`/account/orders/open-orders/${token}`}>See Details</Link>
@@ -35,7 +37,10 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
               <tr key={line?.id}>
               <td>
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>{line?.variant?.product.attributes
+                    .find(({attribute}) => attribute.name === 'Manufacturer')
+                    ?.values[0]?.name
+                  }</strong> {line?.productSku}
                 </div>
                 <div>
                   <Link to={`/products/${line?.variant?.product.id}`}>{line?.variant?.product.name}</Link>
@@ -44,16 +49,16 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                   CIPN: AB1234567
                 </div>
                 <div className="small">
-                  <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
+                  <strong className="text-primary">${line?.unitPrice?.gross.amount}</strong><span className="text-muted">/unit</span>
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <strong>Qty: 100</strong>
+                  <strong>Qty: {line?.quantity}</strong>
                 </div>
               </td>
               <td colSpan={2}>
                   <div className="font-weight-bold small">Shipping Address</div>
-                  Full Name<br />
-                  123 Main St.<br />
-                  City, State 01234, US
+                  {shippingAddress?.firstName} {shippingAddress?.lastName}<br />
+                  {shippingAddress?.streetAddress1} {shippingAddress?.streetAddress2}<br />
+                  {shippingAddress?.city}, {shippingAddress?.countryArea} {shippingAddress?.postalCode}, {shippingAddress?.country.code}
               </td>
               <td className="text-center" style={{'verticalAlign': 'middle'}}>
                 <Button variant="primary">
@@ -65,15 +70,16 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
           })}
         </tbody>
       </Table>
-        )
-      })}
-    </Card>
+      </Card>
+      )
+    })}
+    </>
   );
   } else {
     return (
-      <Card>
+      <Container>
         <h5>No Open Orders</h5>
-      </Card>
+      </Container>
     )
   }
 };

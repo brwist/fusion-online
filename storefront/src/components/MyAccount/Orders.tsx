@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
+import {useQuery} from '@apollo/client'
 
 import { useOrdersByUser } from '@saleor/sdk';
 import { OpenOrders } from './OpenOrders';
@@ -9,6 +10,7 @@ import { ScheduledOrders } from './ScheduledOrders';
 import { PastOrders } from './PastOrders';
 import { OpenRFQs } from './OpenRFQs';
 import { PastRFQs } from './PastRFQs';
+import {useOrdersByUserQuery, OrdersByUserDocument} from '../../generated/graphql'
 
 import './myaccount.scss';
 
@@ -19,8 +21,9 @@ export interface OrdersProps {
 export const Orders: React.FC<OrdersProps> = ({
 
 }) => {
-  const {data} = useOrdersByUser({perPage: 10});
-  console.log(data)
+  const {data} = useOrdersByUserQuery( {variables: {perPage: 10}});
+  
+  console.log("ordersCustom", data)
   return (
     <>
     <Nav as="ul" className="nav-tabs mb-3">
@@ -72,7 +75,7 @@ export const Orders: React.FC<OrdersProps> = ({
     </Nav>
     <Switch>
       <Route exact path="/account/orders/open-orders">
-        <OpenOrders orders={data?.edges || []}/>
+        <OpenOrders orders={data?.me?.orders?.edges || []}/>
       </Route>
       <Route exact path="/account/orders/open-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/scheduled-orders" component={ScheduledOrders} />
@@ -82,7 +85,7 @@ export const Orders: React.FC<OrdersProps> = ({
       <Route exact path="/account/orders/open-rfqs" component={OpenRFQs} />
       <Route exact path="/account/orders/past-rfqs" component={PastRFQs} />
       <Route exact path="/account/orders">
-        <OpenOrders orders={data?.edges || []}/>
+        <OpenOrders orders={data?.me?.orders?.edges || []}/>
       </Route>
     </Switch>
     </>
