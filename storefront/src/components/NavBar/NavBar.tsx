@@ -20,7 +20,7 @@ export const NavBar: React.FC<NavBarProps> = ({
           <Navbar.Brand href="/">
             <img
               src={LogoImg}
-              alt="Fusion Worldwide"
+              alt="RocketChips"
             />
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" />

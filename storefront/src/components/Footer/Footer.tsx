@@ -25,7 +25,7 @@ export const Footer: React.FC<FooterProps> = ({
           </Nav>
 
           <div className="copyright">
-            &copy; 2021 Fusion Worldwide. All Rights Reserved.
+            &copy; 2021 RocketChips. All Rights Reserved.
           </div>
         </div>
 

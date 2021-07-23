@@ -1,4 +1,4 @@
-import fusionLogoWhite from "@assets/images/fusionww-logo-color-white.svg";
+import fusionLogoWhite from "@assets/images/rocketChips.png";
 import fusionLogoOnlyWhite from "@assets/images/fusionww-logo-only-white.svg";
 import menuArrowIcon from "@assets/images/menu-arrow-icon.svg";
 import Avatar from "@material-ui/core/Avatar";
@@ -390,7 +390,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     [classes.logoDark]: isDark
                   })}
                 >
-                  <SVG
+                  <img style={{maxWidth: '220px'}}
                     src={isMenuSmall ? fusionLogoOnlyWhite : fusionLogoWhite}
                   />
                 </div>
