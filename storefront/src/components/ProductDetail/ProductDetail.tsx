@@ -5,7 +5,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-import {useProductDetailsQuery} from '../../generated/graphql';
+import { useProductDetailsQuery } from '../../generated/graphql';
 
 import './productdetail.scss';
 
@@ -22,7 +22,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   if (data) {
     console.log(data)
   }
-  
+
   return (
     <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
@@ -58,7 +58,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <Col lg={6}>
             {data?.product?.attributes.map(({attribute, values}) => {
               return (
-               <div className="mb-4" key={attribute.id}>
+                <div className="mb-4" key={attribute.id}>
                   <div className="font-weight-bold">{attribute.name}</div>
                     {values[0]?.name}
                 </div>
@@ -92,7 +92,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           </Col>
           <Col lg={4}>
-            <AddToCart 
+            <AddToCart
               variant={data?.product?.variants && data?.product?.variants[0]}
               addItem={addItem}
             />
