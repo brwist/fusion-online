@@ -81,7 +81,7 @@ function App() {
                 addItem={addItem}
               />
             </Route>
-            <Route exact path="/categories/:id" >
+            <Route exact path="/categories/:slug" >
               <CategoryPage addItem={addItem}/>
             </Route>
             <Route exact path="/cart">

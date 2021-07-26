@@ -16,10 +16,10 @@ export interface CategoryPageProps {
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
-  const {id} = useParams<{id: string}>();
-  const category = useCategoryDetails({id: id});
+  const {slug} = useParams<{slug: string}>();
+  const category = useCategoryDetails({slug: slug});
   const productList = useProductListQuery({
-    variables: {filter: {categories: [id], isPublished: true, attributes: attributes}, first: 100}
+    variables: {filter: {categories: [category.data?.id || ""], isPublished: true, attributes: attributes}, first: 100}
   });
   
   let productData: any = [];
@@ -41,7 +41,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
         <Col lg={2}>
           <ProductFilters
             setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}
-            categoryId={id}
+            categoryId={category.data?.id}
           />
         </Col>
         <Col>

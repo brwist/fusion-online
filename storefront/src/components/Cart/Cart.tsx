@@ -223,7 +223,6 @@ export const Cart: React.FC<CartProps> = ({
                                         max={quantityAvailable}
                                         name={id}
                                         onChange={(e) => {
-                                          console.log(e.target.value);
                                           if (parseInt(e.target.value) > 0) {
                                             updateItem(id, parseInt(e.target.value))
                                           } else {

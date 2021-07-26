@@ -50,10 +50,10 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               <Nav as="ul" id="main-nav">
-                {data?.map(({id, name}) => {
+                {data?.map(({id, name, slug}) => {
                   return (
                     <Nav.Item key={id} as="li">
-                      <Link className="nav-link" to={`/categories/${id}`}>{name}</Link>
+                      <Link className="nav-link" to={`/categories/${slug}`}>{name}</Link>
                     </Nav.Item>
                   )
                 })}
