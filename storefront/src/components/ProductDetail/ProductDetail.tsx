@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import { useProductDetailsQuery } from '../../generated/graphql';
+import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
 
 import './productdetail.scss';
 
@@ -19,8 +20,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const {id} = useParams<{id: string}>()
   const history = useHistory()
   const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
-
+  const [showAlert, setShowAlert] = useState(false)
+  const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (
+    <>
+    <ItemAddedAlert 
+      productName={data?.product?.name || "Item"}
+      quantity={selectedQuantity}
+      show={showAlert}
+      hideAlert={() => setShowAlert(false)}
+    />
     <Container className="product-detail">
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
@@ -92,9 +101,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <AddToCart
               variant={data?.product?.variants && data?.product?.variants[0]}
               addItem={addItem}
+              updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
+              showItemAddedAlert={() => setShowAlert(true)}
             />
           </Col>
         </Row>
     </Container>
+    </>
   );
 };
