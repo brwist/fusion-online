@@ -17,7 +17,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   if (loading) {
     return <h5>Loading...</h5>
   }
-  console.log(productData)
+
   if (productData?.length === 0) {
     return <h5>No Products</h5>
   }

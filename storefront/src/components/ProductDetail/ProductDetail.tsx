@@ -19,9 +19,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const {id} = useParams<{id: string}>()
   const history = useHistory()
   const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
-  if (data) {
-    console.log(data)
-  }
 
   return (
     <Container className="product-detail">

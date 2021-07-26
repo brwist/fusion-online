@@ -19,7 +19,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
     addItem(variant?.id, quantitySelected)
     setShow(true)
   }
-  console.log(variant)
+
   return (
     <>
       <Alert variant="primary" show={show} dismissible onClose={() => setShow(false)}>

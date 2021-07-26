@@ -16,7 +16,6 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
   }
   const query = useQuery();
   const initialSearchQuery = query.get('q');
-  console.log(initialSearchQuery);
   const [searchQuery, setSearchquery] = useState(initialSearchQuery|| '');
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
   const { loading, error, data} = useProductListQuery({

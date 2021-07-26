@@ -10,7 +10,7 @@ export interface SearchBarProps {
   /**
    * handler from searchContainer that sets the searchQuery
    */
-  updateSearchQuery(searchString: string): void
+  updateSearchQuery?(searchString: string): void
   initialSearchQuery?: string | null
   closeSearchModal?: () => void
 }
@@ -23,7 +23,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.currentTarget.value)
-    updateSearchQuery(event.currentTarget.value)
+    updateSearchQuery && updateSearchQuery(event.currentTarget.value)
   }
 
   return (
