@@ -162,5 +162,9 @@
                 color: $link-hover-color;
             }
         }
+        p {
+            color: $white;
+            text-transform: uppercase;
+        }
     }
 }

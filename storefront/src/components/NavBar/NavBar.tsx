@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Container, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/rocketChips.png';
 import { useCategoryList } from '@saleor/sdk';
-import { SearchBar } from '../SearchBar/SearchBar';
+import { NavBarSearch } from './NavBarSearch';
 
 import './navbar.scss';
 
@@ -23,13 +23,6 @@ export const NavBar: React.FC<NavBarProps> = ({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-  }
-  const query = useQuery();
-  const initialSearchQuery = query.get('q');
-  const [searchQuery, setSearchquery] = useState(initialSearchQuery|| '');
-
   return (
     <>
       <Modal
@@ -39,31 +32,7 @@ export const NavBar: React.FC<NavBarProps> = ({
         >
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <div className="search-box">
-            <SearchBar initialSearchQuery={initialSearchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}} />
-
-            <div className="default-text my-4">
-              Easily search for products by Part Name, Brand, Number, Family, Type or Code.
-            </div>
-
-            <div className="search-suggestions">
-              <div className="mb-4">
-                <Link to="/">GeForce GT 710 2GB PCI Express 2.0 Graphics Card</Link>
-              </div>
-              <div className="mb-4">
-                <Link to="/">GeForce GT 710 2GB PCI Express 2.0 Graphics Card</Link>
-              </div>
-              <div className="mb-4">
-                <Link to="/">GeForce GT 710 2GB PCI Express 2.0 Graphics Card</Link>
-              </div>
-              <div className="mb-4">
-                <Link to="/">GeForce GT 710 2GB PCI Express 2.0 Graphics Card</Link>
-              </div>
-              <div className="mb-4">
-                <Link to="/">GeForce GT 710 2GB PCI Express 2.0 Graphics Card</Link>
-              </div>
-            </div>
-          </div>
+          <NavBarSearch closeSearchModal={handleClose}/>
         </Modal.Body>
       </Modal>
 
