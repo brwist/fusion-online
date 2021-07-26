@@ -7,6 +7,7 @@ import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons'
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import { useProductDetailsQuery } from '../../generated/graphql';
 import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
+import {ScrollToTopOnMount} from '../../utils/ScrollToTopOnMount';
 
 import './productdetail.scss';
 
@@ -24,6 +25,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (
     <>
+    <ScrollToTopOnMount />
     <ItemAddedAlert 
       productName={data?.product?.name || "Item"}
       quantity={selectedQuantity}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Table } from 'react-bootstrap';
 import {ProductTableRow, ProductTableRowProps} from './ProductTableRow';
-
+import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 import './producttable.scss';
 
 export interface ProductTableProps {
@@ -15,14 +15,25 @@ export const ProductTable: React.FC<ProductTableProps> = ({
 }) => {
 
   if (loading) {
-    return <h5>Loading...</h5>
+    return (
+      <>
+        <ScrollToTopOnMount />
+        <h5>Loading...</h5>
+      </>
+    )
   }
 
   if (productData?.length === 0) {
-    return <h5>No Products</h5>
+    return (
+      <>
+        <ScrollToTopOnMount />
+        <h5>No Products</h5>
+      </>
+    )
   }
   return (
     <Card className="search-results">
+      <ScrollToTopOnMount />
       <Table striped borderless responsive>
         <thead className="bg-dark text-white">
           <tr>

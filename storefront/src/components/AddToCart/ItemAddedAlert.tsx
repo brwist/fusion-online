@@ -2,6 +2,7 @@ import React from 'react';
 import {useHistory} from 'react-router-dom'
 import { Alert, Button, Row, Col, Container } from 'react-bootstrap'
 
+import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount';
 import './addtocart.scss';
 
 export interface ItemAddedAlertProps {
@@ -17,6 +18,7 @@ export const ItemAddedAlert: React.FC<ItemAddedAlertProps> = ({
   const history = useHistory()
   return (
     <Alert variant="primary" show={show} dismissible onClose={hideAlert}>
+      <ScrollToTopOnMount />
       <Container className="item-added-alert">
       <Row noGutters>
         <Col className="d-flex align-items-center">

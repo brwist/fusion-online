@@ -7,6 +7,7 @@ import { useProductListQuery, AttributeInput } from '../../generated/graphql'
 import { ProductTable } from '../ProductTable/ProductTable'
 import { ProductFilters } from '../ProductFilters/ProductFilters'
 import { SectionHeader } from '../SectionHeader/SectionHeader'
+import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 
 import './categorypage.scss'
 
@@ -36,6 +37,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   }
   return (
     <Container>
+      <ScrollToTopOnMount />
         <SectionHeader subheading="Shop" heading={category.data?.name || ""}/>
       <Row>
         <Col lg={2}>

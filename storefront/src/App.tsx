@@ -15,6 +15,7 @@ import { Cart } from './components/Cart/Cart';
 
 import './App.scss';
 
+
 function App() {
   const [errors, setErrors] = useState()
   const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
