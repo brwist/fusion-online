@@ -6,8 +6,17 @@ from .serializers import ProductSerializer
 
 @api_view(["POST"])
 def handler(request):
+    print("---------------")
+    print('REQUEST_METHOD:', request.META['REQUEST_METHOD'])
+    print('PATH_INFO:', request.META['PATH_INFO'])
+    print('CONTENT_TYPE:', request.META['CONTENT_TYPE'])
+    print('HTTP_AUTHORIZATION:', request.META['HTTP_AUTHORIZATION'])
+    print('HTTP_USER_AGENT:', request.META['HTTP_USER_AGENT'])
+    print('HTTP_HOST:', request.META['HTTP_HOST'])
+    print("---------------")
     data = JSONParser().parse(request)
-
+    print('REQUEST BODY:', data)
+    print("---------------")
     serializer = ProductSerializer(data=data)
     try:
         if not serializer.is_valid():
