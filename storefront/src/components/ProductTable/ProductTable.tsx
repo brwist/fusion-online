@@ -7,11 +7,19 @@ import './producttable.scss';
 export interface ProductTableProps {
   loading: boolean,
   productData: Array<ProductTableRowProps>,
-  addItem?: any
+  addItem?: any,
+  updateSelectedProduct: (productName: string) => void,
+  updateSelectedQuantity: (quantity: number) => void,
+  showItemAddedAlert: () => void
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
-  loading, productData, addItem
+  loading,
+  productData,
+  addItem,
+  updateSelectedProduct,
+  updateSelectedQuantity,
+  showItemAddedAlert
 }) => {
 
   if (loading) {
@@ -53,6 +61,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 otherData={otherData}
                 product={product}
                 addItem={addItem}
+                showItemAddedAlert={showItemAddedAlert}
+                updateSelectedProduct={updateSelectedProduct}
+                updateSelectedQuantity={updateSelectedQuantity}
               />
             )
           })}

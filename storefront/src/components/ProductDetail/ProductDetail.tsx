@@ -32,7 +32,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
       show={showAlert}
       hideAlert={() => setShowAlert(false)}
     />
-    <Container className="product-detail">
+    <Container className="product-detail" onClick={() => showAlert && setShowAlert(false)}>
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
             <Button variant="link" className="btn-go-back" onClick={() => history.goBack()}>GO BACK</Button>
