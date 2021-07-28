@@ -23,6 +23,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   product: {
     name,
     id,
+    slug,
     variants,
     attributes,
     pricing
@@ -64,7 +65,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
       <div className="small">
         <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
       </div>
-      <Link style={{textDecoration: "underline"}} to={`/products/${id}`}>{name}</Link>
+      <Link style={{textDecoration: "underline"}} to={`/products/${slug}`}>{name}</Link>
       <div className="small mt-1">
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>

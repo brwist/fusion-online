@@ -204,7 +204,7 @@ export const Cart: React.FC<CartProps> = ({
                                 <div className="small">
                                   <strong className="text-uppercase">{getAttributeValue("manufacturer", product?.attributes)}</strong> {sku}
                                 </div>
-                                <a href={`/products/${product.id}`}>{product.name}</a>
+                                <a href={`/products/${product.slug}`}>{product.name}</a>
                                 <div className="small mt-1">
                                   Spec Code: {getAttributeValue("spec-code", product?.attributes)} | Ordering Code: {getAttributeValue("ordering-code", product?.attributes)}
                                 </div>

@@ -30,7 +30,7 @@ export const NavBarSearch: React.FC<NavBarSearchProps> = ({
         {data?.products?.edges.map(({node}) => {
           return (
             <div key={node.id} className="mb-4">
-              <Link to={`/products/${node.id}`} onClick={closeSearchModal}>
+              <Link to={`/products/${node.slug}`} onClick={closeSearchModal}>
                 {node.name}
               </Link>
             </div>

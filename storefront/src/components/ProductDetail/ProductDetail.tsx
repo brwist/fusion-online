@@ -18,9 +18,9 @@ export interface ProductDetailProps {
 export const ProductDetail: React.FC<ProductDetailProps> = ({
   addItem
 }) => {
-  const {id} = useParams<{id: string}>()
+  const {slug} = useParams<{slug: string}>()
   const history = useHistory()
-  const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
+  const {data, loading, error} = useProductDetailsQuery({variables: {slug: slug}})
   const [showAlert, setShowAlert] = useState(false)
   const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (

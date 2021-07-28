@@ -12154,7 +12154,7 @@ export type MoneyFragment = (
 
 export type ProductFragmentFragment = (
   { __typename: 'Product' }
-  & Pick<Product, 'id' | 'name' | 'isAvailable' | 'isPublished'>
+  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished'>
   & { thumbnail?: Maybe<(
     { __typename: 'Image' }
     & Pick<Image, 'url'>
@@ -12235,6 +12235,7 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   name
+  slug
   mpn
   description
   descriptionJson
@@ -12754,8 +12755,8 @@ export const ProductDetailsDocument = gql `
     __typename
   }
 
-  query ProductDetails($id: ID!, $countryCode: CountryCode) {
-    product(id: $id) {
+  query ProductDetails($slug: String!, $countryCode: CountryCode) {
+    product(slug: $slug) {
       ...BasicProductFields
       ...ProductPricingField
       descriptionJson
@@ -12804,7 +12805,7 @@ export const ProductDetailsDocument = gql `
   
   
   export type ProductDetailsQueryVariables = Exact<{
-    id: Maybe<Scalars['ID']>;
+    slug: Maybe<Scalars['String']>;
     countryCode?: Maybe<Scalars['String']>;
   }>;
 
@@ -12854,6 +12855,7 @@ export const ProductDetailsDocument = gql `
           product {
             id
             name
+            slug
             thumbnail {
               url
               alt

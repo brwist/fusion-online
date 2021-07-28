@@ -77,7 +77,7 @@ function App() {
             <Route path="/search">
               <SearchContainer addItem={addItem} />
             </Route>
-            <Route exact path="/products/:id" >
+            <Route exact path="/products/:slug" >
               <ProductDetail
                 addItem={addItem}
               />
