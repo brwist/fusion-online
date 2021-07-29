@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory, Link, useLocation } from 'react-router-dom'
 import { Row, Col, Card, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
@@ -11,12 +12,20 @@ export interface OrderDetailsProps {}
 export const OrderDetails: React.FC<OrderDetailsProps> = ({
   ...props
 }) => {
+  const history = useHistory()
+  const location = useLocation()
+  const getAllOrdersPath = () => {
+    const path = location.pathname.split('/')
+    path.pop()
+    return path.join("/")
+  }
+  getAllOrdersPath()
   return (
     <div className="order-details">
       <header className="my-3 d-flex justify-content-between align-items-center">
         <div>
-          <a href="#">SEE ALL ORDERS</a>
-          <h1 className="mt-1 mb-0">Order Details</h1>
+          <Button variant="link" className="btn-see-all" onClick={() => history.push(getAllOrdersPath())}>SEE ALL ORDERS</Button>
+          <h2 className="h3 mt-1 mb-0">Order Details</h2>
         </div>
         <Button variant="primary">
           Download Invoice
@@ -124,7 +133,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="small">
                 <strong className="text-uppercase">INTEL</strong> 123456789
               </div>
-              <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               <div className="small mt-1">
                 Spec Code: 123456 | Ordering Code: 123456
               </div>
@@ -162,7 +171,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <div className="small">
                 <strong className="text-uppercase">INTEL</strong> 123456789
               </div>
-              <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+              <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
               <div className="small mt-1">
                 Spec Code: 123456 | Ordering Code: 123456
               </div>

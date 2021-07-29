@@ -1,35 +1,56 @@
 import React, { useState } from 'react';
-import { Button, Modal, Table, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Button, Modal, Table, Form} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faShoppingCart } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import { Product } from '../../generated/graphql';
 
-import './searchresults.scss';
+import './producttable.scss';
 
-export interface SearchResultRowProps {
+export interface ProductTableRowProps {
   otherData: {
     saved: boolean,
     status?: string | undefined,
   },
-  productData: Product,
+  product: Product,
+  addItem?: any,
+  updateSelectedProduct: (productName: string) => void,
+  updateSelectedQuantity: (quantity: number) => void,
+  showItemAddedAlert: () => void
 }
-export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
+export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   saved,
   status},
-  productData: {
+  product: {
     name,
     id,
+    slug,
     variants,
     attributes,
     pricing
-  }
+  },
+  addItem,
+  updateSelectedProduct,
+  updateSelectedQuantity,
+  showItemAddedAlert
 }) => {
   const [show, setShow] = useState(false);
+  const [quantitySelected, setQuantitySelected] = useState(1)
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleAddToCart = (event: React.SyntheticEvent) => {
+    event.preventDefault()
+    if(variants && variants[0]) {
+      addItem(variants[0].id, quantitySelected)
+      updateSelectedQuantity(quantitySelected)
+      updateSelectedProduct(name)
+      showItemAddedAlert()
+      setShow(false)
+    }
+  }
+
+  const unitPrice = (pricing?.priceRangeUndiscounted?.start?.gross.amount || 0).toFixed(2)
 
   function getAttributeValue (slugName: string): any {
     const matchingAttribute = attributes.filter(
@@ -46,22 +67,22 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
       <div className="small">
         <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
       </div>
-      <a href={`/products/${id}`}>{name}</a>
+      <Link style={{textDecoration: "underline"}} to={`/products/${slug}`}>{name}</Link>
       <div className="small mt-1">
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
     </td>
     <td className="text-center">{status}</td>
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
-    <td className="text-center">${pricing?.priceRangeUndiscounted?.start?.gross.amount}</td>
+    <td className="text-center">${unitPrice}</td>
     <td className="text-center">
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={() => setShow(true)}>
         Select Quantity
       </Button>
 
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={() => setShow(false)}
         size="lg"
         centered
       >
@@ -81,15 +102,23 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
               </thead>
               <tbody>
                 <tr>
-                  <td>10,000</td>
+                  <td>{variants && variants[0]?.quantityAvailable}</td>
                   <td>
                     <Form.Group controlId="quantity">
                       <Form.Label className="sr-only">Quantity</Form.Label>
-                      <Form.Control type="number" style={{'maxWidth' : '80px'}} required />
+                      <Form.Control 
+                        type="number"
+                        style={{'maxWidth' : '80px'}}
+                        required 
+                        min={1}
+                        max={(variants && variants[0]?.quantityAvailable )|| 1}
+                        value={quantitySelected}
+                        onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
+                      />
                     </Form.Group>
                   </td>
-                  <td>$000.00</td>
-                  <td>$000.00</td>
+                  <td>${unitPrice}</td>
+                  <td>${(quantitySelected * parseInt(unitPrice)).toFixed(2)}</td>
                 </tr>
               </tbody>
             </Table>
@@ -97,10 +126,10 @@ export const SearchResultRow: React.FC<SearchResultRowProps> = ({ otherData: {
             <em>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</em>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="submit" variant="primary" onClick={handleClose}>
+            <Button type="submit" variant="primary" onClick={handleAddToCart}>
               Add to Order <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
-            <Button variant="link" onClick={handleClose}>
+            <Button variant="link" onClick={() => setShow(false)}>
               Cancel
             </Button>
           </Modal.Footer>

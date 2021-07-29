@@ -12154,14 +12154,18 @@ export type MoneyFragment = (
 
 export type ProductFragmentFragment = (
   { __typename: 'Product' }
-  & Pick<Product, 'id' | 'name' | 'isAvailable' | 'isPublished'>
+  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished'>
   & { thumbnail?: Maybe<(
     { __typename: 'Image' }
     & Pick<Image, 'url'>
   )>, productType: (
     { __typename: 'ProductType' }
     & Pick<ProductType, 'id' | 'name' | 'hasVariants'>
-  ) }
+  ), variants: Array<(
+    {__typename: 'ProductVariant'}
+    & Pick<ProductVariant, 'id' | 'sku' | 'quantityAvailable' >
+  )>
+}
 );
 
 export type ProductListQueryVariables = Exact<{
@@ -12231,10 +12235,12 @@ export const ProductFragmentFragmentDoc = gql`
     fragment ProductFragment on Product {
   id
   name
+  slug
   mpn
   description
   descriptionJson
   variants {
+    id
     sku
     quantityAvailable
     __typename
@@ -12355,6 +12361,7 @@ export type InitialProductFilterDataQueryVariables = Exact<{
   categories?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
   collections?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
   productTypes?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
+  inCategory?: Scalars['ID'];
 }>;
 
 
@@ -12436,8 +12443,8 @@ export type SearchResultsQuery = (
 );
 
 export const InitialProductFilterDataDocument = gql`
-    query InitialProductFilterData($categories: [ID!], $collections: [ID!], $productTypes: [ID!]) {
-  attributes(first: 100, filter: {filterableInDashboard: true}) {
+    query InitialProductFilterData($categories: [ID!], $collections: [ID!], $productTypes: [ID!], $inCategory: ID) {
+  attributes(first: 100, filter: {filterableInStorefront: true, inCategory: $inCategory}) {
     edges {
       node {
         id
@@ -12676,6 +12683,10 @@ export const ProductDetailsDocument = gql `
     id
     sku
     name
+    metadata {
+      key
+      value
+    }
     isAvailable
     quantityAvailable(countryCode: $countryCode)
     images {
@@ -12744,11 +12755,15 @@ export const ProductDetailsDocument = gql `
     __typename
   }
 
-  query ProductDetails($id: ID!, $countryCode: CountryCode) {
-    product(id: $id) {
+  query ProductDetails($slug: String!, $countryCode: CountryCode) {
+    product(slug: $slug) {
       ...BasicProductFields
       ...ProductPricingField
       descriptionJson
+      metadata {
+        key
+        value
+      }
       category {
         id
         name
@@ -12790,7 +12805,7 @@ export const ProductDetailsDocument = gql `
   
   
   export type ProductDetailsQueryVariables = Exact<{
-    id: Maybe<Scalars['ID']>;
+    slug: Maybe<Scalars['String']>;
     countryCode?: Maybe<Scalars['String']>;
   }>;
 
@@ -12801,4 +12816,96 @@ export const ProductDetailsDocument = gql `
   export function useProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>) {
     const options = {...defaultOptions, ...baseOptions}
     return Apollo.useQuery(ProductDetailsDocument, options);
+  }
+
+  export const CartProductDetailsDocument = gql`
+  fragment Price on TaxedMoney {
+    gross {
+      amount
+      currency
+      __typename
+    }
+    net {
+      amount
+      currency
+      __typename
+    }
+    __typename
+  }
+  query CartProductDetails($ids: [ID!], $first: Int) {
+    productVariants(ids: $ids, first: $first) {
+      edges {
+        node {
+          id
+          name
+          sku
+          quantityAvailable
+          pricing {
+            onSale
+            priceUndiscounted {
+              ...Price
+              __typename
+            }
+            price {
+              ...Price
+              __typename
+            }
+            __typename
+          }
+          product {
+            id
+            name
+            slug
+            thumbnail {
+              url
+              alt
+              __typename
+            }
+            thumbnail2x: thumbnail(size: 510) {
+              url
+              __typename
+            }
+            attributes {
+              attribute {
+                id
+                name
+                slug
+                __typename
+              }
+              values {
+                id
+                name
+                value: name
+                __typename
+              }
+              __typename
+            }
+          }
+          __typename
+        }
+        __typename
+      }
+    }
+  }`
+
+  export type CartProductDetailsQueryVariables = Exact<{
+    first?: Maybe<Scalars['Int']>;
+    ids: Maybe<Array<Scalars['ID']>>;
+  }>;
+  
+  
+  export type CartProductDetailsQuery = (
+    { __typename?: 'Query' }
+    & { productVariants?: Maybe<(
+      & { edges: Array<(
+        { __typename: 'ProductVariantCountableEdge' }
+        & { node: Maybe<ProductVariant>
+          & {product: Maybe<Product> }
+        })>
+      })>}
+  );
+
+  export function useCartProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>) {
+    const options = {...defaultOptions, ...baseOptions}
+    return Apollo.useQuery(CartProductDetailsDocument, options);
   }

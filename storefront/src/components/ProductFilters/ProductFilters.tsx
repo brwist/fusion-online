@@ -1,20 +1,20 @@
-import React, {useState, useEffect, ReactEventHandler, SyntheticEvent} from 'react';
+import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 
-import './searchfilters.scss';
+import './productfilters.scss';
 import {useInitialProductFilterDataQuery, AttributeInput} from '../../generated/graphql';
 
-export interface SearchFiltersProps {
-  setFilters(filters: AttributeInput[]): void
+export interface ProductFiltersProps {
+  setFilters(filters: AttributeInput[]): void,
+  categoryId?: string
 }
 
-export const SearchFilters: React.FC<SearchFiltersProps> = ({
-  setFilters
+export const ProductFilters: React.FC<ProductFiltersProps> = ({
+  setFilters, categoryId
 }) => {
   const { loading, error, data} = useInitialProductFilterDataQuery({
-    variables: {categories: [], collections: [], productTypes: [] }
+    variables: {categories: categoryId ? [categoryId] : [], collections: [], productTypes: [], inCategory: categoryId }
   });
-  const excludedFilters = ['ordering-code', 'spec-code', 'model'];
   const [currentFilters, setCurrentFilters] = useState<Array<AttributeInput>>([])
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,12 +40,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error retrieving product filters</p>;
   if (data) {
-    const filters = data.attributes?.edges.filter(({node: {slug}}) => {
-      return slug && !excludedFilters.includes(slug)});
     return (
       <div className="search-filters">
         <Form>
-          {filters?.map(({node: {id, name, slug, values}}) => {
+          {data.attributes?.edges.map(({node: {id, name, slug, values}}) => {
             return (
               <React.Fragment key={id}>
                 <div className="filter-heading">

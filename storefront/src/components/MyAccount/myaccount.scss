@@ -2,9 +2,13 @@
 
 .my-account-nav {
     > .nav {
-        .nav-link.active {
-            color: $primary;
-            font-weight: $font-weight-bold;
+        .nav-link {
+            padding-left: 0;
+
+            &.active {
+                color: $primary;
+                font-weight: $font-weight-bold;
+            }
         }
 
         > .nav-item > .nav-link {
@@ -21,7 +25,20 @@
     }
 }
 
-.open-rfqs {
+.scheduled-orders {
+    table {
+        tbody tr {
+            background: $gray-100;
+            border-top: 10px solid $white;
+            border-bottom: 10px solid $white;
+            border-left: 20px solid $white;
+            border-right: 20px solid $white;
+        }
+    }
+}
+
+.open-rfqs,
+.past-rfqs {
     thead {
         .progress {
             width: 66%;
@@ -36,5 +53,34 @@
         &:last-child {
             margin-bottom: 0;
         }
+    }
+}
+
+// .saved-parts {
+//     .table {
+//         td:not(:first-child) {
+//             vertical-align: middle;
+//         }
+//     }
+// }
+
+.nav-tabs {
+    .nav-item {
+        font-size: 12px;
+        text-transform: uppercase;
+
+        .active {
+            font-weight: $font-weight-bold;
+        }
+
+        &:first-child .nav-link {
+            padding-left: 0;
+        }
+    }
+}
+
+.order-details {
+    .btn-see-all {
+        padding: 0;
     }
 }

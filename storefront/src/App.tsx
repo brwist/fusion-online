@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
-import { useAuth } from "@saleor/sdk";
+import { useAuth, useCart } from "@saleor/sdk";
 import { Switch, Route, useLocation} from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
-import { ProductDetail } from './components/ProductDetail/ProductDetail'
+import { ProductDetail } from './components/ProductDetail/ProductDetail';
 import { NavBar } from './components/NavBar/NavBar';
+import { LoginPage } from './components/LoginPage/LoginPage';
+import { useAccountConfirmationMutation} from './generated/graphql';
+import { CategoryPage } from './components/CategoryPage/CategoryPage';
 import { HomePage } from './components/HomePage/HomePage';
-import { useAccountConfirmationMutation} from './generated/graphql'
+import { Footer } from "./components/Footer/Footer";
+import {AccountPage} from './components/MyAccount/AccountPage';
+import { Cart } from './components/Cart/Cart';
 
 import './App.scss';
 
+
 function App() {
   const [errors, setErrors] = useState()
-  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
+  const { 
+    addItem,
+    discount,
+    items,
+    removeItem,
+    shippingPrice,
+    subtotalPrice,
+    totalPrice,
+    updateItem,
+    subtractItem 
+  } = useCart();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -54,14 +71,43 @@ function App() {
   return(
       authenticated && user ? (
           <>
-          <NavBar signOut={signOut} />
+          <NavBar signOut={signOut} cartItemsNum={items?.length || 0}/>
           <Switch>
-            <Route exact path="/search" component={SearchContainer} />
-            <Route exact path="/products/:id" component={ProductDetail} />
+            <Route exact path="/" component={HomePage} />
+            <Route path="/search">
+              <SearchContainer addItem={addItem} />
+            </Route>
+            <Route exact path="/products/:slug" >
+              <ProductDetail
+                addItem={addItem}
+              />
+            </Route>
+            <Route exact path="/categories/:slug" >
+              <CategoryPage addItem={addItem}/>
+            </Route>
+            <Route exact path="/cart">
+              <Cart
+                discount={discount}
+                items={items}
+                removeItem={removeItem}
+                shippingPrice={shippingPrice}
+                subtotalPrice={subtotalPrice}
+                totalPrice={totalPrice}
+                updateItem={updateItem}
+                subtractItem={subtractItem} 
+              />
+            </Route>
+            <Route path="/account/:slug">
+              <AccountPage
+                signOut={signOut}
+                user={user}
+              />
+            </Route>
           </Switch>
+          <Footer />
           </>
         ): (
-          <HomePage 
+          <LoginPage
             handleSignIn={handleSignIn}
             handleRegistration={handleRegistration}
             errors={errors}/>

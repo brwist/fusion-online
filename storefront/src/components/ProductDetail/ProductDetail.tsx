@@ -1,29 +1,41 @@
-import React from 'react';
-import {useParams} from 'react-router-dom'
+import React, {useState} from 'react';
+import {useParams, useHistory} from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-import {useProductDetailsQuery} from '../../generated/graphql';
+import { useProductDetailsQuery } from '../../generated/graphql';
+import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
+import {ScrollToTopOnMount} from '../../utils/ScrollToTopOnMount';
 
 import './productdetail.scss';
 
-export interface ProductDetailProps {}
+export interface ProductDetailProps {
+  addItem: any
+}
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
-  ...props
+  addItem
 }) => {
-  const {id} = useParams<{id: string}>()
-  const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
-  if (data) {
-    console.log(data)
-  }
+  const {slug} = useParams<{slug: string}>()
+  const history = useHistory()
+  const {data, loading, error} = useProductDetailsQuery({variables: {slug: slug}})
+  const [showAlert, setShowAlert] = useState(false)
+  const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (
-    <Container className="product-detail">
+    <>
+    <ScrollToTopOnMount />
+    <ItemAddedAlert 
+      productName={data?.product?.name || "Item"}
+      quantity={selectedQuantity}
+      show={showAlert}
+      hideAlert={() => setShowAlert(false)}
+    />
+    <Container className="product-detail" onClick={() => showAlert && setShowAlert(false)}>
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
-            <a href="#">GO BACK</a>
+            <Button variant="link" className="btn-go-back" onClick={() => history.goBack()}>GO BACK</Button>
             <h1 className="my-3">{data?.product?.name}</h1>
             <div className="small">
               <svg className="mr-1" width="52px" height="15px" viewBox="0 0 52 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
@@ -54,7 +66,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <Col lg={6}>
             {data?.product?.attributes.map(({attribute, values}) => {
               return (
-               <div className="mb-4" key={attribute.id}>
+                <div className="mb-4" key={attribute.id}>
                   <div className="font-weight-bold">{attribute.name}</div>
                     {values[0]?.name}
                 </div>
@@ -84,13 +96,19 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <div className="mb-4">
               <div className="font-weight-bold">Market Insight</div>
-              Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing elit. Quam id leo in vitae turpis massa sed elementum.
+              {data?.product?.metadata[0]?.value}
             </div>
           </Col>
           <Col lg={4}>
-            <AddToCart variant={data?.product?.variants && data?.product?.variants[0]}/>
+            <AddToCart
+              variant={data?.product?.variants && data?.product?.variants[0]}
+              addItem={addItem}
+              updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
+              showItemAddedAlert={() => setShowAlert(true)}
+            />
           </Col>
         </Row>
     </Container>
+    </>
   );
 };

@@ -1,21 +1,23 @@
-@import '../../globalStyles/variables';
+@import '../../globalStyles/common';
 
 .tag {
-    //   border-radius: 21.7px;
-    //   background-color: $gray;
-    //   border: none;
+	&:not(:hover) {
+		background-color: #838895;
+	}
+	&:hover {
+		background-color: $navy;
+	}
+	
+	&.tag--lg {
+		font-size: $font-size-base;
+		font-weight: $font-weight-normal;
+		padding: .75rem 1.5rem; 
+		height: 43px;
+	}
 
-    //   &:hover {
-    //     background-color: $navy;
-    //   }
-
-    &.tag--lg {
-        font-size: 15px;
-        padding: 10px 25px;
-    }
-
-    &.tag--sm {
-        font-size: 12px;
-        padding: 5px 15px;
-    }
+	&.tag--sm {
+		font-size: $font-size-sm;
+		font-weight: $font-weight-normal;
+		padding: $input-btn-padding-y-sm $input-btn-padding-x-sm;
+	}
 }
