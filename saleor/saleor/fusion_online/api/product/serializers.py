@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from ....product.models import Product, ProductType
+from ....product.models import Product, ProductType, Category, Attribute, AttributeValue
+from ....product.utils.attributes import associate_attribute_values_to_instance
+from django.utils.text import slugify
 
 class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
@@ -7,7 +9,7 @@ class ProductSerializer(serializers.Serializer):
     mcode = serializers.CharField(max_length=10)
     vendors = serializers.ListField(child=serializers.DictField())
     price_item_id = serializers.IntegerField(max_value=None, min_value=None)
-    category_id = serializers.IntegerField(max_value=None, min_value=None, required=False)
+    category_id = serializers.IntegerField(max_value=None, min_value=None)
     all_mpn = serializers.CharField(max_length=100, required=False)
     all_mcode = serializers.CharField(max_length=100, required=False)
     all_description = serializers.CharField(max_length=250, required=False)
@@ -30,10 +32,55 @@ class ProductSerializer(serializers.Serializer):
     gpu_packaging = serializers.CharField(max_length=100, required=False)
 
     def create(self, validated_data):
+        category_data = { 
+            1: { 
+                "slug": "cpus",
+                "product_type_slug": "cpu",
+                "attr_slugs": ["cpu_family", "cpu_type", "cpu_model"]
+                }, 
+            2: {
+                "slug": "gpu",
+                "product_type_slug": "gpu",
+                "attr_slugs": ["gpu_line", "gpu_model", "gpu_memory_config", "gpu_interface", "gpu_cooling", "gpu_packaging"]
+                },
+            3: {
+                "slug": "memory",
+                "product_type_slug": "memory",
+                "attr_slugs": ["memory_ddr", "memory_type", "memory_density", "memory_rank_org", "memory_speed"]
+                },
+            4: {
+                "slug": "storage",
+                "product_type_slug": "storage",
+                "attr_slugs": ["storage_class", "storage_capacity", "storage_size"]
+                }
+        }
+
         product_data = {
-            "name": "Part " + validated_data["mpn"],
-            "slug": validated_data["mpn"],
-            }
-        product_type = ProductType.objects.get(name="Gold")
-        product_data["product_type"] = product_type
-        return Product.objects.create(**product_data)
+            "name": validated_data["all_description"] if validated_data.get('all_description') 
+                else f'{validated_data["mcode"]} {validated_data["mpn"]}',
+            "slug": slugify(validated_data["all_description"], allow_unicode=True) if validated_data.get('all_description') 
+                else slugify(f'{validated_data["mcode"]} {validated_data["mpn"]}', allow_unicode=True),
+            "mpn": validated_data["mpn"],
+            "item_num_id": validated_data["item_num_id"],
+            "product_type": ProductType.objects.get(slug=category_data[validated_data["category_id"]]["product_type_slug"]),
+            "category": Category.objects.get(slug=category_data[validated_data["category_id"]]["slug"]),
+        }
+
+        product = Product.objects.create(**product_data)
+        
+        # assign attribute values to the newly created product for each attribute of the specified category
+        # attribute values that do not exist will be created
+        for attr_slug in category_data[validated_data["category_id"]]["attr_slugs"]: 
+            attribute = Attribute.objects.get(slug=attr_slug)
+            attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
+            associate_attribute_values_to_instance(product, attribute, attribute_value[0])
+
+        # assign mcode attribute value (mcode value that does not exist will be created)
+        attribute_mcode = Attribute.objects.get(slug="mcode")
+        attribute_mcode_value = AttributeValue.objects.get_or_create(
+            name=validated_data["mcode"],
+            slug=slugify(validated_data["mcode"], allow_unicode=True),
+            attribute=attribute_mcode
+            )
+        associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
+        return product

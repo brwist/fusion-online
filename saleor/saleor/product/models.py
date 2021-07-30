@@ -240,6 +240,7 @@ class Product(SeoModel, ModelWithMetadata, PublishableModel):
         ProductType, related_name="products", on_delete=models.CASCADE
     )
     mpn = models.CharField(max_length=50, default="BBB")
+    item_num_id = models.IntegerField(default="123")
     name = models.CharField(max_length=250)
     slug = models.SlugField(max_length=255, unique=True, allow_unicode=True)
     description = models.TextField(blank=True)
