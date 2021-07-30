@@ -1,0 +1,124 @@
+openapi: 3.0.0
+info:
+  title: RocketChips API
+  description: Manage RocketChips catalog and customer data.
+  version: 0.0.1
+servers:
+  - url: https://api-sandbox.fusiononline.io/fo-api
+    description: Sandbox environment
+paths:
+  /products:
+    post:
+      summary: Creates a product.
+      # description: Optional extended description in CommonMark or HTML.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':    # status code
+          description: Created
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string 
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization 
+  schemas:
+    Product:
+      title: Product
+      type: object
+      properties:
+        item_num_id:
+          type: integer
+        mpn:
+          type: string
+          maxLength: 50
+        mcode:
+          type: string
+          maxLength: 10
+        vendors:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_id:
+                type: integer
+              vendor_name:
+                type: string
+              vendor_number:
+                type: integer
+        price_item_id:
+          type: integer
+        category_id:
+          type: integer
+        all_mpn:
+          type: string
+          maxLength: 100
+        all_mcode:
+          type: string
+          maxLength: 100
+        all_description:
+          type: string
+          maxLength: 250
+        cpu_family:
+          type: string
+          maxLength: 100
+        cpu_type:
+          type: string
+          maxLength: 100
+        cpu_model:
+          type: string
+          maxLength: 100
+        memory_ddr:
+          type: string
+          maxLength: 100
+        memory_type:
+          type: string
+          maxLength: 100
+        memory_density:
+          type: string
+          maxLength: 100
+        memory_rank_org:
+          type: string
+          maxLength: 100
+        memory_speed:
+          type: string
+          maxLength: 100
+        storage_class:
+          type: string
+          maxLength: 100
+        storage_capacity:
+          type: string
+          maxLength: 100
+        storage_size:
+          type: string
+          maxLength: 100
+        gpu_line:
+          type: string
+          maxLength: 100
+        gpu_model:
+          type: string
+          maxLength: 100
+        gpu_memory_config:
+          type: string
+          maxLength: 100
+        gpu_interface:
+          type: string
+          maxLength: 100
+        gpu_cooling:
+          type: string
+          maxLength: 100
+        gpu_packaging:
+          type: string
+          maxLength: 100
+security:
+  - ApiKeyAuth: []
