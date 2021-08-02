@@ -17,12 +17,11 @@ paths:
             schema:
               $ref: '#/components/schemas/Offer'
       responses:
-        '200':    # status code
+        '200':
           description: Created
   /products:
     post:
       summary: Creates a product (adds the product to the catalog).
-      # description: Optional extended description in CommonMark or HTML.
       requestBody:
         required: true
         content:
@@ -30,7 +29,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Product'
       responses:
-        '200':    # status code
+        '200':
           description: Created
           content:
             application/json:
@@ -59,18 +58,59 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/ProductResponse'
-  /sales-orders/{fo_sales_order_ref_id}:
+  /rfqs/{fo_rfq_ref_id}:
     get:
-      summary: Fetches a sales order.
+      summary: Fetches an RFQ.
       parameters:
         - in: path
-          name: fo_sales_order_ref_id
+          name: fo_rfq_ref_id
+          description: The ID of the RFQ submission in RocketChips.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewRfqResponse'
+  /rfqs/{fo_rfq_ref_id}/responses/{fo_rfq_line_item_ref_id}:
+    post:
+      summary: Creates a response to an individual (single line item) RFQ within an RFQ submission
+      parameters:
+        - in: path
+          name: fo_rfq_ref_id
+          description: The ID of the RFQ submission in RocketChips.
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: fo_rfq_line_item_ref_id
+          description: The ID of the RFQ line item in RocketChips.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+  /sales-orders/{fo_order_ref_id}:
+    get:
+      summary: Fetches a sales order.
+      description: Fetches the sales order.
+      parameters:
+        - in: path
+          name: fo_order_ref_id
           description: The ID of the sales order in RocketChips.
           schema:
             type: integer
           required: true
       responses:
-        '200':    # status code
+        '200':
           description: Success
           content:
             application/json:
@@ -106,6 +146,51 @@ components:
       description: A decimal value encoded as a string. Precision is 14 digits and scale is 5 digits.
       pattern: /^\d+\.\d{0,5}$/
       example: "12.00125"
+    NewRfqResponse:
+      title: New RFQ response
+      type: object
+      properties:
+        salesperson:
+          type: integer
+        contact_id:
+          type: integer
+          description: The HubSpot contact ID of the customer that submitted the RFQ.
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              mpn:
+                type: string
+                maxLength: 50
+              mcode:
+                type: string
+                maxLength: 50
+              quantity:
+                type: integer
+                minimum: 1
+              target:
+                $ref: '#/components/schemas/Decimal'
+              date_code:
+                type: string
+                maxLength: 50
+              comment:
+                type: string
+                maxLength: 500
+              cipn:
+                type: string
+                maxLength: 50
+              commodity_code:
+                type: string
+                enum: [DEFAULT, TBD]
+              offer_id:
+                type: integer
+              fo_rfq_line_item_ref_id:
+                type: integer
+                description: RocketChips ID that identifies an RFQ line item within an RFQ submission.
+        fo_rfq_ref_id:
+          type: integer
+          description: RocketChips ID that identifies an RFQ submission (which contains one or more line items).
     Offer:
       title: Offer
       type: object
@@ -137,6 +222,7 @@ components:
           $ref: '#/components/schemas/Decimal'
         date_code:
           type: string
+          maxLength: 50
         comment:
           type: string
         coo:
@@ -301,12 +387,20 @@ components:
                 type: integer
               cipn:
                 type: string
-                maxLength: 60
+                maxLength: 50
+              mpn:
+                type: string
+              mcode:
+                type: string
               quantity:
                 type: integer
                 minimum: 1
               unit_sell_price:
                 $ref: '#/components/schemas/Decimal'
+            required:
+              - item_num_id
+              - quantity
+              - unit_sell_price
         fo_order_ref_id:
           type: integer
           description: Multi-item orders will have this field's value in common.
