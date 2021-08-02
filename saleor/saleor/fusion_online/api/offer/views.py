@@ -1,11 +1,13 @@
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
+from rest_framework.throttling import UserRateThrottle
 from .serializers import OfferSerializer
 from .models import Offer
 
 @api_view(['POST'])
+@throttle_classes([UserRateThrottle])
 def handler(request):
 	data = JSONParser().parse(request)
 

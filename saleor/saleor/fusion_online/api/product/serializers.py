@@ -54,7 +54,7 @@ class ProductSerializer(serializers.Serializer):
                 "attr_slugs": ["storage_class", "storage_capacity", "storage_size"]
                 }
         }
-
+        # map request data to product model fields and create new product
         product_data = {
             "name": validated_data["all_description"] if validated_data.get('all_description') 
                 else f'{validated_data["mcode"]} {validated_data["mpn"]}',
@@ -83,4 +83,14 @@ class ProductSerializer(serializers.Serializer):
             attribute=attribute_mcode
             )
         associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
+
+        # create new vendor attribute values for each vendor in request body
+        for vendor in validated_data["vendors"]:
+            attribute_vendor = Attribute.objects.get(slug="vendor")
+            AttributeValue.objects.get_or_create(
+                name=vendor["vendor_name"],
+                slug="vendor_number",
+                attribute=attribute_vendor
+            )
+
         return product
