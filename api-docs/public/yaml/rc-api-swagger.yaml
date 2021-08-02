@@ -7,9 +7,21 @@ servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
 paths:
+  /offers:
+    post:
+      summary: Creates an offer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+      responses:
+        '200':    # status code
+          description: Created
   /products:
     post:
-      summary: Creates a product.
+      summary: Creates a product (adds the product to the catalog).
       # description: Optional extended description in CommonMark or HTML.
       requestBody:
         required: true
@@ -23,9 +35,47 @@ paths:
           content:
             application/json:
               schema: 
-                type: array
-                items: 
-                  type: string 
+                $ref: '#/components/schemas/ProductResponse'
+  /products/{fo_ref_id}:
+    put:
+      summary: Updates a product.
+      parameters:
+        - in: path
+          name: fo_ref_id
+          description: The ID of the product in RocketChips.
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/ProductResponse'
+  /sales-orders/{fo_sales_order_ref_id}:
+    get:
+      summary: Fetches a sales order.
+      parameters:
+        - in: path
+          name: fo_sales_order_ref_id
+          description: The ID of the sales order in RocketChips.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':    # status code
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderResponse'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -33,6 +83,78 @@ components:
       in: header
       name: Authorization 
   schemas:
+    Decimal:
+      type: string
+      title: Decimal (encoded as a string)
+      description: A decimal value encoded as a string. Precision is 14 digits and scale is 5 digits.
+      pattern: /^\d+\.\d{0,5}$/
+      example: "12.00125"
+    Offer:
+      title: Offer
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [excess_list, stock_list, vendor_offer, rms_offfer, po]
+        date_added:
+          $ref: '#/components/schemas/Timestamp'
+        source:
+          type: integer
+          description: Vendor number
+        company:
+          type: string
+          maxLength: 50
+          description: Vendor name
+        item_num_id:
+          type: integer
+        mpn:
+          type: string
+          maxLength: 50
+        mcode:
+          type: string
+          maxLength: 10 
+        quantity:
+          type: integer
+          minimum: 1
+        offer_price:
+          $ref: '#/components/schemas/Decimal'  
+        date_code:
+          type: string
+        comment:
+          type: string
+        coo:
+          type: string
+          description: Country of origin
+        lead_time_days:
+          type: integer
+          minimum: -1
+          description: >
+            Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
+              * `-1` - Unknown
+              * `0` - In Stock
+        offer_id:
+          type: integer
+          description: ID of offer in RMS
+        vendor_type:
+          type: string
+          enum: [TBD]
+        vendor_region:
+          type: string
+          enum: [TBD]
+      required:
+        - type
+        - date_added
+        - source
+        - company
+        - item_num_id
+        - mpn
+        - mcode
+        - quantity
+        - offer_price
+        - coo
+        - lead_time_days
+        - vendor_type
+        - vendor_region
     Product:
       title: Product
       type: object
@@ -56,6 +178,10 @@ components:
                 type: string
               vendor_number:
                 type: integer
+            required:
+              - vendor_id
+              - vendor_name
+              - vendor_number
         price_item_id:
           type: integer
         category_id:
@@ -120,5 +246,47 @@ components:
         gpu_packaging:
           type: string
           maxLength: 100
+      required:
+        - item_num_id
+        - mpn
+        - mcode
+        - vendors
+        - item_price_id
+    ProductResponse:
+      title: Product Create/Update response
+      type: object
+      properties:
+        fo_ref_id:
+          type: integer
+          description: The ID of the product in the RocketChips system.
+    SalesOrderResponse:
+      title: Sales Order response
+      type: object
+      properties:
+        contact_id:
+          type: integer
+          description: The HubSpot contact ID of the customer that placed the sales order.
+        customer_purchase_order_num:
+          type: string
+        entered_by:
+          type: integer
+        ship_to_num:
+          type: integer
+        due_date:
+          $ref: '#/components/schemas/Timestamp'
+        item_num_id:
+          type: integer
+        cipn:
+          type: string
+          maxLength: 60
+        quantity:
+          type: integer
+          minimum: 1
+        unit_sell_price:
+          $ref: '#/components/schemas/Decimal' 
+    Timestamp:
+      type: integer
+      description: Seconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
+
 security:
   - ApiKeyAuth: []
