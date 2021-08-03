@@ -1,4 +1,5 @@
 from django.db import models
+from ....product.models import ProductVariant
 
 class Offer(models.Model):
 	type = models.CharField(
@@ -13,3 +14,7 @@ class Offer(models.Model):
 	comment = models.CharField(max_length=300, blank=True, default="")
 	vendor_type = models.CharField(max_length=50, blank=True, default="")
 	vendor_region = models.CharField(max_length=50, blank=True, default="")
+	product_variant = models.OneToOneField(
+		ProductVariant,
+		on_delete=models.CASCADE
+	)
