@@ -67,6 +67,7 @@ class ProductSerializer(serializers.Serializer):
         }
 
         product = Product.objects.create(**product_data)
+        print("--PRODUCT CREATED--")
         
         # assign attribute values to the newly created product for each attribute of the specified category
         # attribute values that do not exist will be created
@@ -74,7 +75,8 @@ class ProductSerializer(serializers.Serializer):
             attribute = Attribute.objects.get(slug=attr_slug)
             attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
             associate_attribute_values_to_instance(product, attribute, attribute_value[0])
-
+        
+        print("--ATTRIBUTE VALUES ASSIGNED--")
         # assign mcode attribute value (mcode value that does not exist will be created)
         attribute_mcode = Attribute.objects.get(slug="mcode")
         attribute_mcode_value = AttributeValue.objects.get_or_create(
@@ -83,14 +85,14 @@ class ProductSerializer(serializers.Serializer):
             attribute=attribute_mcode
             )
         associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
-
+        print("--MCODE ASSIGNED--")
         # create new vendor attribute values for each vendor in request body
         for vendor in validated_data["vendors"]:
             attribute_vendor = Attribute.objects.get(slug="vendor")
             AttributeValue.objects.get_or_create(
                 name=vendor["vendor_name"],
-                slug="vendor_number",
+                slug=vendor["vendor_number"],
                 attribute=attribute_vendor
             )
-
+        print("--VENDORS CREATED--")
         return product
