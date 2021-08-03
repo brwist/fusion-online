@@ -208,6 +208,7 @@ if not SECRET_KEY and DEBUG:
 
 MIDDLEWARE = [
     "saleor.fusion_online.middleware.health_check_allow_any_host",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "saleor.core.middleware.request_time",
@@ -256,6 +257,7 @@ INSTALLED_APPS = [
     "saleor.fusion_online.rfq",
     "saleor.fusion_online.api",
     # External apps
+    "corsheaders",
     "rest_framework",
     "rest_framework_api_key",
     "versatileimagefield",
@@ -587,6 +589,12 @@ JWT_TTL_REFRESH = timedelta(seconds=parse(os.environ.get("JWT_TTL_REFRESH", "30 
 JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
     seconds=parse(os.environ.get("JWT_TTL_REQUEST_EMAIL_CHANGE", "1 hour")),
 )
+
+CORS_ALLOWED_ORIGINS = [
+    "https://api-docs-sandbox.fusiononline.io"
+]
+
+CORS_URLS_REGEX = r'^/fo-api/.*$'
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
