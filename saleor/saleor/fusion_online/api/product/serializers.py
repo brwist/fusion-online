@@ -51,7 +51,7 @@ class ProductSerializer(serializers.Serializer):
             4: {
                 "slug": "storage",
                 "product_type_slug": "storage",
-                "attr_slugs": ["storage_class", "storage_capacity", "storage_size"]
+                "attr_slugs": ["storage_class", "storage_capacity", "storage_size", "storage_type"]
                 }
         }
         # map request data to product model fields and create new product
