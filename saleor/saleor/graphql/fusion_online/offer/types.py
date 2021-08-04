@@ -1,6 +1,6 @@
 import graphene
 
-from ....fusion_online.api.offer import models
+from ....fusion_online.offer import models
 from ...core.connection import CountableDjangoObjectType
 
 class Offer(CountableDjangoObjectType):

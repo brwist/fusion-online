@@ -254,8 +254,7 @@ INSTALLED_APPS = [
     "saleor.webhook",
     "saleor.wishlist",
     "saleor.app",
-    "saleor.fusion_online.rfq",
-    "saleor.fusion_online.api",
+    "saleor.fusion_online",
     # External apps
     "corsheaders",
     "rest_framework",

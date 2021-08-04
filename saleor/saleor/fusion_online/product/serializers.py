@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ....product.models import Product, ProductType, Category, Attribute, AttributeValue
-from ....product.utils.attributes import associate_attribute_values_to_instance
+from ...product.models import Product, ProductType, Category, Attribute, AttributeValue
+from ...product.utils.attributes import associate_attribute_values_to_instance
 from django.utils.text import slugify
 
 class ProductSerializer(serializers.Serializer):
