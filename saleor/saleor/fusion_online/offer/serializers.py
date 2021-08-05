@@ -2,6 +2,7 @@ from rest_framework import serializers
 from ..offer.models import Offer
 from ...product.models import Product, ProductVariant, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
+from ...warehouse.models import Warehouse, Stock
 
 class OfferSerializer(serializers.Serializer):
 	type = serializers.CharField()
@@ -47,6 +48,13 @@ class OfferSerializer(serializers.Serializer):
 		associate_attribute_values_to_instance(product_variant[0], attribute_vendor, attribute_vendor_value[0] )
 		print("--Associated vendor attribute value to variant--")
 
+		# get warehouse and store quantity
+		warehouse = Warehouse.objects.get(name="Test Warehouse")
+		Stock.objects.create(
+			warehouse=warehouse,
+			product_variant=product_variant[0],
+			quantity=validated_data['qty'])
+		print("--Qty Added--")
 		# create offer
 		offer_data = {
 			"type": validated_data["type"],
