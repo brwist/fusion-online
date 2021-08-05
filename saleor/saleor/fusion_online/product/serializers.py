@@ -86,13 +86,25 @@ class ProductSerializer(serializers.Serializer):
             )
         associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
         print("--MCODE ASSIGNED--")
-        # create new vendor attribute values for each vendor in request body
+        # create new vendor attribute values for each vendor in request body 
+        attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
+        print("primary vendors attribute retrieved")
+        attribute_vendor = Attribute.objects.get(slug="vendor")
+        print("vendor attribute retrieved")
+        attribute_primary_vendors_values = []
         for vendor in validated_data["vendors"]:
-            attribute_vendor = Attribute.objects.get(slug="vendor")
+            attribute_primary_vendors_values.append(AttributeValue.objects.get_or_create(
+                name=vendor["vendor_name"],
+                slug=vendor["vendor_number"],
+                attribute=attribute_primary_vendors
+            )[0])
             AttributeValue.objects.get_or_create(
                 name=vendor["vendor_name"],
                 slug=vendor["vendor_number"],
                 attribute=attribute_vendor
             )
         print("--VENDORS CREATED--")
+        associate_attribute_values_to_instance(product, attribute_primary_vendors, *attribute_primary_vendors_values)
+        print("vendor associated with product")
+
         return product
