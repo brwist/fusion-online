@@ -535,10 +535,12 @@ components:
       properties:
         ship_to_num:
           type: integer
-          description: ID of the ship-to address in RMS
+          description: ID of the ship-to address in RMS.
           nullable: true
-      required:
-        - ship_to_num
+        validation_message:
+          type: string
+          description: Description of any validation-related issues with the address.
+          nullable: true
     Timestamp:
       type: integer
       description: Seconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
