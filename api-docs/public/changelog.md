@@ -1,0 +1,12 @@
+RocketChips API Changelog
+==========================
+
+### 2021-08-06:
+  - Added request body schema for `/rfqs/{fo_rfq_ref_id}/responses/{fo_rfq_line_item_ref_id}` endpoint.
+  - Added `/ship-to-addresses/{fo_ship_to_address_ref_id}` PUT endpoint definition.
+  - Changed all instances of `contact_id` property name to `hubspot_vid`
+  - Dropped `vendor_id` property from the `Vendor` schema.
+  - Dropped `all_mpn` and `all_mcode` properties from the `Product` schema.
+  - Added `status` property to Product schema.
+  - Created separate schema for product update endpoint with support for `vendors` and `status`.
+  - Added `tariff_rate` property to the `Offer` schema.
