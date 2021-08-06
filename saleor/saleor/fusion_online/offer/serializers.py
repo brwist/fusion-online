@@ -4,8 +4,15 @@ from ...product.models import Product, ProductVariant, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
 from ...warehouse.models import Warehouse, Stock
 
+TYPE_CHOICES = [
+	("excess_list", "Excess List"),
+	("stock_list", "Stock List"),
+	("vendor_offer", "Vendor Offer"),
+	("rms_offfer", "RMS Offer"),
+	("po", "PO")]
+	
 class OfferSerializer(serializers.Serializer):
-	type = serializers.CharField()
+	type = serializers.ChoiceField(choices=TYPE_CHOICES)
 	date_added = serializers.IntegerField(max_value=None, min_value=None)
 	source = serializers.IntegerField(max_value=None, min_value=None)
 	company = serializers.CharField(max_length=50)
@@ -19,8 +26,9 @@ class OfferSerializer(serializers.Serializer):
 	coo = serializers.CharField(max_length=60, required=False)
 	lead_time_days = serializers.IntegerField(max_value=None, min_value=-1)
 	offer_id = serializers.IntegerField(max_value=None, min_value=None)
-	vendor_type = serializers.CharField()
-	vendor_region = serializers.CharField()  
+	vendor_type = serializers.CharField(required=False)
+	vendor_region = serializers.CharField(required=False)
+	tariff_rate = serializers.FloatField(required=False, allow_null=True)  
 
 	def create(self, validated_data):
 		# Get product
@@ -64,6 +72,7 @@ class OfferSerializer(serializers.Serializer):
 			"vendor_type": validated_data["vendor_type"] if validated_data.get('vendor_type') else "",
 			"vendor_region": validated_data["vendor_region"] if validated_data.get('vendor_region') else "",
 			"lead_time_days": validated_data["lead_time_days"],
-			"product_variant": product_variant[0]
+			"product_variant": product_variant[0],
+			"tariff": validated_data["tariff_rate"]
 		}
 		return Offer.objects.create(**offer_data)
