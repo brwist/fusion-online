@@ -22,8 +22,9 @@ class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
     item_num_id = serializers.IntegerField(max_value=None, min_value=None)
     mcode = serializers.CharField(max_length=10)
+    status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
     vendors = serializers.ListField(child=serializers.DictField())
-    price_item_id = serializers.IntegerField(max_value=None, min_value=None)
+    price_item_id = serializers.IntegerField(max_value=None, min_value=None, required=False)
     category_id = serializers.ChoiceField(choices=CATEGORY_ID_CHOICES)
     all_description = serializers.CharField(max_length=250, required=False)
     cpu_family = serializers.CharField(max_length=100, required=False)
@@ -60,6 +61,7 @@ class ProductSerializer(serializers.Serializer):
         category_name = [item[1] for item in CATEGORY_ID_CHOICES if item[0] == validated_data['category_id']][0]
 
         # map request data to product model fields and create new product
+        print(True if validated_data["status"] == "ACTIVE" else False)
         product_data = {
             "name": validated_data["all_description"] if validated_data.get('all_description') 
                 else f'{validated_data["mcode"]} {validated_data["mpn"]}',
@@ -69,6 +71,7 @@ class ProductSerializer(serializers.Serializer):
             "item_num_id": validated_data["item_num_id"],
             "product_type": ProductType.objects.get(slug=product_type_slug),
             "category": Category.objects.get(name=category_name),
+            "visible_in_listings": True if validated_data["status"] == "ACTIVE" else False
         }
 
         product = Product.objects.create(**product_data)
@@ -91,6 +94,14 @@ class ProductSerializer(serializers.Serializer):
             )
         associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
         print("--MCODE ASSIGNED--")
+        # assign status attribute value
+        attribute_status = Attribute.objects.get(slug="status")
+        attribute_status_value = AttributeValue.objects.get(
+            slug=slugify(validated_data["status"], allow_unicode=True),
+            attribute=attribute_status
+            )
+        associate_attribute_values_to_instance(product, attribute_status, attribute_status_value)
+        print("--STATUS ASSIGNED--")
         # create new vendor attribute values for each vendor in request body 
         attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
         print("primary vendors attribute retrieved")
@@ -113,3 +124,36 @@ class ProductSerializer(serializers.Serializer):
         print("vendor associated with product")
 
         return product
+
+    def update(self, instance, validated_data):
+        attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
+        attribute_vendor = Attribute.objects.get(slug="vendor")
+        attribute_primary_vendors_values = []
+
+        for vendor in validated_data["vendors"]:
+            attribute_primary_vendors_values.append(AttributeValue.objects.get_or_create(
+                name=vendor["vendor_name"],
+                slug=vendor["vendor_number"],
+                attribute=attribute_primary_vendors
+            )[0])
+            AttributeValue.objects.get_or_create(
+                name=vendor["vendor_name"],
+                slug=vendor["vendor_number"],
+                attribute=attribute_vendor
+            )
+        print("--VENDORS RETRIEVED OR CREATED--")
+        associate_attribute_values_to_instance(instance, attribute_primary_vendors, *attribute_primary_vendors_values)
+        print("--VENDORS UPDATED --")
+
+        # assign status attribute value
+        attribute_status = Attribute.objects.get(slug="status")
+        attribute_status_value = AttributeValue.objects.get(
+            slug=slugify(validated_data["status"], allow_unicode=True),
+            attribute=attribute_status
+            )
+        associate_attribute_values_to_instance(instance, attribute_status, attribute_status_value)
+
+        instance.visible_in_listings = True if validated_data["status"] == 'ACTIVE' else False
+        instance.save()
+        print("--STATUS UPDATED--")
+        return instance

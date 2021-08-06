@@ -5,11 +5,12 @@ from rest_framework.parsers import JSONParser
 from rest_framework.throttling import UserRateThrottle
 from .serializers import ProductSerializer
 from django.db import transaction
+from ...product.models import Product
 
 @api_view(["POST"])
 @throttle_classes([UserRateThrottle])
 @transaction.atomic
-def handler(request):
+def post_handler(request):
     print("---------------")
     print('REQUEST_METHOD:', request.META['REQUEST_METHOD'])
     print('PATH_INFO:', request.META['PATH_INFO'])
@@ -24,6 +25,24 @@ def handler(request):
     serializer = ProductSerializer(data=data)
     try:
         with transaction.atomic():
+            if not serializer.is_valid():
+                return JsonResponse(serializer.errors, status=400)
+            else:
+                result = serializer.save()
+                return Response({"fo_ref_id": result.pk})
+    except Exception as e:
+        return Response({"error": True, "message": str(e)}, status=500)
+
+@api_view(["PUT"])
+@throttle_classes([UserRateThrottle])
+@transaction.atomic
+def put_handler(request, pk):
+    try:
+        with transaction.atomic():
+            product = Product.objects.get(pk=pk)
+            data = JSONParser().parse(request)
+
+            serializer = ProductSerializer(product, data=data, partial=True)
             if not serializer.is_valid():
                 return JsonResponse(serializer.errors, status=400)
             else:
