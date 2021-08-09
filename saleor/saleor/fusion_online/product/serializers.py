@@ -107,8 +107,7 @@ class ProductSerializer(serializers.Serializer):
             product.visible_in_listings = True
             Product.objects.filter(pk=product.pk).update(is_published=True)
             print("--PRODUCT PUBLISHED--")
-        else: 
-            False
+
         # create new vendor attribute values for each vendor in request body 
         attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
         print("primary vendors attribute retrieved")
