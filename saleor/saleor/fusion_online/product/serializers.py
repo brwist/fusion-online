@@ -103,6 +103,12 @@ class ProductSerializer(serializers.Serializer):
             )
         associate_attribute_values_to_instance(product, attribute_status, attribute_status_value)
         print("--STATUS ASSIGNED--")
+        if validated_data["status"] == 'ACTIVE':
+            product.visible_in_listings = True
+            Product.objects.filter(pk=product.pk).update(is_published=True)
+            print("--PRODUCT PUBLISHED--")
+        else: 
+            False
         # create new vendor attribute values for each vendor in request body 
         attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
         print("primary vendors attribute retrieved")
@@ -153,8 +159,16 @@ class ProductSerializer(serializers.Serializer):
             attribute=attribute_status
             )
         associate_attribute_values_to_instance(instance, attribute_status, attribute_status_value)
-
-        instance.visible_in_listings = True if validated_data["status"] == 'ACTIVE' else False
-        instance.save()
         print("--STATUS UPDATED--")
+
+        # publish product and make visible in listings
+        if validated_data["status"] == 'ACTIVE':
+            instance.visible_in_listings = True
+            Product.objects.filter(pk=instance.pk).update(is_published=True)
+            print("--PRODUCT PUBLISHED--")
+        else: 
+            instance.visible_in_listings = False
+            Product.objects.filter(pk=instance.pk).update(is_published=False)
+            print("--PRODUCT PUBLISHED--")
+        instance.save()
         return instance
