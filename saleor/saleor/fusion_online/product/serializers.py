@@ -162,13 +162,13 @@ class ProductSerializer(serializers.Serializer):
         print("--STATUS UPDATED--")
 
         # publish product and make visible in listings
-        if validated_data["status"] == 'ACTIVE':
+        if validated_data["status"] == "ACTIVE":
             instance.visible_in_listings = True
             Product.objects.filter(pk=instance.pk).update(is_published=True)
             print("--PRODUCT PUBLISHED--")
-        else: 
+        elif validated_data["status"] == "INACTIVE": 
             instance.visible_in_listings = False
             Product.objects.filter(pk=instance.pk).update(is_published=False)
-            print("--PRODUCT PUBLISHED--")
+            print("--PRODUCT UNPUBLISHED--")
         instance.save()
         return instance
