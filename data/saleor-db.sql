@@ -380,47 +380,6 @@ CREATE TABLE public.account_user_user_permissions (
 ALTER TABLE public.account_user_user_permissions OWNER TO saleor;
 
 --
--- Name: api_offer; Type: TABLE; Schema: public; Owner: saleor
---
-
-CREATE TABLE public.api_offer (
-    id integer NOT NULL,
-    source smallint NOT NULL,
-    company character varying(50) NOT NULL,
-    item_num_id integer NOT NULL,
-    mpn character varying(50) NOT NULL,
-    qty integer NOT NULL,
-    offer_price character varying(20) NOT NULL,
-    lead_time_days integer NOT NULL,
-    CONSTRAINT api_offer_qty_check CHECK ((qty >= 0))
-);
-
-
-ALTER TABLE public.api_offer OWNER TO saleor;
-
---
--- Name: api_offer_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
---
-
-CREATE SEQUENCE public.api_offer_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.api_offer_id_seq OWNER TO saleor;
-
---
--- Name: api_offer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
---
-
-ALTER SEQUENCE public.api_offer_id_seq OWNED BY public.api_offer.id;
-
-
---
 -- Name: app_appinstallation; Type: TABLE; Schema: public; Owner: saleor
 --
 
@@ -1397,6 +1356,48 @@ ALTER TABLE public.django_site_id_seq OWNER TO saleor;
 --
 
 ALTER SEQUENCE public.django_site_id_seq OWNED BY public.django_site.id;
+
+
+--
+-- Name: fusion_online_offer; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_offer (
+    id integer NOT NULL,
+    type character varying(50) NOT NULL,
+    lead_time_days integer NOT NULL,
+    date_added integer,
+    date_code character varying(50) NOT NULL,
+    comment character varying(300) NOT NULL,
+    vendor_type character varying(50) NOT NULL,
+    vendor_region character varying(50) NOT NULL,
+    product_variant_id integer NOT NULL,
+    tariff double precision
+);
+
+
+ALTER TABLE public.fusion_online_offer OWNER TO saleor;
+
+--
+-- Name: fusion_online_offer_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_offer_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_offer_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_offer_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_offer_id_seq OWNED BY public.fusion_online_offer.id;
 
 
 --
@@ -3106,77 +3107,6 @@ CREATE TABLE public.rest_framework_api_key_apikey (
 ALTER TABLE public.rest_framework_api_key_apikey OWNER TO saleor;
 
 --
--- Name: rfq_rfq; Type: TABLE; Schema: public; Owner: saleor
---
-
-CREATE TABLE public.rfq_rfq (
-    id integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE public.rfq_rfq OWNER TO saleor;
-
---
--- Name: rfq_rfq_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
---
-
-CREATE SEQUENCE public.rfq_rfq_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.rfq_rfq_id_seq OWNER TO saleor;
-
---
--- Name: rfq_rfq_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
---
-
-ALTER SEQUENCE public.rfq_rfq_id_seq OWNED BY public.rfq_rfq.id;
-
-
---
--- Name: rfq_rfqitem; Type: TABLE; Schema: public; Owner: saleor
---
-
-CREATE TABLE public.rfq_rfqitem (
-    id integer NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    product_id integer NOT NULL,
-    rfq_id integer NOT NULL
-);
-
-
-ALTER TABLE public.rfq_rfqitem OWNER TO saleor;
-
---
--- Name: rfq_rfqitem_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
---
-
-CREATE SEQUENCE public.rfq_rfqitem_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.rfq_rfqitem_id_seq OWNER TO saleor;
-
---
--- Name: rfq_rfqitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
---
-
-ALTER SEQUENCE public.rfq_rfqitem_id_seq OWNED BY public.rfq_rfqitem.id;
-
-
---
 -- Name: shipping_shippingmethod; Type: TABLE; Schema: public; Owner: saleor
 --
 
@@ -3887,13 +3817,6 @@ ALTER TABLE ONLY public.account_user_user_permissions ALTER COLUMN id SET DEFAUL
 
 
 --
--- Name: api_offer id; Type: DEFAULT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.api_offer ALTER COLUMN id SET DEFAULT nextval('public.api_offer_id_seq'::regclass);
-
-
---
 -- Name: app_app id; Type: DEFAULT; Schema: public; Owner: saleor
 --
 
@@ -4094,6 +4017,13 @@ ALTER TABLE ONLY public.django_prices_vatlayer_vat ALTER COLUMN id SET DEFAULT n
 --
 
 ALTER TABLE ONLY public.django_site ALTER COLUMN id SET DEFAULT nextval('public.django_site_id_seq'::regclass);
+
+
+--
+-- Name: fusion_online_offer id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_offer ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_offer_id_seq'::regclass);
 
 
 --
@@ -4384,20 +4314,6 @@ ALTER TABLE ONLY public.product_variantimage ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- Name: rfq_rfq id; Type: DEFAULT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfq ALTER COLUMN id SET DEFAULT nextval('public.rfq_rfq_id_seq'::regclass);
-
-
---
--- Name: rfq_rfqitem id; Type: DEFAULT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfqitem ALTER COLUMN id SET DEFAULT nextval('public.rfq_rfqitem_id_seq'::regclass);
-
-
---
 -- Name: shipping_shippingmethod id; Type: DEFAULT; Schema: public; Owner: saleor
 --
 
@@ -4585,11 +4501,11 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 12	f	test6@test.com	f	t	pbkdf2_sha256$216000$0xhARmJk724y$E71nyzvuxXFTYg6S57khV5fqLXqC4cALWG+T8QrarM4=	2021-06-25 19:30:10.352771+00	2021-06-25 19:30:34.071893+00	\N	\N	\N				{}	{}	YKPlJVsdtksf
 6	f	test@test.com	f	t	pbkdf2_sha256$216000$98hum632Vr3k$cb3Rrv3Ero7bmO6zMWtZQsiWkv2mWob9UgSV2T21Ujs=	2021-06-23 19:50:31.314872+00	2021-06-24 18:19:05.574359+00	\N	\N	\N				{}	{}	09Kf0cCTz9M7
 11	f	test5@test.com	f	t	pbkdf2_sha256$216000$heJlDRr9QOH3$UCD/S8yE8//lRhbDmgwcsuWUf0sP7yTsEk5sRXBDKqI=	2021-06-25 14:26:50.031077+00	2021-06-25 14:27:28.150407+00	\N	\N	\N				{}	{}	onk8A1n97PYz
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-07-29 19:15:52.623205+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 4	f	admin@bowst.com	f	f	pbkdf2_sha256$216000$8dwxa4qPFnbo$d14QNM7cxLCVFrSH2QwCdLDq9GmKqNnqcNLvZq5RJto=	2021-06-22 17:00:09.434333+00	\N	\N	\N	\N				{}	{}	GRRIv5ptFkEd
 10	f	test4@test.com	f	t	pbkdf2_sha256$216000$44wZpVYnVpm7$0FButqCDAwUnIS8TNq0lgBr8C3Mc/37XZG3/Q6Xo4ss=	2021-06-24 19:55:10.539369+00	2021-06-24 19:56:08.270478+00	\N	\N	\N				{}	{}	Z5yQyIxxbQYX
 5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-07-29 20:27:52.040888+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 7	f	testing@test.com	f	f	pbkdf2_sha256$216000$O3GbrZlGB0Lj$rX3CvqZOGO9tdXdHmZQO6rKTtbXDpcNCC49awo7QbDM=	2021-06-23 19:57:34.139287+00	\N	\N	\N	\N				{}	{}	NjE4muMwgs4u
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-08-04 18:07:23.580093+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 8	f	test2@test.com	f	t	pbkdf2_sha256$216000$6g7mfxc0v4ew$tWixtWwgkQuA/5z0Xi84LyxbS7XhSiyacf+aFCWPj4I=	2021-06-24 18:20:40.669425+00	2021-06-24 18:21:48.249775+00	\N	\N	\N				{}	{}	rn6KTN9GNaa7
 9	f	test3@test.com	f	f	pbkdf2_sha256$216000$gjsrrmNtGJJz$SftH0llmx36y4cxl7gy4JIEG0fxKMB1DVpov4vCrseg=	2021-06-24 19:21:16.353454+00	\N	\N	\N	\N				{}	{}	s8MK5067fWJT
 \.
@@ -4621,15 +4537,6 @@ COPY public.account_user_groups (id, user_id, group_id) FROM stdin;
 --
 
 COPY public.account_user_user_permissions (id, user_id, permission_id) FROM stdin;
-\.
-
-
---
--- Data for Name: api_offer; Type: TABLE DATA; Schema: public; Owner: saleor
---
-
-COPY public.api_offer (id, source, company, item_num_id, mpn, qty, offer_price, lead_time_days) FROM stdin;
-1	2	vendor name	3	456	1000	999.99	0
 \.
 
 
@@ -5752,7 +5659,6 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 486	product	0127_auto_20201001_0933	2021-05-19 15:48:53.465217+00
 487	product	0128_update_publication_date	2021-05-19 15:48:53.611108+00
 488	product	0129_add_product_types_and_attributes_perm	2021-05-19 15:48:54.079854+00
-489	rfq	0001_initial	2021-05-19 15:48:54.233411+00
 490	shipping	0018_default_zones_countries	2021-05-19 15:48:54.318981+00
 491	shipping	0019_remove_shippingmethod_meta	2021-05-19 15:48:54.339304+00
 492	shipping	0020_auto_20200902_1249	2021-05-19 15:48:54.402053+00
@@ -5793,10 +5699,11 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 527	rest_framework_api_key	0002_auto_20190529_2243	2021-07-01 14:38:05.333167+00
 528	rest_framework_api_key	0003_auto_20190623_1952	2021-07-01 14:38:05.342273+00
 529	rest_framework_api_key	0004_prefix_hashed_key	2021-07-01 14:38:05.457253+00
-530	api	0001_initial	2021-07-07 15:27:50.815903+00
 531	product	0130_product_mpn	2021-07-08 15:02:48.708383+00
 532	product	0131_auto_20210713_1404	2021-07-13 14:04:58.36504+00
 533	product	0132_product_item_num_id	2021-07-29 20:21:53.85934+00
+538	fusion_online	0001_initial	2021-08-04 17:44:55.824949+00
+539	fusion_online	0002_offer_tariff	2021-08-06 15:39:37.671684+00
 \.
 
 
@@ -5830,6 +5737,23 @@ COPY public.django_prices_vatlayer_vat (id, country_code, data) FROM stdin;
 
 COPY public.django_site (id, domain, name) FROM stdin;
 1	localhost:8000	RocketChips
+\.
+
+
+--
+-- Data for Name: fusion_online_offer; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff) FROM stdin;
+1	vendor_offer	0	1625254322	2 days	test	8	9	21	\N
+2	vendor_offer	0	1625254322	2 days		8	9	23	\N
+3	vendor_offer	10	1625254322	2 days		8	9	24	\N
+4	vendor_offer	10	1625254322	2 days		8	9	46	\N
+5	vendor_offer	10	1625254322	2 days		8	9	47	\N
+6	vendor_offer	10	1625254322	2 days		8	9	48	\N
+7	vendor_offer	10	1625254322	2 days		8	9	49	\N
+8	vendor_offer	10	1625254322	2 days		8	9	50	\N
+9	vendor_offer	10	1625254322	2 days		8	9	51	0
 \.
 
 
@@ -6033,6 +5957,19 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_assignedproductattribute (id, product_id, assignment_id) FROM stdin;
+161	87	54
+162	87	56
+163	87	55
+164	87	53
+165	87	52
+166	87	57
+167	87	58
+168	88	54
+169	88	56
+170	88	55
+171	88	53
+172	88	52
+173	88	57
 21	6	5
 22	6	6
 23	6	7
@@ -6057,7 +5994,14 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 42	9	20
 43	8	17
 44	8	18
+174	88	58
+175	89	54
+176	89	56
+177	89	55
+178	89	53
+179	89	52
 51	27	23
+180	89	57
 53	27	24
 54	27	26
 55	28	27
@@ -6081,6 +6025,7 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 73	31	23
 74	31	37
 75	31	41
+181	89	58
 77	31	26
 78	31	38
 79	31	39
@@ -6095,6 +6040,10 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 88	32	49
 89	32	50
 90	32	51
+182	89	59
+183	89	60
+184	88	59
+185	88	60
 101	68	75
 102	68	77
 103	68	76
@@ -6120,6 +6069,42 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 123	74	52
 124	74	57
 125	74	58
+249	100	54
+250	100	56
+251	100	55
+252	100	53
+253	100	52
+254	100	57
+255	100	58
+256	100	82
+257	101	75
+258	101	77
+259	101	76
+260	101	78
+261	101	81
+262	103	75
+263	103	77
+264	103	76
+265	103	78
+266	103	81
+267	100	86
+268	106	75
+269	106	77
+270	106	76
+271	106	78
+272	106	85
+273	106	81
+274	108	75
+275	108	77
+276	108	76
+277	108	78
+278	108	85
+279	108	81
+280	109	77
+281	109	76
+282	109	78
+283	109	85
+284	109	81
 \.
 
 
@@ -6128,6 +6113,25 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 --
 
 COPY public.product_assignedproductattribute_values (id, assignedproductattribute_id, attributevalue_id) FROM stdin;
+300	267	140
+318	275	13
+319	276	142
+320	277	3
+321	278	140
+322	279	129
+164	161	72
+165	162	73
+166	163	74
+167	164	75
+168	165	30
+169	166	76
+170	167	66
+171	168	72
+172	169	73
+173	170	74
+174	171	75
+175	172	30
+176	173	76
 21	21	13
 22	22	7
 23	23	3
@@ -6152,7 +6156,15 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 42	42	19
 43	43	21
 44	44	18
+177	174	66
+178	175	72
+179	176	73
+180	177	74
+181	178	75
+182	179	30
 51	51	30
+183	180	76
+184	181	66
 54	54	33
 55	55	12
 56	56	37
@@ -6165,6 +6177,8 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 63	63	42
 64	64	40
 65	65	41
+185	182	21
+186	183	18
 68	68	47
 69	69	55
 70	70	52
@@ -6176,6 +6190,7 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 76	73	30
 77	74	60
 78	75	43
+187	184	21
 80	77	66
 81	78	53
 82	79	48
@@ -6190,6 +6205,16 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 91	88	49
 92	89	57
 93	90	64
+188	185	18
+323	279	130
+324	279	131
+325	279	132
+326	279	133
+327	279	134
+328	279	135
+329	279	136
+330	279	137
+331	279	138
 104	101	7
 105	102	14
 106	103	69
@@ -6215,6 +6240,77 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 126	123	30
 127	124	76
 128	125	66
+332	279	139
+252	249	72
+253	250	73
+254	251	74
+255	252	75
+256	253	30
+257	254	76
+258	255	66
+259	256	129
+260	256	130
+301	268	8
+302	269	13
+303	270	142
+304	271	3
+305	272	140
+306	273	129
+307	273	130
+308	273	131
+270	257	7
+271	258	13
+272	259	69
+273	260	3
+274	261	129
+275	261	130
+276	261	131
+277	261	132
+278	261	133
+279	261	134
+280	261	135
+281	261	136
+282	261	137
+283	261	138
+284	261	139
+285	262	8
+286	263	13
+287	264	142
+288	265	3
+289	266	129
+290	266	130
+291	266	131
+292	266	132
+293	266	133
+294	266	134
+295	266	135
+296	266	136
+297	266	137
+298	266	138
+299	266	139
+309	273	132
+310	273	133
+311	273	134
+312	273	135
+313	273	136
+314	273	137
+315	273	138
+316	273	139
+333	280	13
+334	281	142
+335	282	3
+336	283	140
+337	284	129
+338	284	130
+339	284	131
+340	284	132
+341	284	133
+342	284	134
+343	284	135
+344	284	136
+345	284	137
+346	284	138
+347	284	139
 \.
 
 
@@ -6238,6 +6334,15 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 13	12	7
 14	19	7
 15	20	8
+16	21	9
+17	23	9
+18	24	9
+40	46	9
+41	47	9
+42	48	9
+43	49	9
+44	50	9
+45	51	9
 \.
 
 
@@ -6261,6 +6366,15 @@ COPY public.product_assignedvariantattribute_values (id, assignedvariantattribut
 13	13	26
 14	14	27
 15	15	26
+16	16	79
+17	17	79
+18	18	79
+40	40	79
+41	41	79
+42	42	79
+43	43	79
+44	44	79
+45	45	79
 \.
 
 
@@ -6272,7 +6386,6 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 9	lead-time	Lead time	{}	{}	dropdown	t	t	t	f	t	0	f
 8	ordering-code	Ordering Code	{}	{}	dropdown	t	t	t	f	t	0	f
 7	spec-code	Spec Code	{}	{}	dropdown	t	t	t	f	t	0	f
-10	vendor-id	Vendor	{}	{}	dropdown	t	t	t	f	t	0	f
 16	groupsfamily	Groups/Family	{}	{}	dropdown	t	t	t	t	t	0	f
 17	memory-clock	Memory Clock	{}	{}	dropdown	t	t	t	t	t	0	f
 18	memory	Memory	{}	{}	dropdown	t	t	t	t	t	0	f
@@ -6294,6 +6407,10 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 15	storage_capacity	Capacity	{}	{}	dropdown	t	t	t	t	t	0	f
 26	storage_class	Class	{}	{}	dropdown	t	t	t	t	t	0	f
 27	storage_size	Size	{}	{}	dropdown	t	t	t	t	t	0	f
+10	vendor	Vendor	{}	{}	dropdown	t	t	t	f	t	0	f
+28	storage_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
+29	primary-vendors	Primary Vendors	{}	{}	multiselect	t	t	t	t	t	0	f
+30	status	Status	{}	{}	dropdown	t	t	t	t	t	0	f
 \.
 
 
@@ -6374,6 +6491,14 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 78	4	12	3
 79	8	12	4
 80	7	12	5
+81	29	12	6
+82	29	9	9
+83	29	10	8
+84	29	11	6
+85	30	12	7
+86	30	9	10
+87	30	11	7
+88	30	10	9
 \.
 
 
@@ -6456,6 +6581,31 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 74	10GB	23	10gb	0	
 75	Unknown	12	unknown	1	
 76	test	21	test	0	
+79	SHANGHAI SUPERSERVER INFORMATION	10	12790	4	
+80	TCH INTERNATIONAL CO., LIMITED	10	12882	5	
+81	JOINTHARVEST(HONG KONG) LIMITED	10	12089	6	
+82	EX-CHANNEL GROUP LTD	10	9321	7	
+83	STARTECH PACIFIC LIMITED	10	10393	8	
+84	E-ENERGY LIMITED	10	12431	9	
+85	YICK WAH HONG CO., LTD	10	9565	10	
+86	Digital China (HK) Ltd	10	12430	11	
+87	HONGKONG YOUCHENG TECHNOLOGY LIMITED	10	13749	12	
+88	UHOP TECH CO., LIMITED	10	17199	13	
+89	HONG KONG SUPERPHI TECHNOLOGY LIMITED	10	19053	14	
+129	SHANGHAI SUPERSERVER INFORMATION	29	12790	0	
+130	TCH INTERNATIONAL CO., LIMITED	29	12882	1	
+131	JOINTHARVEST(HONG KONG) LIMITED	29	12089	2	
+132	EX-CHANNEL GROUP LTD	29	9321	3	
+133	STARTECH PACIFIC LIMITED	29	10393	4	
+134	E-ENERGY LIMITED	29	12431	5	
+135	YICK WAH HONG CO., LTD	29	9565	6	
+136	Digital China (HK) Ltd	29	12430	7	
+137	HONGKONG YOUCHENG TECHNOLOGY LIMITED	29	13749	8	
+138	UHOP TECH CO., LIMITED	29	17199	9	
+139	HONG KONG SUPERPHI TECHNOLOGY LIMITED	29	19053	10	
+140	Active	30	active	0	
+141	Inactive	30	inactive	1	
+142	NVDS-2	6	nvds-2	10	
 \.
 
 
@@ -6492,10 +6642,22 @@ COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_or
 --
 
 COPY public.product_category (id, name, slug, description, lft, rght, tree_id, level, parent_id, background_image, seo_description, seo_title, background_image_alt, description_json, metadata, private_metadata) FROM stdin;
-3	Memory	memory		1	2	3	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-4	Storage	storage		1	2	4	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-1	CPUs	cpus		1	2	1	0	\N					{"blocks": [{"key": "4cn7", "data": {}, "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis cursus mattis. Curabitur sem dui, vulputate fermentum imperdiet vitae, vehicula ut sapien. Duis consectetur mauris eu tristique mollis. Aenean pulvinar a nulla a tristique.", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-2	GPUs	gpu		1	2	2	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+1	CPUs	cpus		1	14	1	0	\N					{"blocks": [{"key": "4cn7", "data": {}, "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis cursus mattis. Curabitur sem dui, vulputate fermentum imperdiet vitae, vehicula ut sapien. Duis consectetur mauris eu tristique mollis. Aenean pulvinar a nulla a tristique.", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+11	CPU-Intel	cpu-intel		12	13	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+12	Memory Server-DIMM	memory-server-dimm		2	3	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+7	CPU Server-Intel	cpu-server-intel		4	5	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+13	Memory-GDDR	memory-gddr		4	5	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+8	CPU Server-AMD EPYC	cpu-server-amd-epyc		6	7	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+9	CPU Desktop-Intel	cpu-desktop-intel		8	9	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+10	CPU Desktop-AMD Ryzen mobile CPU	cpu-desktop-amd-ryzen-mobile-cpu		10	11	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+14	Memory-DRAM	memory-dram		6	7	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+3	Memory	memory		1	10	3	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+15	Memory PC-DIMM	memory-pc-dimm		8	9	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+16	GPU Enterprise	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+2	GPUs	gpu		1	6	2	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+17	GPU Consumer	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+4	Storage	storage		1	4	4	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+18	Storage Solid State Drives	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -6562,13 +6724,22 @@ COPY public.product_product (id, name, description, publication_date, updated_at
 6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.363941+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	200.590	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6	AAA	123
 7	Intel® Celeron® Processor N3010		2021-06-10	2021-07-21 18:58:08.785668+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	105.000	USD	intel-celeron-processor-n3010	2021-06-10	t	7	AAA	123
 9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9	AAA	123
+87	Gigabyte CCCC		\N	2021-08-03 15:03:09.365236+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-cccc	\N	f	\N	CCCC	190691
+101	Intel NMOP		\N	2021-08-06 17:47:31.797926+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-nmop	\N	f	\N	NMOP	190699
+89	Gigabyte AAAAA		2021-08-04	2021-08-04 20:36:29.840337+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-aaaaa	2021-08-04	t	\N	AAAAA	190692
 8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-07-21 18:58:40.528318+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8	AAA	123
+103	Intel OPQR		\N	2021-08-06 18:21:17.064412+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-opqr	\N	t	\N	OPQR	190700
+88	Gigabyte DDDD		2021-08-04	2021-08-04 20:53:55.965426+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-dddd	2021-08-04	t	\N	DDDD	190691
 27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-07-23 17:36:58.542473+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12	BBB	123
 28	M386A8K40CM2-CVF		2021-07-23	2021-07-23 17:03:36.664804+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	m386a8k40cm2-cvf	2021-07-23	t	13	BBB	123
 32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-07-23 17:47:43.366424+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20	BBB	123
 30	ST10000NM0016		2021-07-23	2021-07-23 17:15:24.885875+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	st10000nm0016	2021-07-23	t	14	BBB	123
 31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-07-23 17:44:56.466771+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19	BBB	123
+100	Gigabyte SRJNG		\N	2021-08-06 19:54:18.212574+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-srjng	\N	t	\N	SRJNG	190698
+106	Intel JKLM		\N	2021-08-06 19:57:02.492426+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jklm	\N	t	\N	JKLM	190701
 41	Intel Pentium Core		\N	2021-07-29 16:22:46.697687+00	3	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	INTEL-SR37	\N	f	\N	SR37	123
+108	Intel JKLMZ		\N	2021-08-09 14:26:21.799448+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jklmz	\N	t	\N	JKLMZ	190701
+109	Intel JKZ		\N	2021-08-09 14:33:36.775945+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jkz	\N	t	\N	JKZ	190701
 \.
 
 
@@ -6612,6 +6783,12 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 --
 
 COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount, track_inventory, weight, metadata, private_metadata, currency, price_amount, sort_order) FROM stdin;
+46	654321		89	\N	t	\N	{}	{}	USD	59.990	2
+47	654322		89	\N	t	\N	{}	{}	USD	59.990	3
+48	654323		89	\N	t	\N	{}	{}	USD	59.990	4
+49	654324		89	\N	t	\N	{}	{}	USD	59.990	5
+50	654325		89	\N	t	\N	{}	{}	USD	59.990	6
+51	654326		89	\N	t	\N	{}	{}	USD	59.990	7
 6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
 10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
 8	123456	1	8	\N	t	\N	{}	{}	USD	1200.460	0
@@ -6626,6 +6803,9 @@ COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount
 12	246	1	27	\N	f	\N	{}	{}	USD	79.990	0
 19	123412323	2	31	\N	t	\N	{}	{}	USD	114.990	0
 20	4532634	1	32	\N	t	\N	{}	{}	USD	255.250	0
+21	777789		88	\N	t	\N	{}	{}	USD	999.990	0
+23	777765		89	\N	t	\N	{}	{}	USD	999.990	0
+24	777766		89	\N	t	\N	{}	{}	USD	49.990	1
 \.
 
 
@@ -6652,22 +6832,6 @@ COPY public.product_variantimage (id, image_id, variant_id) FROM stdin;
 COPY public.rest_framework_api_key_apikey (id, created, name, revoked, expiry_date, hashed_key, prefix) FROM stdin;
 T9mKULO0.pbkdf2_sha256$216000$kjKAdscmpsCq$+eZ9AbN6sjACGlmQAJV+2Y+Ls3w14yOAtN9eNugX/cg=	2021-07-01 14:38:43.964988+00	rms-service	f	\N	pbkdf2_sha256$216000$kjKAdscmpsCq$+eZ9AbN6sjACGlmQAJV+2Y+Ls3w14yOAtN9eNugX/cg=	T9mKULO0
 YLXS5t5O.pbkdf2_sha256$216000$OiHsZmvAb4Sj$5aB8CQBwOQfqr6vKh91l/glwWelEe4lLk9hCfanijPQ=	2021-07-23 19:27:01.582278+00	rms-service	f	\N	pbkdf2_sha256$216000$OiHsZmvAb4Sj$5aB8CQBwOQfqr6vKh91l/glwWelEe4lLk9hCfanijPQ=	YLXS5t5O
-\.
-
-
---
--- Data for Name: rfq_rfq; Type: TABLE DATA; Schema: public; Owner: saleor
---
-
-COPY public.rfq_rfq (id, created_at, user_id) FROM stdin;
-\.
-
-
---
--- Data for Name: rfq_rfqitem; Type: TABLE DATA; Schema: public; Owner: saleor
---
-
-COPY public.rfq_rfqitem (id, created_at, product_id, rfq_id) FROM stdin;
 \.
 
 
@@ -6748,6 +6912,12 @@ COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FRO
 3	2	12	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 12	5000	19	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 13	1500	20	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+14	1000	46	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+15	1000	47	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+16	1000	48	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+17	1000	49	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+18	1000	50	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+19	1000	51	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -6849,13 +7019,6 @@ SELECT pg_catalog.setval('public.account_serviceaccounttoken_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.account_staffnotificationrecipient_id_seq', 1, false);
-
-
---
--- Name: api_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
---
-
-SELECT pg_catalog.setval('public.api_offer_id_seq', 1, true);
 
 
 --
@@ -7009,7 +7172,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 533, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 539, true);
 
 
 --
@@ -7038,6 +7201,13 @@ SELECT pg_catalog.setval('public.django_prices_vatlayer_vat_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
+
+
+--
+-- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 9, true);
 
 
 --
@@ -7163,35 +7333,35 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 125, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 284, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 128, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 347, true);
 
 
 --
 -- Name: product_assignedvariantattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 15, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 45, true);
 
 
 --
 -- Name: product_assignedvariantattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 15, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 45, true);
 
 
 --
 -- Name: product_attributechoicevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 76, true);
+SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 145, true);
 
 
 --
@@ -7205,7 +7375,7 @@ SELECT pg_catalog.setval('public.product_attributechoicevaluetranslation_id_seq'
 -- Name: product_attributeproduct_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 80, true);
+SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 88, true);
 
 
 --
@@ -7219,7 +7389,7 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 12, true);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 5, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 18, true);
 
 
 --
@@ -7268,14 +7438,14 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 80, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 109, true);
 
 
 --
 -- Name: product_productattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productattribute_id_seq', 27, true);
+SELECT pg_catalog.setval('public.product_productattribute_id_seq', 30, true);
 
 
 --
@@ -7310,7 +7480,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 20, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 51, true);
 
 
 --
@@ -7325,20 +7495,6 @@ SELECT pg_catalog.setval('public.product_productvarianttranslation_id_seq', 1, f
 --
 
 SELECT pg_catalog.setval('public.product_variantimage_id_seq', 1, false);
-
-
---
--- Name: rfq_rfq_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
---
-
-SELECT pg_catalog.setval('public.rfq_rfq_id_seq', 1, false);
-
-
---
--- Name: rfq_rfqitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
---
-
-SELECT pg_catalog.setval('public.rfq_rfqitem_id_seq', 1, false);
 
 
 --
@@ -7429,7 +7585,7 @@ SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 1, false);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 13, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 19, true);
 
 
 --
@@ -7552,14 +7708,6 @@ ALTER TABLE ONLY public.account_staffnotificationrecipient
 
 ALTER TABLE ONLY public.account_staffnotificationrecipient
     ADD CONSTRAINT account_staffnotificationrecipient_user_id_key UNIQUE (user_id);
-
-
---
--- Name: api_offer api_offer_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.api_offer
-    ADD CONSTRAINT api_offer_pkey PRIMARY KEY (id);
 
 
 --
@@ -7928,6 +8076,22 @@ ALTER TABLE ONLY public.django_site
 
 ALTER TABLE ONLY public.django_site
     ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_offer fusion_online_offer_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_offer
+    ADD CONSTRAINT fusion_online_offer_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_offer fusion_online_offer_product_variant_id_key; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_offer
+    ADD CONSTRAINT fusion_online_offer_product_variant_id_key UNIQUE (product_variant_id);
 
 
 --
@@ -8544,30 +8708,6 @@ ALTER TABLE ONLY public.rest_framework_api_key_apikey
 
 ALTER TABLE ONLY public.rest_framework_api_key_apikey
     ADD CONSTRAINT rest_framework_api_key_apikey_prefix_key UNIQUE (prefix);
-
-
---
--- Name: rfq_rfq rfq_rfq_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfq
-    ADD CONSTRAINT rfq_rfq_pkey PRIMARY KEY (id);
-
-
---
--- Name: rfq_rfqitem rfq_rfqitem_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfqitem
-    ADD CONSTRAINT rfq_rfqitem_pkey PRIMARY KEY (id);
-
-
---
--- Name: rfq_rfqitem rfq_rfqitem_rfq_id_product_id_a1fbccc9_uniq; Type: CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfqitem
-    ADD CONSTRAINT rfq_rfqitem_rfq_id_product_id_a1fbccc9_uniq UNIQUE (rfq_id, product_id);
 
 
 --
@@ -9797,27 +9937,6 @@ CREATE INDEX rest_framework_api_key_apikey_prefix_4e0db5f8_like ON public.rest_f
 
 
 --
--- Name: rfq_rfq_user_id_4b32192c; Type: INDEX; Schema: public; Owner: saleor
---
-
-CREATE INDEX rfq_rfq_user_id_4b32192c ON public.rfq_rfq USING btree (user_id);
-
-
---
--- Name: rfq_rfqitem_product_id_59e4815a; Type: INDEX; Schema: public; Owner: saleor
---
-
-CREATE INDEX rfq_rfqitem_product_id_59e4815a ON public.rfq_rfqitem USING btree (product_id);
-
-
---
--- Name: rfq_rfqitem_rfq_id_904be054; Type: INDEX; Schema: public; Owner: saleor
---
-
-CREATE INDEX rfq_rfqitem_rfq_id_904be054 ON public.rfq_rfqitem USING btree (rfq_id);
-
-
---
 -- Name: shipping_shippingmethod_shipping_zone_id_265b7413; Type: INDEX; Schema: public; Owner: saleor
 --
 
@@ -10393,6 +10512,14 @@ ALTER TABLE ONLY public.discount_vouchertranslation
 
 
 --
+-- Name: fusion_online_offer fusion_online_offer_product_variant_id_4c6295fc_fk_product_p; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_offer
+    ADD CONSTRAINT fusion_online_offer_product_variant_id_4c6295fc_fk_product_p FOREIGN KEY (product_variant_id) REFERENCES public.product_productvariant(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: giftcard_giftcard giftcard_giftcard_user_id_ce2401b5_fk_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
 --
 
@@ -10886,30 +11013,6 @@ ALTER TABLE ONLY public.product_variantimage
 
 ALTER TABLE ONLY public.product_variantimage
     ADD CONSTRAINT product_variantimage_variant_id_81123814_fk_product_p FOREIGN KEY (variant_id) REFERENCES public.product_productvariant(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: rfq_rfq rfq_rfq_user_id_4b32192c_fk_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfq
-    ADD CONSTRAINT rfq_rfq_user_id_4b32192c_fk_account_user_id FOREIGN KEY (user_id) REFERENCES public.account_user(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: rfq_rfqitem rfq_rfqitem_product_id_59e4815a_fk_product_product_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfqitem
-    ADD CONSTRAINT rfq_rfqitem_product_id_59e4815a_fk_product_product_id FOREIGN KEY (product_id) REFERENCES public.product_product(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: rfq_rfqitem rfq_rfqitem_rfq_id_904be054_fk_rfq_rfq_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
---
-
-ALTER TABLE ONLY public.rfq_rfqitem
-    ADD CONSTRAINT rfq_rfqitem_rfq_id_904be054_fk_rfq_rfq_id FOREIGN KEY (rfq_id) REFERENCES public.rfq_rfq(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
