@@ -18,12 +18,16 @@ CATEGORY_ID_CHOICES = [
     ("STOR_SOLID_STATE_DRIVES", "Storage-Solid State Drives")
 ]
 
+class VendorSerializer(serializers.Serializer):
+    vendor_name = serializers.CharField(max_length=100)
+    vendor_number = serializers.IntegerField()
+
 class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
     item_num_id = serializers.IntegerField(max_value=None, min_value=None)
     mcode = serializers.CharField(max_length=10)
     status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
-    vendors = serializers.ListField(child=serializers.DictField())
+    vendors = serializers.ListField(child=VendorSerializer())
     price_item_id = serializers.IntegerField(max_value=None, min_value=None, required=False)
     category_id = serializers.ChoiceField(choices=CATEGORY_ID_CHOICES)
     all_description = serializers.CharField(max_length=250, required=False)
