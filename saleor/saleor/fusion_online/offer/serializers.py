@@ -5,11 +5,11 @@ from ...product.utils.attributes import associate_attribute_values_to_instance
 from ...warehouse.models import Warehouse, Stock
 
 TYPE_CHOICES = [
-	("excess_list", "Excess List"),
-	("stock_list", "Stock List"),
-	("vendor_offer", "Vendor Offer"),
-	("rms_offfer", "RMS Offer"),
-	("po", "PO")]
+	("EXCESS_LIST", "Excess List"),
+	("STOCK_LIST", "Stock List"),
+	("VENDOR_OFFER", "Vendor Offer"),
+	("RMS_OFFER", "RMS Offer"),
+	("PO", "PO")]
 	
 class OfferSerializer(serializers.Serializer):
 	type = serializers.ChoiceField(choices=TYPE_CHOICES)
@@ -19,7 +19,7 @@ class OfferSerializer(serializers.Serializer):
 	item_num_id = serializers.IntegerField(max_value=None, min_value=None)
 	mpn = serializers.CharField(max_length=50)
 	mcode = serializers.CharField(max_length=10)
-	qty = serializers.IntegerField(max_value=None, min_value=0)
+	quantity = serializers.IntegerField(max_value=None, min_value=0)
 	offer_price = serializers.CharField(max_length=20)
 	date_code = serializers.CharField(max_length=50, required=False)
 	comment = serializers.CharField(max_length=500, required=False)
@@ -61,7 +61,7 @@ class OfferSerializer(serializers.Serializer):
 		Stock.objects.create(
 			warehouse=warehouse,
 			product_variant=product_variant[0],
-			quantity=validated_data['qty'])
+			quantity=validated_data['quantity'])
 		print("--Qty Added--")
 		# create offer
 		offer_data = {
@@ -73,6 +73,6 @@ class OfferSerializer(serializers.Serializer):
 			"vendor_region": validated_data["vendor_region"] if validated_data.get('vendor_region') else "",
 			"lead_time_days": validated_data["lead_time_days"],
 			"product_variant": product_variant[0],
-			"tariff": validated_data["tariff_rate"]
+			"tariff_rate": validated_data["tariff_rate"]
 		}
 		return Offer.objects.create(**offer_data)
