@@ -1,18 +1,6 @@
 from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField
 from .models import ShippingAddress
 
-{
-    "customer_id": 0,
-    "ship_to_name": "string",
-    "address": "1 Marina Park Drive\nSuite 7",
-    "city": "string",
-    "state": "string",
-    "country": "US",
-    "ship_via": "FedEx next day + account #",
-    "vat_id": "string",
-    "ship_to_num": 0
-}
-
 
 class ShippingAddressSerializer(ModelSerializer):
     class Meta:
