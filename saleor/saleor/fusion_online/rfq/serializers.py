@@ -5,17 +5,31 @@ from .models import RFQSubmission, RFQLineItem
 from ...account.models import User
 
 class RFQLineItemSerializer(serializers.ModelSerializer):
+	fo_rfq_line_item_ref_id = serializers.CharField(source='pk', read_only=True)
+
 	class Meta:
 		model = RFQLineItem
-		exclude = ['rfq_submission']
+		fields = [
+			'mpn',
+			'mcode',
+			'quantity',
+			'target',
+			'date_code',
+			'comment',
+			'cipn',
+			'commodity_code',
+			'offer_id',
+			'fo_rfq_line_item_ref_id'
+		]
 
 class RFQSubmissionSerializer(serializers.ModelSerializer):
 	items = RFQLineItemSerializer(many=True)
 	user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+	fo_rfq_ref_id = serializers.CharField(source="pk", read_only=True)
 
 	class Meta:
 		model = RFQSubmission
-		fields = ['user', 'items']
+		fields = ['user', 'items', 'fo_rfq_ref_id']
 	
 	def create(self, validated_data):
 		items_data = validated_data.pop('items')

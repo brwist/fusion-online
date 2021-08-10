@@ -7,5 +7,6 @@ urlpatterns = [
     path("products", product_views.post_handler),
     path("products/<pk>", product_views.put_handler),
     path("offers", offer_views.handler),
-    path("rfqs", rfq_views.handler)
+    path("rfqs", rfq_views.post_handler),
+    path("rfqs/<pk>", rfq_views.get_handler)
 ]
