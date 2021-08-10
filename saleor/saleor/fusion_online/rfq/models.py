@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.deletion import CASCADE
 from ...account.models import User
 from ..product.serializers import CATEGORY_ID_CHOICES
 
@@ -9,7 +8,7 @@ class RFQSubmission(models.Model):
 	user = models.ForeignKey(
 		User,
 		related_name="rfqs",
-		on_delete=CASCADE
+		on_delete=models.CASCADE
 	)
 
 	class Meta:
@@ -31,7 +30,7 @@ class RFQLineItem(models.Model):
 	rfq_submission = models.ForeignKey(
 		RFQSubmission,
 		related_name="items",
-		on_delete=CASCADE
+		on_delete=models.CASCADE
 	)
 
 	class Meta:
