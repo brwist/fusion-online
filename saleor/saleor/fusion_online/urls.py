@@ -8,8 +8,9 @@ urlpatterns = [
     path("products", product_views.post_handler),
     path("products/<pk>", product_views.put_handler),
     path("offers", offer_views.handler),
-    path("rfqs", rfq_views.post_handler),
-    path("rfqs/<pk>", rfq_views.get_handler),
-    path('ship-to-addresses/<int:pk>', shipping_address_views.ShippingAddressDetail.as_view())
+    path("rfqs", rfq_views.post_rfq_submission_handler),
+    path("rfqs/<pk>", rfq_views.get_rfq_submission_handler),
+    path('ship-to-addresses/<int:pk>', shipping_address_views.ShippingAddressDetail.as_view()),
+    path("rfqs/<int:rfq_submission_pk>/responses/<int:rfq_line_item_pk>", rfq_views.post_rfq_response_handler)
 ]
 
