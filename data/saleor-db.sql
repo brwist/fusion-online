@@ -1372,7 +1372,7 @@ CREATE TABLE public.fusion_online_offer (
     vendor_type character varying(50) NOT NULL,
     vendor_region character varying(50) NOT NULL,
     product_variant_id integer NOT NULL,
-    tariff double precision
+    tariff_rate double precision
 );
 
 
@@ -1398,6 +1398,126 @@ ALTER TABLE public.fusion_online_offer_id_seq OWNER TO saleor;
 --
 
 ALTER SEQUENCE public.fusion_online_offer_id_seq OWNED BY public.fusion_online_offer.id;
+
+
+--
+-- Name: fusion_online_rfqlineitem; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_rfqlineitem (
+    id integer NOT NULL,
+    mpn character varying(50) NOT NULL,
+    mcode character varying(50) NOT NULL,
+    quantity integer NOT NULL,
+    target double precision NOT NULL,
+    date_code character varying(50) NOT NULL,
+    comment character varying(500) NOT NULL,
+    cipn character varying(50) NOT NULL,
+    commodity_code character varying(50) NOT NULL,
+    offer_id integer NOT NULL,
+    rfq_submission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.fusion_online_rfqlineitem OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_rfqlineitem_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_rfqlineitem_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_rfqlineitem_id_seq OWNED BY public.fusion_online_rfqlineitem.id;
+
+
+--
+-- Name: fusion_online_rfqsubmission; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_rfqsubmission (
+    id integer NOT NULL,
+    date_added timestamp with time zone NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.fusion_online_rfqsubmission OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_rfqsubmission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_rfqsubmission_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_rfqsubmission_id_seq OWNED BY public.fusion_online_rfqsubmission.id;
+
+
+--
+-- Name: fusion_online_shippingaddress; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_shippingaddress (
+    id integer NOT NULL,
+    customer_id integer NOT NULL,
+    ship_to_name character varying(256) NOT NULL,
+    ship_via character varying(256) NOT NULL,
+    vat_id character varying(256) NOT NULL,
+    ship_to_num integer NOT NULL,
+    validation_message character varying(256) NOT NULL,
+    created timestamp with time zone,
+    updated timestamp with time zone,
+    address_id integer
+);
+
+
+ALTER TABLE public.fusion_online_shippingaddress OWNER TO saleor;
+
+--
+-- Name: fusion_online_shippingaddress_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_shippingaddress_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_shippingaddress_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_shippingaddress_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_shippingaddress_id_seq OWNED BY public.fusion_online_shippingaddress.id;
 
 
 --
@@ -4027,6 +4147,27 @@ ALTER TABLE ONLY public.fusion_online_offer ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
+-- Name: fusion_online_rfqlineitem id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqlineitem ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_rfqlineitem_id_seq'::regclass);
+
+
+--
+-- Name: fusion_online_rfqsubmission id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqsubmission ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_rfqsubmission_id_seq'::regclass);
+
+
+--
+-- Name: fusion_online_shippingaddress id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_shippingaddress ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_shippingaddress_id_seq'::regclass);
+
+
+--
 -- Name: giftcard_giftcard id; Type: DEFAULT; Schema: public; Owner: saleor
 --
 
@@ -4435,9 +4576,15 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 18	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 19	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 20	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 21	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 22			Fusion Worldwide	1 Marina Park Drive		BOSTON	02210	US	MA		
+23	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+24	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+25	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+26	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+27	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+28	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 \.
 
 
@@ -4472,6 +4619,8 @@ COPY public.account_customerevent (id, date, type, parameters, order_id, user_id
 24	2021-07-29 19:15:17.463693+00	password_changed	{}	\N	1
 25	2021-07-29 19:15:17.488184+00	password_changed	{}	\N	1
 26	2021-07-29 20:27:42.91952+00	password_changed	{}	\N	5
+27	2021-08-11 15:44:18.336799+00	placed_order	{}	6	5
+28	2021-08-11 17:04:55.692353+00	placed_order	{}	7	5
 \.
 
 
@@ -4505,7 +4654,7 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 10	f	test4@test.com	f	t	pbkdf2_sha256$216000$44wZpVYnVpm7$0FButqCDAwUnIS8TNq0lgBr8C3Mc/37XZG3/Q6Xo4ss=	2021-06-24 19:55:10.539369+00	2021-06-24 19:56:08.270478+00	\N	\N	\N				{}	{}	Z5yQyIxxbQYX
 5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-07-29 20:27:52.040888+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 7	f	testing@test.com	f	f	pbkdf2_sha256$216000$O3GbrZlGB0Lj$rX3CvqZOGO9tdXdHmZQO6rKTtbXDpcNCC49awo7QbDM=	2021-06-23 19:57:34.139287+00	\N	\N	\N	\N				{}	{}	NjE4muMwgs4u
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-08-04 18:07:23.580093+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-08-11 15:32:41.657789+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 8	f	test2@test.com	f	t	pbkdf2_sha256$216000$6g7mfxc0v4ew$tWixtWwgkQuA/5z0Xi84LyxbS7XhSiyacf+aFCWPj4I=	2021-06-24 18:20:40.669425+00	2021-06-24 18:21:48.249775+00	\N	\N	\N				{}	{}	rn6KTN9GNaa7
 9	f	test3@test.com	f	f	pbkdf2_sha256$216000$gjsrrmNtGJJz$SftH0llmx36y4cxl7gy4JIEG0fxKMB1DVpov4vCrseg=	2021-06-24 19:21:16.353454+00	\N	\N	\N	\N				{}	{}	s8MK5067fWJT
 \.
@@ -5704,6 +5853,12 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 533	product	0132_product_item_num_id	2021-07-29 20:21:53.85934+00
 538	fusion_online	0001_initial	2021-08-04 17:44:55.824949+00
 539	fusion_online	0002_offer_tariff	2021-08-06 15:39:37.671684+00
+540	fusion_online	0003_auto_20210809_1527	2021-08-09 15:29:58.376945+00
+541	fusion_online	0004_auto_20210809_1529	2021-08-09 15:29:58.407139+00
+542	fusion_online	0005_rfqlineitem_rfqsubmission	2021-08-10 17:33:26.2107+00
+543	fusion_online	0006_auto_20210810_1733	2021-08-10 17:33:26.262428+00
+544	fusion_online	0005_shippingaddress	2021-08-11 16:54:08.59367+00
+545	fusion_online	0007_merge_20210811_1653	2021-08-11 16:54:08.621656+00
 \.
 
 
@@ -5744,7 +5899,7 @@ COPY public.django_site (id, domain, name) FROM stdin;
 -- Data for Name: fusion_online_offer; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff) FROM stdin;
+COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff_rate) FROM stdin;
 1	vendor_offer	0	1625254322	2 days	test	8	9	21	\N
 2	vendor_offer	0	1625254322	2 days		8	9	23	\N
 3	vendor_offer	10	1625254322	2 days		8	9	24	\N
@@ -5754,6 +5909,37 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 7	vendor_offer	10	1625254322	2 days		8	9	49	\N
 8	vendor_offer	10	1625254322	2 days		8	9	50	\N
 9	vendor_offer	10	1625254322	2 days		8	9	51	0
+10	VENDOR_OFFER	10	1625254322	2 days				54	0
+11	VENDOR_OFFER	0	1625254322	2 days				55	0
+\.
+
+
+--
+-- Data for Name: fusion_online_rfqlineitem; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_code, comment, cipn, commodity_code, offer_id, rfq_submission_id) FROM stdin;
+1	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	2
+2	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	3
+3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	CPU_INTEL	1234	3
+\.
+
+
+--
+-- Data for Name: fusion_online_rfqsubmission; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
+2	2021-08-10 18:52:04.284713+00	10
+3	2021-08-10 19:37:22.132635+00	11
+\.
+
+
+--
+-- Data for Name: fusion_online_shippingaddress; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_via, vat_id, ship_to_num, validation_message, created, updated, address_id) FROM stdin;
 \.
 
 
@@ -5836,9 +6022,11 @@ COPY public.order_fulfillmentline (id, order_line_id, quantity, fulfillment_id, 
 COPY public.order_order (id, created, tracking_client_id, user_email, token, billing_address_id, shipping_address_id, user_id, total_net_amount, discount_amount, discount_name, voucher_id, language_code, shipping_price_gross_amount, total_gross_amount, shipping_price_net_amount, status, shipping_method_name, shipping_method_id, display_gross_prices, translated_discount_name, customer_note, weight, checkout_token, currency, metadata, private_metadata) FROM stdin;
 3	2021-07-21 18:48:54.307413+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	422ff6c0-26fe-4eda-aeba-9227fda9b2c9	15	14	5	530.000	0.000	\N	\N	en	5.000	530.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	6965ca16-f1f7-4615-8609-d1988fb8ba8e	USD	{}	{}
 4	2021-07-21 18:52:46.735885+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	8e0f31a0-45ed-4255-864f-e4036d17b914	18	17	5	1807.230	0.000	\N	\N	en	5.000	1807.230	5.000	unfulfilled	Standard Shipping	1	t	\N		7000	fad92e57-ff95-4336-a7d0-c67f89580dbb	USD	{}	{}
-5	2021-07-21 18:55:54.124946+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	ab05fd3c-fb05-4e61-97cb-f4c74f262a8e	21	20	5	2606.510	0.000	\N	\N	en	5.000	2606.510	5.000	fulfilled	Standard Shipping	1	t	\N		9000	0862744c-1506-4e13-a8ee-0c2a01b73ba7	USD	{}	{}
 2	2021-05-20 19:23:01.715304+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	4c74ec7f-6816-40a0-b94b-37265e00304c	10	9	\N	5.000	0.000	\N	\N	en	5.000	5.000	5.000	canceled	Standard Shipping	1	t	\N		1000	8119b6a4-10cd-48f5-9545-eb6ef8ad5d53	USD	{}	{}
 1	2021-05-20 19:21:22.134618+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	9acbd85f-69da-423c-a39f-a483c0cd9379	7	6	\N	6.000	0.000	\N	\N	en	5.000	6.000	5.000	canceled	Standard Shipping	1	t	\N		1000	cdae3fcd-f2fb-43a2-a39e-cce170c3717b	USD	{}	{}
+6	2021-08-11 15:44:18.285462+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	bb6cb082-bb77-4f76-b013-70799631c5e8	25	24	5	215.000	0.000	\N	\N	en	5.000	215.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	0b0c5853-8d9f-4488-b73d-a3efd0ba0012	USD	{}	{}
+5	2021-07-21 18:55:54.124946+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	ab05fd3c-fb05-4e61-97cb-f4c74f262a8e	21	20	5	2606.510	0.000	\N	\N	en	5.000	2606.510	5.000	fulfilled	Standard Shipping	1	t	\N		9000	0862744c-1506-4e13-a8ee-0c2a01b73ba7	USD	{}	{}
+7	2021-08-11 17:04:55.654122+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	e0179759-67ee-4e26-8167-6c46a846fd65	28	27	5	101.000	0.000	\N	\N	en	5.000	101.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	b2d0af70-6bc9-4e2f-964a-291dbf702d85	USD	{}	{}
 \.
 
 
@@ -5883,6 +6071,14 @@ COPY public.order_orderevent (id, date, type, order_id, user_id, parameters) FRO
 26	2021-07-21 19:26:37.712187+00	email_sent	2	1	{"email": "maeghan.m.provencher@gmail.com", "email_type": "order_cancel"}
 27	2021-07-21 19:27:02.043542+00	canceled	1	1	{}
 28	2021-07-21 19:27:02.076636+00	email_sent	1	1	{"email": "maeghan.m.provencher@gmail.com", "email_type": "order_cancel"}
+29	2021-08-11 15:44:18.34326+00	placed	6	5	{}
+30	2021-08-11 15:44:18.374506+00	payment_captured	6	5	{"amount": "215.000", "payment_id": "charged", "payment_gateway": "mirumee.payments.dummy"}
+31	2021-08-11 15:44:18.39292+00	order_fully_paid	6	5	{}
+32	2021-08-11 15:44:18.395432+00	email_sent	6	5	{"email": "customer@example.com", "email_type": "payment_confirmation"}
+33	2021-08-11 17:04:55.697955+00	placed	7	5	{}
+34	2021-08-11 17:04:55.718267+00	payment_captured	7	5	{"amount": "101.000", "payment_id": "charged", "payment_gateway": "mirumee.payments.dummy"}
+35	2021-08-11 17:04:55.731919+00	order_fully_paid	7	5	{}
+36	2021-08-11 17:04:55.733441+00	email_sent	7	5	{"email": "customer@example.com", "email_type": "payment_confirmation"}
 \.
 
 
@@ -5898,6 +6094,8 @@ COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price
 5	Intel® Xeon® Gold 6130T Processor	123456	1	1200.460	1200.460	t	4	0	8	0.00		USD		123456
 6	Intel® Xeon® Gold 6130T Processor	123456	2	1200.460	1200.460	t	5	2	8	0.00		USD		123456
 7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	6	0.00		USD		1 day / 1
+8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	7	0.00		USD		4
+9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	18	0.00		USD		4
 \.
 
 
@@ -5925,8 +6123,10 @@ COPY public.payment_payment (id, gateway, is_active, created, modified, charge_s
 4	mirumee.payments.dummy	t	2021-07-21 18:52:40.960778+00	2021-07-21 18:52:46.7262+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	1807.230	1807.230	\N	4	f	card	http://localhost:9001/checkout/payment-confirm
 1	mirumee.payments.dummy	t	2021-05-20 19:21:16.563078+00	2021-05-20 19:21:22.125879+00	fully-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	charged	USD	6.000	6.000	\N	1	f	card	http://localhost:9001/checkout/payment-confirm
 2	mirumee.payments.dummy	t	2021-05-20 19:22:59.277875+00	2021-05-20 19:22:59.27791+00	not-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	not-charged	USD	5.000	0.000	\N	2	f	card	http://localhost:9001/checkout/payment-confirm
+6	mirumee.payments.dummy	t	2021-08-11 15:44:10.468941+00	2021-08-11 15:44:18.261527+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	215.000	215.000	\N	6	f	card	http://localhost:9001/checkout/payment-confirm
 3	mirumee.payments.dummy	t	2021-07-21 18:48:52.041741+00	2021-07-21 18:48:54.296482+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	530.000	530.000	\N	3	f	card	http://localhost:9001/checkout/payment-confirm
 5	mirumee.payments.dummy	t	2021-07-21 18:55:51.387928+00	2021-07-21 18:55:54.117043+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	2606.510	2606.510	\N	5	f	card	http://localhost:9001/checkout/payment-confirm
+7	mirumee.payments.dummy	t	2021-08-11 17:03:33.454599+00	2021-08-11 17:04:55.645954+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	101.000	101.000	\N	7	f	card	http://localhost:9001/checkout/payment-confirm
 \.
 
 
@@ -5940,6 +6140,8 @@ COPY public.payment_transaction (id, created, token, kind, is_success, error, cu
 3	2021-07-21 18:48:54.293261+00	charged	capture	t	\N	USD	530.000	{}	3	\N	f	{}	t	
 4	2021-07-21 18:52:46.72436+00	charged	capture	t	\N	USD	1807.230	{}	4	\N	f	{}	t	
 5	2021-07-21 18:55:54.115489+00	charged	capture	t	\N	USD	2606.510	{}	5	\N	f	{}	t	
+6	2021-08-11 15:44:18.256233+00	charged	capture	t	\N	USD	215.000	{}	6	\N	f	{}	t	
+7	2021-08-11 17:04:55.638923+00	charged	capture	t	\N	USD	101.000	{}	7	\N	f	{}	t	
 \.
 
 
@@ -5957,6 +6159,13 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_assignedproductattribute (id, product_id, assignment_id) FROM stdin;
+296	112	75
+297	112	77
+298	112	76
+299	112	78
+300	112	85
+301	112	81
+307	114	75
 161	87	54
 162	87	56
 163	87	55
@@ -6044,6 +6253,12 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 183	89	60
 184	88	59
 185	88	60
+308	114	77
+309	114	76
+310	114	78
+311	114	85
+312	114	81
+318	116	75
 101	68	75
 102	68	77
 103	68	76
@@ -6069,6 +6284,11 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 123	74	52
 124	74	57
 125	74	58
+319	116	77
+320	116	76
+321	116	78
+322	116	85
+323	116	81
 249	100	54
 250	100	56
 251	100	55
@@ -6105,6 +6325,18 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 282	109	78
 283	109	85
 284	109	81
+285	110	75
+286	110	77
+287	110	76
+288	110	78
+289	110	85
+290	110	81
+324	117	75
+325	117	77
+326	117	76
+327	117	78
+328	117	85
+329	117	81
 \.
 
 
@@ -6241,9 +6473,63 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 127	124	76
 128	125	66
 332	279	139
+348	285	6
+349	286	13
+350	287	142
+351	288	3
+352	289	140
+353	290	129
+354	290	130
+355	290	131
+356	290	132
+357	290	133
+358	290	134
+359	290	135
+360	290	136
+361	290	137
+362	290	138
+363	290	139
+369	296	6
+370	297	13
+371	298	142
+372	299	3
+373	300	140
+374	301	129
+375	301	130
+376	301	131
+377	301	132
+378	301	133
+379	301	134
+380	301	135
+381	301	136
+382	301	137
+383	301	138
+384	301	139
+390	307	6
+391	308	13
+392	309	142
+393	310	3
+394	311	140
+395	312	129
+396	312	130
+397	312	131
+398	312	132
+399	312	133
+400	312	134
+401	312	135
+402	312	136
+403	312	137
+404	312	138
+405	312	139
+411	318	6
+412	319	13
+413	320	142
+414	321	3
+415	322	140
 252	249	72
 253	250	73
 254	251	74
+416	323	129
 255	252	75
 256	253	30
 257	254	76
@@ -6311,6 +6597,32 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 345	284	137
 346	284	138
 347	284	139
+417	323	130
+418	323	131
+419	323	132
+420	323	133
+421	323	134
+422	323	135
+423	323	136
+424	323	137
+425	323	138
+426	323	139
+427	324	6
+428	325	13
+429	326	142
+430	327	3
+431	328	140
+432	329	129
+433	329	130
+434	329	131
+435	329	132
+436	329	133
+437	329	134
+438	329	135
+439	329	136
+440	329	137
+441	329	138
+442	329	139
 \.
 
 
@@ -6343,6 +6655,8 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 43	49	9
 44	50	9
 45	51	9
+47	54	12
+48	55	12
 \.
 
 
@@ -6375,6 +6689,8 @@ COPY public.product_assignedvariantattribute_values (id, assignedvariantattribut
 43	43	79
 44	44	79
 45	45	79
+47	47	79
+48	48	79
 \.
 
 
@@ -6740,6 +7056,11 @@ COPY public.product_product (id, name, description, publication_date, updated_at
 41	Intel Pentium Core		\N	2021-07-29 16:22:46.697687+00	3	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	INTEL-SR37	\N	f	\N	SR37	123
 108	Intel JKLMZ		\N	2021-08-09 14:26:21.799448+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jklmz	\N	t	\N	JKLMZ	190701
 109	Intel JKZ		\N	2021-08-09 14:33:36.775945+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jkz	\N	t	\N	JKZ	190701
+110	Intel Test123		\N	2021-08-09 17:40:29.959148+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-test123	\N	t	\N	Test123	190702
+112	Intel TestABC		\N	2021-08-09 17:44:36.057556+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-testabc	\N	t	\N	TestABC	190703
+114	Intel rfj		\N	2021-08-09 18:01:09.147809+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-rfj	\N	t	\N	rfj	190704
+116	Intel hfglmn		\N	2021-08-09 18:05:05.433759+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-hfglmn	\N	t	\N	hfglmn	190705
+117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N	YNFP	190708
 \.
 
 
@@ -6789,6 +7110,8 @@ COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount
 49	654324		89	\N	t	\N	{}	{}	USD	59.990	5
 50	654325		89	\N	t	\N	{}	{}	USD	59.990	6
 51	654326		89	\N	t	\N	{}	{}	USD	59.990	7
+54	654327		116	\N	t	\N	{}	{}	USD	59.990	0
+55	654329		116	\N	t	\N	{}	{}	USD	79.990	1
 6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
 10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
 8	123456	1	8	\N	t	\N	{}	{}	USD	1200.460	0
@@ -6891,6 +7214,8 @@ COPY public.site_sitesettingstranslation (id, language_code, header_text, descri
 --
 
 COPY public.warehouse_allocation (id, quantity_allocated, order_line_id, stock_id) FROM stdin;
+1	2	8	5
+2	2	9	11
 \.
 
 
@@ -6918,6 +7243,8 @@ COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FRO
 17	1000	49	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 18	1000	50	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 19	1000	51	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -6983,7 +7310,7 @@ COPY public.wishlist_wishlistitem_variants (id, wishlistitem_id, productvariant_
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 26, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 28, true);
 
 
 --
@@ -7060,7 +7387,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 327, true);
 -- Name: cart_cartline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.cart_cartline_id_seq', 7, true);
+SELECT pg_catalog.setval('public.cart_cartline_id_seq', 9, true);
 
 
 --
@@ -7172,7 +7499,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 539, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 545, true);
 
 
 --
@@ -7207,7 +7534,28 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 9, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 11, true);
+
+
+--
+-- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 3, true);
+
+
+--
+-- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 3, true);
+
+
+--
+-- Name: fusion_online_shippingaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 1, false);
 
 
 --
@@ -7277,21 +7625,21 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_order_id_seq', 5, true);
+SELECT pg_catalog.setval('public.order_order_id_seq', 7, true);
 
 
 --
 -- Name: order_ordereditem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 7, true);
+SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 9, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 28, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 36, true);
 
 
 --
@@ -7312,14 +7660,14 @@ SELECT pg_catalog.setval('public.page_pagetranslation_id_seq', 1, false);
 -- Name: payment_paymentmethod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.payment_paymentmethod_id_seq', 5, true);
+SELECT pg_catalog.setval('public.payment_paymentmethod_id_seq', 7, true);
 
 
 --
 -- Name: payment_transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.payment_transaction_id_seq', 5, true);
+SELECT pg_catalog.setval('public.payment_transaction_id_seq', 7, true);
 
 
 --
@@ -7333,28 +7681,28 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 284, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 329, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 347, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 442, true);
 
 
 --
 -- Name: product_assignedvariantattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 45, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 48, true);
 
 
 --
 -- Name: product_assignedvariantattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 45, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 48, true);
 
 
 --
@@ -7438,7 +7786,7 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 109, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 117, true);
 
 
 --
@@ -7480,7 +7828,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 51, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 55, true);
 
 
 --
@@ -7543,7 +7891,7 @@ SELECT pg_catalog.setval('public.site_sitesettingstranslation_id_seq', 1, false)
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 22, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 28, true);
 
 
 --
@@ -7578,14 +7926,14 @@ SELECT pg_catalog.setval('public.userprofile_user_user_permissions_id_seq', 1, f
 -- Name: warehouse_allocation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 1, false);
+SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 2, true);
 
 
 --
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 19, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 22, true);
 
 
 --
@@ -8092,6 +8440,30 @@ ALTER TABLE ONLY public.fusion_online_offer
 
 ALTER TABLE ONLY public.fusion_online_offer
     ADD CONSTRAINT fusion_online_offer_product_variant_id_key UNIQUE (product_variant_id);
+
+
+--
+-- Name: fusion_online_rfqlineitem fusion_online_rfqlineitem_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqlineitem
+    ADD CONSTRAINT fusion_online_rfqlineitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_rfqsubmission fusion_online_rfqsubmission_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqsubmission
+    ADD CONSTRAINT fusion_online_rfqsubmission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_shippingaddress fusion_online_shippingaddress_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_shippingaddress
+    ADD CONSTRAINT fusion_online_shippingaddress_pkey PRIMARY KEY (id);
 
 
 --
@@ -9342,6 +9714,27 @@ CREATE INDEX django_site_domain_a2e37b91_like ON public.django_site USING btree 
 
 
 --
+-- Name: fusion_online_rfqlineitem_rfq_submission_id_f527f82a; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_rfqlineitem_rfq_submission_id_f527f82a ON public.fusion_online_rfqlineitem USING btree (rfq_submission_id);
+
+
+--
+-- Name: fusion_online_rfqsubmission_user_id_71b1d907; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_rfqsubmission_user_id_71b1d907 ON public.fusion_online_rfqsubmission USING btree (user_id);
+
+
+--
+-- Name: fusion_online_shippingaddress_address_id_575e32e6; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_shippingaddress_address_id_575e32e6 ON public.fusion_online_shippingaddress USING btree (address_id);
+
+
+--
 -- Name: giftcard_giftcard_code_f6fb6be8_like; Type: INDEX; Schema: public; Owner: saleor
 --
 
@@ -10517,6 +10910,30 @@ ALTER TABLE ONLY public.discount_vouchertranslation
 
 ALTER TABLE ONLY public.fusion_online_offer
     ADD CONSTRAINT fusion_online_offer_product_variant_id_4c6295fc_fk_product_p FOREIGN KEY (product_variant_id) REFERENCES public.product_productvariant(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_rfqlineitem fusion_online_rfqlin_rfq_submission_id_f527f82a_fk_fusion_on; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqlineitem
+    ADD CONSTRAINT fusion_online_rfqlin_rfq_submission_id_f527f82a_fk_fusion_on FOREIGN KEY (rfq_submission_id) REFERENCES public.fusion_online_rfqsubmission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_rfqsubmission fusion_online_rfqsubmission_user_id_71b1d907_fk_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqsubmission
+    ADD CONSTRAINT fusion_online_rfqsubmission_user_id_71b1d907_fk_account_user_id FOREIGN KEY (user_id) REFERENCES public.account_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_shippingaddress fusion_online_shippi_address_id_575e32e6_fk_account_a; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_shippingaddress
+    ADD CONSTRAINT fusion_online_shippi_address_id_575e32e6_fk_account_a FOREIGN KEY (address_id) REFERENCES public.account_address(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
