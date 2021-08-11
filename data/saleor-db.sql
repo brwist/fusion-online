@@ -1372,7 +1372,8 @@ CREATE TABLE public.fusion_online_offer (
     vendor_type character varying(50) NOT NULL,
     vendor_region character varying(50) NOT NULL,
     product_variant_id integer NOT NULL,
-    tariff_rate double precision
+    tariff_rate double precision,
+    coo character varying(60) NOT NULL
 );
 
 
@@ -5859,6 +5860,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 543	fusion_online	0006_auto_20210810_1733	2021-08-10 17:33:26.262428+00
 544	fusion_online	0005_shippingaddress	2021-08-11 16:54:08.59367+00
 545	fusion_online	0007_merge_20210811_1653	2021-08-11 16:54:08.621656+00
+546	fusion_online	0008_auto_20210811_1811	2021-08-11 18:12:12.142851+00
 \.
 
 
@@ -5899,18 +5901,18 @@ COPY public.django_site (id, domain, name) FROM stdin;
 -- Data for Name: fusion_online_offer; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff_rate) FROM stdin;
-1	vendor_offer	0	1625254322	2 days	test	8	9	21	\N
-2	vendor_offer	0	1625254322	2 days		8	9	23	\N
-3	vendor_offer	10	1625254322	2 days		8	9	24	\N
-4	vendor_offer	10	1625254322	2 days		8	9	46	\N
-5	vendor_offer	10	1625254322	2 days		8	9	47	\N
-6	vendor_offer	10	1625254322	2 days		8	9	48	\N
-7	vendor_offer	10	1625254322	2 days		8	9	49	\N
-8	vendor_offer	10	1625254322	2 days		8	9	50	\N
-9	vendor_offer	10	1625254322	2 days		8	9	51	0
-10	VENDOR_OFFER	10	1625254322	2 days				54	0
-11	VENDOR_OFFER	0	1625254322	2 days				55	0
+COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff_rate, coo) FROM stdin;
+1	vendor_offer	0	1625254322	2 days	test	8	9	21	\N	
+2	vendor_offer	0	1625254322	2 days		8	9	23	\N	
+3	vendor_offer	10	1625254322	2 days		8	9	24	\N	
+4	vendor_offer	10	1625254322	2 days		8	9	46	\N	
+5	vendor_offer	10	1625254322	2 days		8	9	47	\N	
+6	vendor_offer	10	1625254322	2 days		8	9	48	\N	
+7	vendor_offer	10	1625254322	2 days		8	9	49	\N	
+8	vendor_offer	10	1625254322	2 days		8	9	50	\N	
+9	vendor_offer	10	1625254322	2 days		8	9	51	0	
+10	VENDOR_OFFER	10	1625254322	2 days				54	0	
+11	VENDOR_OFFER	0	1625254322	2 days				55	0	
 \.
 
 
@@ -7499,7 +7501,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 545, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 546, true);
 
 
 --
