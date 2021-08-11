@@ -7,6 +7,5 @@ urlpatterns = [
     path("products", product_views.post_handler),
     path("products/<pk>", product_views.put_handler),
     path("offers", offer_views.handler),
-    path('ship-to-addresses/<int:ship_to_num>',
-         shipping_address_views.ShippingAddressDetail.as_view())
+    path('ship-to-addresses/<int:pk>', shipping_address_views.ShippingAddressDetail.as_view())
 ]
