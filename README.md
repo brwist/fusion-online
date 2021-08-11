@@ -72,7 +72,13 @@ of node should work fine.
 cd storefront && npm install
 ```
 
-2. Start Storybook:
+2. Build and serve the storefront React app:
+
+```
+npm start
+```
+
+3. (Optional) Start Storybook:
 - This project uses Storybook as a tool for UI development. 
 - Components can be built in isolation, rendered on the storybook interface and tested. 
 - See Storybook docs for more info: https://storybook.js.org/docs/react/get-started/introduction
