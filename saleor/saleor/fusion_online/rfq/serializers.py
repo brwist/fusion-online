@@ -1,7 +1,6 @@
-from django.db import models
-from django.db.models import fields
+from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
-from .models import RFQSubmission, RFQLineItem
+from .models import RFQSubmission, RFQLineItem, RFQResponse
 from ...account.models import User
 
 
@@ -41,3 +40,20 @@ class RFQSubmissionSerializer(serializers.ModelSerializer):
             RFQLineItem.objects.create(rfq_submission=rfq_submission, **item)
 
         return rfq_submission
+
+
+class RFQResponseSerializer(serializers.ModelSerializer):
+    line_item = serializers.PrimaryKeyRelatedField(
+        queryset=RFQLineItem.objects.all(),
+        validators=[
+            UniqueValidator(
+                queryset=RFQResponse.objects.all(),
+                message="A response has already been submitted for this fo_rfq_line_item_ref_id",
+            )]
+    )
+    class Meta:
+        model = RFQResponse
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return super().create(validated_data)
