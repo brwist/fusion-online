@@ -12154,7 +12154,7 @@ export type MoneyFragment = (
 
 export type ProductFragmentFragment = (
   { __typename: 'Product' }
-  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished'>
+  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished' >
   & { thumbnail?: Maybe<(
     { __typename: 'Image' }
     & Pick<Image, 'url'>
@@ -12239,6 +12239,10 @@ export const ProductFragmentFragmentDoc = gql`
   mpn
   description
   descriptionJson
+  metadata {
+    key
+    value
+  }
   variants {
     id
     sku

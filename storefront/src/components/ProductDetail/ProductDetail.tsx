@@ -96,7 +96,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <div className="mb-4">
               <div className="font-weight-bold">Market Insight</div>
-              {data?.product?.metadata[0]?.value}
+              {(data?.product?.metadata.find(item => item?.key === "market_insight"))?.value}
             </div>
           </Col>
           <Col lg={4}>
