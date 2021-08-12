@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.1
+  version: 0.0.2
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -181,6 +181,24 @@ components:
         Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
           * `-1` - Unknown
           * `0` - In Stock
+    NotificationMessage:
+      type: object
+      description: >
+        A notification message. When receiving a notification message via AWS SNS the message will
+        be wrapped in an SNS message wrapper. For details about the wrapper schema see the
+        <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html#http-notification-json">AWS documentation</a>.
+      properties:
+        fo_entity_type:
+          type: string
+          description: The type of RocketChips entity to which the notification refers
+          enum: [RFQ, SALES_ORDER, SHIP_TO_ADDRESS]
+        fo_entity_id:
+          type: integer
+          description: The ID of the entity within the RocketChips system
+        fo_entity_event:
+          type: string
+          description: The type of event that triggered the notification.
+          enum: [CREATED]
     Offer:
       title: Offer
       type: object
@@ -229,10 +247,10 @@ components:
           description: ID of offer in RMS
         vendor_type:
           type: string
-          enum: [TBD]
+          enum: [AUTHORIZED_FRANCHISE, BROKER, EXPENSE_NON_PRODUCT, MFG_DIRECT, OEM_CM_EXCESS, SERVICE, UNCLASSIFIED]
         vendor_region:
           type: string
-          enum: [TBD]
+          enum: [ASIA, ASIA_PACIFIC, EMEA, EUROPE, OTHER, USA]
       required:
         - type
         - date_added
@@ -367,7 +385,7 @@ components:
       title: RFQ Line-item Response
       type: object
       properties:
-        response:
+        result_status:
           type: string
           enum: [ 'NO_BID', 'OFFER' ]
         mpn:
@@ -397,7 +415,7 @@ components:
           type: integer
           description: ID of offer in RMS
       required:
-        - response
+        - result_status
         - mpn
         - mcode
         - quantity
