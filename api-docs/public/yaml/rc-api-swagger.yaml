@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.1
+  version: 0.0.2
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -247,10 +247,10 @@ components:
           description: ID of offer in RMS
         vendor_type:
           type: string
-          enum: [TBD]
+          enum: [AUTHORIZED_FRANCHISE, BROKER, EXPENSE_NON_PRODUCT, MFG_DIRECT, OEM_CM_EXCESS, SERVICE, UNCLASSIFIED]
         vendor_region:
           type: string
-          enum: [TBD]
+          enum: [ASIA, ASIA_PACIFIC, EMEA, EUROPE, OTHER, USA]
       required:
         - type
         - date_added
@@ -385,7 +385,7 @@ components:
       title: RFQ Line-item Response
       type: object
       properties:
-        response:
+        result_status:
           type: string
           enum: [ 'NO_BID', 'OFFER' ]
         mpn:
@@ -415,7 +415,7 @@ components:
           type: integer
           description: ID of offer in RMS
       required:
-        - response
+        - result_status
         - mpn
         - mcode
         - quantity
