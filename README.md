@@ -15,6 +15,17 @@ This project is a shallowly cloned fork of the Saleor Platform 2.11.0 project. I
 * docker
 * psql
 
+Before running these steps, setup your environment file by copying the template (`common.env`) to a file called `common.secret.env`.
+
+```
+$ cp common.env common.env.secret
+```
+
+Set any environment variables that contain sensitive information
+in your `common.secret.env` file.
+
+`common.secret.env` should not be checked in to the git repository.
+
 1. Build the docker images.
 ```
 $ docker-compose build
