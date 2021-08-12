@@ -14,27 +14,27 @@ def _send_notification(message):
 
 def send_rfq_notification(rfq_id):
     message = {
-        'entity_type': 'RFQ',
-        'entity_id': rfq_id,
-        'entity_state': 'CREATED'
+        'fo_entity_type': 'RFQ',
+        'fo_entity_id': rfq_id,
+        'fo_entity_event': 'CREATED'
     }
 
     _send_notification(message)
 
 def send_shipping_address_notification(shipping_address_id):
     message = {
-        'entity_type': 'SHIPPING_ADDRESS',
-        'entity_id': shipping_address_id,
-        'entity_state': 'CREATED'
+        'fo_entity_type': 'SHIP_TO_ADDRESS',
+        'fo_entity_id': shipping_address_id,
+        'fo_entity_event': 'CREATED'
     }
 
     _send_notification(message)
 
 def send_sales_order_notification(sales_order_id):
     message = {
-        'entity_type': 'SALES_ORDER',
-        'entity_id': sales_order_id,
-        'entity_state': 'CREATED'
+        'fo_entity_type': 'SALES_ORDER',
+        'fo_entity_id': sales_order_id,
+        'fo_entity_event': 'CREATED'
     }
     
     _send_notification(message)
