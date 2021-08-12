@@ -24,7 +24,7 @@ services:
             # shared volume between worker and api for media
             - saleor-media:/app/media
         command: python manage.py runserver 0.0.0.0:8000
-        env_file: common.env
+        env_file: common.secret.env
         environment:
             - JAEGER_AGENT_HOST=jaeger
             - STOREFRONT_URL=http://localhost:9001/

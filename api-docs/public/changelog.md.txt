@@ -1,7 +1,14 @@
 RocketChips API Changelog
 ==========================
 
-### 2021-08-06:
+### 2021-08-12 (version 0.0.2):
+  - Added notifications API documentation for RFQ, ship-to address and sales order notifications.
+  - Added NotificationMessage schema.
+  - Renamed the `RfqLineItemResponse` schema's `response` attribute to `result_status`
+  - Added the supported enum values for the Offer schema's `vendor_region` and `vendor_type` attributes.
+  - Added the `validation_message` attribute to the `ShipToAddressUpdate` schema.
+
+### 2021-08-06 (version 0.0.1):
   - Added request body schema for `/rfqs/{fo_rfq_ref_id}/responses/{fo_rfq_line_item_ref_id}` endpoint.
   - Added `/ship-to-addresses/{fo_ship_to_address_ref_id}` PUT endpoint definition.
   - Changed all instances of `contact_id` property name to `hubspot_vid`
