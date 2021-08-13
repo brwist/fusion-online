@@ -53,9 +53,23 @@ class RFQResponseSerializer(serializers.ModelSerializer):
                 message="A response has already been submitted for this fo_rfq_line_item_ref_id",
             )]
     )
+    result_status = serializers.CharField(source='response')
+
     class Meta:
         model = RFQResponse
-        fields = '__all__'
+        fields = [            
+            'result_status',
+            'mpn',
+            'mcode',
+            'quantity',
+            'offer_price',
+            'date_code',
+            'comment',
+            'coo',
+            'lead_time_days',
+            'offer_id',
+            'line_item'
+        ]
 
     def create(self, validated_data):
         return super().create(validated_data)
