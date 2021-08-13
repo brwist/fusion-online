@@ -12154,7 +12154,7 @@ export type MoneyFragment = (
 
 export type ProductFragmentFragment = (
   { __typename: 'Product' }
-  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished'>
+  & Pick<Product, 'id' | 'slug' | 'name' | 'isAvailable' | 'isPublished' >
   & { thumbnail?: Maybe<(
     { __typename: 'Image' }
     & Pick<Image, 'url'>
@@ -12236,9 +12236,12 @@ export const ProductFragmentFragmentDoc = gql`
   id
   name
   slug
-  mpn
   description
   descriptionJson
+  metadata {
+    key
+    value
+  }
   variants {
     id
     sku
@@ -12909,3 +12912,38 @@ export const ProductDetailsDocument = gql `
     const options = {...defaultOptions, ...baseOptions}
     return Apollo.useQuery(CartProductDetailsDocument, options);
   }
+
+export const CategoryListQueryDocument = gql `
+  query CategoryList($first: Int) {
+    categories(first: $first) {
+      edges {
+        node {
+          id
+          name
+          slug
+          parent {
+            id
+          }
+        }
+      }
+    }
+  }
+`
+
+export type CategoryListQueryVariables = Exact<{
+  first: Maybe<Scalars['Int']>;
+}>;
+
+export type CategoryListQuery = (
+  { __typename?: 'Query' }
+  & { categories?: Maybe<(
+    & { edges: Array<(
+      { __typename: 'CategoryCountableEdge' }
+      & { node: Maybe<Category>
+      })>
+    })>}
+)
+export function useCategoryListQuery(baseOptions?: Apollo.QueryHookOptions<CategoryListQuery, CategoryListQueryVariables>) {
+  const options = {...defaultOptions, ...baseOptions}
+  return Apollo.useQuery(CategoryListQueryDocument, options);
+}

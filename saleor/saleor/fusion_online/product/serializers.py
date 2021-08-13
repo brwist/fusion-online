@@ -89,16 +89,18 @@ class ProductSerializer(serializers.Serializer):
                 attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
                 associate_attribute_values_to_instance(product, attribute, attribute_value[0])
         
-        print("--ATTRIBUTE VALUES ASSIGNED--")
-        # assign mcode attribute value (mcode value that does not exist will be created)
-        attribute_mcode = Attribute.objects.get(slug="mcode")
-        attribute_mcode_value = AttributeValue.objects.get_or_create(
-            name=validated_data["mcode"],
-            slug=slugify(validated_data["mcode"], allow_unicode=True),
-            attribute=attribute_mcode
-            )
-        associate_attribute_values_to_instance(product, attribute_mcode, attribute_mcode_value[0])
-        print("--MCODE ASSIGNED--")
+        print("--ATTRIBUTE VALUES STORED--")
+
+
+        # save mcode, mpn, item_num_id as private metadata
+        product_queryset = Product.objects.filter(pk=product.pk)
+        product_queryset.update(metadata={
+            "mpn": validated_data["mpn"],
+            "mcode": validated_data["mcode"],
+            "item_num_id": validated_data["item_num_id"]
+        })
+        print("--PRIVATE METADATA STORED--")
+
         # assign status attribute value
         attribute_status = Attribute.objects.get(slug="status")
         attribute_status_value = AttributeValue.objects.get(
@@ -106,18 +108,18 @@ class ProductSerializer(serializers.Serializer):
             attribute=attribute_status
             )
         associate_attribute_values_to_instance(product, attribute_status, attribute_status_value)
-        print("--STATUS ASSIGNED--")
+        print("--STATUS STORED--")
+
+        # publish product if status is 'ACTIVE'
         if validated_data["status"] == 'ACTIVE':
-            product.visible_in_listings = True
-            Product.objects.filter(pk=product.pk).update(is_published=True)
+            product_queryset.update(is_published=True)
             print("--PRODUCT PUBLISHED--")
 
         # create new vendor attribute values for each vendor in request body 
         attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
-        print("primary vendors attribute retrieved")
         attribute_vendor = Attribute.objects.get(slug="vendor")
-        print("vendor attribute retrieved")
         attribute_primary_vendors_values = []
+
         for vendor in validated_data["vendors"]:
             attribute_primary_vendors_values.append(AttributeValue.objects.get_or_create(
                 name=vendor["vendor_name"],
@@ -129,9 +131,8 @@ class ProductSerializer(serializers.Serializer):
                 slug=vendor["vendor_number"],
                 attribute=attribute_vendor
             )
-        print("--VENDORS CREATED--")
         associate_attribute_values_to_instance(product, attribute_primary_vendors, *attribute_primary_vendors_values)
-        print("vendor associated with product")
+        print("--VENDORS STORED--")
 
         return product
 
@@ -151,7 +152,6 @@ class ProductSerializer(serializers.Serializer):
                 slug=vendor["vendor_number"],
                 attribute=attribute_vendor
             )
-        print("--VENDORS RETRIEVED OR CREATED--")
         associate_attribute_values_to_instance(instance, attribute_primary_vendors, *attribute_primary_vendors_values)
         print("--VENDORS UPDATED --")
 

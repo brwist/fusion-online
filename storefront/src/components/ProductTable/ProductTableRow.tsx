@@ -27,6 +27,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     name,
     id,
     slug,
+    metadata,
     variants,
     attributes,
     pricing
@@ -58,6 +59,8 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
+  const mcode = (metadata.find((item) => item?.key === 'mcode'))?.value
+
   return (<tr>
     <td className="pr-0">
       {saved ? <FontAwesomeIcon icon={fasFaBookmark} className="text-primary" />
@@ -65,7 +68,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     </td>
     <td>
       <div className="small">
-        <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
+        <strong className="text-uppercase">{mcode}</strong> {variants && variants[0]?.sku}
       </div>
       <Link style={{textDecoration: "underline"}} to={`/products/${slug}`}>{name}</Link>
       <div className="small mt-1">

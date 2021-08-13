@@ -26,7 +26,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedQuantity, setSelectedQuantity ] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
-  
+  console.log(productList)
   let productData: any = [];
   if (productList.data) {
     productData = productList.data.products?.edges.map(({node}) => {

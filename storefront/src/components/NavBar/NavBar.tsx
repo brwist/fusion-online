@@ -4,7 +4,7 @@ import { Container, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootst
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/rocketChips.png';
-import { useCategoryList } from '@saleor/sdk';
+import { useCategoryListQuery} from '../../generated/graphql';
 import { NavBarSearch } from './NavBarSearch';
 
 import './navbar.scss';
@@ -17,12 +17,15 @@ export interface NavBarProps {
 export const NavBar: React.FC<NavBarProps> = ({
   signOut, cartItemsNum
 }) => {
-  const {data} = useCategoryList({first: 10});
+  const {data} = useCategoryListQuery({variables: {first: 10}});
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  
+  const parentCategories = data?.categories?.edges?.filter(
+    ({node}) => !node?.parent
+  )
   return (
     <>
       <Modal
@@ -50,10 +53,10 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               <Nav as="ul" id="main-nav">
-                {data?.map(({id, name, slug}) => {
+                {parentCategories?.map(({node}) => {
                   return (
-                    <Nav.Item key={id} as="li">
-                      <Link className="nav-link" to={`/categories/${slug}`}>{name}</Link>
+                    <Nav.Item key={node?.id} as="li">
+                      <Link className="nav-link" to={`/categories/${node?.slug}`}>{node?.name}</Link>
                     </Nav.Item>
                   )
                 })}
