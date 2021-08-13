@@ -1445,6 +1445,50 @@ ALTER SEQUENCE public.fusion_online_rfqlineitem_id_seq OWNED BY public.fusion_on
 
 
 --
+-- Name: fusion_online_rfqresponse; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_rfqresponse (
+    id integer NOT NULL,
+    response character varying(50) NOT NULL,
+    mpn character varying(50) NOT NULL,
+    mcode character varying(10) NOT NULL,
+    quantity integer NOT NULL,
+    offer_price double precision NOT NULL,
+    date_code character varying(50) NOT NULL,
+    comment character varying(300) NOT NULL,
+    coo character varying(60) NOT NULL,
+    lead_time_days integer NOT NULL,
+    offer_id integer NOT NULL,
+    line_item_id integer NOT NULL
+);
+
+
+ALTER TABLE public.fusion_online_rfqresponse OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_rfqresponse_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_rfqresponse_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_rfqresponse_id_seq OWNED BY public.fusion_online_rfqresponse.id;
+
+
+--
 -- Name: fusion_online_rfqsubmission; Type: TABLE; Schema: public; Owner: saleor
 --
 
@@ -2902,9 +2946,7 @@ CREATE TABLE public.product_product (
     slug character varying(255) NOT NULL,
     available_for_purchase date,
     visible_in_listings boolean NOT NULL,
-    default_variant_id integer,
-    mpn character varying(50) NOT NULL,
-    item_num_id integer NOT NULL
+    default_variant_id integer
 );
 
 
@@ -4152,6 +4194,13 @@ ALTER TABLE ONLY public.fusion_online_offer ALTER COLUMN id SET DEFAULT nextval(
 --
 
 ALTER TABLE ONLY public.fusion_online_rfqlineitem ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_rfqlineitem_id_seq'::regclass);
+
+
+--
+-- Name: fusion_online_rfqresponse id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqresponse ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_rfqresponse_id_seq'::regclass);
 
 
 --
@@ -5861,6 +5910,8 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 544	fusion_online	0005_shippingaddress	2021-08-11 16:54:08.59367+00
 545	fusion_online	0007_merge_20210811_1653	2021-08-11 16:54:08.621656+00
 546	fusion_online	0008_auto_20210811_1811	2021-08-11 18:12:12.142851+00
+547	fusion_online	0009_rfqresponse	2021-08-11 19:15:16.868255+00
+548	product	0133_auto_20210812_1739	2021-08-12 17:40:11.89712+00
 \.
 
 
@@ -5924,6 +5975,16 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 1	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	2
 2	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	3
 3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	CPU_INTEL	1234	3
+\.
+
+
+--
+-- Data for Name: fusion_online_rfqresponse; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, offer_id, line_item_id) FROM stdin;
+1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
+2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
 \.
 
 
@@ -6161,20 +6222,6 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_assignedproductattribute (id, product_id, assignment_id) FROM stdin;
-296	112	75
-297	112	77
-298	112	76
-299	112	78
-300	112	85
-301	112	81
-307	114	75
-161	87	54
-162	87	56
-163	87	55
-164	87	53
-165	87	52
-166	87	57
-167	87	58
 168	88	54
 169	88	56
 170	88	55
@@ -6255,90 +6302,26 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 183	89	60
 184	88	59
 185	88	60
-308	114	77
-309	114	76
-310	114	78
-311	114	85
-312	114	81
 318	116	75
-101	68	75
-102	68	77
-103	68	76
-104	69	75
-105	69	77
-106	69	76
-107	70	75
-108	70	77
-109	70	76
-110	71	75
-111	71	77
-112	71	76
-113	71	78
-114	72	54
-115	72	56
-116	72	55
-117	72	53
-118	72	52
-119	74	54
-120	74	56
-121	74	55
-122	74	53
-123	74	52
-124	74	57
-125	74	58
 319	116	77
 320	116	76
 321	116	78
 322	116	85
 323	116	81
-249	100	54
-250	100	56
-251	100	55
-252	100	53
-253	100	52
-254	100	57
-255	100	58
-256	100	82
-257	101	75
-258	101	77
-259	101	76
-260	101	78
-261	101	81
-262	103	75
-263	103	77
-264	103	76
-265	103	78
-266	103	81
-267	100	86
-268	106	75
-269	106	77
-270	106	76
-271	106	78
-272	106	85
-273	106	81
-274	108	75
-275	108	77
-276	108	76
-277	108	78
-278	108	85
-279	108	81
-280	109	77
-281	109	76
-282	109	78
-283	109	85
-284	109	81
-285	110	75
-286	110	77
-287	110	76
-288	110	78
-289	110	85
-290	110	81
+334	118	78
+335	118	79
+336	118	80
+337	118	85
 324	117	75
 325	117	77
 326	117	76
 327	117	78
 328	117	85
 329	117	81
+330	118	75
+331	118	77
+332	118	76
+333	118	81
 \.
 
 
@@ -6347,19 +6330,6 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 --
 
 COPY public.product_assignedproductattribute_values (id, assignedproductattribute_id, attributevalue_id) FROM stdin;
-300	267	140
-318	275	13
-319	276	142
-320	277	3
-321	278	140
-322	279	129
-164	161	72
-165	162	73
-166	163	74
-167	164	75
-168	165	30
-169	166	76
-170	167	66
 171	168	72
 172	169	73
 173	170	74
@@ -6440,165 +6410,12 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 92	89	57
 93	90	64
 188	185	18
-323	279	130
-324	279	131
-325	279	132
-326	279	133
-327	279	134
-328	279	135
-329	279	136
-330	279	137
-331	279	138
-104	101	7
-105	102	14
-106	103	69
-107	104	7
-108	105	14
-109	106	69
-110	107	7
-111	108	14
-112	109	69
-113	110	7
-114	111	14
-115	112	69
-116	113	3
-117	114	72
-118	115	73
-119	116	74
-120	117	75
-121	118	30
-122	119	72
-123	120	73
-124	121	74
-125	122	75
-126	123	30
-127	124	76
-128	125	66
-332	279	139
-348	285	6
-349	286	13
-350	287	142
-351	288	3
-352	289	140
-353	290	129
-354	290	130
-355	290	131
-356	290	132
-357	290	133
-358	290	134
-359	290	135
-360	290	136
-361	290	137
-362	290	138
-363	290	139
-369	296	6
-370	297	13
-371	298	142
-372	299	3
-373	300	140
-374	301	129
-375	301	130
-376	301	131
-377	301	132
-378	301	133
-379	301	134
-380	301	135
-381	301	136
-382	301	137
-383	301	138
-384	301	139
-390	307	6
-391	308	13
-392	309	142
-393	310	3
-394	311	140
-395	312	129
-396	312	130
-397	312	131
-398	312	132
-399	312	133
-400	312	134
-401	312	135
-402	312	136
-403	312	137
-404	312	138
-405	312	139
 411	318	6
 412	319	13
 413	320	142
 414	321	3
 415	322	140
-252	249	72
-253	250	73
-254	251	74
 416	323	129
-255	252	75
-256	253	30
-257	254	76
-258	255	66
-259	256	129
-260	256	130
-301	268	8
-302	269	13
-303	270	142
-304	271	3
-305	272	140
-306	273	129
-307	273	130
-308	273	131
-270	257	7
-271	258	13
-272	259	69
-273	260	3
-274	261	129
-275	261	130
-276	261	131
-277	261	132
-278	261	133
-279	261	134
-280	261	135
-281	261	136
-282	261	137
-283	261	138
-284	261	139
-285	262	8
-286	263	13
-287	264	142
-288	265	3
-289	266	129
-290	266	130
-291	266	131
-292	266	132
-293	266	133
-294	266	134
-295	266	135
-296	266	136
-297	266	137
-298	266	138
-299	266	139
-309	273	132
-310	273	133
-311	273	134
-312	273	135
-313	273	136
-314	273	137
-315	273	138
-316	273	139
-333	280	13
-334	281	142
-335	282	3
-336	283	140
-337	284	129
-338	284	130
-339	284	131
-340	284	132
-341	284	133
-342	284	134
-343	284	135
-344	284	136
-345	284	137
-346	284	138
-347	284	139
 417	323	130
 418	323	131
 419	323	132
@@ -6625,6 +6442,23 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 440	329	137
 441	329	138
 442	329	139
+443	330	6
+444	331	13
+445	332	142
+446	333	130
+447	333	131
+448	333	132
+449	333	133
+450	333	134
+451	333	135
+452	333	136
+453	333	137
+454	333	138
+455	333	139
+456	334	3
+457	335	21
+458	336	18
+459	337	140
 \.
 
 
@@ -6727,8 +6561,8 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 27	storage_size	Size	{}	{}	dropdown	t	t	t	t	t	0	f
 10	vendor	Vendor	{}	{}	dropdown	t	t	t	f	t	0	f
 28	storage_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
-29	primary-vendors	Primary Vendors	{}	{}	multiselect	t	t	t	t	t	0	f
-30	status	Status	{}	{}	dropdown	t	t	t	t	t	0	f
+29	primary-vendors	Primary Vendors	{}	{}	multiselect	t	f	t	t	t	0	f
+30	status	Status	{}	{}	dropdown	t	f	t	t	t	0	f
 \.
 
 
@@ -7031,38 +6865,22 @@ COPY public.product_digitalcontenturl (id, token, created, download_num, content
 -- Data for Name: product_product; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id, mpn, item_num_id) FROM stdin;
-68	INTEL XYZ1		\N	2021-07-30 19:50:55.931662+00	12	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-xyz1	\N	f	\N	XYZ1	190691
-29	HMA82GR7CJR4N-WM		2021-07-23	2021-07-23 17:16:12.299475+00	6	t	3			f	\N	{}	{}	{}	\N	USD	hma82gr7cjr4n-wm	2021-07-23	t	16	BBB	123
-69	INTEL XYZ2		\N	2021-07-30 19:53:13.079937+00	12	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-xyz2	\N	f	\N	XYZ2	190691
-70	INTEL XYZ3		\N	2021-07-30 19:53:49.892618+00	12	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-xyz3	\N	f	\N	XYZ3	190691
-71	Intel XYZ4		\N	2021-07-30 19:56:37.231035+00	12	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-xyz4	\N	f	\N	XYZ4	190691
-72	Test GPU product		\N	2021-07-30 20:01:48.683684+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	test-gpu-product	\N	f	\N	XYZ4	190691
-74	Test GPU product 2		\N	2021-07-30 20:03:18.092296+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	test-gpu-product-2	\N	f	\N	XYZ5	190691
-6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.363941+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	200.590	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6	AAA	123
-7	Intel® Celeron® Processor N3010		2021-06-10	2021-07-21 18:58:08.785668+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	105.000	USD	intel-celeron-processor-n3010	2021-06-10	t	7	AAA	123
-9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9	AAA	123
-87	Gigabyte CCCC		\N	2021-08-03 15:03:09.365236+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-cccc	\N	f	\N	CCCC	190691
-101	Intel NMOP		\N	2021-08-06 17:47:31.797926+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-nmop	\N	f	\N	NMOP	190699
-89	Gigabyte AAAAA		2021-08-04	2021-08-04 20:36:29.840337+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-aaaaa	2021-08-04	t	\N	AAAAA	190692
-8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-07-21 18:58:40.528318+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8	AAA	123
-103	Intel OPQR		\N	2021-08-06 18:21:17.064412+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-opqr	\N	t	\N	OPQR	190700
-88	Gigabyte DDDD		2021-08-04	2021-08-04 20:53:55.965426+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-dddd	2021-08-04	t	\N	DDDD	190691
-27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-07-23 17:36:58.542473+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12	BBB	123
-28	M386A8K40CM2-CVF		2021-07-23	2021-07-23 17:03:36.664804+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	m386a8k40cm2-cvf	2021-07-23	t	13	BBB	123
-32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-07-23 17:47:43.366424+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20	BBB	123
-30	ST10000NM0016		2021-07-23	2021-07-23 17:15:24.885875+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	st10000nm0016	2021-07-23	t	14	BBB	123
-31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-07-23 17:44:56.466771+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19	BBB	123
-100	Gigabyte SRJNG		\N	2021-08-06 19:54:18.212574+00	9	f	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-srjng	\N	t	\N	SRJNG	190698
-106	Intel JKLM		\N	2021-08-06 19:57:02.492426+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jklm	\N	t	\N	JKLM	190701
-41	Intel Pentium Core		\N	2021-07-29 16:22:46.697687+00	3	f	1	\N	\N	t	\N	{}	{}	{}	\N	USD	INTEL-SR37	\N	f	\N	SR37	123
-108	Intel JKLMZ		\N	2021-08-09 14:26:21.799448+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jklmz	\N	t	\N	JKLMZ	190701
-109	Intel JKZ		\N	2021-08-09 14:33:36.775945+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-jkz	\N	t	\N	JKZ	190701
-110	Intel Test123		\N	2021-08-09 17:40:29.959148+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-test123	\N	t	\N	Test123	190702
-112	Intel TestABC		\N	2021-08-09 17:44:36.057556+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-testabc	\N	t	\N	TestABC	190703
-114	Intel rfj		\N	2021-08-09 18:01:09.147809+00	12	f	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-rfj	\N	t	\N	rfj	190704
-116	Intel hfglmn		\N	2021-08-09 18:05:05.433759+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-hfglmn	\N	t	\N	hfglmn	190705
-117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N	YNFP	190708
+COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id) FROM stdin;
+29	HMA82GR7CJR4N-WM		2021-07-23	2021-07-23 17:16:12.299475+00	6	t	3			f	\N	{}	{}	{}	\N	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
+9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9
+89	Gigabyte AAAAA		2021-08-04	2021-08-04 20:36:29.840337+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-aaaaa	2021-08-04	t	\N
+8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-07-21 18:58:40.528318+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
+88	Gigabyte DDDD		2021-08-04	2021-08-04 20:53:55.965426+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-dddd	2021-08-04	t	\N
+27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-07-23 17:36:58.542473+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
+28	M386A8K40CM2-CVF		2021-07-23	2021-07-23 17:03:36.664804+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	m386a8k40cm2-cvf	2021-07-23	t	13
+32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-07-23 17:47:43.366424+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
+30	ST10000NM0016		2021-07-23	2021-07-23 17:15:24.885875+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	st10000nm0016	2021-07-23	t	14
+31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-07-23 17:44:56.466771+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
+7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-12 15:35:02.045658+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	105.000	USD	intel-celeron-processor-n3010	2021-06-10	t	7
+116	Intel hfglmn		\N	2021-08-09 18:05:05.433759+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-hfglmn	\N	t	\N
+117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N
+118	Intel HGFS		2021-08-12	2021-08-12 15:10:45.810936+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	\N	t	\N
+6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-12 15:33:13.280937+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	200.590	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
 \.
 
 
@@ -7501,7 +7319,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 546, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 548, true);
 
 
 --
@@ -7544,6 +7362,13 @@ SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 11, true);
 --
 
 SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 3, true);
+
+
+--
+-- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 2, true);
 
 
 --
@@ -7683,14 +7508,14 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 329, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 337, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 442, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 459, true);
 
 
 --
@@ -7788,7 +7613,7 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 117, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 118, true);
 
 
 --
@@ -8450,6 +8275,22 @@ ALTER TABLE ONLY public.fusion_online_offer
 
 ALTER TABLE ONLY public.fusion_online_rfqlineitem
     ADD CONSTRAINT fusion_online_rfqlineitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_rfqresponse fusion_online_rfqresponse_line_item_id_key; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqresponse
+    ADD CONSTRAINT fusion_online_rfqresponse_line_item_id_key UNIQUE (line_item_id);
+
+
+--
+-- Name: fusion_online_rfqresponse fusion_online_rfqresponse_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqresponse
+    ADD CONSTRAINT fusion_online_rfqresponse_pkey PRIMARY KEY (id);
 
 
 --
@@ -10920,6 +10761,14 @@ ALTER TABLE ONLY public.fusion_online_offer
 
 ALTER TABLE ONLY public.fusion_online_rfqlineitem
     ADD CONSTRAINT fusion_online_rfqlin_rfq_submission_id_f527f82a_fk_fusion_on FOREIGN KEY (rfq_submission_id) REFERENCES public.fusion_online_rfqsubmission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_rfqresponse fusion_online_rfqres_line_item_id_f21ac3de_fk_fusion_on; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_rfqresponse
+    ADD CONSTRAINT fusion_online_rfqres_line_item_id_f21ac3de_fk_fusion_on FOREIGN KEY (line_item_id) REFERENCES public.fusion_online_rfqlineitem(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
