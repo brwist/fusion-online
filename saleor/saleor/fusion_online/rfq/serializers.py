@@ -24,13 +24,15 @@ class RFQLineItemSerializer(serializers.ModelSerializer):
 
 
 class RFQSubmissionSerializer(serializers.ModelSerializer):
+    salesperson = serializers.IntegerField(read_only=True, default=0)
+    hubspot_vid = serializers.IntegerField(read_only=True, default=0)
     items = RFQLineItemSerializer(many=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
     fo_rfq_ref_id = serializers.CharField(source="pk", read_only=True)
-
+    
     class Meta:
         model = RFQSubmission
-        fields = ['user', 'items', 'fo_rfq_ref_id']
+        fields = ['salesperson', 'hubspot_vid', 'user', 'items', 'fo_rfq_ref_id']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
