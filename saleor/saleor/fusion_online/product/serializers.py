@@ -71,8 +71,6 @@ class ProductSerializer(serializers.Serializer):
                 else f'{validated_data["mcode"]} {validated_data["mpn"]}',
             "slug": slugify(validated_data["all_description"], allow_unicode=True) if validated_data.get('all_description') 
                 else slugify(f'{validated_data["mcode"]} {validated_data["mpn"]}', allow_unicode=True),
-            "mpn": validated_data["mpn"],
-            "item_num_id": validated_data["item_num_id"],
             "product_type": ProductType.objects.get(slug=product_type_slug),
             "category": Category.objects.get(name=category_name),
             "visible_in_listings": True if validated_data["status"] == "ACTIVE" else False
