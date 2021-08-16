@@ -1,4 +1,4 @@
-from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField
+from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField
 from .models import ShippingAddress
 from saleor.account.models import Address
 
@@ -15,16 +15,18 @@ class ShippingAddressSerializer(ModelSerializer):
 
     class Meta:
         model = ShippingAddress
-        fields = ['id', 'address', 'address_edit', 'customer_id', 'ship_to_name', 'address', 'city',
+        fields = ['id', 'address', 'address_id', 'street_address', 'customer_id', 'ship_to_name', 'address', 'city',
                   'state', 'country', 'ship_via', 'vat_id', 'ship_to_num', 'validation_message']
 
-    address = SerializerMethodField('get_address', read_only=True)
-    address_edit = AddressSerializer(write_only=True)
+    street_address = SerializerMethodField('get_street_address', read_only=True)
+    address = AddressSerializer(read_only=True)
+    address_id = PrimaryKeyRelatedField(
+        write_only=True, source='address', queryset=Address.objects.all())
     city = SerializerMethodField('get_city')
     state = SerializerMethodField('get_state')
     country = SerializerMethodField('get_country')
 
-    def get_address(self, obj):
+    def get_street_address(self, obj):
         addr1 = obj.address.street_address_1
         addr2 = obj.address.street_address_2
         return addr1 + '\n' + addr2
@@ -37,11 +39,3 @@ class ShippingAddressSerializer(ModelSerializer):
 
     def get_country(self, obj):
         return obj.address.country.name
-
-    def create(self, validated_data):
-        address = validated_data.pop('address_edit')
-        address = Address.objects.create(**address)
-        shipping_address = ShippingAddress.objects.create(
-            address_edit=address, **validated_data)
-
-        return shipping_address

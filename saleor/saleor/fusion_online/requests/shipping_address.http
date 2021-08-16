@@ -7,17 +7,15 @@ Content-Type: application/json
 Authorization: Api-Key {{$dotenv API_KEY}}
 
 {
-    "address_edit": {
+    "address": {
         "first_name": "Alex",
         "last_name": "Vallejo",
         "company_name": "Bowst",
         "city": "Miami",
         "country": "US",
-        "countryArea": "FL",
-        "firstName": "Alex",
-        "lastName": "Vallejo",
+        "country_area": "FL",
         "phone": "+19782704786",
-        "postalCode": "33137",
+        "postal_code": "33137",
         "street_address_1": "180 NE 29th St",
         "street_address_2": "Apt 1904"
     },
@@ -27,3 +25,9 @@ Authorization: Api-Key {{$dotenv API_KEY}}
     "vat_id": "not sure",
     "ship_to_num": 345
 }
+
+### GET SHIPPING ADDRESSES
+
+GET http://127.0.0.1:7000/fo-api/ship-to-addresses/1
+Content-Type: application/json
+Authorization: Api-Key {{$dotenv API_KEY}}
