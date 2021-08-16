@@ -12,6 +12,7 @@ class OrderCreatedPlugin(BasePlugin):
         super().__init__(*args, **kwargs)
 
     def order_created(self, order, previous_value):
+
         private_metadata = {
             'due_date': 123,
             'customer_purchase_order_num': 'test',
@@ -19,4 +20,3 @@ class OrderCreatedPlugin(BasePlugin):
         }
         order.private_metadata = private_metadata
         order.save()
-        a = order
