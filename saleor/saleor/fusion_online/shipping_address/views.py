@@ -25,6 +25,13 @@ class ShippingAddressDetail(APIView):
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
 
+    def post(self, request):
+        serializer = ShippingAddressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def put(self, request, pk, format=None):
         """
         Expects only a ship_to_num and a validation_message
