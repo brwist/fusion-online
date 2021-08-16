@@ -35,3 +35,7 @@ common.secret.env
 
 # Exported results file
 django-queries-results.html
+
+# Test .env file
+saleor/saleor/fusion_online/requests/.env
+venv/*
