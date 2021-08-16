@@ -11,5 +11,12 @@ class OrderCreatedPlugin(BasePlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def postprocess_order_creation(self, order, previous_value):
+    def order_created(self, order, previous_value):
+        private_metadata = {
+            'due_date': 123,
+            'customer_purchase_order_num': 'test',
+            'rms_payment_type': 'PREPAID'
+        }
+        order.private_metadata = private_metadata
+        order.save()
         a = order

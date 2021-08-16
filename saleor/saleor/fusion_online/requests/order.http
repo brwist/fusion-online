@@ -5,7 +5,7 @@
 
 POST http://127.0.0.1:7000/graphql/
 Content-Type: application/json
-Authorization: Api-Key {{$dotenv [%]API_KEY}}
+Authorization: Api-Key {{$dotenv API_KEY}}
 
 [
     {

@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         checkout_id = self.create_checkout()
+        self.update_shipping_method(checkout_id)
         self.update_billing(checkout_id)
         self.create_payment(checkout_id)
         self.complete_checkout(checkout_id)
@@ -37,6 +38,20 @@ class Command(BaseCommand):
 
         checkout_id = resp[0]['data']['checkoutCreate']['checkout']['id']
         return checkout_id
+
+    def update_shipping_method(self, checkout_id):
+        json_path = os.path.join(os.path.dirname(
+            __file__), 'json', 'shipping_method.json')
+        json_data = open(json_path)
+        payload = json.load(json_data)
+        payload[0]['variables']['checkoutId'] = checkout_id
+        url = settings.GRAPH_QL_URL
+        r = requests.post(url, data=json.dumps(payload), headers=(
+            {
+                'Content-Type': 'application/json',
+                'Authorization': 'Api-Key ' + settings.API_KEY
+            }))
+        resp = r.json()
 
     def update_billing(self, checkout_id):
         json_path = os.path.join(os.path.dirname(
@@ -79,3 +94,4 @@ class Command(BaseCommand):
                 'Authorization': 'Api-Key ' + settings.API_KEY
             }))
         resp = r.json()
+        order = resp
