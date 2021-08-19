@@ -13,6 +13,8 @@ from django.http import JsonResponse, Http404
 from .serializers import ShippingAddressSerializer
 from saleor.account.models import Address, User
 
+from saleor.fusion_online.notifications.utils import send_shipping_address_notification
+
 
 class ShippingAddressDetail(APIView):
 
@@ -32,8 +34,7 @@ class ShippingAddressDetail(APIView):
         serializer = ShippingAddressSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            # instance = ShippingAddress.objects.get(pk=serializer.data.get('id')
-
+            send_shipping_address_notification(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -1,5 +1,8 @@
 from saleor.plugins.base_plugin import BasePlugin
 
+from saleor.fusion_online.orders.serializers import SalesOrderSerializer
+from saleor.fusion_online.notifications.utils import send_sales_order_notification
+
 
 class OrderCreatedPlugin(BasePlugin):
 
@@ -20,3 +23,9 @@ class OrderCreatedPlugin(BasePlugin):
         }
         order.private_metadata = private_metadata
         order.save()
+
+        # Serialize for sns
+        serialized = SalesOrderSerializer(order)
+
+        # Send sns
+        send_sales_order_notification(serialized.data)

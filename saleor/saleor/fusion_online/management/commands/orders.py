@@ -91,9 +91,6 @@ class Command(BaseCommand):
         shipping_address = r.json()
         self.shipping_address = shipping_address
 
-        # Trigger SNS
-        send_shipping_address_notification(shipping_address.get('id'))
-
         # Load test user to associate address
         address_id = shipping_address['address']['id']
         address = Address.objects.get(pk=address_id)
