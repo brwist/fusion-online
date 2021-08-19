@@ -3,7 +3,7 @@
     "operationName": "CreateCheckout",
     "variables": {
       "checkoutInput": {
-        "email": "alex@bowst.com",
+        "email": "alxvallejo@gmail.com",
         "lines": [
           {
             "quantity": 1,
@@ -12,7 +12,7 @@
         ],
         "shippingAddress": {
           "city": "Miami",
-          "companyName": "Bowst",
+          "companyName": "36",
           "country": "US",
           "countryArea": "FL",
           "firstName": "Alex",
