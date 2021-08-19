@@ -611,6 +611,10 @@ REST_FRAMEWORK = {
     }
 }
 
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 # Local settings override
 if DEBUG:
     from .settings_local import *

@@ -6,3 +6,15 @@ GET http://127.0.0.1:7000/fo-api/orders
 Content-Type: application/json
 Authorization: Api-Key {{$dotenv API_KEY}}
 
+
+### Get a specific order
+
+GET http://127.0.0.1:7000/fo-api/orders/8
+Content-Type: application/json
+Authorization: Api-Key {{$dotenv API_KEY}}
+
+### GET SHIPPING ADDRESSES
+
+GET http://127.0.0.1:7000/fo-api/ship-to-addresses/1
+Content-Type: application/json
+Authorization: Api-Key {{$dotenv API_KEY}}

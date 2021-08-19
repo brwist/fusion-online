@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse, Http404
 
 from .serializers import ShippingAddressSerializer
-from saleor.account.models import Address
+from saleor.account.models import Address, User
 
 
 class ShippingAddressDetail(APIView):
@@ -32,6 +32,8 @@ class ShippingAddressDetail(APIView):
         serializer = ShippingAddressSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            # instance = ShippingAddress.objects.get(pk=serializer.data.get('id')
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -41,15 +43,12 @@ class ShippingAddressDetail(APIView):
         """
         try:
             shipping_address = ShippingAddress.objects.get(pk=pk)
-            ship_to_num = request.data.ship_to_num
-            validation_message = request.data.validation_message
+            ship_to_num = request.data.get('ship_to_num')
+            validation_message = request.data.get('validation_message')
             shipping_address.ship_to_num = ship_to_num
             shipping_address.validation_message = validation_message
             shipping_address.save()
             serializer = ShippingAddressSerializer(shipping_address)
-            if not serializer.is_valid():
-                return JsonResponse(serializer.errors, status=400)
-            else:
-                return Response(serializer.data)
+            return Response(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
