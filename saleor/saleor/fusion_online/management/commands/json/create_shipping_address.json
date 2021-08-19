@@ -1,0 +1,19 @@
+{
+  "address": {
+    "first_name": "Alex",
+    "last_name": "Vallejo",
+    "company_name": "36",
+    "city": "Miami",
+    "country": "US",
+    "country_area": "FL",
+    "phone": "+19782704786",
+    "postal_code": "33137",
+    "street_address_1": "180 NE 29th St",
+    "street_address_2": "Apt 1904"
+  },
+  "customer_id": 123,
+  "ship_to_name": "home",
+  "ship_via": "UPS",
+  "vat_id": "not sure",
+  "ship_to_num": null
+}
