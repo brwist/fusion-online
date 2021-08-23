@@ -20,7 +20,7 @@ from ..utils import format_permissions_for_display
 from ..wishlist.resolvers import resolve_wishlist_items_from_user
 from .enums import CountryCodeEnum, CustomerEventsEnum
 from .utils import can_user_manage_group, get_groups_which_user_can_manage
-from ..fusion_online.shipping_address.types import ShippingAddress
+from ..fusion_online.shipping_address.types import ShipToAddressInfo
 
 class AddressInput(graphene.InputObjectType):
     first_name = graphene.String(description="Given name.")
@@ -47,7 +47,7 @@ class Address(CountableDjangoObjectType):
     is_default_billing_address = graphene.Boolean(
         required=False, description="Address is user's default billing address."
     )
-    shipping_address = graphene.Field(ShippingAddress, description="rms shipping address info")
+    ship_to_address_info = graphene.Field(ShipToAddressInfo, required=False, description="rms shipping address info")
     class Meta:
         description = "Represents user address data."
         interfaces = [relay.Node]
@@ -65,13 +65,14 @@ class Address(CountableDjangoObjectType):
             "postal_code",
             "street_address_1",
             "street_address_2",
-            "shipping_address"
+            "ship_to_address_info"
         ]
 
     @staticmethod
-    def resolve_shipping_address(root: models.Address, _info):
-        
-        return root.ship_to_address
+    def resolve_ship_to_address_info(root: models.Address, _info):
+        if root.ship_to_address.first() is not None:
+            return root.ship_to_address.first()
+        return None
 
     @staticmethod
     def resolve_country(root: models.Address, _info):
