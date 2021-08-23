@@ -10,7 +10,7 @@ Authorization: Api-Key {{$dotenv API_KEY}}
     "address": {
         "first_name": "Alex",
         "last_name": "Vallejo",
-        "company_name": "Bowst",
+        "company_name": "My Company",
         "city": "Miami",
         "country": "US",
         "country_area": "FL",
@@ -19,11 +19,11 @@ Authorization: Api-Key {{$dotenv API_KEY}}
         "street_address_1": "180 NE 29th St",
         "street_address_2": "Apt 1904"
     },
-    "customer_id": 123,
+    "customer_id": 4535250721,
     "ship_to_name": "home",
     "ship_via": "UPS",
-    "vat_id": "not sure",
-    "ship_to_num": 345
+    "vat_id": "44788801",
+    "ship_to_num": null
 }
 
 ### GET SHIPPING ADDRESSES
