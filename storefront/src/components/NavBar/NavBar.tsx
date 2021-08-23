@@ -88,22 +88,6 @@ export const NavBar: React.FC<NavBarProps> = ({
                   <NavDropdown.Item as="div">List 1</NavDropdown.Item>
                   <NavDropdown.Item as="div">List 2</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Item as="li">
-                  <Link
-                    to="/"
-                    className="nav-link px-2 text-muted"
-                  >
-                    DE
-                  </Link>
-                </Nav.Item>
-                <Nav.Item as="li">
-                  <Link
-                    to="/"
-                    className="nav-link px-2 text-muted"
-                  >
-                    KO
-                  </Link>
-                </Nav.Item>
               </Nav>
             </Navbar.Collapse>
           </Container>
