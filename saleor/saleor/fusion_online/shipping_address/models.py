@@ -15,3 +15,6 @@ class ShippingAddress(Model):
 
     created = DateTimeField(auto_now_add=True, null=True)
     updated = DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return self.ship_to_name
