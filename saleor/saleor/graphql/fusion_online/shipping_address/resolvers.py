@@ -1,7 +1,5 @@
-import graphene
-
 from ....fusion_online.shipping_address import models
-from .types import ShippingAddress
+from .types import ShipToAddressInfo
 
-def resolve_shipping_address():
+def resolve_ship_to_address_info():
 	return models.ShippingAddress.objects.all()
