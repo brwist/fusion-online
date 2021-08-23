@@ -15,11 +15,11 @@ class ShippingAddressSerializer(ModelSerializer):
 
     class Meta:
         model = ShippingAddress
-        fields = ['id', 'address', 'address_id', 'street_address', 'customer_id', 'ship_to_name', 'city',
+        fields = ['id', 'address', 'address_id', 'customer_id', 'ship_to_name', 'city',
                   'state', 'country', 'ship_via', 'vat_id', 'ship_to_num', 'validation_message']
 
-    street_address = SerializerMethodField('get_street_address', read_only=True)
-    address = AddressSerializer(read_only=True)
+    address = SerializerMethodField('get_street_address', read_only=True)
+    # address = AddressSerializer(read_only=True)
     address_id = PrimaryKeyRelatedField(
         write_only=True, source='address', queryset=Address.objects.all())
     city = SerializerMethodField('get_city')

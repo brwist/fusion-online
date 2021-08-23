@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from saleor.order.models import Order
 from rest_framework.views import APIView
 
+from saleor.fusion_online.notifications.utils import send_shipping_address_notification
+
 
 entered_by = 7964957
 hubspot_vid = 908051
