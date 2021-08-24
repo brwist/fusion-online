@@ -20,7 +20,8 @@ from ..utils import format_permissions_for_display
 from ..wishlist.resolvers import resolve_wishlist_items_from_user
 from .enums import CountryCodeEnum, CustomerEventsEnum
 from .utils import can_user_manage_group, get_groups_which_user_can_manage
-from ..fusion_online.shipping_address.types import ShipToAddressInfo
+from ..fusion_online.shipping_address.types import ShipToAddressInfo, ShipToAddressInfoInput
+
 
 class AddressInput(graphene.InputObjectType):
     first_name = graphene.String(description="Given name.")
@@ -34,6 +35,8 @@ class AddressInput(graphene.InputObjectType):
     country = CountryCodeEnum(description="Country.")
     country_area = graphene.String(description="State or province.")
     phone = graphene.String(description="Phone number.")
+    ship_to_address_info = graphene.InputField(
+        ShipToAddressInfoInput, description="The ship to address meta info.")
 
 
 @key(fields="id")
