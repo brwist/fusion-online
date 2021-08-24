@@ -2,7 +2,10 @@ import React, { ReactFragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import {SearchBar } from '../SearchBar/SearchBar';
-import { useProductListQuery } from '../../generated/graphql';
+
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_LIST } from '../../config';
+import { ProductListQuery } from '../CategoryPage/CategoryPage'
 
 import './navbar.scss';
 
@@ -14,7 +17,7 @@ export const NavBarSearch: React.FC<NavBarSearchProps> = ({
   closeSearchModal
 }) => {
   const [searchQuery, setSearchquery] = useState('');
-  const { loading, error, data} = useProductListQuery({
+  const { loading, error, data} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {search: searchQuery, isPublished: true}, first: 10}
   });
 

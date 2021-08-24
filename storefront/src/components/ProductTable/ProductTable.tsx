@@ -1,12 +1,21 @@
 import React from 'react';
 import { Card, Table } from 'react-bootstrap';
-import {ProductTableRow, ProductTableRowProps} from './ProductTableRow';
+import {ProductTableRow} from './ProductTableRow';
+import {Product} from '../../generated/graphql'
 import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 import './producttable.scss';
 
+type ProductData = {
+  otherData: {
+    saved: boolean,
+    status: string
+  },
+  product: Product
+}
+
 export interface ProductTableProps {
   loading: boolean,
-  productData: Array<ProductTableRowProps>,
+  productData: Array<ProductData>,
   addItem?: any,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
