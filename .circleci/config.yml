@@ -9,7 +9,7 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          profile-name: 647697256804
+          profile-name: "647697256804"
       - run: aws --version
       - run: aws s3 ls
       - run: export CI=false
