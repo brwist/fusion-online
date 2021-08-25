@@ -2,7 +2,6 @@ import { Product } from '../generated/graphql';
 export const productDataSample: Product = {
   id: "UHJvZHVjdDo3",
   name: "Intel® Celeron® Processor N3010",
-  mpn: "CCC",
   description: "test",
   descriptionJson: "test",
   productType: {
