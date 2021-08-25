@@ -4,10 +4,23 @@ import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
-import {useCartProductDetailsQuery } from '../../generated/graphql';
+import { Maybe, Product, ProductVariant } from '../../generated/graphql';
 import { SectionHeader } from '../SectionHeader/SectionHeader'
 
+import { useQuery } from '@apollo/client';
+import { GET_CART_PRODUCT_DETAILS } from '../../config';
+
 import './cart.scss';
+
+type CartProductDetailsQuery = (
+{ productVariants?: Maybe<(
+    & { edges: Array<(
+      { __typename: 'ProductVariantCountableEdge' }
+      & { node: Maybe<ProductVariant>
+        & {product: Maybe<Product> }
+      })>
+    })>}
+);
 
 export interface CartProps {
   discount: any,
@@ -63,7 +76,7 @@ export const Cart: React.FC<CartProps> = ({
     }
   }, [items])
 
-  const {data} = useCartProductDetailsQuery({variables: {
+  const {data} = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {variables: {
     first: 100,
     ids: items?.map(({variant}: any) => variant.id)
   } })

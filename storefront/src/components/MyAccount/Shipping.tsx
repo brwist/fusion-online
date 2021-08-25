@@ -19,7 +19,7 @@ export interface ShippingProps {}
 
 export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
   const {data, loading, error} = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
-  console.log("userAddresses", data)
+
   const formatPhoneNumber = (phoneNumberString: String) => {
     const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
     const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);

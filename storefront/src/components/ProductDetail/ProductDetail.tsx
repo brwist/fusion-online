@@ -5,22 +5,27 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-import { useProductDetailsQuery } from '../../generated/graphql';
+import { Maybe, Product } from '../../generated/graphql';
 import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
 import {ScrollToTopOnMount} from '../../utils/ScrollToTopOnMount';
+
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_DETAILS } from '../../config';
 
 import './productdetail.scss';
 
 export interface ProductDetailProps {
   addItem: any
 }
+type ProductDetailsQuery = 
+{ product?: Maybe<Product>}
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
   addItem
 }) => {
   const {slug} = useParams<{slug: string}>()
   const history = useHistory()
-  const {data, loading, error} = useProductDetailsQuery({variables: {slug: slug}})
+  const {data, loading, error} = useQuery<ProductDetailsQuery>(GET_PRODUCT_DETAILS, {variables: {slug: slug}})
   const [showAlert, setShowAlert] = useState(false)
   const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (
