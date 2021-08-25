@@ -20,8 +20,8 @@ Authorization: Api-Key {{$dotenv API_KEY}}
     "customer_id": 123,
     "ship_to_name": "home",
     "ship_via": "UPS",
-    "vat_id": "not sure",
-    "ship_to_num": 345
+    "vat_id": "44788801",
+    "ship_to_num": null
 }
 
 ### GET SHIPPING ADDRESSES

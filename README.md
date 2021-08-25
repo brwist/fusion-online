@@ -134,6 +134,12 @@ SALEOR_DB_TARGET_HOST_URL=postgresql://saleor:saleor@example.com:5888 scripts/se
 
 ## Other Useful Commands
 
+Create Django migrations after changing/creating fusion_online app models:
+
+```
+docker-compose run --rm api python3 manage.py makemigrations fusion_online
+```
+
 Apply Django migrations:
 
 ```
