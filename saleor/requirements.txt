@@ -70,6 +70,7 @@ h11==0.9.0
 html-to-draftjs==1.0.1
 html5lib==1.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 httptools==0.1.1; sys_platform != "win32" and sys_platform != "cygwin" and platform_python_implementation != "PyPy"
+hubspot-api-client==3.8.2
 idna==2.10; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 jaeger-client==4.3.0
 jdcal==1.4.1; python_version >= "3.6"
