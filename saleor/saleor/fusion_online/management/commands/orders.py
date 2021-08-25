@@ -92,7 +92,7 @@ class Command(BaseCommand):
         self.shipping_address = shipping_address
 
         # Load test user to associate address
-        address_id = shipping_address['address']['id']
+        address_id = shipping_address['id']
         address = Address.objects.get(pk=address_id)
         self.address = address
         user = User.objects.get(pk=5)
@@ -115,7 +115,7 @@ class Command(BaseCommand):
         self.shipping_address = shipping_address
 
         # Refresh parent address obj
-        address_id = shipping_address['address']['id']
+        address_id = shipping_address['id']
         address = Address.objects.get(pk=address_id)
         self.address = address
 

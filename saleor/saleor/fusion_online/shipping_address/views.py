@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from django.http import JsonResponse, Http404
 
-from .serializers import ShippingAddressSerializer
+from .serializers import ShippingAddressSerializer, AddressSerializer
 from saleor.account.models import Address, User
 from ...account.utils import store_user_address
 
@@ -21,28 +21,26 @@ class ShippingAddressDetail(APIView):
 
     def get(self, request, pk, format=None):
         try:
-            shipping_address = ShippingAddress.objects.get(pk=pk)
-            serializer = ShippingAddressSerializer(shipping_address)
+            shipping_address = Address.objects.get(pk=pk)
+            serializer = AddressSerializer(shipping_address)
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
 
     @transaction.atomic
     def post(self, request):
-        address = request.data.pop('address')
-        address = Address.objects.create(**address)
-        data = {**request.data, 'address_id': address.id}
-        serializer = ShippingAddressSerializer(data=data)
-        """
-        Associates the newly created address to customer@example.com user
-        """
-        user = User.objects.get(email="customer@example.com")
-        addressType = "shipping"
-        store_user_address(user, address, addressType)
-
+        serializer = AddressSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # send_shipping_address_notification(serializer.data)
+
+            """
+            Associates the newly created address to customer@example.com user
+            """
+            # address = Address.objects.get(pk=serializer.data['id'])
+            # user = User.objects.get(email="customer@example.com")
+            # addressType = "shipping"
+            # store_user_address(user, address, addressType)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,13 +49,13 @@ class ShippingAddressDetail(APIView):
         Expects only a ship_to_num and a validation_message
         """
         try:
-            shipping_address = ShippingAddress.objects.get(pk=pk)
+            shipping_address = Address.objects.get(pk=pk)
             ship_to_num = request.data.get('ship_to_num')
             validation_message = request.data.get('validation_message')
             shipping_address.ship_to_num = ship_to_num
             shipping_address.validation_message = validation_message
             shipping_address.save()
-            serializer = ShippingAddressSerializer(shipping_address)
+            serializer = AddressSerializer(shipping_address)
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)

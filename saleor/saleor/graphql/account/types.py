@@ -20,7 +20,6 @@ from ..utils import format_permissions_for_display
 from ..wishlist.resolvers import resolve_wishlist_items_from_user
 from .enums import CountryCodeEnum, CustomerEventsEnum
 from .utils import can_user_manage_group, get_groups_which_user_can_manage
-from ..fusion_online.shipping_address.types import ShipToAddressInfo, ShipToAddressInfoInput
 
 
 class AddressInput(graphene.InputObjectType):
@@ -35,8 +34,12 @@ class AddressInput(graphene.InputObjectType):
     country = CountryCodeEnum(description="Country.")
     country_area = graphene.String(description="State or province.")
     phone = graphene.String(description="Phone number.")
-    ship_to_address_info = graphene.InputField(
-        ShipToAddressInfoInput, description="The ship to address meta info.")
+    customer_id = graphene.String(description="ID of customer.")
+    ship_to_name = graphene.String(description="Given name.")
+    ship_via = graphene.String(description="Given name.")
+    vat_id = graphene.Int(description="Given name.")
+    ship_to_num = graphene.Int(description="Given name.")
+    validation_message = graphene.String(description="Given name.")
 
 
 @key(fields="id")
@@ -50,7 +53,7 @@ class Address(CountableDjangoObjectType):
     is_default_billing_address = graphene.Boolean(
         required=False, description="Address is user's default billing address."
     )
-    ship_to_address_info = graphene.Field(ShipToAddressInfo, required=False, description="rms shipping address info")
+
     class Meta:
         description = "Represents user address data."
         interfaces = [relay.Node]
@@ -68,14 +71,13 @@ class Address(CountableDjangoObjectType):
             "postal_code",
             "street_address_1",
             "street_address_2",
-            "ship_to_address_info"
+            "customer_id",
+            "ship_to_name",
+            "ship_via",
+            "vat_id",
+            "ship_to_num",
+            "validation_message"
         ]
-
-    @staticmethod
-    def resolve_ship_to_address_info(root: models.Address, _info):
-        if root.ship_to_address.first() is not None:
-            return root.ship_to_address.first()
-        return None
 
     @staticmethod
     def resolve_country(root: models.Address, _info):
