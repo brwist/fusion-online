@@ -35,7 +35,7 @@ export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
       <header className="my-3 d-flex justify-content-between align-items-center">
         <h2 className="h3 m-0">Shipping</h2>
       </header>
-      <p>Loading...</p>;
+      <p>Loading...</p>
       <Button variant="primary">Add Shipping Address</Button>
     </div>
   );

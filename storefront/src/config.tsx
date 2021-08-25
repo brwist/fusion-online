@@ -18,11 +18,9 @@ export const GET_USER_ADDRESSES = gql`
           code
         }
         phone
-        shipToAddressInfo {
-          shipToName
-          customerId
-          vatId
-        }
+        shipToName
+        customerId
+        vatId
       }
     }
   }
@@ -293,4 +291,32 @@ export const GET_CART_PRODUCT_DETAILS = gql`
       }
     }
   } ${PriceFragmentDoc}
+`;
+
+export const GET_CATEGORY_LIST = gql `
+  query CategoryList($first: Int) {
+    categories(first: $first) {
+      edges {
+        node {
+          id
+          name
+          slug
+          parent {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const CONFIRM_ACCOUNT = gql`
+  mutation AccountConfirm($email: String!, $token: String!) {
+    confirmAccount(email: $email, token: $token) {
+      errors {
+        field
+        message
+      }
+    }
+  }
 `;
