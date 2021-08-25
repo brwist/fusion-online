@@ -12,7 +12,6 @@ jobs:
           profile-name: "647697256804"
       - run: aws --version
       - run: aws s3 ls
-      - run: export CI=false
       - run: chmod +x ./deploy-frontend.sh
       - run: ./deploy-frontend.sh
 workflows:
