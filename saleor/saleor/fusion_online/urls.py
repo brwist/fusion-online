@@ -19,5 +19,6 @@ urlpatterns = [
          rfq_views.post_rfq_response_handler),
     path("orders", order_views.get_orders),
     path("orders/<int:pk>", order_views.OrderDetail.as_view()),
-    path("hubspot-contacts/<int:contact_id>", hubspot_views.handler)
+    path("hubspot-contacts/<int:contact_id>", hubspot_views.get_contact),
+    path("hubspot-contacts", hubspot_views.create_contact)
 ]
