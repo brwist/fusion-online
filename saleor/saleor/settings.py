@@ -618,3 +618,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Local settings override
 if DEBUG:
     from .settings_local import *
+
+
+HUBSPOT_API_KEY = os.environ.get("HUBSPOT_API_KEY")
