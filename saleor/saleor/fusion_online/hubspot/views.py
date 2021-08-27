@@ -9,7 +9,7 @@ from hubspot.crm.contacts import SimplePublicObjectInput
 
 from ...settings import HUBSPOT_API_KEY
 
-from .serializers import HubspotContactSerializer
+from .serializers import HubspotContactSerializer, HubspotCompanySerializer
 
 
 
@@ -47,3 +47,21 @@ def create_contact(request):
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)
 
+@api_view(['POST'])
+@throttle_classes([UserRateThrottle])
+def create_company(request):
+    try:
+        data = JSONParser().parse(request)
+        serializer = HubspotCompanySerializer(data=data)
+        if not serializer.is_valid():
+            return JsonResponse(serializer.errors, status=400)
+        else:
+            api_client = HubSpot(api_key=HUBSPOT_API_KEY)
+            print('API CLIENT CONFIGURED')
+            api_response = api_client.crm.companies.basic_api.create(
+                simple_public_object_input=serializer.data
+            )
+            print('COMPANY CREATED')
+            return Response({"company": api_response.to_dict()})
+    except Exception as e:
+        return Response({"error": True, "message": str(e)}, status=500)
