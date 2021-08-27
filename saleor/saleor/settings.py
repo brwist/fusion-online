@@ -525,7 +525,8 @@ PLUGINS = [
     "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
     "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
-    "saleor.plugins.orders.plugin.OrderCreatedPlugin"
+    "saleor.plugins.orders.plugin.OrderCreatedPlugin",
+    "saleor.plugins.fusion_online.plugin.FusionOnlinePlugin"
 ]
 
 # Plugin discovery

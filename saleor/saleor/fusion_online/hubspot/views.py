@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
 from hubspot import HubSpot
 from hubspot.crm.contacts import SimplePublicObjectInput
-# from hubspot.crm.contacts import ApiException
 
 from ...settings import HUBSPOT_API_KEY
 
@@ -37,13 +36,8 @@ def create_contact(request):
         if not serializer.is_valid():
             return JsonResponse(serializer.errors, status=400)
         else:
-            api_client = HubSpot(api_key=HUBSPOT_API_KEY)
-            print('API CLIENT CONFIGURED')
-            api_response = api_client.crm.contacts.basic_api.create(
-                simple_public_object_input=serializer.data
-            )
-            print('CONTACT CREATED')
-            return Response({"contact": api_response.to_dict()})
+            response = serializer.save()
+            return Response({"contact": response})
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)
 
@@ -56,12 +50,7 @@ def create_company(request):
         if not serializer.is_valid():
             return JsonResponse(serializer.errors, status=400)
         else:
-            api_client = HubSpot(api_key=HUBSPOT_API_KEY)
-            print('API CLIENT CONFIGURED')
-            api_response = api_client.crm.companies.basic_api.create(
-                simple_public_object_input=serializer.data
-            )
-            print('COMPANY CREATED')
-            return Response({"company": api_response.to_dict()})
+            response = serializer.save()
+            return Response({"company": response})
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)
