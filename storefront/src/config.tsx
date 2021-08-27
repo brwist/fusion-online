@@ -1,30 +1,4 @@
-import {gql} from '@apollo/client';
-
-export const GET_USER_ADDRESSES = gql`
-  query userAddresses {
-    me {
-      addresses {
-        id
-        isDefaultBillingAddress
-        isDefaultShippingAddress
-        firstName
-        lastName
-        streetAddress1
-        streetAddress2
-        city
-        countryArea
-        postalCode
-        country {
-          code
-        }
-        phone
-        shipToName
-        customerId
-        vatId
-      }
-    }
-  }
-`;
+import { gql } from '@apollo/client';
 
 export const MoneyFragmentDoc = gql`
   fragment Money on Money {
@@ -60,59 +34,60 @@ export const ProductFragmentDoc = gql`
 `;
 
 export const GET_PRODUCT_LIST = gql`
-  query ProductList($first: Int, $after: String, $last: Int, $before: String, $filter: ProductFilterInput, $sort: ProductOrder) {
-  products(
-    before: $before
-    after: $after
-    first: $first
-    last: $last
-    filter: $filter
-    sortBy: $sort
+  query ProductList(
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+    $filter: ProductFilterInput
+    $sort: ProductOrder
   ) {
-    edges {
-      node {
-        ...Product
-        attributes {
-          attribute {
-            id
-            slug
-          }
-          values {
-            id
-            name
-          }
-        }
-        pricing {
-          priceRangeUndiscounted {
-            start {
-              gross {
-                ...Money
-              }
+    products(before: $before, after: $after, first: $first, last: $last, filter: $filter, sortBy: $sort) {
+      edges {
+        node {
+          ...Product
+          attributes {
+            attribute {
+              id
+              slug
             }
-            stop {
-              gross {
-                ...Money
+            values {
+              id
+              name
+            }
+          }
+          pricing {
+            priceRangeUndiscounted {
+              start {
+                gross {
+                  ...Money
+                }
+              }
+              stop {
+                gross {
+                  ...Money
+                }
               }
             }
           }
         }
       }
+      pageInfo {
+        hasPreviousPage
+        hasNextPage
+        startCursor
+        endCursor
+      }
+      totalCount
     }
-    pageInfo {
-      hasPreviousPage
-      hasNextPage
-      startCursor
-      endCursor
-    }
-    totalCount
   }
-}
-    ${ProductFragmentDoc}
-${MoneyFragmentDoc}`;
+  ${ProductFragmentDoc}
+  ${MoneyFragmentDoc}
+`;
 
 export const GET_INITIAL_PRODUCT_FILTER_DATA = gql`
   query InitialProductFilterData($categories: [ID!], $productTypes: [ID!], $inCategory: ID) {
-    attributes(first: 100, filter: {filterableInStorefront: true, inCategory: $inCategory}) {
+    attributes(first: 100, filter: { filterableInStorefront: true, inCategory: $inCategory }) {
       edges {
         node {
           id
@@ -126,7 +101,7 @@ export const GET_INITIAL_PRODUCT_FILTER_DATA = gql`
         }
       }
     }
-    categories(first: 100, filter: {ids: $categories}) {
+    categories(first: 100, filter: { ids: $categories }) {
       edges {
         node {
           id
@@ -134,7 +109,7 @@ export const GET_INITIAL_PRODUCT_FILTER_DATA = gql`
         }
       }
     }
-    productTypes(first: 100, filter: {ids: $productTypes}) {
+    productTypes(first: 100, filter: { ids: $productTypes }) {
       edges {
         node {
           id
@@ -145,18 +120,19 @@ export const GET_INITIAL_PRODUCT_FILTER_DATA = gql`
   }
 `;
 
-export const PriceFragmentDoc = gql `
-fragment Price on TaxedMoney {
-  gross {
-    ...Money
+export const PriceFragmentDoc = gql`
+  fragment Price on TaxedMoney {
+    gross {
+      ...Money
+    }
+    net {
+      ...Money
+    }
   }
-  net {
-    ...Money
-  }
-} ${MoneyFragmentDoc}
-`
+  ${MoneyFragmentDoc}
+`;
 
-export const GET_PRODUCT_DETAILS = gql `
+export const GET_PRODUCT_DETAILS = gql`
   fragment BasicProductFields on Product {
     id
     name
@@ -250,7 +226,8 @@ export const GET_PRODUCT_DETAILS = gql `
       isAvailableForPurchase
       availableForPurchase
     }
-  } ${PriceFragmentDoc}
+  }
+  ${PriceFragmentDoc}
 `;
 
 export const GET_CART_PRODUCT_DETAILS = gql`
@@ -290,10 +267,11 @@ export const GET_CART_PRODUCT_DETAILS = gql`
         }
       }
     }
-  } ${PriceFragmentDoc}
+  }
+  ${PriceFragmentDoc}
 `;
 
-export const GET_CATEGORY_LIST = gql `
+export const GET_CATEGORY_LIST = gql`
   query CategoryList($first: Int) {
     categories(first: $first) {
       edges {
