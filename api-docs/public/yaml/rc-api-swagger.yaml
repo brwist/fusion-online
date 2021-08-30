@@ -477,9 +477,10 @@ components:
           type: string
         entered_by:
           type: integer
-        ship_to_num:
-          type: integer
-          description: Ship-to number referencing a ship-to address that exists in RMS.
+        ship_to:
+          type: object
+          $ref: '#/components/schemas/ShipToAddressResponse'
+          description: The ship-to address.
         due_date:
           $ref: '#/components/schemas/Timestamp'
         items:
@@ -515,6 +516,9 @@ components:
       title: Ship-To Address API response
       type: object
       properties:
+        fo_ship_to_address_ref_id:
+          type: integer
+          description: The ID of the shipping address in RocketChips.
         customer_id:
           type: integer
           description: The ID of the customer company.
@@ -545,16 +549,8 @@ components:
           type: string
           maxLength: 50
           description: May be an empty string
-        ship_to_num:
-          type: integer
-          description: ID of the ship-to address in RMS.
-          nullable: true
     ShipToAddressUpdate:
       properties:
-        ship_to_num:
-          type: integer
-          description: ID of the ship-to address in RMS.
-          nullable: true
         validation_message:
           type: string
           description: Description of any validation-related issues with the address.
