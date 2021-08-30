@@ -318,9 +318,7 @@ export type AddressInput = {
   /** Given name. */
   shipVia?: Maybe<Scalars['String']>;
   /** Given name. */
-  vatId?: Maybe<Scalars['Int']>;
-  /** Given name. */
-  shipToNum?: Maybe<Scalars['Int']>;
+  vatId?: Maybe<Scalars['String']>;
   /** Given name. */
   validationMessage?: Maybe<Scalars['String']>;
 };

@@ -69,7 +69,6 @@ class Address(models.Model):
     ship_to_name = models.CharField(max_length=256, blank=True, null=True)
     ship_via = models.CharField(max_length=256, blank=True, null=True)
     vat_id = models.CharField(max_length=256, blank=True, null=True)
-    ship_to_num = models.IntegerField(blank=True, null=True)
     validation_message = models.CharField(max_length=256, blank=True, null=True)
 
     objects = AddressQueryset.as_manager()

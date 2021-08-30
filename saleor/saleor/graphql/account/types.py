@@ -37,8 +37,7 @@ class AddressInput(graphene.InputObjectType):
     customer_id = graphene.String(description="ID of customer.")
     ship_to_name = graphene.String(description="Given name.")
     ship_via = graphene.String(description="Given name.")
-    vat_id = graphene.Int(description="Given name.")
-    ship_to_num = graphene.Int(description="Given name.")
+    vat_id = graphene.String(description="Given name.", default=None)
     validation_message = graphene.String(description="Given name.")
 
 

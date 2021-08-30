@@ -43,7 +43,6 @@ export const AddressFragment = gql`
     shipToName
     shipVia
     vatId
-    shipToNum
   }
 `;
 
