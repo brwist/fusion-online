@@ -8,7 +8,7 @@ class AddressSerializer(ModelSerializer):
     class Meta:
         model = Address
         fields = ['id', 'first_name', 'last_name', 'company_name', 'street_address_1',
-                  'street_address_2', 'city', 'city_area', 'postal_code', 'country', 'country_area', 'phone', 'customer_id', 'ship_to_name', 'ship_via', 'vat_id', 'ship_to_num', 'validation_message']
+                  'street_address_2', 'city', 'city_area', 'postal_code', 'country', 'country_area', 'phone', 'customer_id', 'ship_to_name', 'ship_via', 'vat_id', 'validation_message']
 
 
 class ShippingAddressSerializer(ModelSerializer):
@@ -16,7 +16,7 @@ class ShippingAddressSerializer(ModelSerializer):
     class Meta:
         model = ShippingAddress
         fields = ['id', 'address', 'address_id', 'customer_id', 'ship_to_name', 'city',
-                  'state', 'country', 'ship_via', 'vat_id', 'ship_to_num', 'validation_message']
+                  'state', 'country', 'ship_via', 'vat_id', 'validation_message']
 
     address = SerializerMethodField('get_street_address', read_only=True)
     # address = AddressSerializer(read_only=True)

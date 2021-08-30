@@ -46,13 +46,11 @@ class ShippingAddressDetail(APIView):
 
     def put(self, request, pk, format=None):
         """
-        Expects only a ship_to_num and a validation_message
+        Expects only a validation_message
         """
         try:
             shipping_address = Address.objects.get(pk=pk)
-            ship_to_num = request.data.get('ship_to_num')
             validation_message = request.data.get('validation_message')
-            shipping_address.ship_to_num = ship_to_num
             shipping_address.validation_message = validation_message
             shipping_address.save()
             serializer = AddressSerializer(shipping_address)
