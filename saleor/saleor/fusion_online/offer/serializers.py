@@ -33,7 +33,7 @@ class OfferSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         # Get product
-        product = Product.objects.get(metadata__item_num_id=str(validated_data['item_num_id']))
+        product = Product.objects.get(metadata__item_num_id=validated_data['item_num_id'])
 
         print("--RETRIEVED PRODUCT--")
 
