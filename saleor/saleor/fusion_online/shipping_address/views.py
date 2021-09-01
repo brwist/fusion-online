@@ -1,4 +1,3 @@
-from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
 from django.db import transaction
 from .models import ShippingAddress
@@ -7,10 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from django.http import HttpResponse
-from django.http import JsonResponse, Http404
-
-from .serializers import ShippingAddressSerializer, AddressSerializer
+from .serializers import ShippingAddressSerializer
 from saleor.account.models import Address, User
 from ...account.utils import store_user_address
 
@@ -43,7 +39,8 @@ class ShippingAddressDetail(APIView):
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
+    @transaction.atomic
     def put(self, request, pk, format=None):
         """
         Expects only a validation_message
@@ -53,7 +50,7 @@ class ShippingAddressDetail(APIView):
             validation_message = request.data.get('validation_message')
             shipping_address.validation_message = validation_message
             shipping_address.save()
-            serializer = AddressSerializer(shipping_address)
+            serializer = ShippingAddressSerializer(shipping_address)
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
