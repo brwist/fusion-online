@@ -21,15 +21,15 @@ class ShippingAddressDetail(APIView):
 
     def get(self, request, pk, format=None):
         try:
-            shipping_address = Address.objects.get(pk=pk)
-            serializer = AddressSerializer(shipping_address)
+            shipping_address = ShippingAddress.objects.get(pk=pk)
+            serializer = ShippingAddressSerializer(shipping_address)
             return Response(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
 
     @transaction.atomic
     def post(self, request):
-        serializer = AddressSerializer(data=request.data)
+        serializer = ShippingAddressSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
 
@@ -49,7 +49,7 @@ class ShippingAddressDetail(APIView):
         Expects only a validation_message
         """
         try:
-            shipping_address = Address.objects.get(pk=pk)
+            shipping_address = ShippingAddress.objects.get(pk=pk)
             validation_message = request.data.get('validation_message')
             shipping_address.validation_message = validation_message
             shipping_address.save()
