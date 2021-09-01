@@ -6,7 +6,6 @@ import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { ProductDetail } from './components/ProductDetail/ProductDetail';
 import { NavBar } from './components/NavBar/NavBar';
 import { LoginPage } from './components/LoginPage/LoginPage';
-import { useAccountConfirmationMutation} from './generated/graphql';
 import { CategoryPage } from './components/CategoryPage/CategoryPage';
 import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from "./components/Footer/Footer";
@@ -15,6 +14,16 @@ import { Cart } from './components/Cart/Cart';
 
 import './App.scss';
 
+import { useMutation } from '@apollo/client';
+import { CONFIRM_ACCOUNT } from './config';
+
+
+type AccountConfirmMutation = {
+  confirmAccount: {errors: Array<{
+    field: string | null;
+    message: string | null;
+  }>;} | null;
+}
 
 function App() {
   const [errors, setErrors] = useState()
@@ -54,7 +63,7 @@ function App() {
   const search = useLocation()?.search
   const email = new URLSearchParams(search)?.get('email')
   const token = new URLSearchParams(search)?.get('token')
-  const [confirmAccount, {data}] = useAccountConfirmationMutation({
+  const [confirmAccount, {data}] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {
   })
 
   if (email && token) {

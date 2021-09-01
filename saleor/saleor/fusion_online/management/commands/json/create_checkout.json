@@ -3,7 +3,7 @@
     "operationName": "CreateCheckout",
     "variables": {
       "checkoutInput": {
-        "email": "alxvallejo@gmail.com",
+        "email": "customer@example.com",
         "lines": [
           {
             "quantity": 1,

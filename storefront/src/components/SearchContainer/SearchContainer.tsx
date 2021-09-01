@@ -3,28 +3,33 @@ import { useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { ProductTable } from '../ProductTable/ProductTable';
 import { SearchBar } from '../SearchBar/SearchBar';
-import { useProductListQuery, AttributeInput } from '../../generated/graphql';
+import { AttributeInput } from '../../generated/graphql';
 import { ProductFilters } from '../ProductFilters/ProductFilters';
 import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
+
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_LIST } from '../../config';
+import { ProductListQuery } from '../CategoryPage/CategoryPage'
 
 export interface SearchContainerProps {
   addItem: any
 };
 
 export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
-  const useQuery = () => {
+  const useQuerySearch = () => {
     return new URLSearchParams(useLocation().search);
   }
-  const query = useQuery();
+  const query = useQuerySearch();
   const initialSearchQuery = query.get('q');
   const [searchQuery, setSearchquery] = useState(initialSearchQuery|| '');
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
   const [showAlert, setShowAlert] = useState(false);
   const [selectedQuantity, setSelectedQuantity ] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
-  const { loading, error, data} = useProductListQuery({
+  const { data, loading, error} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
-});
+  })
+
 
   let results: any = [];
   if (data) {
