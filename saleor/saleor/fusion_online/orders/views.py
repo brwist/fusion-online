@@ -60,7 +60,9 @@ def get_orders(request):
 def create_order(request):
     try:
         serializer = SalesOrderSerializer(data=request.data)
+        print('serialized data')
         if serializer.is_valid():
+            print('serializer is valid')
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -71,10 +73,17 @@ def create_order(request):
 class OrderDetail(APIView):
 
     def get(self, request, pk, format=None):
+        try:        
+            order = Order.objects.get(pk=pk)
+        except Order.DoesNotExist:
+            return Response({"error": True, "message": "Order does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
         try:
-            order = Order.objects.prefetch_related(
-                'lines', 'shipping_address__ship_to_address').get(pk=pk)
-            sales_order = sales_order_response_payload(order)
-            return Response(sales_order)
+            serializer = SalesOrderSerializer(order)
+            # order = Order.objects.prefetch_related(
+            #     'lines', 'shipping_address__ship_to_address').get(pk=pk)
+            # sales_order = sales_order_response_payload(order)
+            # return Response(sales_order)
+            return JsonResponse(serializer.data)
         except Exception as e:
             return Response({"error": True, "message": str(e)}, status=500)
