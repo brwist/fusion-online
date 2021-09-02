@@ -60,11 +60,8 @@ class ShipToField(RelatedField):
         return ShipToFieldSerializer(obj).data
 
     def to_internal_value(self, data):
-        try:
-            address = Address.objects.filter(**data).first()
-            return address
-        except Address.DoesNotExist:
-            return Address.objects.create(**data)
+        address = Address.objects.get_or_create(**data)
+        return address[0]
 
 
 
