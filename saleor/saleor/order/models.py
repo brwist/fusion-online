@@ -353,6 +353,9 @@ class Order(ModelWithMetadata):
     def ship_to(self):
         return self.shipping_address
     
+    @property
+    def items(self):
+        return self.lines
 
 class OrderLineQueryset(models.QuerySet):
     def digital(self):
@@ -451,6 +454,17 @@ class OrderLine(models.Model):
         has_digital = hasattr(self.variant, "digital_content")
         return is_digital and has_digital
 
+    @property
+    def item_num_id(self):
+        return self.variant.product.metadata.get('item_num_id')
+    
+    @property
+    def mpn(self):
+        return self.variant.product.metadata.get('mpn')
+    
+    @property
+    def mcode(self):
+        return self.variant.product.metadata.get('mcode')
 
 class Fulfillment(ModelWithMetadata):
     fulfillment_order = models.PositiveIntegerField(editable=False)

@@ -29,16 +29,17 @@ from saleor.fusion_online.shipping_address.models import ShippingAddress
 # }
 
 class SalesOrderItemSerializer(ModelSerializer):
-    # unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
+    unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
     cipn = IntegerField(read_only=True, default=123)
     item_num_id = IntegerField()
-    # mpn = IntegerField(source="variant.product.private_metadata.mpn", read_only=True)
-    # mcode = IntegerField(source="variant.product.private_metadata.mcode", read_only=True)
+    mpn = CharField(read_only=True)
+    mcode = CharField(read_only=True)
 
     class Meta:
         model = OrderLine
-        # fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity']
-        fields = ['item_num_id', 'cipn', 'quantity']
+        fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
+
+
 
 class ShipToFieldSerializer(ModelSerializer):
     fo_ship_to_address_ref_id = CharField(source="pk")
@@ -52,6 +53,7 @@ class ShipToFieldSerializer(ModelSerializer):
         addr1 = obj.street_address_1
         addr2 = obj.street_address_2
         return addr1 + '\n' + addr2 if addr2 else addr1
+    
 
 class ShipToField(RelatedField):
     def to_representation(self, obj):
@@ -60,10 +62,8 @@ class ShipToField(RelatedField):
     def to_internal_value(self, data):
         try:
             address = Address.objects.filter(**data).first()
-            print("found matching address:", address)
             return address
         except Address.DoesNotExist:
-            print("did not find an address")
             return Address.objects.create(**data)
 
 
@@ -72,7 +72,7 @@ class SalesOrderSerializer(ModelSerializer):
     hubspot_vid = IntegerField(default=0, read_only=True)
     entered_by = IntegerField(default=0, read_only=True)
     ship_to = ShipToField(queryset=Address.objects.all())
-    items = SalesOrderItemSerializer(many=True, write_only=True)
+    items = SalesOrderItemSerializer(many=True)
     customer_purchase_order_num = CharField(source='private_metadata.customer_purchase_order_num')
     due_date = IntegerField(source='private_metadata.due_date')
     fo_order_ref_id = CharField(source='pk', read_only=True)
@@ -82,18 +82,13 @@ class SalesOrderSerializer(ModelSerializer):
         fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',
                   'ship_to', 'due_date', 'items', 'fo_order_ref_id', 'fo_payment_status']
     
-    def to_internal_value(self, data):
-        return super().to_internal_value(data)
-        
+
     def create(self, validated_data):
         shipping_data = validated_data.pop('ship_to')
         order_items_data = validated_data.pop('items')
-        print('in save')
-        print("create shipping address error")
         sales_order = Order.objects.create(**validated_data, shipping_address=shipping_data)
 
         for item in order_items_data:
-            print('creating orderline for each item')
             product = Product.objects.get(metadata__item_num_id=item['item_num_id'])
             product_variant = product.default_variant
             OrderLine.objects.create(
