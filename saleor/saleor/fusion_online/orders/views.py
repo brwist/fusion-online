@@ -1,8 +1,13 @@
+from django.http.response import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
+from django.db import transaction
 
 from saleor.order.models import Order
 from rest_framework.views import APIView
+
+from .serializers import SalesOrderSerializer
 
 from saleor.fusion_online.notifications.utils import send_shipping_address_notification
 
@@ -32,7 +37,7 @@ def sales_order_response_payload(order):
         'hubspot_vid': hubspot_vid,
         'customer_purchase_order_num': 123,  # This needs to change to customer input
         'entered_by': entered_by,
-        'ship_to_num': ship_to_address.ship_to_num,
+        'ship_to': ship_to_address,
         'due_date': private_metadata.get('due_date'),
         'items': items,
         'fo_order_ref_id': order.id,
@@ -51,6 +56,17 @@ def get_orders(request):
         response.append(sales_order)
     return Response(response)
 
+@api_view(['POST'])
+def create_order(request):
+    try:
+        serializer = SalesOrderSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return JsonResponse(serializer.errors, status=400)
+    except Exception as e:
+        return Response({"error": True, "message": str(e)}, status=500)
 
 class OrderDetail(APIView):
 

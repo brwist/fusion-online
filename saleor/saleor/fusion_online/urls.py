@@ -17,5 +17,6 @@ urlpatterns = [
     path("rfqs/<int:rfq_submission_pk>/responses/<int:rfq_line_item_pk>",
          rfq_views.post_rfq_response_handler),
     path("orders", order_views.get_orders),
+    path("orders-create", order_views.create_order),
     path("orders/<int:pk>", order_views.OrderDetail.as_view())
 ]

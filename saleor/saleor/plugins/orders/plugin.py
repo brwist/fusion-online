@@ -19,7 +19,7 @@ class OrderCreatedPlugin(BasePlugin):
         private_metadata = {
             'due_date': 123,
             'customer_purchase_order_num': 'test',
-            'rms_payment_type': 'PREPAID'
+            'fo_payment_status': 'PREPAID'
         }
         order.private_metadata = private_metadata
         order.save()

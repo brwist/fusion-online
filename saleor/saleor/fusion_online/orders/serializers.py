@@ -1,8 +1,10 @@
-from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField
-
-from saleor.order.models import Order
+from rest_framework.serializers import CharField, DecimalField, IntegerField, ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField
+from django.conf import settings
+from saleor.order.models import Order, OrderLine
+from saleor.product.models import Product
 from saleor.checkout.models import Checkout
-
+from saleor.fusion_online.shipping_address.serializers import ShippingAddressSerializer
+from saleor.fusion_online.shipping_address.models import ShippingAddress
 
 # {
 #   "hubspot_vid": 0,
@@ -25,32 +27,42 @@ from saleor.checkout.models import Checkout
 # }
 
 class SalesOrderItemSerializer(ModelSerializer):
+    unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
+    cipn = IntegerField(read_only=True, default=123)
+    item_num_id = IntegerField(source="variant.product.metadata__item_num_id", read_only=True)
+    mpn = IntegerField(source="variant.product.metadata__mpn", read_only=True)
+    mcode = IntegerField(source="variant.product.metadata__mcode", read_only=True)
 
     class Meta:
+        model = OrderLine
         fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
 
 
 class SalesOrderSerializer(ModelSerializer):
-
+    hubspot_vid = IntegerField(default=0, read_only=True)
+    entered_by = IntegerField(default=0, read_only=True)
     items = SalesOrderItemSerializer(many=True)
-
-    class Meta:
-        fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',
-                  'ship_to_num', 'due_date', 'items', 'fo_order_ref_id', 'fo_payment_status']
-
-
-# Below serializers are based on Saleor models and used for reference
-
-class OrderSerializer(ModelSerializer):
-
+    ship_to = ShippingAddressSerializer()
+    customer_purchase_order_num = CharField(source='private_metadata__customer_purchase_order_num')
+    due_date = IntegerField(source='private_metadata__due_date')
+    fo_order_ref_id = CharField(source='pk', read_only=True)
+    fo_payment_status = CharField(source='private_metadata__fo_payment_status')
     class Meta:
         model = Order
-        fields = ['id', 'created', 'status', 'user', 'language_code', 'tracking_client_id', 'billing_address', 'shipping_address', 'user_email', 'currency', 'shipping_method', 'shipping_method', 'shipping_price_net_amount', 'shipping_price_net', 'shipping_price_gross_amount', 'shipping_price_gross',
-                  'shipping_price', 'token', 'checkout_token', 'total_net_amount', 'total_net', 'total_gross_amount', 'total_gross', 'total', 'voucher', 'gift_cars', 'discount_amount', 'discount', 'discount_name', 'translated_discount_name', 'display_gross_prices', 'customer_note', 'weight', 'objects']
+        fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',
+                  'ship_to', 'due_date', 'items', 'fo_order_ref_id', 'fo_payment_status']
+
+    def create(self, validated_data):
+        shipping_data = validated_data.pop('ship_to')
+        order_items_data = validated_data.pop('items')
+        sales_order = Order.objects.create(**validated_data)
+        ShippingAddress.objects.create(**shipping_data)
+
+        for item in order_items_data:
+            product = Product.objects.get(metadata__item_num_id=item.item_num_id)
+            print('product', product)
+            OrderLine.objects.create(order=sales_order, **item, variant=product.default_variant)
+        
+        return sales_order
 
 
-class CheckoutSerializer(ModelSerializer):
-
-    class Meta:
-        # model = Checkout
-        fields = ['id', 'email', 'quantity', 'shipping_address']
