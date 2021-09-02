@@ -1,4 +1,4 @@
-from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField
+from rest_framework.serializers import CharField, IntegerField, ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField, Serializer
 
 from saleor.order.models import Order
 from saleor.checkout.models import Checkout
@@ -24,15 +24,15 @@ from saleor.checkout.models import Checkout
 #   "fo_payment_status": "PREPAID"
 # }
 
-class SalesOrderItemSerializer(ModelSerializer):
+class SalesOrderItemSerializer(Serializer):
 
     class Meta:
         fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
 
 
-class SalesOrderSerializer(ModelSerializer):
+class SalesOrderSerializer(Serializer):
 
-    items = SalesOrderItemSerializer(many=True)
+    items = SalesOrderItemSerializer(many=True, required=False)
 
     class Meta:
         fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',

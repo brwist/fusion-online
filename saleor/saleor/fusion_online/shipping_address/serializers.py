@@ -6,8 +6,25 @@ from saleor.account.models import Address
 class AddressSerializer(ModelSerializer):
     class Meta:
         model = Address
-        fields = ['first_name', 'last_name', 'company_name', 'street_address_1',
-                  'street_address_2', 'city', 'city_area', 'postal_code', 'country', 'country_area', 'phone']
+        fields = ['id', 'first_name', 'last_name', 'company_name', 'street_address_1',
+                  'street_address_2', 'city', 'city_area', 'postal_code', 'country', 'country_area', 'phone', 'customer_id', 'ship_to_name', 'ship_via', 'vat_id']
+
+
+class OrderAddressSerializer(ModelSerializer):
+    fo_ship_to_address_ref_id = IntegerField(source='pk', read_only=True)
+    address = SerializerMethodField('get_street_address', read_only=True)
+    state = CharField(source='country_area', read_only=True)
+    country = CharField(source='country.name', read_only=True)
+
+    class Meta:
+        model = Address
+        fields = ['fo_ship_to_address_ref_id', 'customer_id', 'ship_to_name', 'address', 'city',
+                  'state', 'country', 'ship_via', 'vat_id']
+
+    def get_street_address(self, obj):
+        addr1 = obj.street_address_1
+        addr2 = obj.street_address_2
+        return addr1 + ', ' + addr2 if addr2 else addr1
 
 
 class ShippingAddressSerializer(ModelSerializer):
@@ -24,15 +41,14 @@ class ShippingAddressSerializer(ModelSerializer):
         fields = ['fo_ship_to_address_ref_id', 'customer_id', 'ship_to_name', 'address', 'city',
                   'state', 'country', 'ship_via', 'vat_id', 'validation_message', 'shipping_address']
 
-
     def get_street_address(self, obj):
         addr1 = obj.address.street_address_1
         addr2 = obj.address.street_address_2
         return addr1 + ', ' + addr2 if addr2 else addr1
 
-
     def create(self, validated_data):
         address_data = validated_data.pop('shipping_address')
         address = Address.objects.create(**address_data)
-        shipping_address = ShippingAddress.objects.create(address=address, **validated_data)
+        shipping_address = ShippingAddress.objects.create(
+            address=address, **validated_data)
         return shipping_address

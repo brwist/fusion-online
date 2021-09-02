@@ -56,6 +56,11 @@ class AddressData:
     country: str
     country_area: str
     phone: str
+    customer_id: str
+    ship_to_name: str
+    ship_via: str
+    vat_id: str
+    validation_message: str
 
 
 @dataclass
