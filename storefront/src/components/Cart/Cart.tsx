@@ -160,7 +160,7 @@ export const Cart: React.FC<CartProps> = ({
                         </div>
                       </div>
 
-                      <Button variant="link" size="sm" className="pt-2">SCHEDULE DELIVERY DATE</Button>
+                      <Button variant="link" size="sm" className="pt-2" style={{textDecoration: "underline"}}>SCHEDULE DELIVERY DATE</Button>
 
                       <Form.Group as={Row} controlId="deliver-to" className="small m-0" style={{'width': '45%'}}>
                         <Form.Label column sm={3} className="col-form-label-sm font-weight-bold px-1">

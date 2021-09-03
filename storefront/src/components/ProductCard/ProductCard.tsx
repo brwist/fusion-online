@@ -34,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Tag label="Desktop" variant="secondary" size="sm" />
         </Card.Subtitle>
         <Card.Title as="h3">
-          <Button variant="link">{title}</Button>
+          <a href="/" >{title}</a>
         </Card.Title>
         <Card.Text>
           <div className="small mb-3">

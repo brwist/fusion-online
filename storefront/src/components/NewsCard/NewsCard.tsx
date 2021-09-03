@@ -29,7 +29,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
       <Card.Body>
         <Card.Subtitle className="mb-3">{date}</Card.Subtitle>
         <Card.Title as="h3">
-          <Button variant="link">{title}</Button>
+          <a href="/">{title}</a>
         </Card.Title>
         <Card.Text>
           {text}
