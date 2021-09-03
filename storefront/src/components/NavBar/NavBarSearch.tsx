@@ -17,7 +17,7 @@ export const NavBarSearch: React.FC<NavBarSearchProps> = ({
   closeSearchModal
 }) => {
   const [searchQuery, setSearchquery] = useState('');
-  const { loading, error, data} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
+  const { loading, data} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {search: searchQuery, isPublished: true}, first: 10}
   });
 

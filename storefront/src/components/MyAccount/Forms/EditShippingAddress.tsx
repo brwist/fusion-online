@@ -49,7 +49,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
     formState: { errors },
     control,
   } = useForm<FormValues>();
-  const [createAddress, { data, loading, error }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS, {
+  const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS, {
     refetchQueries: [{ query: GET_USER_ADDRESSES }],
   });
 
@@ -58,6 +58,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
     let country = null,
       val;
     if (match) {
+    // eslint-disable-next-line
       [val, country] = match;
     }
     const payload = { ...data, country };

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useLocation, useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';

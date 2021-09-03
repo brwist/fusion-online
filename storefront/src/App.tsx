@@ -27,7 +27,7 @@ type AccountConfirmMutation = {
 
 function App() {
   const [errors, setErrors] = useState()
-  const { authenticated, user, signIn, signOut, registerAccount, resetPasswordRequest } = useAuth();
+  const { authenticated, user, signIn, signOut, registerAccount} = useAuth();
   const { 
     addItem,
     discount,

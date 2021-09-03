@@ -14,10 +14,7 @@ export interface OrdersProps {
 
 }
 
-export const Orders: React.FC<OrdersProps> = ({
-
-}) => {
-
+export const Orders: React.FC<OrdersProps> = (props) => {
   return (
     <>
     <Nav as="ul" className="nav-tabs mb-3">

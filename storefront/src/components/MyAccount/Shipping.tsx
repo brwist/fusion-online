@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import { Tag } from '../Tag/Tag';
 
-import { useQuery, useMutation } from '@apollo/client';
-import { useCreateUserAddress } from '@saleor/sdk';
+import { useQuery } from '@apollo/client';
 
 import './myaccount.scss';
 

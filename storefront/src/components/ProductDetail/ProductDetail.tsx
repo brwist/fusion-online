@@ -4,6 +4,7 @@ import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+// eslint-disable-next-line
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import { Maybe, Product } from '../../generated/graphql';
 import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
@@ -25,7 +26,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 }) => {
   const {slug} = useParams<{slug: string}>()
   const history = useHistory()
-  const {data, loading, error} = useQuery<ProductDetailsQuery>(GET_PRODUCT_DETAILS, {variables: {slug: slug}})
+  const { data } = useQuery<ProductDetailsQuery>(GET_PRODUCT_DETAILS, {variables: {slug: slug}})
   const [showAlert, setShowAlert] = useState(false)
   const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (

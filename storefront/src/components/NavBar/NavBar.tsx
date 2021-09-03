@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faSearch, faTimes } from '@fortawesome/pro-regular-svg-icons';
+import { faShoppingCart, faSearch} from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/rocketChips.png';
 import { Category, Maybe} from '../../generated/graphql';
 import { NavBarSearch } from './NavBarSearch';

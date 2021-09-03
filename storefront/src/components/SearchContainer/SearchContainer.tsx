@@ -26,7 +26,7 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedQuantity, setSelectedQuantity ] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
-  const { data, loading, error} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
+  const { data, loading } = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
   })
 

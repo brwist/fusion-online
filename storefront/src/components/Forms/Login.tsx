@@ -65,9 +65,9 @@ export const Login: React.FC<LoginProps> = ({
         </Form.Group>
 
         <Form.Text className="mb-3">
-          <a href="#">
+          <Button variant="link">
             Forgot your password?
-          </a>
+          </Button>
         </Form.Text>
 
         <Form.Group>
@@ -85,9 +85,9 @@ export const Login: React.FC<LoginProps> = ({
 
       <div className="text-center">
         Don't have an account?<br />
-        <a href="#" className="font-weight-bold text-capitalize">
+        <Button variant="link" className="font-weight-bold text-capitalize">
           Register Now
-        </a>
+        </Button>
       </div>
     </div>
   );
