@@ -14,14 +14,8 @@ def _send_notification(message):
     )
 
 
-def send_rfq_notification(rfq_id):
-    message = {
-        'fo_entity_type': 'RFQ',
-        'fo_entity_id': rfq_id,
-        'fo_entity_event': 'CREATED'
-    }
-
-    _send_notification(message)
+def send_rfq_notification(rfq_serialized):
+    _send_notification(rfq_serialized)
 
 
 def send_shipping_address_notification(shipping_address_serialized):

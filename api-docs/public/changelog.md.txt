@@ -1,6 +1,12 @@
 RocketChips API Changelog
 ==========================
 
+### 2021-08-30 (version 0.0.3):
+  - Updated SNS notification documentation and example message payloads to indicate that the messages now include full details about an entity (rather than just its ID).
+  - Changed some model names in the schema.
+  - Added fo_ship_to_address_ref_id property to Ship-to address schema.
+  - Added ship_to property to sales order schema.
+
 ### 2021-08-12 (version 0.0.2):
   - Added notifications API documentation for RFQ, ship-to address and sales order notifications.
   - Added NotificationMessage schema.

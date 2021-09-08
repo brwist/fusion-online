@@ -2,12 +2,23 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faSearch, faTimes } from '@fortawesome/pro-regular-svg-icons';
+import { faShoppingCart, faSearch} from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/rocketChips.png';
-import { useCategoryListQuery} from '../../generated/graphql';
+import { Category, Maybe} from '../../generated/graphql';
 import { NavBarSearch } from './NavBarSearch';
 
 import './navbar.scss';
+
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORY_LIST } from '../../config';
+
+type CategoryListQuery = { 
+  categories?: Maybe<(
+    & { edges: Array<(
+      & { node: Maybe<Category>
+      })>
+    })>
+};
 
 export interface NavBarProps {
   signOut(): void,
@@ -17,7 +28,7 @@ export interface NavBarProps {
 export const NavBar: React.FC<NavBarProps> = ({
   signOut, cartItemsNum
 }) => {
-  const {data} = useCategoryListQuery({variables: {first: 10}});
+  const {data} = useQuery<CategoryListQuery>(GET_CATEGORY_LIST, {variables: {first: 6}});
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -26,6 +37,7 @@ export const NavBar: React.FC<NavBarProps> = ({
   const parentCategories = data?.categories?.edges?.filter(
     ({node}) => !node?.parent
   )
+
   return (
     <>
       <Modal

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Card, Button, Form, Alert } from 'react-bootstrap';
+import { Row, Col, Card, Button, Form} from 'react-bootstrap';
 import { ProductVariant } from '../../generated/graphql';
 
 import './addtocart.scss';

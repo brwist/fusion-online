@@ -11,7 +11,7 @@ export interface ManageProfileProps {}
 export const ManageProfile: React.FC<ManageProfileProps> = ({
   ...props
 }) => {
-  const [setPasswordChange, { data, error }] = usePasswordChange();
+  const [setPasswordChange, { error }] = usePasswordChange();
 
   return (
     <div className="manage-profile">

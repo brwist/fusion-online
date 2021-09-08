@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 
 export interface OrderSummaryProps {

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.2
+  version: 0.0.3
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -74,7 +74,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RfqSubmissionResponse'
+                $ref: '#/components/schemas/RfqSubmission'
   /rfqs/{fo_rfq_ref_id}/responses/{fo_rfq_line_item_ref_id}:
     post:
       summary: Creates a response to an individual (single line item) RFQ within an RFQ submission
@@ -96,7 +96,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RfqLineItemResponse'
+              $ref: '#/components/schemas/RfqLineItem'
       responses:
         '200':
           description: Created
@@ -121,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SalesOrderResponse'
+                $ref: '#/components/schemas/SalesOrder'
   /ship-to-addresses/{fo_ship_to_address_ref_id}:
     get:
       summary: Fetches a ship-to address.
@@ -138,7 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShipToAddressResponse'
+                $ref: '#/components/schemas/ShipToAddress'
     put:
       summary: Updates a ship-to address.
       parameters:
@@ -160,7 +160,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShipToAddressResponse'
+                $ref: '#/components/schemas/ShipToAddress'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -361,7 +361,7 @@ components:
         - item_price_id
         - status
     ProductResponse:
-      title: Product Create/Update API response
+      title: Product Create/Update response
       type: object
       properties:
         fo_ref_id:
@@ -381,8 +381,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Vendor'
-    RfqLineItemResponse:
-      title: RFQ Line-item Response
+    RfqLineItem:
+      title: RFQ Line-item
       type: object
       properties:
         result_status:
@@ -421,8 +421,8 @@ components:
         - quantity
         - offer_price
         - offer_id
-    RfqSubmissionResponse:
-      title: RFQ Submission API response
+    RfqSubmission:
+      title: RFQ Submission
       type: object
       properties:
         salesperson:
@@ -466,8 +466,8 @@ components:
         fo_rfq_ref_id:
           type: integer
           description: RocketChips ID that identifies an RFQ submission (which contains one or more line items).
-    SalesOrderResponse:
-      title: Sales Order API response
+    SalesOrder:
+      title: Sales Order
       type: object
       properties:
         hubspot_vid:
@@ -477,9 +477,10 @@ components:
           type: string
         entered_by:
           type: integer
-        ship_to_num:
-          type: integer
-          description: Ship-to number referencing a ship-to address that exists in RMS.
+        ship_to:
+          type: object
+          $ref: '#/components/schemas/ShipToAddress'
+          description: The ship-to address.
         due_date:
           $ref: '#/components/schemas/Timestamp'
         items:
@@ -511,10 +512,13 @@ components:
         fo_payment_status:
           type: string
           enum: [PREPAID, CREDIT]
-    ShipToAddressResponse:
-      title: Ship-To Address API response
+    ShipToAddress:
+      title: Ship-To Address
       type: object
       properties:
+        fo_ship_to_address_ref_id:
+          type: integer
+          description: The ID of the shipping address in RocketChips.
         customer_id:
           type: integer
           description: The ID of the customer company.
@@ -545,16 +549,8 @@ components:
           type: string
           maxLength: 50
           description: May be an empty string
-        ship_to_num:
-          type: integer
-          description: ID of the ship-to address in RMS.
-          nullable: true
     ShipToAddressUpdate:
       properties:
-        ship_to_num:
-          type: integer
-          description: ID of the ship-to address in RMS.
-          nullable: true
         validation_message:
           type: string
           description: Description of any validation-related issues with the address.

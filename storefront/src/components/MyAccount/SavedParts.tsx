@@ -45,7 +45,7 @@ export const SavedParts: React.FC<SavedPartsProps> = ({
                 <div className="small">
                   <strong className="text-uppercase">INTEL</strong> 123456789
                 </div>
-                <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                <a href="/">Intel® Pentium® Gold 7505 Processor</a>
                 <div className="small mt-1">
                   Spec Code: 12345 | Ordering Code: 12345
                 </div>
@@ -82,7 +82,7 @@ export const SavedParts: React.FC<SavedPartsProps> = ({
                 <div className="small">
                   <strong className="text-uppercase">INTEL</strong> 123456789
                 </div>
-                <a href="#">Intel® Pentium® Gold 7505 Processor</a>
+                <a href="/">Intel® Pentium® Gold 7505 Processor</a>
                 <div className="small mt-1">
                   Spec Code: 12345 | Ordering Code: 12345
                 </div>
