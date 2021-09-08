@@ -5985,6 +5985,10 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 1	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	2
 2	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	3
 3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	CPU_INTEL	1234	3
+4	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	4
+5	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	5
+6	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	6
+7	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	7
 \.
 
 
@@ -5995,6 +5999,7 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, offer_id, line_item_id) FROM stdin;
 1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
 2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
+3	NO_BID	string	string	1	12.0012500000000006	string	string	string	-1	0	5
 \.
 
 
@@ -6005,6 +6010,10 @@ COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer
 COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 2	2021-08-10 18:52:04.284713+00	10
 3	2021-08-10 19:37:22.132635+00	11
+4	2021-09-08 20:38:58.075099+00	10
+5	2021-09-08 20:42:00.68515+00	10
+6	2021-09-08 20:49:44.796761+00	10
+7	2021-09-08 20:53:28.223203+00	10
 \.
 
 
@@ -7373,21 +7382,21 @@ SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 11, true);
 -- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 7, true);
 
 
 --
 -- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 2, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 3, true);
 
 
 --
 -- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 7, true);
 
 
 --
