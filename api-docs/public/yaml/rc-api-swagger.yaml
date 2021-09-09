@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.3
+  version: 0.0.4
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
