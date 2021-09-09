@@ -27,6 +27,10 @@ from .base import (
 
 
 class AccountRegisterInput(graphene.InputObjectType):
+    first_name = graphene.String(description="User first name", required=True)
+    last_name = graphene.String(description="User last name", required=True)
+    company_name = graphene.String(description="User company or organization", required=True)
+    region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
     redirect_url = graphene.String(
@@ -96,6 +100,10 @@ class AccountRegister(ModelMutation):
     def save(cls, info, user, cleaned_input):
         password = cleaned_input["password"]
         user.set_password(password)
+        user.metadata = {
+            "company": cleaned_input["company_name"],
+            "region": cleaned_input["region"]
+        }
         if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
             user.is_active = False
             user.save()

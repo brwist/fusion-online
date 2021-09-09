@@ -1,5 +1,9 @@
 import React, {useState} from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import { useMutation } from '@apollo/client';
+
+import { CREATE_USER } from '../../graphql/account';
+import { AccountRegister, AccountRegisterInput, AccountError } from '../../generated/graphql';
 
 import './register.scss';
 
@@ -7,6 +11,13 @@ export interface RegisterProps {
   handleRegistration(email: string, password: string): Promise<{data: any}>
 }
 
+type AccountRegisterVariables = {
+  input: AccountRegisterInput
+}
+
+type AccountRegisterType = {
+  accountRegister: AccountRegister
+}
 
 export const Register: React.FC<RegisterProps> = ({
   handleRegistration
@@ -15,11 +26,11 @@ export const Register: React.FC<RegisterProps> = ({
     firstName: "",
     lastName: "",
     email: "",
-    company: "",
+    companyName: "",
     region: "",
     password: "password"
   })
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState<AccountError[]>([])
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
       ...formValues,
@@ -27,22 +38,26 @@ export const Register: React.FC<RegisterProps> = ({
     })
   }
 
+  const [accountRegister] = useMutation<AccountRegisterType, AccountRegisterVariables>(CREATE_USER, {})
+
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const {data} = await handleRegistration(formValues.email, formValues.password)
-
-    if (data.error) {
-      setErrors(data.error)
-    } else {
-      setFormValues({
-        firstName: "",
-        lastName: "",
-        email: "",
-        company: "",
-        region: "",
-        password: "password"
-      })
-      alert('Email confirmation link sent. Please check your inbox.')
+    const {data} = await accountRegister({variables: {input: {...formValues, redirectUrl: 'http://localhost:3000/'}}})
+    if (data?.accountRegister) {
+      if (data.accountRegister.accountErrors.length > 0) {
+        setErrors(data.accountRegister.accountErrors)
+      } else {
+        console.log(data.accountRegister.user)
+        setFormValues({
+          firstName: "",
+          lastName: "",
+          email: "",
+          companyName: "",
+          region: "",
+          password: "password"
+        })
+        alert('Email confirmation link sent. Please check your inbox.')
+      }
     }
   }
 
@@ -56,8 +71,8 @@ export const Register: React.FC<RegisterProps> = ({
         </Col>
 
         <Col md={6}>
-        {errors.length > 0 && errors.map((error: any) => {
-          return <p className="text-danger">{error.message}</p>
+        {errors.length > 0 && errors.map((error: AccountError) => {
+          return <p className="text-danger">{error.field}: {error.message}</p>
         })}
           <Form className="floating-labels" onSubmit={handleSubmit}>
             <Form.Group controlId="first-name">
@@ -100,8 +115,8 @@ export const Register: React.FC<RegisterProps> = ({
               <Form.Control
                 type="text"
                 placeholder="Company Name"
-                name="company"
-                value={formValues.company}
+                name="companyName"
+                value={formValues.companyName}
                 onChange={handleChange}
               />
               <Form.Label>Company Name*</Form.Label>
