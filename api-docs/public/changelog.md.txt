@@ -4,6 +4,7 @@ RocketChips API Changelog
 ### 2021-09-09 (version 0.0.4):
   - Updated SNS notification sample messages.
   - Changed the NotificationMessage schema to include the type of record that the message pertains to. 
+  - Update Timestamp schema to indicate change to milliseconds precision (instead of seconds).
 
 ### 2021-08-30 (version 0.0.3):
   - Updated SNS notification documentation and example message payloads to indicate that the messages now include full details about an entity (rather than just its ID).

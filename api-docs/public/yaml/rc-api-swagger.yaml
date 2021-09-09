@@ -555,7 +555,7 @@ components:
           nullable: true
     Timestamp:
       type: integer
-      description: Seconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
+      description: Milliseconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
     Vendor:
       type: object
       properties:
