@@ -33,6 +33,7 @@ class Command(BaseCommand):
         self.api_key = settings.HUBSPOT_API_KEY
         self.client = HubSpot(api_key=self.api_key)
         self.test_email = "alxvallejo@36creative.com"
+        self.test_email2 = "alxvallejo+2@36creative.com"
 
         self.test_user = {
             "firstname": "Alex",
@@ -40,6 +41,14 @@ class Command(BaseCommand):
             "email": self.test_email,
             "company": "36 Creative",
             "customer_approval_status_rc": "Limited"  # property in Hubspot for all new registrations
+        }
+
+        self.test_user2 = {
+            "firstname": "Alex2",
+            "lastname": "Vallejo2",
+            "email": self.test_email2,
+            "company": "36 Creative",
+            "customer_approval_status_rc": "Limited"
         }
 
         self.contacts_endpoint = 'https://api.hubapi.com/crm/v3/objects/contacts?hapikey=' + self.api_key
@@ -52,10 +61,15 @@ class Command(BaseCommand):
             raise CommandError('HUBSPOT_API_KEY not set!')
 
     def handle(self, *args, **options):
+        # Register initial user with admin role
         self.reset_db()
-        self.reset_user()
-        self.reset_company()
-        self.register_new_user()
+        self.reset_user(self.test_email)
+        self.reset_user(self.test_email2)
+        self.reset_company(self.test_email)
+        self.register_new_user(self.test_user)
+
+        # Register second user with user role
+        self.register_new_user(self.test_user2)
 
     def format_delete_by_email_url(self, email):
         return 'https://api.hubapi.com/crm/v3/objects/gdpr/contacts/email/' + email + '?hapikey=' + self.api_key
@@ -90,14 +104,14 @@ class Command(BaseCommand):
         execute_from_command_line(['manage.py', 'migrate'])
         return
 
-    def reset_user(self):
+    def reset_user(self, email):
         self.stdout.write(self.style.WARNING(
-            'Deleting user in hubspot with email "%s"' % self.test_email))
-        self.delete_user_by_email(self.test_email)
+            'Deleting user in hubspot with email "%s"' % email))
+        self.delete_user_by_email(email)
 
-    def reset_company(self):
-        existing_companies = self.check_company(self.test_email)
-        if existing_companies['total'] > 0:
+    def reset_company(self, email):
+        existing_companies = self.check_company(email)
+        if len(existing_companies['results']) > 0:
             # pick the first
             company = existing_companies['results'][0]
             self.stdout.write(self.style.SUCCESS(
@@ -122,42 +136,46 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(
                 'Successful deletion of hubspot email "%s"' % email))
 
-    """
-    Main test number one:
-    Create a new user for a new company.
-    """
-
-    def register_new_user(self):
-        r = self.search_userbase()
+    def register_new_user(self, user_payload):
+        r = self.search_userbase(user_payload['email'])
         if len(r['results']) > 0:
             self.stdout.write(self.style.WARNING(
                 '"%s" hubspot emails found' % str(r['total'])))
         else:
             self.stdout.write(self.style.SUCCESS(
-                'No existing hubspot emails found, creating new account in hubspot.'))
+                'No existing hubspot emails found for email "%s", creating new account in hubspot.' % user_payload['email']))
 
-            existing_companies = self.check_company(self.test_email)
+            existing_companies = self.check_company(user_payload['email'])
+            email_domain = self.get_email_domain(user_payload['email'])
             if len(existing_companies['results']) > 0:
                 # pick the first
                 company = existing_companies['results'][0]
                 self.stdout.write(self.style.SUCCESS(
                     'Company found: "%s".' % company['properties']['name']))
 
+                # Create user with property role_rc = ADMIN
+                user = self.add_user(user_payload, 'User')
+                self.stdout.write(self.style.SUCCESS(
+                    'Hubspot user created with user id "%s" with role "%s".' % (str(user['id']), str(user['properties']['role_rc']))))
+
+                # Create the association
+                self.associate_company_with_contact(company['id'], user['id'])
+
             else:
                 self.stdout.write(self.style.WARNING(
-                    'No company found for email "%s". Creating a new company in Hubspot.' % self.test_email))
+                    'No company found for email "%s". Creating a new company in Hubspot for domain "%s".' % (user_payload['email'], email_domain)))
 
                 company_payload = {
-                    "name": self.test_user['company'],
-                    "domain": self.get_email_domain(self.test_email)
+                    "name": user_payload['company'],
+                    "domain": self.get_email_domain(user_payload['email'])
                 }
 
                 company = self.create_company(company_payload)
 
                 # Create user with property role_rc = ADMIN
-                user = self.add_user('Admin')
+                user = self.add_user(user_payload, 'Admin')
                 self.stdout.write(self.style.SUCCESS(
-                    'Hubspot user created with user id "%s".' % str(user['id'])))
+                    'Hubspot user created with user id "%s" with role "%s".' % (str(user['id']), str(user['properties']['role_rc']))))
 
                 # Create the association
                 self.associate_company_with_contact(company['id'], user['id'])
@@ -165,7 +183,7 @@ class Command(BaseCommand):
                 # Determine available contact properties
                 # self.check_contact_properties()
 
-    def search_userbase(self):
+    def search_userbase(self, email):
         payload = {
             "filterGroups": [
                 {
@@ -173,7 +191,7 @@ class Command(BaseCommand):
                         {
                             "propertyName": "email",
                             "operator": "EQ",
-                            "value": self.test_email
+                            "value": email
                         }
                     ]
                 }
@@ -186,9 +204,9 @@ class Command(BaseCommand):
         results = r.json()
         return results
 
-    def add_user(self, role):
+    def add_user(self, user_payload, role):
         payload = {
-            "properties": {**self.test_user, 'role_rc': role}
+            "properties": {**user_payload, 'role_rc': role}
         }
         r = requests.post(self.contacts_endpoint, data=json.dumps(payload), headers=(
             {
