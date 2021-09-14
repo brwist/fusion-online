@@ -5,7 +5,7 @@ from ...account.models import User
 
 
 class RFQLineItemSerializer(serializers.ModelSerializer):
-    fo_rfq_line_item_ref_id = serializers.CharField(source='pk', read_only=True)
+    fo_rfq_line_item_ref_id = serializers.IntegerField(source='pk', read_only=True)
 
     class Meta:
         model = RFQLineItem
@@ -24,11 +24,11 @@ class RFQLineItemSerializer(serializers.ModelSerializer):
 
 
 class RFQSubmissionSerializer(serializers.ModelSerializer):
-    salesperson = serializers.IntegerField(read_only=True, default=0)
-    hubspot_vid = serializers.IntegerField(read_only=True, default=0)
+    salesperson = serializers.IntegerField(read_only=True, default=7964957)
+    hubspot_vid = serializers.IntegerField(read_only=True, default=908051)
     items = RFQLineItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
-    fo_rfq_ref_id = serializers.CharField(source="pk", read_only=True)
+    fo_rfq_ref_id = serializers.IntegerField(source="pk", read_only=True)
     
     class Meta:
         model = RFQSubmission

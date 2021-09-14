@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 11.1
--- Dumped by pg_dump version 13.3
+-- Dumped by pg_dump version 13.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1366,7 +1366,7 @@ CREATE TABLE public.fusion_online_offer (
     id integer NOT NULL,
     type character varying(50) NOT NULL,
     lead_time_days integer NOT NULL,
-    date_added integer,
+    date_added bigint,
     date_code character varying(50) NOT NULL,
     comment character varying(300) NOT NULL,
     vendor_type character varying(50) NOT NULL,
@@ -1529,12 +1529,12 @@ ALTER SEQUENCE public.fusion_online_rfqsubmission_id_seq OWNED BY public.fusion_
 
 CREATE TABLE public.fusion_online_shippingaddress (
     id integer NOT NULL,
-    customer_id integer NOT NULL,
+    customer_id bigint,
     ship_to_name character varying(256) NOT NULL,
-    ship_via character varying(256) NOT NULL,
-    vat_id character varying(256) NOT NULL,
-    ship_to_num integer NOT NULL,
-    validation_message character varying(256) NOT NULL,
+    ship_via character varying(256),
+    vat_id character varying(256),
+    ship_to_num bigint,
+    validation_message character varying(256),
     created timestamp with time zone,
     updated timestamp with time zone,
     address_id integer
@@ -4635,6 +4635,11 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 27	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
 28	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+29	Alex	Vallejo	My Company	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786	
+63	Alex	Vallejo	My Company	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786	
+64	Alex	Vallejo	My Company	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786	
+65	Alex	Vallejo	My Company	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786	
+66	Alex	Vallejo	My Company	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786	
 \.
 
 
@@ -4717,6 +4722,7 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 COPY public.account_user_addresses (id, user_id, address_id) FROM stdin;
 1	1	2
 2	5	12
+3	5	65
 \.
 
 
@@ -5912,6 +5918,10 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 546	fusion_online	0008_auto_20210811_1811	2021-08-11 18:12:12.142851+00
 547	fusion_online	0009_rfqresponse	2021-08-11 19:15:16.868255+00
 548	product	0133_auto_20210812_1739	2021-08-12 17:40:11.89712+00
+549	fusion_online	0010_auto_20210818_2042	2021-08-23 15:50:08.779154+00
+550	fusion_online	0011_auto_20210819_1627	2021-08-23 15:50:08.806623+00
+551	fusion_online	0012_auto_20210823_1603	2021-08-23 16:04:42.218634+00
+552	fusion_online	0013_auto_20210903_1854	2021-09-08 20:30:23.19719+00
 \.
 
 
@@ -5975,6 +5985,10 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 1	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	2
 2	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	3
 3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	CPU_INTEL	1234	3
+4	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	4
+5	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	5
+6	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	6
+7	CCCC	Intel	4	12.0012500000000006	2 days	string	123	CPU_INTEL	1234546	7
 \.
 
 
@@ -5985,6 +5999,7 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, offer_id, line_item_id) FROM stdin;
 1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
 2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
+3	NO_BID	string	string	1	12.0012500000000006	string	string	string	-1	0	5
 \.
 
 
@@ -5995,6 +6010,10 @@ COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer
 COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 2	2021-08-10 18:52:04.284713+00	10
 3	2021-08-10 19:37:22.132635+00	11
+4	2021-09-08 20:38:58.075099+00	10
+5	2021-09-08 20:42:00.68515+00	10
+6	2021-09-08 20:49:44.796761+00	10
+7	2021-09-08 20:53:28.223203+00	10
 \.
 
 
@@ -6003,6 +6022,8 @@ COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 --
 
 COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_via, vat_id, ship_to_num, validation_message, created, updated, address_id) FROM stdin;
+36	4535250721	home	UPS	44788801	\N	\N	2021-08-23 16:17:35.98743+00	2021-08-23 16:17:35.98746+00	65
+37	4535250721	Receiving Facility 1	UPS	44788801	\N	\N	2021-08-24 15:50:48.874751+00	2021-08-24 15:50:48.874772+00	66
 \.
 
 
@@ -7319,7 +7340,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 548, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 552, true);
 
 
 --
@@ -7361,28 +7382,28 @@ SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 11, true);
 -- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 7, true);
 
 
 --
 -- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 2, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 3, true);
 
 
 --
 -- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 7, true);
 
 
 --
 -- Name: fusion_online_shippingaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 1, false);
+SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 37, true);
 
 
 --
@@ -7718,14 +7739,14 @@ SELECT pg_catalog.setval('public.site_sitesettingstranslation_id_seq', 1, false)
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 28, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 66, true);
 
 
 --
 -- Name: userprofile_user_addresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 2, true);
+SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 3, true);
 
 
 --
