@@ -76,7 +76,12 @@ CREATE TABLE public.account_address (
     country character varying(2) NOT NULL,
     country_area character varying(128) NOT NULL,
     phone character varying(128) NOT NULL,
-    city_area character varying(128) NOT NULL
+    city_area character varying(128) NOT NULL,
+    customer_id integer,
+    ship_to_name character varying(256),
+    ship_via character varying(256),
+    validation_message character varying(256),
+    vat_id character varying(256)
 );
 
 
@@ -1366,7 +1371,7 @@ CREATE TABLE public.fusion_online_offer (
     id integer NOT NULL,
     type character varying(50) NOT NULL,
     lead_time_days integer NOT NULL,
-    date_added integer,
+    date_added bigint,
     date_code character varying(50) NOT NULL,
     comment character varying(300) NOT NULL,
     vendor_type character varying(50) NOT NULL,
@@ -1414,7 +1419,7 @@ CREATE TABLE public.fusion_online_rfqlineitem (
     date_code character varying(50) NOT NULL,
     comment character varying(500) NOT NULL,
     cipn character varying(50) NOT NULL,
-    commodity_code character varying(50) NOT NULL,
+    commodity_code integer NOT NULL,
     offer_id integer NOT NULL,
     rfq_submission_id integer NOT NULL
 );
@@ -1529,12 +1534,12 @@ ALTER SEQUENCE public.fusion_online_rfqsubmission_id_seq OWNED BY public.fusion_
 
 CREATE TABLE public.fusion_online_shippingaddress (
     id integer NOT NULL,
-    customer_id integer NOT NULL,
+    customer_id bigint,
     ship_to_name character varying(256) NOT NULL,
-    ship_via character varying(256) NOT NULL,
-    vat_id character varying(256) NOT NULL,
-    ship_to_num integer NOT NULL,
-    validation_message character varying(256) NOT NULL,
+    ship_via character varying(256),
+    vat_id character varying(256),
+    ship_to_num bigint,
+    validation_message character varying(256),
     created timestamp with time zone,
     updated timestamp with time zone,
     address_id integer
@@ -4606,35 +4611,81 @@ ALTER TABLE ONLY public.wishlist_wishlistitem_variants ALTER COLUMN id SET DEFAU
 -- Data for Name: account_address; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.account_address (id, first_name, last_name, company_name, street_address_1, street_address_2, city, postal_code, country, country_area, phone, city_area) FROM stdin;
-1	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN		
-2	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN		
-3	Samantha	Hardy		2913 Frye Gateway		Millerport	57612	US	SD		
-4	Nicholas	Nelson		53909 Madeline Estate Suite 716		South Sheriton	59120	US	MT		
-5	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-6	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-7	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-8	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-9	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-10	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198	
-11				123 test st.		BOSTON	02128	US	MA		
-13	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-14	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-15	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-16	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-17	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-18	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-19	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-20	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-21	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-22			Fusion Worldwide	1 Marina Park Drive		BOSTON	02210	US	MA		
-23	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-24	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-25	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-26	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-27	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
-28	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555	
+COPY public.account_address (id, first_name, last_name, company_name, street_address_1, street_address_2, city, postal_code, country, country_area, phone, city_area, customer_id, ship_to_name, ship_via, validation_message, vat_id) FROM stdin;
+1	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
+2	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
+3	Samantha	Hardy		2913 Frye Gateway		Millerport	57612	US	SD			\N	\N	\N	\N	\N
+4	Nicholas	Nelson		53909 Madeline Estate Suite 716		South Sheriton	59120	US	MT			\N	\N	\N	\N	\N
+5	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+6	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+7	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+8	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+9	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+10	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
+11				123 test st.		BOSTON	02128	US	MA			\N	\N	\N	\N	\N
+13	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+14	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+15	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+16	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+17	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+57	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+18	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+19	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+20	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+58	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+21	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+22			Fusion Worldwide	1 Marina Park Drive		BOSTON	02210	US	MA			\N	\N	\N	\N	\N
+23	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+24	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+59	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+25	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+26	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+27	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+60	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+28	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+29	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+30	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+31	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+36	Alex	Vallejo	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
+37	Alex	Vallejo	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
+38	Alex	Vallejo	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
+39	Maeghan	Provencher	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
+40	Maeghan	Provencher	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
+41	Molly	Provencher	Bowst	2 Pleasant St.	Apt 1	Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+42	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+43	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+44	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+45	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+46	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+47	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+48	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+49	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+50	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+51	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+52	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+53	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+54	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+55	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+56	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+61	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+62	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+63	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+64	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+65	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+66	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+67	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+68	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+69	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+70	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+71	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+72	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
+73	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
+74	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
+75	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
+76	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
+77	Test	Barstow	Bowst	13 Maverick St		Boston	33137	US	MA	+19782704786		345	Home	USPS	pending	not sure
+78	Dustin	Kahn	Bowst	13 Maverick St		Brookline	33137	US	MA	+19782704786		347	Home	USPS	pending	not sure
 \.
 
 
@@ -4671,6 +4722,23 @@ COPY public.account_customerevent (id, date, type, parameters, order_id, user_id
 26	2021-07-29 20:27:42.91952+00	password_changed	{}	\N	5
 27	2021-08-11 15:44:18.336799+00	placed_order	{}	6	5
 28	2021-08-11 17:04:55.692353+00	placed_order	{}	7	5
+29	2021-08-27 15:19:05.683594+00	account_created	{}	\N	14
+31	2021-08-27 15:35:09.301238+00	account_created	{}	\N	15
+32	2021-08-27 15:38:06.643909+00	account_created	{}	\N	16
+33	2021-08-27 15:40:20.569363+00	account_created	{}	\N	17
+34	2021-08-27 15:42:30.536262+00	account_created	{}	\N	18
+35	2021-08-27 15:45:07.451381+00	account_created	{}	\N	19
+36	2021-08-27 15:46:30.00526+00	account_created	{}	\N	20
+37	2021-09-08 19:13:07.127725+00	account_created	{}	\N	21
+38	2021-09-08 20:25:17.095015+00	account_created	{}	\N	22
+39	2021-09-09 14:19:10.323865+00	account_created	{}	\N	23
+40	2021-09-09 14:34:55.160808+00	account_created	{}	\N	24
+41	2021-09-09 14:43:31.152038+00	account_created	{}	\N	25
+42	2021-09-09 15:10:24.577316+00	account_created	{}	\N	26
+43	2021-09-09 15:14:59.1455+00	account_created	{}	\N	27
+44	2021-09-09 15:21:49.232493+00	account_created	{}	\N	28
+45	2021-09-09 15:32:50.412853+00	account_created	{}	\N	29
+46	2021-09-09 16:10:48.774413+00	account_created	{}	\N	30
 \.
 
 
@@ -4697,16 +4765,33 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key) FROM stdin;
 2	f	samantha.hardy@example.com	t	t	pbkdf2_sha256$216000$BYG0cje7jm4k$4oClWOSHwFIguqpyfstyD44yVa05zGaVFBhL/hh9ZnA=	2021-05-19 15:49:25.684364+00	\N	3	3	\N	Samantha	Hardy		{}	{}	2Vcvm2mC0kll
 3	f	nicholas.nelson@example.com	t	t	pbkdf2_sha256$216000$7hUgpMhlxgtq$OpsniCUxUTmUqmjRrsbhqnXcu+8UM523zQiMktiTr1s=	2021-05-19 15:49:25.795732+00	\N	4	4	\N	Nicholas	Nelson		{}	{}	xR2SUxE8VhMk
+6	f	test@test.com	f	t	pbkdf2_sha256$216000$98hum632Vr3k$cb3Rrv3Ero7bmO6zMWtZQsiWkv2mWob9UgSV2T21Ujs=	2021-06-23 19:50:31.314872+00	2021-09-08 19:52:31.129342+00	\N	\N	\N	Molly	Provencher		{}	{"company": "ACME"}	09Kf0cCTz9M7
 12	f	test6@test.com	f	t	pbkdf2_sha256$216000$0xhARmJk724y$E71nyzvuxXFTYg6S57khV5fqLXqC4cALWG+T8QrarM4=	2021-06-25 19:30:10.352771+00	2021-06-25 19:30:34.071893+00	\N	\N	\N				{}	{}	YKPlJVsdtksf
-6	f	test@test.com	f	t	pbkdf2_sha256$216000$98hum632Vr3k$cb3Rrv3Ero7bmO6zMWtZQsiWkv2mWob9UgSV2T21Ujs=	2021-06-23 19:50:31.314872+00	2021-06-24 18:19:05.574359+00	\N	\N	\N				{}	{}	09Kf0cCTz9M7
+22	f	jimtest@example.com	f	f	pbkdf2_sha256$216000$opf4j7k8T0UF$NwVydFhnD0hKIXh1Y+piB2vXo9qKzvbTr6megGuhkcI=	2021-09-08 20:25:16.926635+00	\N	\N	\N	\N				{}	{}	RanxpGXOTsU7
+23	f	mm@example.com	f	f	pbkdf2_sha256$216000$m29e57uIeii8$j6R+534CqYrvcmCnr1039+wM5linIZUqEsy3KSq5xnQ=	2021-09-09 14:19:09.76061+00	\N	\N	\N	\N	Maeghan	Maguire		{}	{}	q5HVPk2qs09o
 11	f	test5@test.com	f	t	pbkdf2_sha256$216000$heJlDRr9QOH3$UCD/S8yE8//lRhbDmgwcsuWUf0sP7yTsEk5sRXBDKqI=	2021-06-25 14:26:50.031077+00	2021-06-25 14:27:28.150407+00	\N	\N	\N				{}	{}	onk8A1n97PYz
+26	f	jwhite@example.com	f	t	pbkdf2_sha256$216000$EuipeHuHoN0O$ibZMPwdxxOvwI8hBKUX0tJqZEiNLaUKFKSeMR5JZnV4=	2021-09-09 15:10:24.40271+00	2021-09-09 15:10:46.72579+00	\N	\N	\N	Jack	White		{}	{"region": "Region 2", "company": "ACME"}	jrMOIUMU3rUD
+27	f	test10@test.com	f	f	pbkdf2_sha256$216000$G3ctUJwZWb0M$2y6yEAux30CNerdVHgaU/OY71BUTEViR/mnH4/sfu5Y=	2021-09-09 15:14:59.014058+00	\N	\N	\N	\N				{}	{"region": "Region 2", "company": ""}	xf2ld6WXnhYl
+28	f	testagain@test.com	f	f	pbkdf2_sha256$216000$DNJs2394SjUS$LBup0R+3W/pKTK8fIcfjGLqiWwy/Vh8FQk+7dFpA/yI=	2021-09-09 15:21:49.100983+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	5CM8ocUtswcw
 4	f	admin@bowst.com	f	f	pbkdf2_sha256$216000$8dwxa4qPFnbo$d14QNM7cxLCVFrSH2QwCdLDq9GmKqNnqcNLvZq5RJto=	2021-06-22 17:00:09.434333+00	\N	\N	\N	\N				{}	{}	GRRIv5ptFkEd
+24	f	mm@test.com	f	t	pbkdf2_sha256$216000$K5WE0CVVZUk5$SBJ7KLPnXxXSPicNXr4ZWEyaOlV8TBUXJiI1h/1p1Ic=	2021-09-09 14:34:55.004923+00	2021-09-09 14:35:46.968858+00	\N	\N	\N	Maeghan	Maguire		{}	{"key": "company", "value": "ACME"}	tTmRVenaL0gt
 10	f	test4@test.com	f	t	pbkdf2_sha256$216000$44wZpVYnVpm7$0FButqCDAwUnIS8TNq0lgBr8C3Mc/37XZG3/Q6Xo4ss=	2021-06-24 19:55:10.539369+00	2021-06-24 19:56:08.270478+00	\N	\N	\N				{}	{}	Z5yQyIxxbQYX
-5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-07-29 20:27:52.040888+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+15	f	smartin@example.com	f	t	pbkdf2_sha256$216000$kaU9U4BNn587$1OAqQAqLoSkAO7otIpH6ke9WTQG573YnMyHgfcOMbNc=	2021-08-27 15:35:09.086145+00	\N	\N	\N	\N				{}	{}	fBblhYnXBCSr
+16	f	jlaw@example.com	f	f	pbkdf2_sha256$216000$c8diFbFI7Tx4$nhdKmWmvSSHKgWpTs4uPrQjGnUZLr8379SBv7XNsCFI=	2021-08-27 15:38:06.46153+00	\N	\N	\N	\N				{}	{}	1gH8ZnhaJLtd
+17	f	jlaw@hubspot.com	f	f	pbkdf2_sha256$216000$2XeKw2W8VTvn$bLpVHoGk5yMauK1U91JHCtsxKXVf+HEiecjSeKzLdUQ=	2021-08-27 15:40:20.323873+00	\N	\N	\N	\N				{}	{}	2IeM0joiwBDq
+18	f	kynan@example.com	f	f	pbkdf2_sha256$216000$DY0quigHkJcc$0WoL1uw9Ui/qSnS/8QwUq637Pqi6JGLYwkyE7kckylQ=	2021-08-27 15:42:30.360096+00	\N	\N	\N	\N				{}	{}	fCKP6zmvBeH1
 7	f	testing@test.com	f	f	pbkdf2_sha256$216000$O3GbrZlGB0Lj$rX3CvqZOGO9tdXdHmZQO6rKTtbXDpcNCC49awo7QbDM=	2021-06-23 19:57:34.139287+00	\N	\N	\N	\N				{}	{}	NjE4muMwgs4u
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-08-11 15:32:41.657789+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+19	f	mp@example.com	f	f	pbkdf2_sha256$216000$5zTkkVdHzMI0$zx7n9xVYENV8ItXAKaEQUazJnMmNf/1OlWEbMbSUJdI=	2021-08-27 15:45:07.255312+00	\N	\N	\N	\N				{}	{}	FqqRueLmDi0F
+20	f	kd@example.com	f	f	pbkdf2_sha256$216000$kzNkcrCFyyMD$6Fu1ZBK+4eyYYBCsgyFdzyX03TvdD4rO48xHBIIFn78=	2021-08-27 15:46:29.803996+00	\N	\N	\N	\N				{}	{}	yChPNMpVG8sF
 8	f	test2@test.com	f	t	pbkdf2_sha256$216000$6g7mfxc0v4ew$tWixtWwgkQuA/5z0Xi84LyxbS7XhSiyacf+aFCWPj4I=	2021-06-24 18:20:40.669425+00	2021-06-24 18:21:48.249775+00	\N	\N	\N				{}	{}	rn6KTN9GNaa7
 9	f	test3@test.com	f	f	pbkdf2_sha256$216000$gjsrrmNtGJJz$SftH0llmx36y4cxl7gy4JIEG0fxKMB1DVpov4vCrseg=	2021-06-24 19:21:16.353454+00	\N	\N	\N	\N				{}	{}	s8MK5067fWJT
+14	f	maeghan@example.com	f	t	pbkdf2_sha256$216000$1UGnY6J3dDgw$lGln+rmqra3jR6xb1Vm/lrut6DgOA+dntdsvEekVDTk=	2021-08-27 15:19:05.409846+00	2021-08-27 15:28:18.673701+00	\N	\N	\N				{}	{}	02jSzOPL6Toa
+25	f	marg@example.com	f	f	pbkdf2_sha256$216000$QBnP79Qo3CvY$LBGH8cqGJI4aMWBVYPahbqbVpMvTBz3SiIfj8V4mBto=	2021-09-09 14:43:30.979392+00	\N	\N	\N	\N	Margaret	Mac		{}	{"region": "Region 1", "company": "ACME"}	bb8nUsxnoqJm
+29	f	hgwells@example.com	f	f	pbkdf2_sha256$216000$h9LSica7oG8H$UvePYq3dA4puOQHIzfSpIlsgkZxgl53jL7yONPdv3jo=	2021-09-09 15:32:50.282923+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6sexxyyWl1kZ
+30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-14 18:47:24.025635+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-03 17:17:15.532342+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
 \.
 
 
@@ -4717,6 +4802,8 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 COPY public.account_user_addresses (id, user_id, address_id) FROM stdin;
 1	1	2
 2	5	12
+5	5	37
+6	5	40
 \.
 
 
@@ -5156,6 +5243,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.checkout_checkout (created, last_change, email, token, quantity, user_id, billing_address_id, discount_amount, discount_name, note, shipping_address_id, shipping_method_id, voucher_code, translated_discount_name, metadata, private_metadata, currency, country, redirect_url, tracking_code) FROM stdin;
+2021-08-13 18:39:45.17068+00	2021-08-13 18:43:04.155203+00	customer@example.com	5f124ec1-5932-4fec-bc2d-1797e5defc42	12	5	31	0.000	\N		30	1	\N	\N	{}	{}	USD	US	\N	\N
 \.
 
 
@@ -5172,6 +5260,7 @@ COPY public.checkout_checkout_gift_cards (id, checkout_id, giftcard_id) FROM std
 --
 
 COPY public.checkout_checkoutline (id, quantity, checkout_id, variant_id, data) FROM stdin;
+10	12	5f124ec1-5932-4fec-bc2d-1797e5defc42	56	{}
 \.
 
 
@@ -5912,6 +6001,14 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 546	fusion_online	0008_auto_20210811_1811	2021-08-11 18:12:12.142851+00
 547	fusion_online	0009_rfqresponse	2021-08-11 19:15:16.868255+00
 548	product	0133_auto_20210812_1739	2021-08-12 17:40:11.89712+00
+549	fusion_online	0010_auto_20210818_2042	2021-08-23 15:11:15.832568+00
+550	fusion_online	0011_auto_20210819_1627	2021-08-23 15:11:15.90523+00
+551	account	0048_auto_20210824_2035	2021-08-25 13:58:02.428632+00
+552	fusion_online	0012_auto_20210823_1603	2021-08-27 15:07:03.256575+00
+553	account	0049_remove_address_ship_to_num	2021-09-01 17:44:54.710683+00
+554	fusion_online	0013_auto_20210903_1854	2021-09-03 18:55:19.915496+00
+555	fusion_online	0013_auto_20210914_1800	2021-09-14 18:05:30.45946+00
+556	fusion_online	0014_merge_20210914_1939	2021-09-14 19:40:22.79668+00
 \.
 
 
@@ -5964,6 +6061,13 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 9	vendor_offer	10	1625254322	2 days		8	9	51	0	
 10	VENDOR_OFFER	10	1625254322	2 days				54	0	
 11	VENDOR_OFFER	0	1625254322	2 days				55	0	
+12	VENDOR_OFFER	-1	1625254322	2 days		BROKER	ASIA	56	0	
+13	VENDOR_OFFER	-1	1625254322	2 days		BROKER	ASIA	58	0	
+14	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	59	12.0012500000000006	string
+15	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	60	12.0012500000000006	string
+16	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	62	12.0012500000000006	string
+17	EXCESS_LIST	-1	1630696738000	string	string	AUTHORIZED_FRANCHISE	ASIA	64	12.0012500000000006	string
+18	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	65	12.0012500000000006	string
 \.
 
 
@@ -5972,9 +6076,12 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 --
 
 COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_code, comment, cipn, commodity_code, offer_id, rfq_submission_id) FROM stdin;
-1	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	2
-2	AAA	Intel	1	12.0012500000000006	2 days	string	123	CPU_INTEL	123	3
-3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	CPU_INTEL	1234	3
+1	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	2
+2	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	3
+3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	1008	1234	3
+4	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234	4
+5	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234546	5
+80	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1000	1234547	80
 \.
 
 
@@ -5985,6 +6092,8 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, offer_id, line_item_id) FROM stdin;
 1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
 2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
+3	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	1
+4	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	4
 \.
 
 
@@ -5995,6 +6104,9 @@ COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer
 COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 2	2021-08-10 18:52:04.284713+00	10
 3	2021-08-10 19:37:22.132635+00	11
+4	2021-08-13 15:12:40.895666+00	10
+5	2021-08-13 17:44:47.445621+00	10
+80	2021-09-14 19:36:12.129421+00	5
 \.
 
 
@@ -6003,6 +6115,40 @@ COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 --
 
 COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_via, vat_id, ship_to_num, validation_message, created, updated, address_id) FROM stdin;
+3	123	home	UPS	not sure	345		2021-08-23 18:31:35.281172+00	2021-08-23 18:31:35.281205+00	36
+4	123	home	UPS	not sure	345		2021-08-23 20:28:58.923429+00	2021-08-23 20:28:58.923473+00	38
+6	124	Home	USPS	not sure	\N	pending	2021-09-01 18:39:53.322805+00	2021-09-01 18:39:53.322841+00	41
+7	124	Home	USPS	not sure	\N	pending	2021-09-01 18:44:25.781902+00	2021-09-01 18:44:25.781932+00	42
+5	123	home	UPS	not sure	345	Approved	2021-08-23 20:31:23.883853+00	2021-09-01 20:11:01.236957+00	40
+8	124	Home	USPS	not sure	\N	pending	2021-09-01 20:54:44.055877+00	2021-09-01 20:54:44.055923+00	43
+9	124	Home	USPS	not sure	\N	pending	2021-09-02 16:41:14.821453+00	2021-09-02 16:41:14.821483+00	44
+10	124	Home	USPS	not sure	\N	pending	2021-09-02 16:43:22.886428+00	2021-09-02 16:43:22.886453+00	45
+11	124	Home	USPS	not sure	\N	pending	2021-09-02 16:45:02.71394+00	2021-09-02 16:45:02.71397+00	46
+12	124	Home	USPS	not sure	\N	pending	2021-09-02 16:46:05.618971+00	2021-09-02 16:46:05.619002+00	47
+13	124	Home	USPS	not sure	\N	pending	2021-09-02 16:49:23.626673+00	2021-09-02 16:49:23.626706+00	48
+14	124	Home	USPS	not sure	\N	pending	2021-09-02 16:50:24.895846+00	2021-09-02 16:50:24.895875+00	49
+15	124	Home	USPS	not sure	\N	pending	2021-09-02 16:51:09.080519+00	2021-09-02 16:51:09.080549+00	50
+16	124	Home	USPS	not sure	\N	pending	2021-09-02 16:52:06.034169+00	2021-09-02 16:52:06.034201+00	51
+17	124	Home	USPS	not sure	\N	pending	2021-09-02 16:54:28.852305+00	2021-09-02 16:54:28.85233+00	53
+18	124	Home	USPS	not sure	\N	pending	2021-09-02 16:57:01.339022+00	2021-09-02 16:57:01.339039+00	54
+19	124	Home	USPS	not sure	\N	pending	2021-09-02 16:58:10.472109+00	2021-09-02 16:58:10.472134+00	55
+20	124	Home	USPS	not sure	\N	pending	2021-09-02 16:59:28.870429+00	2021-09-02 16:59:28.870456+00	56
+21	124	Home	USPS	not sure	\N	pending	2021-09-02 17:00:33.833111+00	2021-09-02 17:00:33.833153+00	57
+22	124	Home	USPS	not sure	\N	pending	2021-09-02 17:03:26.020503+00	2021-09-02 17:03:26.02053+00	58
+23	124	Home	USPS	not sure	\N	pending	2021-09-02 17:05:47.283469+00	2021-09-02 17:05:47.283497+00	59
+24	124	Home	USPS	not sure	\N	pending	2021-09-02 17:06:14.217055+00	2021-09-02 17:06:14.217083+00	60
+25	124	Home	USPS	not sure	\N	pending	2021-09-02 17:06:24.645285+00	2021-09-02 17:06:24.64531+00	61
+26	124	Home	USPS	not sure	\N	pending	2021-09-02 17:06:37.600533+00	2021-09-02 17:06:37.600563+00	62
+27	124	Home	USPS	not sure	\N	pending	2021-09-02 17:08:04.828883+00	2021-09-02 17:08:04.828907+00	63
+28	124	Home	USPS	not sure	\N	pending	2021-09-02 17:09:37.27358+00	2021-09-02 17:09:37.273606+00	64
+29	124	Home	USPS	not sure	\N	pending	2021-09-02 17:12:29.377009+00	2021-09-02 17:12:29.377033+00	65
+30	124	Home	USPS	not sure	\N	pending	2021-09-02 17:13:52.481756+00	2021-09-02 17:13:52.481785+00	66
+31	124	Home	USPS	not sure	\N	pending	2021-09-02 17:18:09.3897+00	2021-09-02 17:18:09.389729+00	67
+32	124	Home	USPS	not sure	\N	pending	2021-09-02 17:20:33.32989+00	2021-09-02 17:20:33.329915+00	68
+33	124	Home	USPS	not sure	\N	pending	2021-09-02 17:20:59.991205+00	2021-09-02 17:20:59.991234+00	69
+34	124	Home	USPS	not sure	\N	pending	2021-09-02 17:26:41.634936+00	2021-09-02 17:26:41.634962+00	70
+35	124	Home	USPS	not sure	\N	pending	2021-09-02 17:31:29.916085+00	2021-09-02 17:31:29.916114+00	71
+36	124	Home	USPS	not sure	\N	pending	2021-09-02 17:32:10.541413+00	2021-09-02 17:32:10.541442+00	72
 \.
 
 
@@ -6090,6 +6236,70 @@ COPY public.order_order (id, created, tracking_client_id, user_email, token, bil
 6	2021-08-11 15:44:18.285462+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	bb6cb082-bb77-4f76-b013-70799631c5e8	25	24	5	215.000	0.000	\N	\N	en	5.000	215.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	0b0c5853-8d9f-4488-b73d-a3efd0ba0012	USD	{}	{}
 5	2021-07-21 18:55:54.124946+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	ab05fd3c-fb05-4e61-97cb-f4c74f262a8e	21	20	5	2606.510	0.000	\N	\N	en	5.000	2606.510	5.000	fulfilled	Standard Shipping	1	t	\N		9000	0862744c-1506-4e13-a8ee-0c2a01b73ba7	USD	{}	{}
 7	2021-08-11 17:04:55.654122+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	e0179759-67ee-4e26-8167-6c46a846fd65	28	27	5	101.000	0.000	\N	\N	en	5.000	101.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	b2d0af70-6bc9-4e2f-964a-291dbf702d85	USD	{}	{}
+8	2021-09-02 16:32:34.637387+00			5a0dadd1-e90f-4664-9a9c-6d080c799e42	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+9	2021-09-02 16:41:14.813716+00			b6bc816c-3eb9-4bad-a446-7ac608fcf7da	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+10	2021-09-02 16:43:22.879775+00			2c7040b5-56a8-4720-89dc-e851d7fbd342	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+11	2021-09-02 16:45:02.708352+00			00747f54-6154-49b4-b3fa-f40ca3a3fda0	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+12	2021-09-02 16:46:05.613817+00			df694a5a-a8ba-4979-93a2-4f7cdf1af25b	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+13	2021-09-02 16:49:23.618689+00			ada251fe-f61f-4e0e-a914-95444a2cbd7c	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+14	2021-09-02 16:50:24.889126+00			91dec717-1446-4b3b-8df3-613d644fa692	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+15	2021-09-02 16:51:09.075465+00			6f21aa87-c8f3-4430-b547-61e1afadf496	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+16	2021-09-02 16:52:06.029318+00			3fe61a79-2578-404e-b5c3-17cf03a59c9f	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+17	2021-09-02 16:54:28.849123+00			b67de2c8-c521-4a4f-a80b-ce71b8442a50	\N	53	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+18	2021-09-02 16:57:01.335948+00			f13f586d-a747-4164-b224-20e13a5ef937	\N	54	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+19	2021-09-02 16:58:10.46918+00			5cbf72ae-d08b-451c-8f78-42b77037f75c	\N	55	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+20	2021-09-02 16:59:28.867827+00			eef5f53d-ddbd-4491-9cb1-db614e7c5ffe	\N	56	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+21	2021-09-02 17:00:33.830072+00			73538035-0391-4264-9644-ce39d8ffa08a	\N	57	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+22	2021-09-02 17:03:26.017454+00			5062badf-91c8-4128-ae06-c88109e24d9f	\N	58	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+23	2021-09-02 17:05:47.280705+00			dfc3119f-81d2-49a1-a1dc-5f58808d93c6	\N	59	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+24	2021-09-02 17:06:14.214023+00			1a43f232-a6e4-44e6-9018-efb5adf382e5	\N	60	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+25	2021-09-02 17:06:24.643408+00			eaff3e69-d6a9-4b8e-9139-a0cdb125209b	\N	61	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+26	2021-09-02 17:06:37.596556+00			706505e1-6b80-477c-9083-daec0a3711bf	\N	62	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+27	2021-09-02 17:08:04.826984+00			698aa854-d19a-43ec-89c4-eff762634cc2	\N	63	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+28	2021-09-02 17:09:37.271492+00			19729b51-448c-4545-9912-c67488aa4459	\N	64	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+29	2021-09-02 17:12:29.375102+00			591ee802-d05d-4804-b79d-60208d931832	\N	65	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+30	2021-09-02 17:13:52.473816+00			85487b4f-744d-449b-8ab1-301ca671fdd7	\N	66	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+31	2021-09-02 17:18:09.386777+00			be5991ea-d80c-4e3a-af21-fad7e87e2fbc	\N	67	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+32	2021-09-02 17:20:33.32715+00			7075b823-f2e5-4ef8-a61a-f0df07f36d4a	\N	68	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+33	2021-09-02 17:20:59.987725+00			3f4de949-79cc-4b4e-a1d9-5fd7c5b21253	\N	69	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+34	2021-09-02 17:26:41.632153+00			f2c7c0db-c140-4066-b63b-1509a5d65caf	\N	70	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+35	2021-09-02 17:31:29.913021+00			e34463f6-98b7-4d73-9781-44653506c160	\N	71	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+36	2021-09-02 17:32:10.538433+00			b3486388-f53c-4247-8b1c-a8b19a200251	\N	72	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "2"}
+37	2021-09-02 18:42:28.467757+00			9dba0585-bea2-4696-b2ed-a394f4a36b43	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+38	2021-09-02 18:45:02.989283+00			e2843aa8-2c5f-4aad-b908-f15ab1768a6b	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+39	2021-09-02 18:45:27.961205+00			87d1e4e3-82d4-4a42-97ad-2d99a228b90c	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+40	2021-09-02 18:45:52.124331+00			552b3dd7-bf7f-4365-b1f1-b7ac2949399b	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+41	2021-09-02 18:50:33.196635+00			3cae5496-45e7-4958-82e4-82c8cc65895e	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+42	2021-09-02 18:58:17.065141+00			467180e9-16bf-4226-a31b-22fca2b5c9cc	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+43	2021-09-02 18:59:40.847744+00			65aed91d-4613-4261-901f-173a6271ea9c	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+44	2021-09-02 19:00:52.120479+00			a8b80a39-efe9-436b-a0ba-e41f59129637	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+45	2021-09-02 19:01:26.206259+00			ed1a4c84-c94f-41b3-88ab-353dfc8a7cb5	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+46	2021-09-02 19:02:10.926323+00			e8bd54fd-66d7-45cc-929b-c33a60b99c28	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+47	2021-09-02 19:32:07.451606+00			56d253bc-add5-4bfc-91a0-dcc643df6dac	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+48	2021-09-02 19:34:58.761392+00			314998d3-44fe-400e-9628-69b2afbedf0d	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+49	2021-09-02 19:35:49.744838+00			e3a9fa17-0ec4-43af-870c-85ef42f63423	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+50	2021-09-02 19:38:46.412626+00			8c7b7f70-84aa-429f-af52-9a6f0eed9e7f	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+51	2021-09-02 19:40:06.482634+00			23c836ae-885f-49df-883d-04bc5141b6ce	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+52	2021-09-02 19:40:57.028166+00			b7a31701-35c9-4860-a5d4-37985c64dec3	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+53	2021-09-02 19:51:39.136214+00			5ced80d5-04c7-49ec-b4a8-9bd5555e26eb	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+54	2021-09-02 19:53:07.231843+00			02821c41-e027-4610-8778-ab596454407a	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+55	2021-09-02 20:09:29.313787+00			ec028da1-6d0e-4e27-8da2-6cba3b0d901f	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+56	2021-09-02 20:10:34.753832+00			7b8d3ab3-f2d3-4802-a131-3deedce7c74e	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+57	2021-09-02 20:11:58.99332+00			9f9f9bd6-7f43-4209-881d-16b162be9d29	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+58	2021-09-02 20:14:55.433861+00			3d592f7f-f17d-4759-976e-558b9ee23b2f	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+59	2021-09-02 20:24:52.042266+00			357ff6e7-5f06-4eb0-ae7c-ae2558ee6c33	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+60	2021-09-02 20:35:08.56025+00			c2dda0da-9a57-4444-bfe8-f96b7c79ad32	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+61	2021-09-02 20:35:43.486945+00			75f5c460-a48a-4bd2-b08c-d88d84f505d0	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+62	2021-09-02 20:37:01.264824+00			fe28874e-b680-4275-b1bf-475f06769a71	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+63	2021-09-02 20:40:30.831203+00			d38734e1-9fae-4e14-8678-f7366c91415c	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+64	2021-09-02 20:41:05.310703+00			bc920005-8b79-4032-9864-1d8a7a7cda1b	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+65	2021-09-02 20:42:30.526401+00			7e0996b8-760b-4e21-bfa7-41828c2035d0	\N	73	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+66	2021-09-02 20:49:09.449296+00			286d8c34-40ae-4eaa-a66e-6d4f91830d6c	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+67	2021-09-02 20:50:44.642492+00			2c08a925-6327-4d67-8de5-79c15695851c	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+68	2021-09-02 20:53:12.810368+00			16e64835-5d3b-45fe-b7d5-a883878c5c5a	\N	\N	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+69	2021-09-02 20:55:15.932096+00			d7f7574b-9cdd-4e0c-9880-f4dde11d4042	\N	77	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+70	2021-09-02 20:56:28.771877+00			dadd23b4-8cec-43aa-b47c-2c72a8aa1879	\N	78	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
+71	2021-09-02 20:56:49.491309+00			05f0d12c-b821-405a-9630-2bca8fff66ff	\N	78	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
 \.
 
 
@@ -6142,6 +6352,11 @@ COPY public.order_orderevent (id, date, type, order_id, user_id, parameters) FRO
 34	2021-08-11 17:04:55.718267+00	payment_captured	7	5	{"amount": "101.000", "payment_id": "charged", "payment_gateway": "mirumee.payments.dummy"}
 35	2021-08-11 17:04:55.731919+00	order_fully_paid	7	5	{}
 36	2021-08-11 17:04:55.733441+00	email_sent	7	5	{"email": "customer@example.com", "email_type": "payment_confirmation"}
+37	2021-08-27 15:27:00.929812+00	email_sent	3	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
+38	2021-08-27 15:27:01.1323+00	email_sent	4	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
+39	2021-08-27 15:27:01.321188+00	email_sent	5	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
+40	2021-08-27 15:27:02.877517+00	email_sent	6	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
+41	2021-08-27 15:27:03.060306+00	email_sent	7	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
 \.
 
 
@@ -6159,6 +6374,40 @@ COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price
 7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	6	0.00		USD		1 day / 1
 8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	7	0.00		USD		4
 9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	18	0.00		USD		4
+18			1	50.000	50.000	t	33	0	63	0.00		USD		
+19			1	50.000	50.000	t	34	0	63	0.00		USD		
+20			1	50.000	50.000	t	35	0	63	0.00		USD		
+21			1	50.000	50.000	t	36	0	63	0.00		USD		
+22			1	50.000	50.000	t	37	0	63	0.00		USD		
+23			1	50.000	50.000	t	38	0	63	0.00		USD		
+24			1	50.000	50.000	t	39	0	63	0.00		USD		
+25			1	50.000	50.000	t	40	0	63	0.00		USD		
+26			1	50.000	50.000	t	41	0	63	0.00		USD		
+27			1	50.000	50.000	t	42	0	63	0.00		USD		
+28			1	50.000	50.000	t	43	0	63	0.00		USD		
+29			1	50.000	50.000	t	44	0	63	0.00		USD		
+30			1	50.000	50.000	t	45	0	63	0.00		USD		
+31			1	50.000	50.000	t	46	0	63	0.00		USD		
+32			1	50.000	50.000	t	47	0	63	0.00		USD		
+33			1	50.000	50.000	t	48	0	63	0.00		USD		
+34			1	50.000	50.000	t	49	0	63	0.00		USD		
+35			1	50.000	50.000	t	50	0	63	0.00		USD		
+36			1	50.000	50.000	t	51	0	63	0.00		USD		
+37			1	50.000	50.000	t	52	0	63	0.00		USD		
+38			1	50.000	50.000	t	55	0	63	0.00		USD		
+39			1	50.000	50.000	t	56	0	63	0.00		USD		
+40			1	50.000	50.000	t	57	0	63	0.00		USD		
+41			1	50.000	50.000	t	58	0	63	0.00		USD		
+42			1	50.000	50.000	t	59	0	63	0.00		USD		
+43			1	50.000	50.000	t	63	0	63	0.00		USD		
+44			1	50.000	50.000	t	64	0	63	0.00		USD		
+45			1	50.000	50.000	t	65	0	63	0.00		USD		
+46			1	50.000	50.000	t	66	0	63	0.00		USD		
+47			1	50.000	50.000	t	67	0	63	0.00		USD		
+48			1	50.000	50.000	t	68	0	63	0.00		USD		
+49			1	50.000	50.000	t	69	0	63	0.00		USD		
+50			1	50.000	50.000	t	70	0	63	0.00		USD		
+51			1	50.000	50.000	t	71	0	63	0.00		USD		
 \.
 
 
@@ -6222,6 +6471,20 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_assignedproductattribute (id, product_id, assignment_id) FROM stdin;
+338	120	75
+339	120	77
+340	120	76
+341	120	85
+342	120	81
+343	121	75
+344	121	77
+345	121	76
+346	121	85
+347	121	81
+348	122	75
+349	122	77
+350	122	76
+351	122	85
 168	88	54
 169	88	56
 170	88	55
@@ -6302,6 +6565,7 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 183	89	60
 184	88	59
 185	88	60
+352	122	81
 318	116	75
 319	116	77
 320	116	76
@@ -6330,6 +6594,12 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 --
 
 COPY public.product_assignedproductattribute_values (id, assignedproductattribute_id, attributevalue_id) FROM stdin;
+460	338	6
+461	339	13
+462	340	142
+463	341	140
+464	342	130
+465	342	131
 171	168	72
 172	169	73
 173	170	74
@@ -6410,12 +6680,47 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 92	89	57
 93	90	64
 188	185	18
+466	342	132
+467	342	133
+468	342	134
+469	342	135
+470	342	136
+471	342	137
+472	342	138
+473	342	139
+474	343	6
+475	344	13
+476	345	142
+477	346	140
+478	347	130
+479	347	131
+480	347	132
+481	347	133
+482	347	134
+483	347	135
+484	347	136
+485	347	137
+486	347	138
+487	347	139
+488	348	6
+489	349	13
+490	350	142
+491	351	140
+492	352	130
+493	352	131
+494	352	132
+495	352	133
+496	352	134
 411	318	6
 412	319	13
 413	320	142
 414	321	3
 415	322	140
 416	323	129
+497	352	135
+498	352	136
+499	352	137
+500	352	138
 417	323	130
 418	323	131
 419	323	132
@@ -6493,6 +6798,14 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 45	51	9
 47	54	12
 48	55	12
+49	56	4
+50	58	4
+51	59	4
+52	60	4
+53	62	12
+54	63	12
+55	64	12
+56	65	12
 \.
 
 
@@ -6527,6 +6840,14 @@ COPY public.product_assignedvariantattribute_values (id, assignedvariantattribut
 45	45	79
 47	47	79
 48	48	79
+49	49	79
+50	50	79
+51	51	79
+52	52	79
+53	53	79
+54	54	79
+55	55	79
+56	56	79
 \.
 
 
@@ -6795,21 +7116,21 @@ COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_or
 
 COPY public.product_category (id, name, slug, description, lft, rght, tree_id, level, parent_id, background_image, seo_description, seo_title, background_image_alt, description_json, metadata, private_metadata) FROM stdin;
 1	CPUs	cpus		1	14	1	0	\N					{"blocks": [{"key": "4cn7", "data": {}, "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis cursus mattis. Curabitur sem dui, vulputate fermentum imperdiet vitae, vehicula ut sapien. Duis consectetur mauris eu tristique mollis. Aenean pulvinar a nulla a tristique.", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-11	CPU-Intel	cpu-intel		12	13	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-12	Memory Server-DIMM	memory-server-dimm		2	3	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-7	CPU Server-Intel	cpu-server-intel		4	5	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-13	Memory-GDDR	memory-gddr		4	5	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-8	CPU Server-AMD EPYC	cpu-server-amd-epyc		6	7	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-9	CPU Desktop-Intel	cpu-desktop-intel		8	9	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-10	CPU Desktop-AMD Ryzen mobile CPU	cpu-desktop-amd-ryzen-mobile-cpu		10	11	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-14	Memory-DRAM	memory-dram		6	7	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+12	MEM_SERVER_DIMM	memory-server-dimm		2	3	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+13	MEM_GDDR	memory-gddr		4	5	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+14	MEM_DRAM	memory-dram		6	7	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+15	MEM_PC_DIMM	memory-pc-dimm		8	9	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+7	CPU_SERVER_INTEL	cpu-server-intel		4	5	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 3	Memory	memory		1	10	3	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-15	Memory PC-DIMM	memory-pc-dimm		8	9	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-16	GPU Enterprise	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+8	CPU_SERVER_AMD_EPYC	cpu-server-amd-epyc		6	7	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 2	GPUs	gpu		1	6	2	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-17	GPU Consumer	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 4	Storage	storage		1	4	4	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-18	Storage Solid State Drives	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+9	CPU_DESKTOP_INTEL	cpu-desktop-intel		8	9	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+10	CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU	cpu-desktop-amd-ryzen-mobile-cpu		10	11	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+11	CPU_INTEL	cpu-intel		12	13	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+16	GPU_ENTERPRISE	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+17	GPU_CONSUMER	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+18	STOR_SOLID_STATE_DRIVES	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -6866,21 +7187,24 @@ COPY public.product_digitalcontenturl (id, token, created, download_num, content
 --
 
 COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id) FROM stdin;
-29	HMA82GR7CJR4N-WM		2021-07-23	2021-07-23 17:16:12.299475+00	6	t	3			f	\N	{}	{}	{}	\N	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
+6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-27 15:27:00.403838+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	3.000	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
+27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-08-27 15:27:00.527386+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	48.000	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
 9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9
-89	Gigabyte AAAAA		2021-08-04	2021-08-04 20:36:29.840337+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-aaaaa	2021-08-04	t	\N
+121	Intel H12FT2		\N	2021-09-02 17:11:00.363402+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT2", "mcode": "Intel", "item_num_id": 28}	{}	50.000	USD	intel-h12ft2	\N	t	63
 8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-07-21 18:58:40.528318+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
-88	Gigabyte DDDD		2021-08-04	2021-08-04 20:53:55.965426+00	9	t	2	\N	\N	t	\N	{}	{}	{}	\N	USD	gigabyte-dddd	2021-08-04	t	\N
-27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-07-23 17:36:58.542473+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
-28	M386A8K40CM2-CVF		2021-07-23	2021-07-23 17:03:36.664804+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	m386a8k40cm2-cvf	2021-07-23	t	13
-32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-07-23 17:47:43.366424+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
-30	ST10000NM0016		2021-07-23	2021-07-23 17:15:24.885875+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	st10000nm0016	2021-07-23	t	14
-31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-07-23 17:44:56.466771+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
-7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-12 15:35:02.045658+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	105.000	USD	intel-celeron-processor-n3010	2021-06-10	t	7
-116	Intel hfglmn		\N	2021-08-09 18:05:05.433759+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-hfglmn	\N	t	\N
+89	Gigabyte AAAAA		2021-08-04	2021-08-27 15:27:02.274003+00	9	t	2	\N	\N	t	\N	{}	{}	{}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	\N
+28	M386A8K40CM2-CVF		2021-07-23	2021-08-27 15:27:01.78138+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	62.560	USD	m386a8k40cm2-cvf	2021-07-23	t	13
+116	Intel hfglmn		\N	2021-08-27 15:27:02.662869+00	12	t	11	\N	\N	t	\N	{}	{}	{}	59.990	USD	intel-hfglmn	\N	t	\N
+30	ST10000NM0016		2021-07-23	2021-08-27 15:27:01.808843+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	36.000	USD	st10000nm0016	2021-07-23	t	14
+120	Intel H12FT		\N	2021-09-03 19:19:42.486045+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "Intel", "item_num_id": 27}	{}	49.990	USD	intel-h12ft	\N	t	\N
 117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N
-118	Intel HGFS		2021-08-12	2021-08-12 15:10:45.810936+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	\N	t	\N
-6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-12 15:33:13.280937+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	200.590	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
+7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-27 15:27:01.380457+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	39.990	USD	intel-celeron-processor-n3010	2021-06-10	t	7
+29	HMA82GR7CJR4N-WM		2021-07-23	2021-08-27 15:27:01.818641+00	6	t	3			f	\N	{}	{}	{}	41.000	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
+31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-08-27 15:27:01.979304+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	114.990	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
+32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-08-27 15:27:02.034962+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	255.250	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
+88	Gigabyte DDDD		2021-08-04	2021-08-27 15:27:02.236117+00	9	t	2	\N	\N	t	\N	{}	{}	{}	999.990	USD	gigabyte-dddd	2021-08-04	t	\N
+122	Intel A12CZ		\N	2021-09-14 18:56:02.868821+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
+118	Intel HGFS		2021-08-12	2021-09-02 17:08:23.78459+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	2021-09-02	t	\N
 \.
 
 
@@ -6932,23 +7256,31 @@ COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount
 51	654326		89	\N	t	\N	{}	{}	USD	59.990	7
 54	654327		116	\N	t	\N	{}	{}	USD	59.990	0
 55	654329		116	\N	t	\N	{}	{}	USD	79.990	1
-6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
-10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
+56	654328		7	\N	t	\N	{}	{}	USD	39.990	1
+58	6543200		7	\N	t	\N	{}	{}	USD	39.990	2
+59	2348791		7	\N	t	\N	{}	{}	USD	49.990	3
+19	123412323	2	31	\N	t	\N	{}	{}	USD	114.990	0
 8	123456	1	8	\N	t	\N	{}	{}	USD	1200.460	0
+12	246	1	27	\N	f	\N	{}	{}	USD	79.990	0
 7	12345	4	7	\N	t	\N	{}	{}	USD	105.000	0
 13	65784	1	28	\N	t	\N	{}	{}	USD	62.560	0
 14	123123	3	30	\N	t	\N	{}	{}	USD	39.990	0
 15	978987	2	30	\N	t	\N	{}	{}	USD	36.000	1
 16	345345	1	29	\N	t	\N	{}	{}	USD	41.000	0
 17	543543	2	29	\N	t	\N	{}	{}	USD	45.000	1
-9	9876		9	\N	f	\N	{}	{}	USD	201.000	0
 18	432432	4	27	\N	t	\N	{}	{}	USD	48.000	1
-12	246	1	27	\N	f	\N	{}	{}	USD	79.990	0
-19	123412323	2	31	\N	t	\N	{}	{}	USD	114.990	0
 20	4532634	1	32	\N	t	\N	{}	{}	USD	255.250	0
 21	777789		88	\N	t	\N	{}	{}	USD	999.990	0
 23	777765		89	\N	t	\N	{}	{}	USD	999.990	0
 24	777766		89	\N	t	\N	{}	{}	USD	49.990	1
+6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
+9	9876		9	\N	f	\N	{}	{}	USD	201.000	0
+10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
+60	2348792		7	\N	t	\N	{}	{}	USD	49.990	4
+62	2348793		120	\N	t	\N	{}	{}	USD	49.990	0
+63	92	SHANGHAI SUPERSERVER INFORMATION	121	\N	t	\N	{}	{}	USD	50.000	0
+64	2348794		120	\N	t	\N	{}	{}	USD	49.990	1
+65	2348798		120	\N	t	\N	{}	{}	USD	49.990	2
 \.
 
 
@@ -7065,6 +7397,14 @@ COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FRO
 19	1000	51	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+23	100	56	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+25	100	58	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+26	1	59	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+27	1	60	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+28	1	62	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+29	10	63	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+30	1	64	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+31	1	65	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -7130,7 +7470,7 @@ COPY public.wishlist_wishlistitem_variants (id, wishlistitem_id, productvariant_
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 28, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 46, true);
 
 
 --
@@ -7207,7 +7547,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 327, true);
 -- Name: cart_cartline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.cart_cartline_id_seq', 9, true);
+SELECT pg_catalog.setval('public.cart_cartline_id_seq', 10, true);
 
 
 --
@@ -7319,7 +7659,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 548, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 556, true);
 
 
 --
@@ -7354,35 +7694,35 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 11, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 18, true);
 
 
 --
 -- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 80, true);
 
 
 --
 -- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 2, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 4, true);
 
 
 --
 -- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 3, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 80, true);
 
 
 --
 -- Name: fusion_online_shippingaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 1, false);
+SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true);
 
 
 --
@@ -7452,21 +7792,21 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_order_id_seq', 7, true);
+SELECT pg_catalog.setval('public.order_order_id_seq', 71, true);
 
 
 --
 -- Name: order_ordereditem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 9, true);
+SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 51, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 36, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 41, true);
 
 
 --
@@ -7508,28 +7848,28 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 337, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 352, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 459, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 500, true);
 
 
 --
 -- Name: product_assignedvariantattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 48, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 56, true);
 
 
 --
 -- Name: product_assignedvariantattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 48, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 56, true);
 
 
 --
@@ -7613,7 +7953,7 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 118, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 122, true);
 
 
 --
@@ -7655,7 +7995,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 55, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 65, true);
 
 
 --
@@ -7718,14 +8058,14 @@ SELECT pg_catalog.setval('public.site_sitesettingstranslation_id_seq', 1, false)
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 28, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 78, true);
 
 
 --
 -- Name: userprofile_user_addresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 2, true);
+SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 6, true);
 
 
 --
@@ -7739,7 +8079,7 @@ SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 5, true);
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 13, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 30, true);
 
 
 --
@@ -7760,7 +8100,7 @@ SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 2, true);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 22, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 31, true);
 
 
 --
