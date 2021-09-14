@@ -68,3 +68,25 @@ export const CREATE_USER_ADDRESS = gql`
   }
   ${AddressFragment}
 `;
+
+export const CREATE_USER = gql `
+mutation registerUser($input:AccountRegisterInput!) {
+  accountRegister(input:$input) {
+		accountErrors {
+      field
+      message
+      code
+    }
+    user {
+      id
+      firstName
+      lastName
+      email
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}
+`;
