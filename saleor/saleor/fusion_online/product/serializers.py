@@ -4,19 +4,20 @@ from ...product.utils.attributes import associate_attribute_values_to_instance
 from django.utils.text import slugify
 
 CATEGORY_ID_CHOICES = [
-    ("CPU_SERVER_INTEL", "CPU Server-Intel"),
-    ("CPU_SERVER_AMD_EPYC", "CPU Server-AMD EPYC"),
-    ("CPU_DESKTOP_INTEL", "CPU Desktop-Intel"),
-    ("CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU", "CPU Desktop-AMD Ryzen Mobile CPU"),
-    ("CPU_INTEL", "CPU-Intel"),
-    ("MEM_SERVER_DIMM", "Memory-Server DIMM"),
-    ("MEM_GDDR", "Memory-GDDR"),
-    ("MEM_DRAM", "Memory-DRAM"),
-    ("MEM_PC_DIMM", "Memory-PC DIMM"),
-    ("GPU_ENTERPRISE", "GPU-Enterprise"),
-    ("GPU_CONSUMER", "GPU-Consume"),
-    ("STOR_SOLID_STATE_DRIVES", "Storage-Solid State Drives")
+    (1000, "CPU_SERVER_INTEL"),
+    (1004, "CPU_SERVER_AMD_EPYC"),
+    (1006, "CPU_DESKTOP_INTEL"),
+    (1007, "CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU"),
+    (1008, "CPU_INTEL"),
+    (1001, "MEM_SERVER_DIMM"),
+    (1002, "MEM_GDDR"),
+    (1003, "MEM_DRAM"),
+    (1009, "MEM_PC_DIMM"),
+    (1010, "GPU_ENTERPRISE"),
+    (1011, "GPU_CONSUMER"),
+    (1005, "STOR_SOLID_STATE_DRIVES")
 ]
+CATEGORY_ID_DICT = dict(CATEGORY_ID_CHOICES)
 
 class VendorSerializer(serializers.Serializer):
     vendor_name = serializers.CharField(max_length=100)
@@ -50,19 +51,19 @@ class ProductSerializer(serializers.Serializer):
     gpu_packaging = serializers.CharField(max_length=100, required=False, allow_blank=True)
 
     def create(self, validated_data): 
-        if validated_data["category_id"].startswith("CPU"):
+        if CATEGORY_ID_DICT[validated_data["category_id"]].startswith("CPU"):
             product_type_slug = "cpu"
             attr_slugs = ["cpu_family", "cpu_type", "cpu_model"]
-        elif validated_data["category_id"].startswith("GPU"):
+        elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("GPU"):
             product_type_slug = "gpu"
             attr_slugs =["gpu_line", "gpu_model", "gpu_memory_config", "gpu_interface", "gpu_cooling", "gpu_packaging"]
-        elif validated_data["category_id"].startswith("MEM"):
+        elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("MEM"):
             product_type_slug = "memory"
             attr_slugs = ["memory_ddr", "memory_type", "memory_density", "memory_rank_org", "memory_speed"]
         else:
             product_type_slug = "storage"
             attr_slugs = ["storage_class", "storage_capacity", "storage_size", "storage_type"]
-        category_name = [item[1] for item in CATEGORY_ID_CHOICES if item[0] == validated_data['category_id']][0]
+        category_name = CATEGORY_ID_DICT[validated_data["category_id"]]
 
         # map request data to product model fields and create new product
         print(True if validated_data["status"] == "ACTIVE" else False)
