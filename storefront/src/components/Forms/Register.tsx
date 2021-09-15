@@ -6,6 +6,7 @@ import { CREATE_USER } from '../../graphql/account';
 import { AccountRegister, AccountRegisterInput, AccountError } from '../../generated/graphql';
 
 import './register.scss';
+import { createTrue } from 'typescript';
 
 export interface RegisterProps {
   handleRegistration(email: string, password: string): Promise<{data: any}>
@@ -78,6 +79,7 @@ export const Register: React.FC<RegisterProps> = ({
             <Form.Group controlId="first-name">
               <Form.Control
                 type="text"
+                required
                 placeholder="First Name"
                 name="firstName"
                 value={formValues.firstName}
@@ -90,6 +92,7 @@ export const Register: React.FC<RegisterProps> = ({
             <Form.Group controlId="last-name">
               <Form.Control
                 type="text"
+                required
                 placeholder="Last Name"
                 name="lastName"
                 value={formValues.lastName}
@@ -102,6 +105,7 @@ export const Register: React.FC<RegisterProps> = ({
             <Form.Group controlId="registration-email">
               <Form.Control
                 type="email"
+                required
                 placeholder="Email"
                 name="email"
                 value={formValues.email}
@@ -114,6 +118,7 @@ export const Register: React.FC<RegisterProps> = ({
             <Form.Group controlId="company-name">
               <Form.Control
                 type="text"
+                required
                 placeholder="Company Name"
                 name="companyName"
                 value={formValues.companyName}
@@ -133,11 +138,10 @@ export const Register: React.FC<RegisterProps> = ({
                 onChange={handleChange}
               >
                 <option disabled selected hidden></option>
-                <option>Region 1</option>
-                <option>Region 2</option>
-                <option>Region 3</option>
-                <option>Region 4</option>
-                <option>Region 5</option>
+                <option>Americas</option>
+                <option>Asia/Pacific</option>
+                <option>EMEA</option>
+                <option>Other</option>
               </Form.Control>
               <Form.Label>Select Geographic Region*</Form.Label>
             </Form.Group>
