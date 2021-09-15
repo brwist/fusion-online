@@ -25,11 +25,14 @@ from .base import (
     BaseCustomerCreate,
 )
 
+from saleor.fusion_online.hubspot import registration
+
 
 class AccountRegisterInput(graphene.InputObjectType):
     first_name = graphene.String(description="User first name", required=True)
     last_name = graphene.String(description="User last name", required=True)
-    company_name = graphene.String(description="User company or organization", required=True)
+    company_name = graphene.String(
+        description="User company or organization", required=True)
     region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
@@ -98,20 +101,31 @@ class AccountRegister(ModelMutation):
 
     @classmethod
     def save(cls, info, user, cleaned_input):
-        password = cleaned_input["password"]
-        user.set_password(password)
-        user.metadata = {
-            "company": cleaned_input["company_name"],
-            "region": cleaned_input["region"]
-        }
-        if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
-            user.is_active = False
-            user.save()
-            emails.send_account_confirmation_email(user, cleaned_input["redirect_url"])
-        else:
-            user.save()
-        account_events.customer_account_created_event(user=user)
-        info.context.plugins.customer_created(customer=user)
+        try:
+            password = cleaned_input["password"]
+            user.set_password(password)
+            user.metadata = {
+                "company": cleaned_input["company_name"],
+                "region": cleaned_input["region"]
+            }
+            if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
+                user.is_active = False
+                user.save()
+
+                # Send confirmation email
+                emails.send_account_confirmation_email(
+                    user, cleaned_input["redirect_url"])
+            else:
+                user.save()
+
+            # Add Hubspot user
+            hubspot_reg = registration.HubspotRegistration
+            hubspot_user = hubspot_reg.register_new_hubspot_user(user)
+
+            account_events.customer_account_created_event(user=user)
+            info.context.plugins.customer_created(customer=user)
+        except:
+            return
 
 
 class AccountInput(graphene.InputObjectType):
