@@ -27,8 +27,7 @@ class RFQLineItem(models.Model):
     date_code = models.CharField(max_length=50)
     comment = models.CharField(max_length=500)
     cipn = models.CharField(max_length=50)
-    commodity_code = models.CharField(
-        max_length=50,
+    commodity_code = models.IntegerField(
         choices=CATEGORY_ID_CHOICES
     )
     offer_id = models.IntegerField()

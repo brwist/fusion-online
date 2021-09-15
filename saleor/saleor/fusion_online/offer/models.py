@@ -35,7 +35,7 @@ class Offer(models.Model):
         choices=TYPE_CHOICES
     )
     lead_time_days = models.IntegerField(default=-1)
-    date_added = models.IntegerField(null=True)
+    date_added = models.BigIntegerField(null=True)
     date_code = models.CharField(max_length=50, blank=True, default="")
     comment = models.CharField(max_length=300, blank=True, default="")
     coo = models.CharField(max_length=60, blank=True, default="")
