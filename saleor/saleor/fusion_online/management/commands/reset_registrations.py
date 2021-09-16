@@ -102,6 +102,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(
                 'Deleted user in saleor with email "%s"' % email))
         except:
+            self.stdout.write(self.style.SUCCESS(
+                'No user in saleor with email "%s"' % email))
             return
 
     def reset_company(self, email):
@@ -152,3 +154,13 @@ class Command(BaseCommand):
             }))
         results = r.json()
         return results
+
+    def delete_company(self, company_id):
+        url = self.format_company_url(company_id)
+        r = requests.delete(url)
+        if r.status_code != 204:
+            self.stdout.write(self.style.WARNING(
+                'Error deleting company "%s"' % str(company_id)))
+        else:
+            self.stdout.write(self.style.SUCCESS(
+                'Successful deletion of company "%s"' % str(company_id)))

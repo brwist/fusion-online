@@ -1,11 +1,15 @@
 import json
 import requests
+
 import pprint
 
 from django.conf import settings
 
 from hubspot import HubSpot
 from hubspot.crm.contacts import ApiException
+
+from django.forms.models import model_to_dict
+from .serializers import HubspotContactSerializer
 
 
 class HubspotRegistration:
@@ -38,13 +42,20 @@ class HubspotRegistration:
         self.companies_endpoint = 'https://api.hubapi.com/crm/v3/objects/companies?hapikey=' + self.api_key
         self.contact_properties_endpoint = 'https://api.hubapi.com/crm/v3/properties/contacts/role_rc?hapikey=' + self.api_key
 
+    def format_associations_endpoint(self, type):
+        return 'https://api.hubapi.com/crm/v3/associations/contact/company/batch/' + type + '?hapikey=' + self.api_key
+
+    def get_email_domain(self, email):
+        parts = email.split('@')
+        return parts[1]
+
     def register_new_hubspot_user(self, user):
         r = self.search_userbase(user.email)
         if len(r['results']) > 0:
-            pprint(
+            print(
                 '"%s" hubspot emails found' % str(r['total']))
         else:
-            pprint(
+            print(
                 'No existing hubspot emails found for email "%s", creating new account in hubspot.' % user.email)
 
             existing_companies = self.check_company(user.email)
@@ -52,23 +63,23 @@ class HubspotRegistration:
             if len(existing_companies['results']) > 0:
                 # pick the first
                 company = existing_companies['results'][0]
-                pprint(
+                print(
                     'Company found: "%s".' % company['properties']['name'])
 
                 # Create user with property role_rc = ADMIN
                 hubspot_user = self.add_user(user, 'User')
-                pprint(
+                print(
                     'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
                 # Create the association
                 self.associate_company_with_contact(company['id'], hubspot_user['id'])
 
             else:
-                pprint(
+                print(
                     'No company found for email "%s". Creating a new company in Hubspot for domain "%s".' % (user.email, email_domain))
 
                 company_payload = {
-                    "name": user['company'],
+                    "name": user.private_metadata['company'],
                     "domain": self.get_email_domain(user.email)
                 }
 
@@ -76,7 +87,7 @@ class HubspotRegistration:
 
                 # Create user with property role_rc = ADMIN
                 hubspot_user = self.add_user(user, 'Admin')
-                pprint(
+                print(
                     'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
                 # Create the association
@@ -106,15 +117,27 @@ class HubspotRegistration:
         return results
 
     def add_user(self, user, role):
+        data = {
+            "company": user.private_metadata['company'],
+            "email": user.email,
+            "firstname": user.first_name,
+            "lastname": user.last_name,
+            "customer_approval_status_rc": "Limited",
+            "role_rc": role
+        }
         payload = {
-            "properties": {**user, 'role_rc': role}
+            "properties": data
         }
         r = requests.post(self.contacts_endpoint, data=json.dumps(payload), headers=(
             {
                 'Content-Type': 'application/json'
             }))
-        user = r.json()
-        return user
+        if r.status_code != 201:
+            a = 1
+            return None
+        else:
+            hubspot_user = r.json()
+            return hubspot_user
 
     def check_company(self, email):
         email_domain = self.get_email_domain(email)
@@ -149,3 +172,29 @@ class HubspotRegistration:
             }))
         company = r.json()
         return company
+
+    def associate_company_with_contact(self, company_id, contact_id):
+
+        payload = {
+            "inputs": [
+                {
+                    "from": {
+                        "id": contact_id
+                    },
+                    "to": {
+                        "id": company_id
+                    },
+                    "type": "contact_to_company"
+                }
+            ]
+        }
+
+        url = self.format_associations_endpoint('create')
+
+        r = requests.post(url, data=json.dumps(payload), headers=(
+            {
+                'Content-Type': 'application/json'
+            }))
+
+        resp = r.json()
+        return resp

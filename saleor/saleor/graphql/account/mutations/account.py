@@ -25,7 +25,9 @@ from .base import (
     BaseCustomerCreate,
 )
 
-from saleor.fusion_online.hubspot import registration
+from saleor.fusion_online.hubspot.registration import HubspotRegistration
+from saleor.fusion_online.hubspot.email import HubspotEmails
+#from saleor.account.emails import 
 
 
 class AccountRegisterInput(graphene.InputObjectType):
@@ -101,31 +103,38 @@ class AccountRegister(ModelMutation):
 
     @classmethod
     def save(cls, info, user, cleaned_input):
-        try:
-            password = cleaned_input["password"]
-            user.set_password(password)
-            user.metadata = {
-                "company": cleaned_input["company_name"],
-                "region": cleaned_input["region"]
-            }
-            if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
-                user.is_active = False
-                user.save()
+        # try:
+        password = cleaned_input["password"]
+        user.set_password(password)
+        user.private_metadata = {
+            "company": cleaned_input["company_name"],
+            "region": cleaned_input["region"]
+        }
+        hubspot_reg = HubspotRegistration()
+        if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
+            user.is_active = False
+            user.save()
 
-                # Send confirmation email
-                emails.send_account_confirmation_email(
-                    user, cleaned_input["redirect_url"])
-            else:
-                user.save()
-
-            # Add Hubspot user
-            hubspot_reg = registration.HubspotRegistration
             hubspot_user = hubspot_reg.register_new_hubspot_user(user)
 
-            account_events.customer_account_created_event(user=user)
-            info.context.plugins.customer_created(customer=user)
-        except:
-            return
+            # Send confirmation email
+
+            hubspot_email = HubspotEmails()
+            hubspot_email.send_registration_confirmation(
+                user, hubspot_user, cleaned_input["redirect_url"])
+
+            # emails.send_account_confirmation_email(
+            #     user, cleaned_input["redirect_url"])
+        else:
+            user.save()
+
+            # Add Hubspot user
+            hubspot_user = hubspot_reg.register_new_hubspot_user(user)
+
+        account_events.customer_account_created_event(user=user)
+        info.context.plugins.customer_created(customer=user)
+        # except Exception as e:
+        #     return
 
 
 class AccountInput(graphene.InputObjectType):
@@ -134,6 +143,7 @@ class AccountInput(graphene.InputObjectType):
     default_billing_address = AddressInput(
         description="Billing address of the customer."
     )
+
     default_shipping_address = AddressInput(
         description="Shipping address of the customer."
     )
