@@ -471,8 +471,9 @@ components:
           description: The HubSpot contact ID (vid) of the customer that placed the sales order.
         customer_purchase_order_num:
           type: string
-        entered_by:
+        entered_by_hubspot_owner_id:
           type: integer
+          description: A HubSpot owner ID.
         ship_to:
           type: object
           $ref: '#/components/schemas/ShipToAddress'
@@ -515,9 +516,9 @@ components:
         fo_ship_to_address_ref_id:
           type: integer
           description: The ID of the shipping address in RocketChips.
-        customer_id:
+        hubspot_company_id:
           type: integer
-          description: The ID of the customer company.
+          description: The HubSpot ID of the customer company.
         ship_to_name:
           type: string
           description: A unique name that identifies the ship-to address.
