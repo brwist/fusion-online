@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import { useForm, SubmitHandler} from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 
 import { CREATE_USER } from '../../graphql/account';
 import { AccountRegister, AccountRegisterInput, AccountError } from '../../generated/graphql';
 
 import './register.scss';
-import { createTrue } from 'typescript';
 
 export interface RegisterProps {
   handleRegistration(email: string, password: string): Promise<{data: any}>
@@ -20,47 +20,51 @@ type AccountRegisterType = {
   accountRegister: AccountRegister
 }
 
+type FormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  companyName: string;
+  region: string;
+};
+
 export const Register: React.FC<RegisterProps> = ({
   handleRegistration
 }) => {
-  const [formValues, setFormValues] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    companyName: "",
-    region: "",
-    password: "password"
-  })
-  const [errors, setErrors] = useState<AccountError[]>([])
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormValues({
-      ...formValues,
-      [event.currentTarget.name]: event.currentTarget.value
-    })
-  }
+  const { register, handleSubmit, formState: {errors}} = useForm<FormValues>();
+
+  const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
   const [accountRegister] = useMutation<AccountRegisterType, AccountRegisterVariables>(CREATE_USER, {})
 
-  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const {data} = await accountRegister({variables: {input: {...formValues, redirectUrl: 'http://localhost:3000/'}}})
+  const onSubmit: SubmitHandler<FormValues> = async (payload) => {
+    console.log('payload:', payload)
+    const {data} = await accountRegister({variables: {input: {...payload, redirectUrl: 'http://localhost:3000/'}}})
     if (data?.accountRegister) {
       if (data.accountRegister.accountErrors.length > 0) {
-        setErrors(data.accountRegister.accountErrors)
+        setMutationErrors(data.accountRegister.accountErrors)
       } else {
         console.log(data.accountRegister.user)
-        setFormValues({
-          firstName: "",
-          lastName: "",
-          email: "",
-          companyName: "",
-          region: "",
-          password: "password"
-        })
+        setMutationErrors([])
         alert('Email confirmation link sent. Please check your inbox.')
       }
     }
   }
+
+  const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
+    return (
+      <Form.Group>
+        <Form.Label>{label}</Form.Label>
+        {required ? (
+          <input type="text" {...register(name, { required: true })} />
+        ) : (
+          <input type="text" {...register(name)} />
+        )}
+        {errors[name] ? <span>This field is required</span> : null}
+      </Form.Group>
+    );
+  };
 
   return (
     <div className="form-register">
@@ -72,85 +76,33 @@ export const Register: React.FC<RegisterProps> = ({
         </Col>
 
         <Col md={6}>
-        {errors.length > 0 && errors.map((error: AccountError) => {
+        {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
           return <p className="text-danger">{error.field}: {error.message}</p>
         })}
-          <Form className="floating-labels" onSubmit={handleSubmit}>
-            <Form.Group controlId="first-name">
-              <Form.Control
-                type="text"
-                required
-                placeholder="First Name"
-                name="firstName"
-                value={formValues.firstName}
-                onChange={handleChange}
-                />
-              <Form.Label>First Name*</Form.Label>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          <Form className="floating-labels" onSubmit={handleSubmit(onSubmit)}>
+            {textInput('firstName', 'First Name', true)}
+            {textInput('lastName', 'Last Name', true)}
+            {textInput('email', 'Email', true)}
+            <Form.Group>
+              <Form.Label>Password</Form.Label>
+              <input type='password' {...register('password', {required: true})}/>
             </Form.Group>
-
-            <Form.Group controlId="last-name">
-              <Form.Control
-                type="text"
-                required
-                placeholder="Last Name"
-                name="lastName"
-                value={formValues.lastName}
-                onChange={handleChange}
-              />
-              <Form.Label>Last Name*</Form.Label>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group controlId="registration-email">
-              <Form.Control
-                type="email"
-                required
-                placeholder="Email"
-                name="email"
-                value={formValues.email}
-                onChange={handleChange}
-              />
-              <Form.Label>Email*</Form.Label>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group controlId="company-name">
-              <Form.Control
-                type="text"
-                required
-                placeholder="Company Name"
-                name="companyName"
-                value={formValues.companyName}
-                onChange={handleChange}
-              />
-              <Form.Label>Company Name*</Form.Label>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group controlId="geo-region">
-              <Form.Control
-                as="select"
-                custom
-                required
-                name="region"
-                value={formValues.region}
-                onChange={handleChange}
-              >
+            {textInput('companyName', 'Company Name', true)}
+            <Form.Group>
+            <Form.Label>Select Geographic Region</Form.Label>
+              <select {...register('region', {required: true})}>
                 <option disabled selected hidden></option>
                 <option>Americas</option>
                 <option>Asia/Pacific</option>
                 <option>EMEA</option>
                 <option>Other</option>
-              </Form.Control>
-              <Form.Label>Select Geographic Region*</Form.Label>
+              </select>
+              {errors['region'] ? <span>This field is required</span> : null}
             </Form.Group>
-
             <Button
               variant="primary"
               size="lg"
               type="submit"
-              onSubmit={handleSubmit}
             >
               Register
             </Button>
