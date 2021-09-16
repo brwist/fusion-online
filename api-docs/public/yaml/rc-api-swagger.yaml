@@ -292,8 +292,7 @@ components:
         price_item_id:
           type: integer
         category_id:
-          type: string
-          enum: [ CPU_SERVER_INTEL, CPU_SERVER_AMD_EPYC, CPU_DESKTOP_INTEL, CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU, CPU_INTEL, MEM_SERVER_DIMM, MEM_GDDR, MEM_DRAM, MEM_PC_DIMM, GPU_ENTERPRISE, GPU_COSNUMER, STOR_SOLID_STATE_DRIVES ]
+          type: integer
         all_description:
           type: string
           maxLength: 250
@@ -454,8 +453,7 @@ components:
                 type: string
                 maxLength: 50
               commodity_code:
-                type: string
-                enum: [DEFAULT, TBD]
+                type: integer
               offer_id:
                 type: integer
               fo_rfq_line_item_ref_id:
