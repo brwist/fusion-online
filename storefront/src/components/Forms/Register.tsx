@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { useForm, SubmitHandler} from 'react-hook-form';
+import { useForm, SubmitHandler, useFormState} from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 
 import { CREATE_USER } from '../../graphql/account';
@@ -32,7 +32,7 @@ type FormValues = {
 export const Register: React.FC<RegisterProps> = ({
   handleRegistration
 }) => {
-  const { register, handleSubmit, formState: {errors}} = useForm<FormValues>();
+  const { register, reset, handleSubmit, formState: {errors, isSubmitSuccessful}} = useForm<FormValues>();
 
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
@@ -45,7 +45,7 @@ export const Register: React.FC<RegisterProps> = ({
       if (data.accountRegister.accountErrors.length > 0) {
         setMutationErrors(data.accountRegister.accountErrors)
       } else {
-        console.log(data.accountRegister.user)
+        reset({region: ""})
         setMutationErrors([])
         alert('Email confirmation link sent. Please check your inbox.')
       }
