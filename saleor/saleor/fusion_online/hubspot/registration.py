@@ -123,7 +123,8 @@ class HubspotRegistration:
             "firstname": user.first_name,
             "lastname": user.last_name,
             "customer_approval_status_rc": "Limited",
-            "role_rc": role
+            "role_rc": role,
+            "region_rms": user.private_metadata.region
         }
         payload = {
             "properties": data
