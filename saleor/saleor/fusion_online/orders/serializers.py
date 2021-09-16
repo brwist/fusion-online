@@ -33,6 +33,7 @@ class SalesOrderItemSerializer(ModelSerializer):
 class SalesOrderSerializer(ModelSerializer):
 
     items = SalesOrderItemSerializer(many=True)
+    entered_by_hubspot_owner_id = IntegerField(source='entered_by')
 
     class Meta:
         fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',

@@ -18,6 +18,8 @@ class ShippingAddressSerializer(ModelSerializer):
     state = CharField(source='address.country_area', read_only=True)
     country = CharField(source='address.country.name', read_only=True)
     validation_message = CharField(write_only=True)
+    hubspot_company_id = IntegerField(source='customer_id', read_only=True)
+    
 
     class Meta:
         model = ShippingAddress

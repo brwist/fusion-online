@@ -31,7 +31,7 @@ def sales_order_response_payload(order):
     sales_order = {
         'hubspot_vid': hubspot_vid,
         'customer_purchase_order_num': 123,  # This needs to change to customer input
-        'entered_by': entered_by,
+        'entered_by_hubspot_owner_id': entered_by,
         'ship_to_num': ship_to_address.ship_to_num,
         'due_date': private_metadata.get('due_date'),
         'items': items,
