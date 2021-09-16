@@ -27,7 +27,6 @@ from .base import (
 
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
 from saleor.fusion_online.hubspot.email import HubspotEmails
-#from saleor.account.emails import 
 
 
 class AccountRegisterInput(graphene.InputObjectType):
@@ -103,7 +102,6 @@ class AccountRegister(ModelMutation):
 
     @classmethod
     def save(cls, info, user, cleaned_input):
-        # try:
         password = cleaned_input["password"]
         user.set_password(password)
         user.private_metadata = {
@@ -133,8 +131,6 @@ class AccountRegister(ModelMutation):
 
         account_events.customer_account_created_event(user=user)
         info.context.plugins.customer_created(customer=user)
-        # except Exception as e:
-        #     return
 
 
 class AccountInput(graphene.InputObjectType):
