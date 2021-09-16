@@ -17,8 +17,8 @@ class OrderCreatedPlugin(BasePlugin):
     def order_created(self, order, previous_value):
 
         private_metadata = {
-            'due_date': 123,
-            'customer_purchase_order_num': 'test',
+            'due_date': 1631797705359,
+            'customer_purchase_order_num': 123,
             'fo_payment_status': 'PREPAID'
         }
         order.private_metadata = private_metadata

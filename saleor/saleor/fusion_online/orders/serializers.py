@@ -39,17 +39,16 @@ class SalesOrderItemSerializer(ModelSerializer):
         model = OrderLine
         fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
 
-class SalesOrderSerializer(ModelSerializer):
-    items = SalesOrderItemSerializer(many=True)
-    entered_by_hubspot_owner_id = IntegerField(source='entered_by')
-
 class ShipToFieldSerializer(ModelSerializer):
-    fo_ship_to_address_ref_id = CharField(source="pk")
+    fo_ship_to_address_ref_id = IntegerField(source="pk")
     address = SerializerMethodField('get_street_address')
     state = CharField(source='country_area')
+    hubspot_company_id = IntegerField(source='customer_id', read_only=True)
+    customer_id = IntegerField(write_only=True)
+
     class Meta:
         model = Address
-        fields = ["fo_ship_to_address_ref_id", "customer_id", "ship_to_name", "address", "city", "state", "country", "ship_via", "vat_id"]
+        fields = ["fo_ship_to_address_ref_id", "customer_id", "ship_to_name", "address", "city", "state", "country", "ship_via", "vat_id", "hubspot_company_id"]
     
     def get_street_address(self, obj):
         addr1 = obj.street_address_1
@@ -68,18 +67,18 @@ class ShipToField(RelatedField):
 
 
 class SalesOrderSerializer(ModelSerializer):
-    hubspot_vid = IntegerField(default=0, read_only=True)
-    entered_by = IntegerField(default=0, read_only=True)
+    hubspot_vid = IntegerField(default=908051, read_only=True)
+    entered_by_hubspot_owner_id = IntegerField(read_only=True, default=7964957)
     ship_to = ShipToField(queryset=Address.objects.all())
     items = SalesOrderItemSerializer(many=True)
     customer_purchase_order_num = CharField(source='private_metadata.customer_purchase_order_num')
     due_date = IntegerField(source='private_metadata.due_date')
-    fo_order_ref_id = CharField(source='pk', read_only=True)
+    fo_order_ref_id = IntegerField(source='pk', read_only=True)
     fo_payment_status = CharField(source='private_metadata.fo_payment_status')
     class Meta:
         model = Order
-        fields = ['hubspot_vid', 'customer_purchase_order_num', 'entered_by',
-                  'ship_to', 'due_date', 'items', 'fo_order_ref_id', 'fo_payment_status']
+        fields = ['hubspot_vid', 'customer_purchase_order_num',
+                  'ship_to', 'due_date', 'items', 'fo_order_ref_id', 'fo_payment_status', 'entered_by_hubspot_owner_id']
     
 
     def create(self, validated_data):
