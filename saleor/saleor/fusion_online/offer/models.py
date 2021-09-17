@@ -31,7 +31,7 @@ VENDOR_REGION_CHOICES = [
 
 
 class Vendor(models.Model):
-    vendor_name = models.CharField(max_length=150)
+    vendor_name = models.CharField(max_length=50)
     vendor_number = models.BigIntegerField(unique=True)
     vendor_type = models.CharField(
         max_length=50,
@@ -51,21 +51,19 @@ class Vendor(models.Model):
 class Offer(models.Model):
     type = models.CharField(
         max_length=50,
-        blank=True, 
-        default="",
         choices=TYPE_CHOICES
     )
-    offer_id = models.IntegerField()
-    lead_time_days = models.IntegerField(default=-1)
-    date_added = models.BigIntegerField(null=True)
+    offer_id = models.IntegerField(null=True)
+    lead_time_days = models.IntegerField(MinValueValidator(limit_value=-1))
+    date_added = models.BigIntegerField()
     item_num_id = models.BigIntegerField()
     mpn = models.CharField(max_length=50)
-    mcode = models.CharField(max_length=50)
-    quantity = models.IntegerField(MinValueValidator(limit_value=0))
-    offer_price = models.DecimalField(max_digits=15, decimal_places=5)
-    date_code = models.CharField(max_length=50, blank=True, default="")
-    comment = models.CharField(max_length=300, blank=True, default="")
-    coo = models.CharField(max_length=60, blank=True, default="")
+    mcode = models.CharField(max_length=10)
+    quantity = models.IntegerField(MinValueValidator(limit_value=1))
+    offer_price = models.DecimalField(max_digits=14, decimal_places=5)
+    date_code = models.CharField(max_length=50, blank=True, null=True)
+    comment = models.CharField(max_length=300, blank=True, null=True)
+    coo = models.CharField(max_length=60)
     vendor = models.ForeignKey(
         Vendor,
         related_name="offers",
@@ -73,7 +71,7 @@ class Offer(models.Model):
         on_delete=SET_NULL
     )
     tariff_rate = models.DecimalField(
-        max_digits=10,
+        max_digits=14,
         decimal_places=5,
         null=True,
         blank=True
