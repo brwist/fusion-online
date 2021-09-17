@@ -20,15 +20,18 @@ def handler(request):
             'vendor_type': data.pop('vendor_type', None),
             'vendor_region': data.pop('vendor_region', None)
         }
-        
-        vendor_serializer = VendorSerializer(data=vendor_data)
+        try:
+            vendor = Vendor.objects.get(vendor_number=vendor_data['vendor_number'])
+            vendor_serializer = VendorSerializer(vendor, data=vendor_data)
+        except Vendor.DoesNotExist:
+            vendor_serializer = VendorSerializer(data=vendor_data)
         
         if vendor_serializer.is_valid():
-            vendor = Vendor.objects.get_or_create(vendor_serializer.data)
+            vendor_instance = vendor_serializer.save()
         else:
             return JsonResponse(vendor_serializer.errors, status=400)
 
-        data['vendor'] = vendor[0].pk
+        data['vendor'] = vendor_instance.pk
         offer_serializer = OfferSerializer(data=data)
         if offer_serializer.is_valid():
             result = offer_serializer.save()
