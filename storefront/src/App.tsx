@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, useCart } from '@saleor/sdk';
-import { Switch, Route, useLocation, Redirect } from 'react-router-dom';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { ProductDetail } from './components/ProductDetail/ProductDetail';
@@ -48,6 +48,8 @@ function App() {
     subtractItem,
   } = useCart();
   const [showToast, setShowToast] = useState<ToastState>();
+  const location = useLocation();
+  const history = useHistory();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -84,14 +86,20 @@ function App() {
       if (!showToast) {
         setShowToast({ message: 'Your email has been confirmed! Please log in.', variant: 'success' });
       }
-
-      // if (user) {
-      //   return <AccountPage signOut={signOut} user={user} />;
-      // }
     } else {
-      console.error(data?.confirmAccount?.errors);
+      console.error('confirm errors', data?.confirmAccount?.errors);
     }
   }
+
+  const handleCloseConfirmation = () => {
+    setShowToast(undefined);
+    let queryParams = new URLSearchParams(location.search);
+    queryParams.delete('email');
+    queryParams.delete('token');
+    history.replace({
+      search: queryParams.toString(),
+    });
+  };
 
   return authenticated && user ? (
     <>
@@ -129,7 +137,14 @@ function App() {
     <>
       <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
       {showToast && (
-        <Toast>
+        <Toast
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+          }}
+          onClose={handleCloseConfirmation}
+        >
           <Toast.Header>
             <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
             <strong className="me-auto">RocketChips</strong>

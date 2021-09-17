@@ -50,10 +50,11 @@ class HubspotRegistration:
         return parts[1]
 
     def register_new_hubspot_user(self, user):
-        r = self.search_userbase(user.email)
+        r = self.search_hubspot_userbase(user.email)
         if len(r['results']) > 0:
             print(
                 '"%s" hubspot emails found' % str(r['total']))
+            hubspot_user = r['results'][0]
         else:
             print(
                 'No existing hubspot emails found for email "%s", creating new account in hubspot.' % user.email)
@@ -80,22 +81,25 @@ class HubspotRegistration:
 
                 company_payload = {
                     "name": user.private_metadata['company'],
-                    "domain": self.get_email_domain(user.email)
+                    "domain": self.get_email_domain(user.email),
+                    "region_rms": user.private_metadata['region']
                 }
 
                 company = self.create_company(company_payload)
 
                 # Create user with property role_rc = ADMIN
                 hubspot_user = self.add_user(user, 'Admin')
-                print(
-                    'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
+                if hubspot_user:
+                    print(
+                        'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
-                # Create the association
-                self.associate_company_with_contact(company['id'], hubspot_user['id'])
+                    # Create the association
+                    self.associate_company_with_contact(
+                        company['id'], hubspot_user['id'])
 
         return hubspot_user
 
-    def search_userbase(self, email):
+    def search_hubspot_userbase(self, email):
         payload = {
             "filterGroups": [
                 {
@@ -123,8 +127,7 @@ class HubspotRegistration:
             "firstname": user.first_name,
             "lastname": user.last_name,
             "customer_approval_status_rc": "Limited",
-            "role_rc": role,
-            "region_rms": user.private_metadata.region
+            "role_rc": role
         }
         payload = {
             "properties": data
