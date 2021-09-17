@@ -15,8 +15,8 @@ def handler(request):
     try: 
         data = JSONParser().parse(request)
         vendor_data = {
-            'company': data.pop('company', None),
-            'vendor_number': data.pop('source', None),
+            'vendor_name': data.pop('vendor_name', None),
+            'vendor_number': data.pop('vendor_number', None),
             'vendor_type': data.pop('vendor_type', None),
             'vendor_region': data.pop('vendor_region', None)
         }
