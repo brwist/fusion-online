@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 11.1
--- Dumped by pg_dump version 13.2
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1371,14 +1371,19 @@ CREATE TABLE public.fusion_online_offer (
     id integer NOT NULL,
     type character varying(50) NOT NULL,
     lead_time_days integer NOT NULL,
-    date_added bigint,
-    date_code character varying(50) NOT NULL,
-    comment character varying(300) NOT NULL,
-    vendor_type character varying(50) NOT NULL,
-    vendor_region character varying(50) NOT NULL,
-    product_variant_id integer NOT NULL,
-    tariff_rate double precision,
-    coo character varying(60) NOT NULL
+    date_added bigint NOT NULL,
+    date_code character varying(50),
+    comment character varying(300),
+    product_variant_id integer,
+    tariff_rate numeric(14,5),
+    coo character varying(60) NOT NULL,
+    item_num_id bigint NOT NULL,
+    mcode character varying(10) NOT NULL,
+    mpn character varying(50) NOT NULL,
+    offer_id integer,
+    offer_price numeric(14,5) NOT NULL,
+    quantity integer NOT NULL,
+    vendor_id integer
 );
 
 
@@ -1568,6 +1573,43 @@ ALTER TABLE public.fusion_online_shippingaddress_id_seq OWNER TO saleor;
 --
 
 ALTER SEQUENCE public.fusion_online_shippingaddress_id_seq OWNED BY public.fusion_online_shippingaddress.id;
+
+
+--
+-- Name: fusion_online_vendor; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_vendor (
+    id integer NOT NULL,
+    vendor_name character varying(50) NOT NULL,
+    vendor_number bigint NOT NULL,
+    vendor_region character varying(50) NOT NULL,
+    vendor_type character varying(50) NOT NULL
+);
+
+
+ALTER TABLE public.fusion_online_vendor OWNER TO saleor;
+
+--
+-- Name: fusion_online_vendor_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_vendor_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_vendor_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_vendor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_vendor_id_seq OWNED BY public.fusion_online_vendor.id;
 
 
 --
@@ -4223,6 +4265,13 @@ ALTER TABLE ONLY public.fusion_online_shippingaddress ALTER COLUMN id SET DEFAUL
 
 
 --
+-- Name: fusion_online_vendor id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_vendor_id_seq'::regclass);
+
+
+--
 -- Name: giftcard_giftcard id; Type: DEFAULT; Schema: public; Owner: saleor
 --
 
@@ -4739,6 +4788,12 @@ COPY public.account_customerevent (id, date, type, parameters, order_id, user_id
 44	2021-09-09 15:21:49.232493+00	account_created	{}	\N	28
 45	2021-09-09 15:32:50.412853+00	account_created	{}	\N	29
 46	2021-09-09 16:10:48.774413+00	account_created	{}	\N	30
+47	2021-09-16 17:10:17.54216+00	account_created	{}	\N	31
+48	2021-09-16 17:30:41.273628+00	account_created	{}	\N	32
+49	2021-09-16 17:47:14.105502+00	account_created	{}	\N	33
+50	2021-09-16 17:49:10.135284+00	account_created	{}	\N	34
+51	2021-09-16 17:53:54.846519+00	account_created	{}	\N	35
+52	2021-09-16 17:55:07.4648+00	account_created	{}	\N	36
 \.
 
 
@@ -4765,10 +4820,12 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key) FROM stdin;
 2	f	samantha.hardy@example.com	t	t	pbkdf2_sha256$216000$BYG0cje7jm4k$4oClWOSHwFIguqpyfstyD44yVa05zGaVFBhL/hh9ZnA=	2021-05-19 15:49:25.684364+00	\N	3	3	\N	Samantha	Hardy		{}	{}	2Vcvm2mC0kll
 3	f	nicholas.nelson@example.com	t	t	pbkdf2_sha256$216000$7hUgpMhlxgtq$OpsniCUxUTmUqmjRrsbhqnXcu+8UM523zQiMktiTr1s=	2021-05-19 15:49:25.795732+00	\N	4	4	\N	Nicholas	Nelson		{}	{}	xR2SUxE8VhMk
+34	f	tester123@example.com	f	f	pbkdf2_sha256$216000$cgY0mw4jgBHf$lD88b6CtTBSo9rsg9VAdVwB42Nh/veZ5Ph0H6zuiQ1Y=	2021-09-16 17:49:10.003943+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	bNQaqfd7oViV
 6	f	test@test.com	f	t	pbkdf2_sha256$216000$98hum632Vr3k$cb3Rrv3Ero7bmO6zMWtZQsiWkv2mWob9UgSV2T21Ujs=	2021-06-23 19:50:31.314872+00	2021-09-08 19:52:31.129342+00	\N	\N	\N	Molly	Provencher		{}	{"company": "ACME"}	09Kf0cCTz9M7
 12	f	test6@test.com	f	t	pbkdf2_sha256$216000$0xhARmJk724y$E71nyzvuxXFTYg6S57khV5fqLXqC4cALWG+T8QrarM4=	2021-06-25 19:30:10.352771+00	2021-06-25 19:30:34.071893+00	\N	\N	\N				{}	{}	YKPlJVsdtksf
 22	f	jimtest@example.com	f	f	pbkdf2_sha256$216000$opf4j7k8T0UF$NwVydFhnD0hKIXh1Y+piB2vXo9qKzvbTr6megGuhkcI=	2021-09-08 20:25:16.926635+00	\N	\N	\N	\N				{}	{}	RanxpGXOTsU7
 23	f	mm@example.com	f	f	pbkdf2_sha256$216000$m29e57uIeii8$j6R+534CqYrvcmCnr1039+wM5linIZUqEsy3KSq5xnQ=	2021-09-09 14:19:09.76061+00	\N	\N	\N	\N	Maeghan	Maguire		{}	{}	q5HVPk2qs09o
+31	f	maeghanexample@example.com	f	t	pbkdf2_sha256$216000$BXUZye6GgD0M$SnOVl6o1iUjbLZfrnE9yGV3XjoM8yHrty7FwfCHrv+I=	2021-09-16 17:10:17.294874+00	2021-09-16 17:13:46.313101+00	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "ACME"}	6zJkNVo4vgph
 11	f	test5@test.com	f	t	pbkdf2_sha256$216000$heJlDRr9QOH3$UCD/S8yE8//lRhbDmgwcsuWUf0sP7yTsEk5sRXBDKqI=	2021-06-25 14:26:50.031077+00	2021-06-25 14:27:28.150407+00	\N	\N	\N				{}	{}	onk8A1n97PYz
 26	f	jwhite@example.com	f	t	pbkdf2_sha256$216000$EuipeHuHoN0O$ibZMPwdxxOvwI8hBKUX0tJqZEiNLaUKFKSeMR5JZnV4=	2021-09-09 15:10:24.40271+00	2021-09-09 15:10:46.72579+00	\N	\N	\N	Jack	White		{}	{"region": "Region 2", "company": "ACME"}	jrMOIUMU3rUD
 27	f	test10@test.com	f	f	pbkdf2_sha256$216000$G3ctUJwZWb0M$2y6yEAux30CNerdVHgaU/OY71BUTEViR/mnH4/sfu5Y=	2021-09-09 15:14:59.014058+00	\N	\N	\N	\N				{}	{"region": "Region 2", "company": ""}	xf2ld6WXnhYl
@@ -4790,8 +4847,12 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 29	f	hgwells@example.com	f	f	pbkdf2_sha256$216000$h9LSica7oG8H$UvePYq3dA4puOQHIzfSpIlsgkZxgl53jL7yONPdv3jo=	2021-09-09 15:32:50.282923+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6sexxyyWl1kZ
 30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
 1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-14 18:47:24.025635+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
-5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-03 17:17:15.532342+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+35	f	mprovenc@wellesley.edu	f	f	pbkdf2_sha256$216000$Ynd4yVShm7rm$IIne8IVm3Jv7l7K94lnpCs+1SExaaGbkrnW0cZLP7p8=	2021-09-16 17:53:54.687918+00	\N	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "Test"}	r9vE8wLDNWyJ
+5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-16 17:13:26.418804+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+32	f	ziggy@example.com	f	t	pbkdf2_sha256$216000$IZ3VmjuHO78N$DGYRcL8BMekoVApZhyYRmSryo+e+O8Seou6tGeepr3g=	2021-09-16 17:30:41.030409+00	2021-09-16 17:33:49.39617+00	\N	\N	\N				{}	{}	DWJ1hxf9b5Ov
+33	f	test123@example.com	f	f	pbkdf2_sha256$216000$K1SBq227yMAW$k8IYHRAQmfalq+Hmv1uPD2PS8dyqu9mKQnmSEqmwozo=	2021-09-16 17:47:13.770693+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	0gykgHOyc9sx
 21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
+36	f	1234test@example.com	f	f	pbkdf2_sha256$216000$IkYyi21OkCML$AkpT/BZFdlAYAyPbHWatCEnaoZVFKWmUL4WiPWJIYps=	2021-09-16 17:55:07.331893+00	\N	\N	\N	\N	Test	TESt		{}	{"region": "Americas", "company": "TESt"}	FfYGcf8n47iS
 \.
 
 
@@ -6009,6 +6070,12 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 554	fusion_online	0013_auto_20210903_1854	2021-09-03 18:55:19.915496+00
 555	fusion_online	0013_auto_20210914_1800	2021-09-14 18:05:30.45946+00
 556	fusion_online	0014_merge_20210914_1939	2021-09-14 19:40:22.79668+00
+557	fusion_online	0015_auto_20210917_1441	2021-09-17 14:42:36.078371+00
+558	fusion_online	0016_auto_20210917_1445	2021-09-17 14:46:26.46521+00
+559	fusion_online	0017_auto_20210917_1513	2021-09-17 15:13:31.015425+00
+560	fusion_online	0018_auto_20210917_1831	2021-09-17 18:31:53.539194+00
+561	fusion_online	0019_auto_20210917_1832	2021-09-17 18:33:15.975521+00
+562	fusion_online	0020_auto_20210917_1913	2021-09-17 19:14:02.333343+00
 \.
 
 
@@ -6049,25 +6116,43 @@ COPY public.django_site (id, domain, name) FROM stdin;
 -- Data for Name: fusion_online_offer; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, vendor_type, vendor_region, product_variant_id, tariff_rate, coo) FROM stdin;
-1	vendor_offer	0	1625254322	2 days	test	8	9	21	\N	
-2	vendor_offer	0	1625254322	2 days		8	9	23	\N	
-3	vendor_offer	10	1625254322	2 days		8	9	24	\N	
-4	vendor_offer	10	1625254322	2 days		8	9	46	\N	
-5	vendor_offer	10	1625254322	2 days		8	9	47	\N	
-6	vendor_offer	10	1625254322	2 days		8	9	48	\N	
-7	vendor_offer	10	1625254322	2 days		8	9	49	\N	
-8	vendor_offer	10	1625254322	2 days		8	9	50	\N	
-9	vendor_offer	10	1625254322	2 days		8	9	51	0	
-10	VENDOR_OFFER	10	1625254322	2 days				54	0	
-11	VENDOR_OFFER	0	1625254322	2 days				55	0	
-12	VENDOR_OFFER	-1	1625254322	2 days		BROKER	ASIA	56	0	
-13	VENDOR_OFFER	-1	1625254322	2 days		BROKER	ASIA	58	0	
-14	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	59	12.0012500000000006	string
-15	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	60	12.0012500000000006	string
-16	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	62	12.0012500000000006	string
-17	EXCESS_LIST	-1	1630696738000	string	string	AUTHORIZED_FRANCHISE	ASIA	64	12.0012500000000006	string
-18	EXCESS_LIST	-1	0	string	string	AUTHORIZED_FRANCHISE	ASIA	65	12.0012500000000006	string
+COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, product_variant_id, tariff_rate, coo, item_num_id, mcode, mpn, offer_id, offer_price, quantity, vendor_id) FROM stdin;
+1	vendor_offer	0	1625254322	2 days	test	21	\N		0	string	string	0	0.00000	1	\N
+2	vendor_offer	0	1625254322	2 days		23	\N		0	string	string	0	0.00000	1	\N
+3	vendor_offer	10	1625254322	2 days		24	\N		0	string	string	0	0.00000	1	\N
+4	vendor_offer	10	1625254322	2 days		46	\N		0	string	string	0	0.00000	1	\N
+5	vendor_offer	10	1625254322	2 days		47	\N		0	string	string	0	0.00000	1	\N
+6	vendor_offer	10	1625254322	2 days		48	\N		0	string	string	0	0.00000	1	\N
+7	vendor_offer	10	1625254322	2 days		49	\N		0	string	string	0	0.00000	1	\N
+8	vendor_offer	10	1625254322	2 days		50	\N		0	string	string	0	0.00000	1	\N
+9	vendor_offer	10	1625254322	2 days		51	0.00000		0	string	string	0	0.00000	1	\N
+10	VENDOR_OFFER	10	1625254322	2 days		54	0.00000		0	string	string	0	0.00000	1	\N
+11	VENDOR_OFFER	0	1625254322	2 days		55	0.00000		0	string	string	0	0.00000	1	\N
+12	VENDOR_OFFER	-1	1625254322	2 days		56	0.00000		0	string	string	0	0.00000	1	\N
+13	VENDOR_OFFER	-1	1625254322	2 days		58	0.00000		0	string	string	0	0.00000	1	\N
+14	EXCESS_LIST	-1	0	string	string	59	12.00125	string	0	string	string	0	0.00000	1	\N
+15	EXCESS_LIST	-1	0	string	string	60	12.00125	string	0	string	string	0	0.00000	1	\N
+16	EXCESS_LIST	-1	0	string	string	62	12.00125	string	0	string	string	0	0.00000	1	\N
+17	EXCESS_LIST	-1	1630696738000	string	string	64	12.00125	string	0	string	string	0	0.00000	1	\N
+18	EXCESS_LIST	-1	0	string	string	65	12.00125	string	0	string	string	0	0.00000	1	\N
+19	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+20	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+21	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+22	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+23	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+24	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+25	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+26	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+27	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+28	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+29	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+30	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+31	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+32	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+33	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+34	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+35	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+36	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
 \.
 
 
@@ -6149,6 +6234,17 @@ COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_v
 34	124	Home	USPS	not sure	\N	pending	2021-09-02 17:26:41.634936+00	2021-09-02 17:26:41.634962+00	70
 35	124	Home	USPS	not sure	\N	pending	2021-09-02 17:31:29.916085+00	2021-09-02 17:31:29.916114+00	71
 36	124	Home	USPS	not sure	\N	pending	2021-09-02 17:32:10.541413+00	2021-09-02 17:32:10.541442+00	72
+\.
+
+
+--
+-- Data for Name: fusion_online_vendor; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_vendor (id, vendor_name, vendor_number, vendor_region, vendor_type) FROM stdin;
+1	Test Company	1	ASIA	AUTHORIZED_FRANCHISE
+2	Test Name Change	3	USA	AUTHORIZED_FRANCHISE
+3	Test Company	2	USA	AUTHORIZED_FRANCHISE
 \.
 
 
@@ -7470,7 +7566,7 @@ COPY public.wishlist_wishlistitem_variants (id, wishlistitem_id, productvariant_
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 46, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 52, true);
 
 
 --
@@ -7659,7 +7755,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 556, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 562, true);
 
 
 --
@@ -7694,7 +7790,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 18, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 36, true);
 
 
 --
@@ -7723,6 +7819,13 @@ SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 80, true);
 --
 
 SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true);
+
+
+--
+-- Name: fusion_online_vendor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 3, true);
 
 
 --
@@ -8079,7 +8182,7 @@ SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 5, true);
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 30, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 36, true);
 
 
 --
@@ -8647,6 +8750,22 @@ ALTER TABLE ONLY public.fusion_online_rfqsubmission
 
 ALTER TABLE ONLY public.fusion_online_shippingaddress
     ADD CONSTRAINT fusion_online_shippingaddress_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_vendor fusion_online_vendor_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor
+    ADD CONSTRAINT fusion_online_vendor_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_vendor fusion_online_vendor_vendor_number_0a200c5f_uniq; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor
+    ADD CONSTRAINT fusion_online_vendor_vendor_number_0a200c5f_uniq UNIQUE (vendor_number);
 
 
 --
@@ -9897,6 +10016,13 @@ CREATE INDEX django_site_domain_a2e37b91_like ON public.django_site USING btree 
 
 
 --
+-- Name: fusion_online_offer_vendor_id_62263378; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_offer_vendor_id_62263378 ON public.fusion_online_offer USING btree (vendor_id);
+
+
+--
 -- Name: fusion_online_rfqlineitem_rfq_submission_id_f527f82a; Type: INDEX; Schema: public; Owner: saleor
 --
 
@@ -11093,6 +11219,14 @@ ALTER TABLE ONLY public.discount_vouchertranslation
 
 ALTER TABLE ONLY public.fusion_online_offer
     ADD CONSTRAINT fusion_online_offer_product_variant_id_4c6295fc_fk_product_p FOREIGN KEY (product_variant_id) REFERENCES public.product_productvariant(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_offer fusion_online_offer_vendor_id_62263378_fk_fusion_on; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_offer
+    ADD CONSTRAINT fusion_online_offer_vendor_id_62263378_fk_fusion_on FOREIGN KEY (vendor_id) REFERENCES public.fusion_online_vendor(id) DEFERRABLE INITIALLY DEFERRED;
 
 
 --
