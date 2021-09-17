@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 
 from .serializers import SalesOrderSerializer
 
-from saleor.fusion_online.notifications.utils import send_shipping_address_notification
+from saleor.fusion_online.notifications.utils import send_shipping_address_notification, send_sales_order_notification
 
 
 entered_by = 7964957
@@ -62,6 +62,10 @@ def create_order(request):
 
         if serializer.is_valid():
             serializer.save()
+
+            # Send sns
+            send_sales_order_notification(serializer.data)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return JsonResponse(serializer.errors, status=400)
