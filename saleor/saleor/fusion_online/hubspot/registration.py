@@ -45,6 +45,9 @@ class HubspotRegistration:
     def format_associations_endpoint(self, type):
         return 'https://api.hubapi.com/crm/v3/associations/contact/company/batch/' + type + '?hapikey=' + self.api_key
 
+    def format_contact_endpoint(self, contact_id):
+        return 'https://api.hubapi.com/crm/v3/objects/contacts/' + contact_id + '?hapikey=' + self.api_key
+
     def get_email_domain(self, email):
         parts = email.split('@')
         return parts[1]
@@ -137,7 +140,6 @@ class HubspotRegistration:
                 'Content-Type': 'application/json'
             }))
         if r.status_code != 201:
-            a = 1
             return None
         else:
             hubspot_user = r.json()
@@ -202,3 +204,27 @@ class HubspotRegistration:
 
         resp = r.json()
         return resp
+
+    def validate_email(self, email):
+        r = self.search_hubspot_userbase(email)
+        if len(r['results']) > 0:
+            print(
+                '"%s" hubspot emails found' % str(r['total']))
+            hubspot_user = r['results'][0]
+            payload = {
+                "properties": {
+                    "email_verified__rc_": "true"
+                }
+            }
+            url = self.format_contact_endpoint(hubspot_user['id'])
+            r = requests.patch(url, data=json.dumps(payload), headers=(
+                {
+                    'Content-Type': 'application/json'
+                }))
+            if r.status_code != 200:
+                return None
+            else:
+                hubspot_user = r.json()
+                return hubspot_user
+        else:
+            return None
