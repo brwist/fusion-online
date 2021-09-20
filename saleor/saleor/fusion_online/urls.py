@@ -18,8 +18,9 @@ urlpatterns = [
     path("rfqs/<int:rfq_submission_pk>/responses/<int:rfq_line_item_pk>",
          rfq_views.post_rfq_response_handler),
     path("orders", order_views.get_orders),
-    path("orders/<int:pk>", order_views.OrderDetail.as_view()),
     path("hubspot-contacts/<int:contact_id>", hubspot_views.get_contact),
     path("hubspot-contacts", hubspot_views.create_contact),
-    path("hubspot-companies", hubspot_views.create_company)
+    path("hubspot-companies", hubspot_views.create_company),
+    path("sales-orders/<int:pk>", order_views.OrderDetail.as_view()),
+    path("orders-create", order_views.create_order),
 ]

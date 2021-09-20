@@ -11,7 +11,7 @@ from django.db.models import JSONField  # type: ignore
 from django.db.models import F, Max, Sum
 from django.utils.timezone import now
 from django_measurement.models import MeasurementField
-from django_prices.models import MoneyField, TaxedMoneyField
+from django_prices.models import MoneyField as BaseMoneyField, TaxedMoneyField as BaseTaxedMoneyField
 from measurement.measures import Weight
 from prices import Money
 
@@ -27,6 +27,18 @@ from ..payment import ChargeStatus, TransactionKind
 from ..shipping.models import ShippingMethod
 from . import FulfillmentStatus, OrderEvents, OrderStatus
 
+class MoneyField(BaseMoneyField):
+    serialize = True
+    unique_for_date = False
+    unique_for_month = False
+    unique_for_year = False
+
+
+class TaxedMoneyField(BaseTaxedMoneyField):
+    serialize = True
+    unique_for_date = False
+    unique_for_month = False
+    unique_for_year = False
 
 class OrderQueryset(models.QuerySet):
     def get_by_checkout_token(self, token):
@@ -336,7 +348,14 @@ class Order(ModelWithMetadata):
 
     def get_total_weight(self):
         return self.weight
-
+    
+    @property
+    def ship_to(self):
+        return self.shipping_address
+    
+    @property
+    def items(self):
+        return self.lines
 
 class OrderLineQueryset(models.QuerySet):
     def digital(self):
@@ -424,6 +443,7 @@ class OrderLine(models.Model):
     @property
     def quantity_unfulfilled(self):
         return self.quantity - self.quantity_fulfilled
+    
 
     @property
     def is_digital(self) -> Optional[bool]:
@@ -434,6 +454,17 @@ class OrderLine(models.Model):
         has_digital = hasattr(self.variant, "digital_content")
         return is_digital and has_digital
 
+    @property
+    def item_num_id(self):
+        return self.variant.product.metadata.get('item_num_id')
+    
+    @property
+    def mpn(self):
+        return self.variant.product.metadata.get('mpn')
+    
+    @property
+    def mcode(self):
+        return self.variant.product.metadata.get('mcode')
 
 class Fulfillment(ModelWithMetadata):
     fulfillment_order = models.PositiveIntegerField(editable=False)

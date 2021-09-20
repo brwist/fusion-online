@@ -1,4 +1,6 @@
+from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.deletion import SET_NULL
 from ...product.models import ProductVariant
 
 TYPE_CHOICES = [
@@ -27,35 +29,58 @@ VENDOR_REGION_CHOICES = [
     ("OTHER", "Other")
 ]
 
-class Offer(models.Model):
-    type = models.CharField(
-        max_length=50,
-        blank=True, 
-        default="",
-        choices=TYPE_CHOICES
-    )
-    lead_time_days = models.IntegerField(default=-1)
-    date_added = models.BigIntegerField(null=True)
-    date_code = models.CharField(max_length=50, blank=True, default="")
-    comment = models.CharField(max_length=300, blank=True, default="")
-    coo = models.CharField(max_length=60, blank=True, default="")
+
+class Vendor(models.Model):
+    vendor_name = models.CharField(max_length=50)
+    vendor_number = models.BigIntegerField(unique=True)
     vendor_type = models.CharField(
         max_length=50,
-        blank=True,
-        default="",
-        choices=VENDOR_TYPE_CHOICES
+        choices=VENDOR_TYPE_CHOICES,
     )
     vendor_region = models.CharField(
         max_length=50,
-        blank=True,
-        default="",
-        choices=VENDOR_REGION_CHOICES
+        choices=VENDOR_REGION_CHOICES,
     )
-    tariff_rate = models.FloatField(null=True, blank=True)
+    
+    class Meta:
+        app_label = "fusion_online"
+
+
+class Offer(models.Model):
+    type = models.CharField(
+        max_length=50,
+        choices=TYPE_CHOICES
+    )
+    offer_id = models.IntegerField(null=True)
+    lead_time_days = models.IntegerField(MinValueValidator(limit_value=-1))
+    date_added = models.BigIntegerField()
+    item_num_id = models.BigIntegerField()
+    mpn = models.CharField(max_length=50)
+    mcode = models.CharField(max_length=10)
+    quantity = models.IntegerField(MinValueValidator(limit_value=1))
+    offer_price = models.DecimalField(max_digits=14, decimal_places=5)
+    date_code = models.CharField(max_length=50, blank=True, null=True)
+    comment = models.CharField(max_length=300, blank=True, null=True)
+    coo = models.CharField(max_length=60)
+    vendor = models.ForeignKey(
+        Vendor,
+        related_name="offers",
+        null=True,
+        on_delete=SET_NULL
+    )
+    tariff_rate = models.DecimalField(
+        max_digits=14,
+        decimal_places=5,
+        null=True,
+        blank=True
+    )
     product_variant = models.OneToOneField(
         ProductVariant,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True
     )
 
     class Meta:
         app_label = "fusion_online"
+    
+
