@@ -228,3 +228,24 @@ class HubspotRegistration:
                 return hubspot_user
         else:
             return None
+
+    def get_hubspot_user_by_email(self, email):
+        r = self.search_hubspot_userbase(email)
+        if len(r['results']) > 0:
+            hubspot_user = r['results'][0]
+            return hubspot_user
+        else:
+            return None
+
+    def get_hubspot_user_by_id(self, contact_id):
+        url = self.format_contact_endpoint(
+            contact_id) + '&properties=customer_approval_status_rc,role_rc'
+        r = requests.get(url, headers=(
+            {
+                'Content-Type': 'application/json'
+            }))
+        if r.status_code != 200:
+            return None
+        else:
+            hubspot_user = r.json()
+            return hubspot_user

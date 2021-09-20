@@ -111,9 +111,11 @@ class AccountRegister(ModelMutation):
         hubspot_reg = HubspotRegistration()
         if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
             user.is_active = False
-            user.save()
 
             hubspot_user = hubspot_reg.register_new_hubspot_user(user)
+            user.private_metadata['hubspot_user_id'] = hubspot_user['id']
+
+            user.save()
 
             # Send confirmation email
 

@@ -48,6 +48,7 @@ function App() {
     subtractItem,
   } = useCart();
   const [showToast, setShowToast] = useState<ToastState>();
+  const [confirming, setConfirming] = useState<Boolean>(false);
   const location = useLocation();
   const history = useHistory();
   const handleSignIn = async (email: string, password: string) => {
@@ -64,6 +65,7 @@ function App() {
        * User signed in successfully.
        **/
       console.log('Sign In Successful:', data);
+      handleCloseConfirmation();
     }
   };
 
@@ -74,31 +76,35 @@ function App() {
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
-  const [confirmAccount, { data }] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
+  const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (email && token) {
+  if (email && token && !confirming) {
+    setConfirming(true);
     confirmAccount({
       variables: { email, token },
     });
-    if (data?.confirmAccount?.errors.length === 0) {
+  }
+
+  if (confirming) {
+    if (confirmAccountData?.data?.confirmAccount?.errors.length === 0) {
       console.log('Account confirmed');
-      console.log('user: ', user);
       if (!showToast) {
         setShowToast({ message: 'Your email has been confirmed! Please log in.', variant: 'success' });
       }
     } else {
-      console.error('confirm errors', data?.confirmAccount?.errors);
+      console.error('confirm errors', confirmAccountData?.data?.confirmAccount?.errors);
     }
   }
 
   const handleCloseConfirmation = () => {
-    setShowToast(undefined);
+    setConfirming(false);
     let queryParams = new URLSearchParams(location.search);
     queryParams.delete('email');
     queryParams.delete('token');
     history.replace({
       search: queryParams.toString(),
     });
+    setShowToast(undefined);
   };
 
   return authenticated && user ? (
