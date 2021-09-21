@@ -4,29 +4,27 @@ from django.db.models.deletion import SET_NULL
 from ...product.models import ProductVariant
 
 TYPE_CHOICES = [
-    ("EXCESS_LIST", "Excess List"),
-    ("STOCK_LIST", "Stock List"),
-    ("VENDOR_OFFER", "Vendor Offer"),
-    ("RMS_OFFER", "RMS Offer"),
-    ("PO", "PO")]
+    ("Excess List", "Excess List"),
+    ("Stock List", "Stock List"),
+    ("Vendor Offer", "Vendor Offer"),
+    ("RMS Offer", "RMS Offer"),
+    ("RMS PO", "RMS PO")]
 
 VENDOR_TYPE_CHOICES = [
-    ("UNCLASSIFIED", "Unclassified"),
-    ("BROKER", "Broker"),
-    ("MFG_DIRECT", "Mfg. Direct"),
-    ("OEM_CM_EXCESS", "OEM/CM Excess"),
-    ("AUTHORIZED_FRANCHISE", "Authorized/Franchise"),
-    ("EXPENSE_NON_PRODUCT", "Expense (non-product)"),
-    ("SERVICE", "Service")
+    ("Unclassified", "Unclassified"),
+    ("Broker", "Broker"),
+    ("Mfg. Direct", "Mfg. Direct"),
+    ("OEM/CM Excess", "OEM/CM Excess"),
+    ("Authorized/Franchise", "Authorized/Franchise"),
+    ("Expense (non-product)", "Expense (non-product)"),
+    ("Service", "Service")
 ]
 
 VENDOR_REGION_CHOICES = [
-    ("USA", "USA"),
-    ("ASIA_PACIFIC", "Asia/Pacific"),
-    ("ASIA", "Asia"),
+    ("Americas", "Americas"),
+    ("Asia/Pacific", "Asia/Pacific"),
     ("EMEA", "EMEA"),
-    ("EUROPE", "Europe"),
-    ("OTHER", "Other")
+    ("Other", "Other")
 ]
 
 
