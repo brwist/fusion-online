@@ -4,7 +4,7 @@ import { Button, Modal, Table, Form} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faShoppingCart } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-
+import manufacturers from '../../utils/manufacturers.json'
 import { Product } from '../../generated/graphql';
 
 import './producttable.scss';
@@ -59,7 +59,8 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
-  const mcode = (metadata.find((item) => item?.key === 'mcode'))?.value
+  const productMcode = (metadata.find((item) => item?.key === 'mcode'))?.value
+  const manufacturer = manufacturers.find(({mcode, manufacturer}) => mcode === productMcode)?.manufacturer || productMcode
 
   return (<tr>
     <td className="pr-0">
@@ -68,7 +69,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     </td>
     <td>
       <div className="small">
-        <strong className="text-uppercase">{mcode}</strong> {variants && variants[0]?.sku}
+        <strong className="text-uppercase">{manufacturer}</strong> {variants && variants[0]?.sku}
       </div>
       <Link style={{textDecoration: "underline"}} to={`/products/${slug}`}>{name}</Link>
       <div className="small mt-1">
