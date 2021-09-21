@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from ...product.models import Product, ProductType, Category, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
+from ..offer.serializers import VendorSerializer
+from ..offer.models import Vendor
 from django.utils.text import slugify
 
 CATEGORY_ID_CHOICES = [
@@ -19,16 +21,13 @@ CATEGORY_ID_CHOICES = [
 ]
 CATEGORY_ID_DICT = dict(CATEGORY_ID_CHOICES)
 
-class VendorSerializer(serializers.Serializer):
-    vendor_name = serializers.CharField(max_length=100)
-    vendor_number = serializers.IntegerField()
 
 class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
     item_num_id = serializers.IntegerField(max_value=None, min_value=None)
     mcode = serializers.CharField(max_length=10)
     status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
-    vendors = serializers.ListField(child=VendorSerializer())
+    vendors = VendorSerializer(many=True)
     price_item_id = serializers.IntegerField(max_value=None, min_value=None, required=False)
     category_id = serializers.ChoiceField(choices=CATEGORY_ID_CHOICES)
     all_description = serializers.CharField(max_length=250, required=False)
@@ -120,16 +119,38 @@ class ProductSerializer(serializers.Serializer):
         attribute_primary_vendors_values = []
 
         for vendor in validated_data["vendors"]:
-            attribute_primary_vendors_values.append(AttributeValue.objects.get_or_create(
-                name=vendor["vendor_name"],
-                slug=vendor["vendor_number"],
-                attribute=attribute_primary_vendors
-            )[0])
-            AttributeValue.objects.get_or_create(
-                name=vendor["vendor_name"],
-                slug=vendor["vendor_number"],
-                attribute=attribute_vendor
-            )
+            try:
+                attribute_primary_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
+                attribute=attribute_primary_vendors)
+                attribute_primary_value.name = vendor["vendor_name"]
+                attribute_primary_value.save()
+                attribute_primary_vendors_values.append(attribute_primary_value)
+            except AttributeValue.DoesNotExist:
+                attribute_primary_value = AttributeValue.objects.create(
+                    name=vendor["vendor_name"],
+                    slug=vendor["vendor_number"],
+                    attribute=attribute_primary_vendors)
+                attribute_primary_vendors_values.append(attribute_primary_value)
+
+            try:
+                attribute_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
+                attribute=attribute_vendor)
+                attribute_value.name = vendor["vendor_name"]
+                attribute_value.save()
+            except AttributeValue.DoesNotExist:
+                AttributeValue.objects.create(
+                    name=vendor["vendor_name"],
+                    slug=vendor["vendor_number"],
+                    attribute=attribute_vendor
+                )
+            
+            try:
+                vendor_instance = Vendor.objects.get(vendor_number=vendor["vendor_number"])
+                vendor_instance.vendor_name = vendor["vendor_name"]
+                vendor_instance.save()
+            except Vendor.DoesNotExist:
+                Vendor.objects.create(**vendor)
+
         associate_attribute_values_to_instance(product, attribute_primary_vendors, *attribute_primary_vendors_values)
         print("--VENDORS STORED--")
 
@@ -141,16 +162,37 @@ class ProductSerializer(serializers.Serializer):
         attribute_primary_vendors_values = []
 
         for vendor in validated_data["vendors"]:
-            attribute_primary_vendors_values.append(AttributeValue.objects.get_or_create(
-                name=vendor["vendor_name"],
-                slug=vendor["vendor_number"],
-                attribute=attribute_primary_vendors
-            )[0])
-            AttributeValue.objects.get_or_create(
-                name=vendor["vendor_name"],
-                slug=vendor["vendor_number"],
-                attribute=attribute_vendor
-            )
+            try:
+                attribute_primary_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
+                attribute=attribute_primary_vendors)
+                attribute_primary_value.name = vendor["vendor_name"]
+                attribute_primary_value.save()
+                attribute_primary_vendors_values.append(attribute_primary_value)
+            except AttributeValue.DoesNotExist:
+                attribute_primary_value = AttributeValue.objects.create(
+                    name=vendor["vendor_name"],
+                    slug=vendor["vendor_number"],
+                    attribute=attribute_primary_vendors)
+                attribute_primary_vendors_values.append(attribute_primary_value)
+
+            try:
+                attribute_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
+                attribute=attribute_vendor)
+                attribute_value.name = vendor["vendor_name"]
+                attribute_value.save()
+            except AttributeValue.DoesNotExist:
+                AttributeValue.objects.create(
+                    name=vendor["vendor_name"],
+                    slug=vendor["vendor_number"],
+                    attribute=attribute_vendor
+                )
+            
+            try:
+                vendor_instance = Vendor.objects.get(vendor_number=vendor["vendor_number"])
+                vendor_instance.vendor_name = vendor["vendor_name"]
+                vendor_instance.save()
+            except Vendor.DoesNotExist:
+                Vendor.objects.create(**vendor)
         associate_attribute_values_to_instance(instance, attribute_primary_vendors, *attribute_primary_vendors_values)
         print("--VENDORS UPDATED --")
 

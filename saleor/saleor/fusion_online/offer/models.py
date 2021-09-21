@@ -34,10 +34,12 @@ class Vendor(models.Model):
     vendor_type = models.CharField(
         max_length=50,
         choices=VENDOR_TYPE_CHOICES,
+        null=True
     )
     vendor_region = models.CharField(
         max_length=50,
         choices=VENDOR_REGION_CHOICES,
+        null=True
     )
     
     class Meta:
