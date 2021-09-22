@@ -19,7 +19,7 @@ def validate_possible_number(phone, country=None):
 
 
 def customer_is_approved(user):
-    if not user:
+    if not user or 'private_metadata' not in user:
         return False
     if 'customer_approval_status' in user.private_metadata and user.private_metadata['customer_approval_status'] == 'Approved':
         return True
