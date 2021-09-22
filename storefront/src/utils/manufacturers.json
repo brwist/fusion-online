@@ -1,0 +1,5730 @@
+[
+  {
+    "mcode": "HP",
+    "manufacturer": "Hewlett Packard"
+  },
+  {
+    "mcode": "INTEL",
+    "manufacturer": "Intel"
+  },
+  {
+    "mcode": "DELL",
+    "manufacturer": "Dell"
+  },
+  {
+    "mcode": "TI",
+    "manufacturer": "Texas Instruments"
+  },
+  {
+    "mcode": "VISHA",
+    "manufacturer": "Vishay"
+  },
+  {
+    "mcode": "SAM",
+    "manufacturer": "Samsung"
+  },
+  {
+    "mcode": "MURAT",
+    "manufacturer": "Murata"
+  },
+  {
+    "mcode": "ON",
+    "manufacturer": "On Semiconductor"
+  },
+  {
+    "mcode": "MICRO",
+    "manufacturer": "Micron Technology"
+  },
+  {
+    "mcode": "STMIC",
+    "manufacturer": "ST Microelectronics"
+  },
+  {
+    "mcode": "AMD",
+    "manufacturer": "Advanced Micro Devices"
+  },
+  {
+    "mcode": "YAGEO",
+    "manufacturer": "Yageo"
+  },
+  {
+    "mcode": "LENOV",
+    "manufacturer": "Lenovo"
+  },
+  {
+    "mcode": "NXP",
+    "manufacturer": "NXP Semiconductor (Philips)"
+  },
+  {
+    "mcode": "INFIN",
+    "manufacturer": "Infineon"
+  },
+  {
+    "mcode": "AVX",
+    "manufacturer": "AVX"
+  },
+  {
+    "mcode": "TDK",
+    "manufacturer": "TDK"
+  },
+  {
+    "mcode": "AD",
+    "manufacturer": "Analog Devices"
+  },
+  {
+    "mcode": "PANAS",
+    "manufacturer": "Panasonic"
+  },
+  {
+    "mcode": "KEMET",
+    "manufacturer": "Kemet"
+  },
+  {
+    "mcode": "HYNIX",
+    "manufacturer": "Hynix"
+  },
+  {
+    "mcode": "TYCO",
+    "manufacturer": "Tyco"
+  },
+  {
+    "mcode": "FAIRC",
+    "manufacturer": "Fairchild"
+  },
+  {
+    "mcode": "KOA",
+    "manufacturer": "KOA"
+  },
+  {
+    "mcode": "XILIN",
+    "manufacturer": "Xilinx"
+  },
+  {
+    "mcode": "BROAD",
+    "manufacturer": "Broadcom"
+  },
+  {
+    "mcode": "IBM",
+    "manufacturer": "IBM"
+  },
+  {
+    "mcode": "MAXIM",
+    "manufacturer": "Maxim"
+  },
+  {
+    "mcode": "TOSH",
+    "manufacturer": "Toshiba"
+  },
+  {
+    "mcode": "MOLEX",
+    "manufacturer": "Molex"
+  },
+  {
+    "mcode": "MICCP",
+    "manufacturer": "Microchip"
+  },
+  {
+    "mcode": "ALTER",
+    "manufacturer": "Altera"
+  },
+  {
+    "mcode": "LINEA",
+    "manufacturer": "Linear Technology"
+  },
+  {
+    "mcode": "PHILI",
+    "manufacturer": "Philips"
+  },
+  {
+    "mcode": "SEA",
+    "manufacturer": "Seagate"
+  },
+  {
+    "mcode": "CISCO",
+    "manufacturer": "Cisco"
+  },
+  {
+    "mcode": "CYPRE",
+    "manufacturer": "Cypress"
+  },
+  {
+    "mcode": "DIODE",
+    "manufacturer": "Diodes Inc."
+  },
+  {
+    "mcode": "TAIYO",
+    "manufacturer": "Taiyo Yuden"
+  },
+  {
+    "mcode": "RENES",
+    "manufacturer": "Renesas"
+  },
+  {
+    "mcode": "ROHM",
+    "manufacturer": "ROHM"
+  },
+  {
+    "mcode": "IR",
+    "manufacturer": "International Rectifier"
+  },
+  {
+    "mcode": "SYMBO",
+    "manufacturer": "Symbol Technologies"
+  },
+  {
+    "mcode": "LGPHI",
+    "manufacturer": "LG Philips"
+  },
+  {
+    "mcode": "NEXP",
+    "manufacturer": "Nexperia"
+  },
+  {
+    "mcode": "ATMEL",
+    "manufacturer": "Atmel"
+  },
+  {
+    "mcode": "NAT",
+    "manufacturer": "National Semiconductor"
+  },
+  {
+    "mcode": "LITTL",
+    "manufacturer": "Littelfuse"
+  },
+  {
+    "mcode": "AU",
+    "manufacturer": "AU Optronics"
+  },
+  {
+    "mcode": "HITAC",
+    "manufacturer": "Hitachi"
+  },
+  {
+    "mcode": "WEST",
+    "manufacturer": "Western Digital"
+  },
+  {
+    "mcode": "WALSI",
+    "manufacturer": "Walsin Technologies"
+  },
+  {
+    "mcode": "FREES",
+    "manufacturer": "Freescale Semiconductor"
+  },
+  {
+    "mcode": "NICHI",
+    "manufacturer": "Nichicon"
+  },
+  {
+    "mcode": "SUNMI",
+    "manufacturer": "Sun Microsystems"
+  },
+  {
+    "mcode": "SPANS",
+    "manufacturer": "Spansion"
+  },
+  {
+    "mcode": "BOURN",
+    "manufacturer": "Bourns"
+  },
+  {
+    "mcode": "NVIDI",
+    "manufacturer": "Nvidia"
+  },
+  {
+    "mcode": "INTER",
+    "manufacturer": "Intersil"
+  },
+  {
+    "mcode": "QIMON",
+    "manufacturer": "Qimonda (Infineon)"
+  },
+  {
+    "mcode": "SANYO",
+    "manufacturer": "Sanyo"
+  },
+  {
+    "mcode": "AVAGO",
+    "manufacturer": "Avago Technologies"
+  },
+  {
+    "mcode": "IDT",
+    "manufacturer": "Integrated Device Technology"
+  },
+  {
+    "mcode": "CMO",
+    "manufacturer": "CMO"
+  },
+  {
+    "mcode": "LATTI",
+    "manufacturer": "Lattice Semiconductor"
+  },
+  {
+    "mcode": "SAMTE",
+    "manufacturer": "Samtec"
+  },
+  {
+    "mcode": "EPCOS",
+    "manufacturer": "Epcos"
+  },
+  {
+    "mcode": "OSRAM",
+    "manufacturer": "Osram Sylvania Products"
+  },
+  {
+    "mcode": "MARVE",
+    "manufacturer": "Marvell"
+  },
+  {
+    "mcode": "UNITE",
+    "manufacturer": "United Chemi-Con"
+  },
+  {
+    "mcode": "HIROS",
+    "manufacturer": "Hirose"
+  },
+  {
+    "mcode": "TECON",
+    "manufacturer": "TE Connectivity"
+  },
+  {
+    "mcode": "MICRE",
+    "manufacturer": "Micrel"
+  },
+  {
+    "mcode": "NANYA",
+    "manufacturer": "Nanya"
+  },
+  {
+    "mcode": "SILLA",
+    "manufacturer": "Silicon Laboratories"
+  },
+  {
+    "mcode": "FCI",
+    "manufacturer": "FCI Electronics"
+  },
+  {
+    "mcode": "ASAHI",
+    "manufacturer": "Asahi Kasei"
+  },
+  {
+    "mcode": "MOTOR",
+    "manufacturer": "Motorola"
+  },
+  {
+    "mcode": "WINBO",
+    "manufacturer": "Winbond"
+  },
+  {
+    "mcode": "SHARP",
+    "manufacturer": "Sharp"
+  },
+  {
+    "mcode": "EPSON",
+    "manufacturer": "Epson"
+  },
+  {
+    "mcode": "ALLEG",
+    "manufacturer": "Allegro"
+  },
+  {
+    "mcode": "NEC",
+    "manufacturer": "NEC"
+  },
+  {
+    "mcode": "PULSE",
+    "manufacturer": "Pulse Engineering"
+  },
+  {
+    "mcode": "SEMTE",
+    "manufacturer": "Semtech"
+  },
+  {
+    "mcode": "KINGS",
+    "manufacturer": "Kingston"
+  },
+  {
+    "mcode": "FUJIT",
+    "manufacturer": "Fujitsu"
+  },
+  {
+    "mcode": "ELPID",
+    "manufacturer": "Elpida"
+  },
+  {
+    "mcode": "JST",
+    "manufacturer": "Japan Solderless Terminal Co."
+  },
+  {
+    "mcode": "SANDI",
+    "manufacturer": "Sandisk"
+  },
+  {
+    "mcode": "NIC",
+    "manufacturer": "NIC Components"
+  },
+  {
+    "mcode": "NUMON",
+    "manufacturer": "Numonyx"
+  },
+  {
+    "mcode": "MACRO",
+    "manufacturer": "Macronix"
+  },
+  {
+    "mcode": "PNY",
+    "manufacturer": "PNY Technologies"
+  },
+  {
+    "mcode": "SKY",
+    "manufacturer": "Skyworks Solutions Inc"
+  },
+  {
+    "mcode": "EFFIC",
+    "manufacturer": "Efficient Networks"
+  },
+  {
+    "mcode": "REALT",
+    "manufacturer": "Realtek"
+  },
+  {
+    "mcode": "OMRON",
+    "manufacturer": "Omron"
+  },
+  {
+    "mcode": "ACER",
+    "manufacturer": "Acer"
+  },
+  {
+    "mcode": "NIPPO",
+    "manufacturer": "Nippon Chemicon"
+  },
+  {
+    "mcode": "LSI",
+    "manufacturer": "LSI Logic"
+  },
+  {
+    "mcode": "ISSI",
+    "manufacturer": "Integrated Silicon Solutions I"
+  },
+  {
+    "mcode": "SUPMI",
+    "manufacturer": "Supermicro"
+  },
+  {
+    "mcode": "LITEO",
+    "manufacturer": "Lite-On Semiconductor"
+  },
+  {
+    "mcode": "FUSIO",
+    "manufacturer": "Fusion"
+  },
+  {
+    "mcode": "DYSON",
+    "manufacturer": "Dyson"
+  },
+  {
+    "mcode": "EVER",
+    "manufacturer": "Everlight"
+  },
+  {
+    "mcode": "PLX",
+    "manufacturer": "PLX Technology"
+  },
+  {
+    "mcode": "NORTE",
+    "manufacturer": "Nortel"
+  },
+  {
+    "mcode": "CIRRU",
+    "manufacturer": "Cirrus Logic"
+  },
+  {
+    "mcode": "3COM",
+    "manufacturer": "3COM"
+  },
+  {
+    "mcode": "QUALC",
+    "manufacturer": "Qualcomm"
+  },
+  {
+    "mcode": "SONY",
+    "manufacturer": "Sony"
+  },
+  {
+    "mcode": "MICSM",
+    "manufacturer": "Microsemi"
+  },
+  {
+    "mcode": "KINGB",
+    "manufacturer": "Kingbright"
+  },
+  {
+    "mcode": "COILC",
+    "manufacturer": "Coilcraft"
+  },
+  {
+    "mcode": "PMCSI",
+    "manufacturer": "PMC Sierra"
+  },
+  {
+    "mcode": "PHOEN",
+    "manufacturer": "Phoenix Contact"
+  },
+  {
+    "mcode": "MELLA",
+    "manufacturer": "Mellanox Technologies"
+  },
+  {
+    "mcode": "ASUS",
+    "manufacturer": "Asus"
+  },
+  {
+    "mcode": "RICH",
+    "manufacturer": "Richtek"
+  },
+  {
+    "mcode": "CTS",
+    "manufacturer": "CTS"
+  },
+  {
+    "mcode": "GIGAB",
+    "manufacturer": "Giga Byte Tech"
+  },
+  {
+    "mcode": "AMCC",
+    "manufacturer": "American Micro Circuit"
+  },
+  {
+    "mcode": "JOHAN",
+    "manufacturer": "Johanson Dielectrics"
+  },
+  {
+    "mcode": "AMP",
+    "manufacturer": "AMP"
+  },
+  {
+    "mcode": "AMPHE",
+    "manufacturer": "Amphenol"
+  },
+  {
+    "mcode": "DIAL",
+    "manufacturer": "Dialight"
+  },
+  {
+    "mcode": "RUBY",
+    "manufacturer": "Rubycon"
+  },
+  {
+    "mcode": "LOGIT",
+    "manufacturer": "Logitech"
+  },
+  {
+    "mcode": "MITSU",
+    "manufacturer": "Mitsubishi"
+  },
+  {
+    "mcode": "MISC",
+    "manufacturer": "MISC"
+  },
+  {
+    "mcode": "TOKO",
+    "manufacturer": "Toko America"
+  },
+  {
+    "mcode": "WURTH",
+    "manufacturer": "Wurth Electronics"
+  },
+  {
+    "mcode": "ZOTAC",
+    "manufacturer": "Zotac"
+  },
+  {
+    "mcode": "WIMA",
+    "manufacturer": "WIMA"
+  },
+  {
+    "mcode": "TS",
+    "manufacturer": "Transcend"
+  },
+  {
+    "mcode": "COOPE",
+    "manufacturer": "Cooper Bussman"
+  },
+  {
+    "mcode": "BEL",
+    "manufacturer": "Bel Fuse Ltd"
+  },
+  {
+    "mcode": "C&K",
+    "manufacturer": "C&K"
+  },
+  {
+    "mcode": "CRUCI",
+    "manufacturer": "Crucial"
+  },
+  {
+    "mcode": "HONEY",
+    "manufacturer": "Honeywell"
+  },
+  {
+    "mcode": "DELTA",
+    "manufacturer": "Delta Electronics"
+  },
+  {
+    "mcode": "ERNI",
+    "manufacturer": "Erni Co"
+  },
+  {
+    "mcode": "ABRAC",
+    "manufacturer": "Abracon"
+  },
+  {
+    "mcode": "AUO",
+    "manufacturer": "AUO"
+  },
+  {
+    "mcode": "FOXCO",
+    "manufacturer": "Foxconn"
+  },
+  {
+    "mcode": "FINIS",
+    "manufacturer": "Finisar Corporation"
+  },
+  {
+    "mcode": "SMSC",
+    "manufacturer": "Standard Microsystems Corp"
+  },
+  {
+    "mcode": "DALLA",
+    "manufacturer": "Dallas Semiconductor"
+  },
+  {
+    "mcode": "TOREX",
+    "manufacturer": "Torex"
+  },
+  {
+    "mcode": "VITES",
+    "manufacturer": "Vitesse Semiconductor"
+  },
+  {
+    "mcode": "FLEX",
+    "manufacturer": "Flextronics Semiconductor"
+  },
+  {
+    "mcode": "ALPS",
+    "manufacturer": "Alps Electric"
+  },
+  {
+    "mcode": "3M",
+    "manufacturer": "3M"
+  },
+  {
+    "mcode": "INNO3D",
+    "manufacturer": "INNO3D"
+  },
+  {
+    "mcode": "MPS",
+    "manufacturer": "Moltech Power Systems"
+  },
+  {
+    "mcode": "MAXTO",
+    "manufacturer": "Maxtor"
+  },
+  {
+    "mcode": "PERIC",
+    "manufacturer": "Pericom"
+  },
+  {
+    "mcode": "HALO",
+    "manufacturer": "Halo Electronics"
+  },
+  {
+    "mcode": "EXAR",
+    "manufacturer": "Exar"
+  },
+  {
+    "mcode": "OKI",
+    "manufacturer": "OKI"
+  },
+  {
+    "mcode": "MANLI",
+    "manufacturer": "Manli Technology Group Ltd"
+  },
+  {
+    "mcode": "ZEBRA",
+    "manufacturer": "Zebra"
+  },
+  {
+    "mcode": "WUREL",
+    "manufacturer": "Wurth"
+  },
+  {
+    "mcode": "VIKIN",
+    "manufacturer": "Viking"
+  },
+  {
+    "mcode": "MSI",
+    "manufacturer": "MSI Computer"
+  },
+  {
+    "mcode": "AGIL",
+    "manufacturer": "Agilent"
+  },
+  {
+    "mcode": "IRC",
+    "manufacturer": "International Resistive Corp."
+  },
+  {
+    "mcode": "POWON",
+    "manufacturer": "Power One"
+  },
+  {
+    "mcode": "SMAR",
+    "manufacturer": "Smart Modular Technologies"
+  },
+  {
+    "mcode": "SAKUR",
+    "manufacturer": "Sakura Tech"
+  },
+  {
+    "mcode": "STACK",
+    "manufacturer": "Stackpole Electronics Inc."
+  },
+  {
+    "mcode": "SUMID",
+    "manufacturer": "Sumida"
+  },
+  {
+    "mcode": "IXYS",
+    "manufacturer": "IXYS"
+  },
+  {
+    "mcode": "LAIRD",
+    "manufacturer": "Laird Technologies"
+  },
+  {
+    "mcode": "AAVID",
+    "manufacturer": "Aavid Thermalloy"
+  },
+  {
+    "mcode": "APPLE",
+    "manufacturer": "Apple"
+  },
+  {
+    "mcode": "A&O",
+    "manufacturer": "Alpha & Omega Semiconductor"
+  },
+  {
+    "mcode": "EATON",
+    "manufacturer": "Eaton"
+  },
+  {
+    "mcode": "KEYST",
+    "manufacturer": "Keystone Electronics Corp"
+  },
+  {
+    "mcode": "MCC",
+    "manufacturer": "Micro Commercial Corp"
+  },
+  {
+    "mcode": "GATEW",
+    "manufacturer": "Gateway"
+  },
+  {
+    "mcode": "ATI",
+    "manufacturer": "ATI Technologies"
+  },
+  {
+    "mcode": "CALIF",
+    "manufacturer": "California Eastern Laboratorie"
+  },
+  {
+    "mcode": "CORN",
+    "manufacturer": "Cornell Dublier"
+  },
+  {
+    "mcode": "CITIZ",
+    "manufacturer": "Citizen"
+  },
+  {
+    "mcode": "SUSU",
+    "manufacturer": "Susumu"
+  },
+  {
+    "mcode": "TAIWA",
+    "manufacturer": "Taiwan Semiconductor"
+  },
+  {
+    "mcode": "ZETEX",
+    "manufacturer": "Zetex"
+  },
+  {
+    "mcode": "GNRIC",
+    "manufacturer": "Generic"
+  },
+  {
+    "mcode": "DTPRO",
+    "manufacturer": "Datapro International"
+  },
+  {
+    "mcode": "ITTCA",
+    "manufacturer": "ITT Cannon"
+  },
+  {
+    "mcode": "SST",
+    "manufacturer": "Silicon Storage Technology"
+  },
+  {
+    "mcode": "SIEME",
+    "manufacturer": "Siemens"
+  },
+  {
+    "mcode": "DLINK",
+    "manufacturer": "D-Link"
+  },
+  {
+    "mcode": "CPT",
+    "manufacturer": "Chungwa Picture Tubes"
+  },
+  {
+    "mcode": "EVGA",
+    "manufacturer": "eVGA"
+  },
+  {
+    "mcode": "CORTI",
+    "manufacturer": "Cortina (Intel)"
+  },
+  {
+    "mcode": "AKM",
+    "manufacturer": "AKM Components"
+  },
+  {
+    "mcode": "ALCAT",
+    "manufacturer": "Alcatel"
+  },
+  {
+    "mcode": "VECTR",
+    "manufacturer": "Vectron International"
+  },
+  {
+    "mcode": "WELWY",
+    "manufacturer": "Welwyn"
+  },
+  {
+    "mcode": "TRAC",
+    "manufacturer": "Traco Power"
+  },
+  {
+    "mcode": "SIERR",
+    "manufacturer": "Sierra Wireless"
+  },
+  {
+    "mcode": "SEIKO",
+    "manufacturer": "Seiko"
+  },
+  {
+    "mcode": "RAMTR",
+    "manufacturer": "Ramtron International"
+  },
+  {
+    "mcode": "KAMAY",
+    "manufacturer": "Kamaya"
+  },
+  {
+    "mcode": "KYOCE",
+    "manufacturer": "Kyocera"
+  },
+  {
+    "mcode": "LUCEN",
+    "manufacturer": "Lucent"
+  },
+  {
+    "mcode": "MELEX",
+    "manufacturer": "Melexis"
+  },
+  {
+    "mcode": "RFMIC",
+    "manufacturer": "RF Micro Devices"
+  },
+  {
+    "mcode": "SCHUR",
+    "manufacturer": "Schurter"
+  },
+  {
+    "mcode": "ADI",
+    "manufacturer": "ADI Systems"
+  },
+  {
+    "mcode": "CONXT",
+    "manufacturer": "Conexant Systems"
+  },
+  {
+    "mcode": "FASTC",
+    "manufacturer": "Fastcomm"
+  },
+  {
+    "mcode": "FOX",
+    "manufacturer": "Fox Electronics"
+  },
+  {
+    "mcode": "EMULE",
+    "manufacturer": "Emulex"
+  },
+  {
+    "mcode": "CANON",
+    "manufacturer": "Canon"
+  },
+  {
+    "mcode": "BI",
+    "manufacturer": "BI Technologies"
+  },
+  {
+    "mcode": "ATC",
+    "manufacturer": "American Technical Ceramic"
+  },
+  {
+    "mcode": "QLOGI",
+    "manufacturer": "Q-Logic"
+  },
+  {
+    "mcode": "POWIN",
+    "manufacturer": "Power Integration"
+  },
+  {
+    "mcode": "ON-BR",
+    "manufacturer": "On-Bright Electronics"
+  },
+  {
+    "mcode": "OHMIT",
+    "manufacturer": "Ohmite"
+  },
+  {
+    "mcode": "LANTI",
+    "manufacturer": "Lantiq (Infineon)"
+  },
+  {
+    "mcode": "JAE",
+    "manufacturer": "JAE Elect"
+  },
+  {
+    "mcode": "TT",
+    "manufacturer": "TT Electronics"
+  },
+  {
+    "mcode": "SYNQO",
+    "manufacturer": "Synqor"
+  },
+  {
+    "mcode": "ZILOG",
+    "manufacturer": "Zilog"
+  },
+  {
+    "mcode": "ISOT",
+    "manufacturer": "Isotek Corporation"
+  },
+  {
+    "mcode": "INNDK",
+    "manufacturer": "Innodisk"
+  },
+  {
+    "mcode": "KIOXI",
+    "manufacturer": "Kioxia Singapore Pte Ltd (formerly Toshiba)"
+  },
+  {
+    "mcode": "MPA",
+    "manufacturer": "Monolithic Power Systems"
+  },
+  {
+    "mcode": "QORVO",
+    "manufacturer": "Qorvo"
+  },
+  {
+    "mcode": "APIDE",
+    "manufacturer": "API-Delevan"
+  },
+  {
+    "mcode": "APC",
+    "manufacturer": "Advanced Power Components"
+  },
+  {
+    "mcode": "FAIR",
+    "manufacturer": "Fair-Rite Products"
+  },
+  {
+    "mcode": "HARTI",
+    "manufacturer": "Harting"
+  },
+  {
+    "mcode": "HLDS",
+    "manufacturer": "Hitachi-Lg Data Storage"
+  },
+  {
+    "mcode": "ICS",
+    "manufacturer": "Integrated Circuit System"
+  },
+  {
+    "mcode": "FERRO",
+    "manufacturer": "Ferrox Cube"
+  },
+  {
+    "mcode": "ERICS",
+    "manufacturer": "Ericsson"
+  },
+  {
+    "mcode": "APTIV",
+    "manufacturer": "APTIV"
+  },
+  {
+    "mcode": "ADVTE",
+    "manufacturer": "Advantech"
+  },
+  {
+    "mcode": "ACTEL",
+    "manufacturer": "Actel"
+  },
+  {
+    "mcode": "BOE",
+    "manufacturer": "BOE"
+  },
+  {
+    "mcode": "CALCH",
+    "manufacturer": "Cal-Chip"
+  },
+  {
+    "mcode": "COMPA",
+    "manufacturer": "Compaq"
+  },
+  {
+    "mcode": "CATAL",
+    "manufacturer": "Catalyst"
+  },
+  {
+    "mcode": "CENTR",
+    "manufacturer": "Central Semiconductor"
+  },
+  {
+    "mcode": "RAYCH",
+    "manufacturer": "Raychem"
+  },
+  {
+    "mcode": "PEW",
+    "manufacturer": "Panasonic Electric Works"
+  },
+  {
+    "mcode": "MARLIN",
+    "manufacturer": "Marlin Manufacturing"
+  },
+  {
+    "mcode": "STAR",
+    "manufacturer": "Startech"
+  },
+  {
+    "mcode": "TRIQ",
+    "manufacturer": "Triquint"
+  },
+  {
+    "mcode": "TELEM",
+    "manufacturer": "Telematrix Inc."
+  },
+  {
+    "mcode": "STANL",
+    "manufacturer": "Stanley Electric"
+  },
+  {
+    "mcode": "INNOL",
+    "manufacturer": "Innolux"
+  },
+  {
+    "mcode": "ODU",
+    "manufacturer": "ODU-USA"
+  },
+  {
+    "mcode": "RALTR",
+    "manufacturer": "Raltron Electronics"
+  },
+  {
+    "mcode": "RITTA",
+    "manufacturer": "Rittal"
+  },
+  {
+    "mcode": "RENAT",
+    "manufacturer": "Renata Batteries"
+  },
+  {
+    "mcode": "SEI",
+    "manufacturer": "SEI Electronics"
+  },
+  {
+    "mcode": "SILIM",
+    "manufacturer": "Silicon Image"
+  },
+  {
+    "mcode": "BOSCH",
+    "manufacturer": "Bosch"
+  },
+  {
+    "mcode": "buss",
+    "manufacturer": "Bussman"
+  },
+  {
+    "mcode": "ABB",
+    "manufacturer": "ABB Control Systems"
+  },
+  {
+    "mcode": "AGERE",
+    "manufacturer": "Agere Systems"
+  },
+  {
+    "mcode": "AOS",
+    "manufacturer": "AOS"
+  },
+  {
+    "mcode": "ATHER",
+    "manufacturer": "Atheros Communications"
+  },
+  {
+    "mcode": "DALE",
+    "manufacturer": "Dale Electronics"
+  },
+  {
+    "mcode": "GSI",
+    "manufacturer": "GSI Technology"
+  },
+  {
+    "mcode": "GS",
+    "manufacturer": "General Semiconductor"
+  },
+  {
+    "mcode": "DIPTR",
+    "manufacturer": "Diptronics"
+  },
+  {
+    "mcode": "ECS",
+    "manufacturer": "ECS INC."
+  },
+  {
+    "mcode": "ARTES",
+    "manufacturer": "Artesyn Technologies"
+  },
+  {
+    "mcode": "ADEST",
+    "manufacturer": "Adesto Technologies"
+  },
+  {
+    "mcode": "COILT",
+    "manufacturer": "Coiltronics"
+  },
+  {
+    "mcode": "SITIM",
+    "manufacturer": "Sitime"
+  },
+  {
+    "mcode": "SANDE",
+    "manufacturer": "Sanyo Denki"
+  },
+  {
+    "mcode": "SAPPH",
+    "manufacturer": "Sapphire"
+  },
+  {
+    "mcode": "PTI",
+    "manufacturer": "Promos Technology Inc"
+  },
+  {
+    "mcode": "INVENS",
+    "manufacturer": "Invensense"
+  },
+  {
+    "mcode": "JTCONN",
+    "manufacturer": "Just Connector"
+  },
+  {
+    "mcode": "KYCON",
+    "manufacturer": "Kycon Inc."
+  },
+  {
+    "mcode": "MACOM",
+    "manufacturer": "M/A Com"
+  },
+  {
+    "mcode": "LUMEX",
+    "manufacturer": "Lumex"
+  },
+  {
+    "mcode": "STEWA",
+    "manufacturer": "Steward"
+  },
+  {
+    "mcode": "ST-ER",
+    "manufacturer": "ST-Ericsson"
+  },
+  {
+    "mcode": "SYFER",
+    "manufacturer": "Syfer"
+  },
+  {
+    "mcode": "TERA",
+    "manufacturer": "Teradyne"
+  },
+  {
+    "mcode": "TXC",
+    "manufacturer": "TXC Corp"
+  },
+  {
+    "mcode": "TEAC",
+    "manufacturer": "Teac"
+  },
+  {
+    "mcode": "SUNON",
+    "manufacturer": "Sunon"
+  },
+  {
+    "mcode": "MICSO",
+    "manufacturer": "Microsoft"
+  },
+  {
+    "mcode": "MINDS",
+    "manufacturer": "Mindspeed Technologies"
+  },
+  {
+    "mcode": "MUCOM",
+    "manufacturer": "Multicomp"
+  },
+  {
+    "mcode": "LCN",
+    "manufacturer": "Linkconn Electronics Co."
+  },
+  {
+    "mcode": "LEM",
+    "manufacturer": "LEM"
+  },
+  {
+    "mcode": "PANDU",
+    "manufacturer": "Panduit"
+  },
+  {
+    "mcode": "CAVIU",
+    "manufacturer": "Cavium Networks"
+  },
+  {
+    "mcode": "CK",
+    "manufacturer": "C&K"
+  },
+  {
+    "mcode": "ADAPT",
+    "manufacturer": "Adaptec"
+  },
+  {
+    "mcode": "ADON",
+    "manufacturer": "Add On Networks"
+  },
+  {
+    "mcode": "ASJ",
+    "manufacturer": "ASJ Components"
+  },
+  {
+    "mcode": "ASROC",
+    "manufacturer": "Asrock"
+  },
+  {
+    "mcode": "ATP",
+    "manufacturer": "ATP Electronics"
+  },
+  {
+    "mcode": "ANARE",
+    "manufacturer": "Anaren Microwave Inc."
+  },
+  {
+    "mcode": "GRAY",
+    "manufacturer": "Grayhill Inc."
+  },
+  {
+    "mcode": "FIREN",
+    "manufacturer": "First Engineering"
+  },
+  {
+    "mcode": "GEPOW",
+    "manufacturer": "GE Power"
+  },
+  {
+    "mcode": "HITT",
+    "manufacturer": "Hittite Microwave Corp"
+  },
+  {
+    "mcode": "ENPIR",
+    "manufacturer": "Enpirion Inc"
+  },
+  {
+    "mcode": "CAYMA",
+    "manufacturer": "Cayman"
+  },
+  {
+    "mcode": "CHILI",
+    "manufacturer": "Chilisin Electronics Spore"
+  },
+  {
+    "mcode": "BENCH",
+    "manufacturer": "Benchmark Tape System"
+  },
+  {
+    "mcode": "OMNIV",
+    "manufacturer": "Omni Vision"
+  },
+  {
+    "mcode": "NUVOT",
+    "manufacturer": "Nuvoton Tech"
+  },
+  {
+    "mcode": "NORDI",
+    "manufacturer": "Nordic Semiconductor"
+  },
+  {
+    "mcode": "PROXI",
+    "manufacturer": "Proxim"
+  },
+  {
+    "mcode": "POLYC",
+    "manufacturer": "Polycom Inc."
+  },
+  {
+    "mcode": "LINPO",
+    "manufacturer": "Lineage Power"
+  },
+  {
+    "mcode": "ISABE",
+    "manufacturer": "Isabellenhuette"
+  },
+  {
+    "mcode": "NEWJA",
+    "manufacturer": "New Japan Radio"
+  },
+  {
+    "mcode": "MEAN",
+    "manufacturer": "MeanWell"
+  },
+  {
+    "mcode": "STAYO",
+    "manufacturer": "Stay Online"
+  },
+  {
+    "mcode": "SUYIN",
+    "manufacturer": "Suyin Technology"
+  },
+  {
+    "mcode": "WINTE",
+    "manufacturer": "Wintec"
+  },
+  {
+    "mcode": "WOLF",
+    "manufacturer": "Wolfson Microelectronics"
+  },
+  {
+    "mcode": "WESTL",
+    "manufacturer": "Westell"
+  },
+  {
+    "mcode": "SUMMI",
+    "manufacturer": "Summit Micro Electronics"
+  },
+  {
+    "mcode": "MCCO",
+    "manufacturer": "Micro Commercial Components"
+  },
+  {
+    "mcode": "MEDIAT",
+    "manufacturer": "Mediatek"
+  },
+  {
+    "mcode": "M-SYS",
+    "manufacturer": "M-Systems"
+  },
+  {
+    "mcode": "NEMCO",
+    "manufacturer": "Nemco"
+  },
+  {
+    "mcode": "NDK",
+    "manufacturer": "NDK America"
+  },
+  {
+    "mcode": "MONOL",
+    "manufacturer": "Monolithic"
+  },
+  {
+    "mcode": "ITTIS",
+    "manufacturer": "ITT Interconnect Solutions"
+  },
+  {
+    "mcode": "JOTEC",
+    "manufacturer": "Johanson Technologies"
+  },
+  {
+    "mcode": "ILME",
+    "manufacturer": "ILME"
+  },
+  {
+    "mcode": "PLANT",
+    "manufacturer": "Plantronics"
+  },
+  {
+    "mcode": "PLETR",
+    "manufacturer": "Pletronics"
+  },
+  {
+    "mcode": "PSC",
+    "manufacturer": "PSC Electronics"
+  },
+  {
+    "mcode": "OPTCS",
+    "manufacturer": "Opticis"
+  },
+  {
+    "mcode": "PANJI",
+    "manufacturer": "Panjit Semiconductor"
+  },
+  {
+    "mcode": "BC",
+    "manufacturer": "BC Components"
+  },
+  {
+    "mcode": "CABTG",
+    "manufacturer": "Cables To Go"
+  },
+  {
+    "mcode": "CINCH",
+    "manufacturer": "Cinch Connectors"
+  },
+  {
+    "mcode": "ANADI",
+    "manufacturer": "Anadigics"
+  },
+  {
+    "mcode": "ADAM",
+    "manufacturer": "Adam Tec"
+  },
+  {
+    "mcode": "ECLIP",
+    "manufacturer": "Ecliptek"
+  },
+  {
+    "mcode": "E-SWI",
+    "manufacturer": "E-Switch"
+  },
+  {
+    "mcode": "CSR",
+    "manufacturer": "Cambridge Silicon Radio"
+  },
+  {
+    "mcode": "HARV",
+    "manufacturer": "Harvard battery"
+  },
+  {
+    "mcode": "HARWI",
+    "manufacturer": "Harwin"
+  },
+  {
+    "mcode": "FSINC",
+    "manufacturer": "Fiberstore Inc."
+  },
+  {
+    "mcode": "FSP",
+    "manufacturer": "FSP Group"
+  },
+  {
+    "mcode": "FDK",
+    "manufacturer": "FDK Corporation"
+  },
+  {
+    "mcode": "CORSA",
+    "manufacturer": "Corsair Memory"
+  },
+  {
+    "mcode": "CYNTE",
+    "manufacturer": "Cyntec Co. Ltd"
+  },
+  {
+    "mcode": "DISEM",
+    "manufacturer": "Dialog Semiconductor"
+  },
+  {
+    "mcode": "DIOTE",
+    "manufacturer": "Diotec Semiconductor"
+  },
+  {
+    "mcode": "DIGI",
+    "manufacturer": "Digi International"
+  },
+  {
+    "mcode": "ELMOMC",
+    "manufacturer": "Elmo Motion Control Ltd."
+  },
+  {
+    "mcode": "AAEON",
+    "manufacturer": "Aaeon Technology"
+  },
+  {
+    "mcode": "ALLIA",
+    "manufacturer": "Alliance"
+  },
+  {
+    "mcode": "ALEX",
+    "manufacturer": "Alexander Batteries"
+  },
+  {
+    "mcode": "APEM",
+    "manufacturer": "Apem Components"
+  },
+  {
+    "mcode": "BOTH",
+    "manufacturer": "Bothhand Enterprise"
+  },
+  {
+    "mcode": "BELDE",
+    "manufacturer": "Belden Wire & Cable"
+  },
+  {
+    "mcode": "AZ",
+    "manufacturer": "American Zettler Inc."
+  },
+  {
+    "mcode": "BIVAR",
+    "manufacturer": "Bivar"
+  },
+  {
+    "mcode": "PALIT",
+    "manufacturer": "Palit Microsystems"
+  },
+  {
+    "mcode": "NIKON",
+    "manufacturer": "Nikon"
+  },
+  {
+    "mcode": "NICH",
+    "manufacturer": "Nichia"
+  },
+  {
+    "mcode": "PEREG",
+    "manufacturer": "Peregrine"
+  },
+  {
+    "mcode": "QUACO",
+    "manufacturer": "Quanta Computer"
+  },
+  {
+    "mcode": "QDI",
+    "manufacturer": "QDI"
+  },
+  {
+    "mcode": "SIPEX",
+    "manufacturer": "Sipex"
+  },
+  {
+    "mcode": "SMI",
+    "manufacturer": "Sirenza Micro"
+  },
+  {
+    "mcode": "SERV",
+    "manufacturer": "Serverworks"
+  },
+  {
+    "mcode": "SEMIK",
+    "manufacturer": "Semikron"
+  },
+  {
+    "mcode": "IMICR",
+    "manufacturer": "Imicro"
+  },
+  {
+    "mcode": "LEXMA",
+    "manufacturer": "Lexmark"
+  },
+  {
+    "mcode": "JUNIP",
+    "manufacturer": "Juniper Networks"
+  },
+  {
+    "mcode": "KNITT",
+    "manufacturer": "Knitter Switch"
+  },
+  {
+    "mcode": "MAXLI",
+    "manufacturer": "MaxLinear"
+  },
+  {
+    "mcode": "SUPER",
+    "manufacturer": "Supertex"
+  },
+  {
+    "mcode": "U-BLOX",
+    "manufacturer": "U-BLOX"
+  },
+  {
+    "mcode": "TRACO",
+    "manufacturer": "Tracor"
+  },
+  {
+    "mcode": "TRIPP",
+    "manufacturer": "TRIPPLITE"
+  },
+  {
+    "mcode": "VIA",
+    "manufacturer": "Via Technologies"
+  },
+  {
+    "mcode": "YUQIU",
+    "manufacturer": "Yuqiu"
+  },
+  {
+    "mcode": "XP",
+    "manufacturer": "XP Power"
+  },
+  {
+    "mcode": "YAMAI",
+    "manufacturer": "Yamaichi"
+  },
+  {
+    "mcode": "VALPE",
+    "manufacturer": "Valpey-Fisher"
+  },
+  {
+    "mcode": "VOLTE",
+    "manufacturer": "Volterra"
+  },
+  {
+    "mcode": "WEID",
+    "manufacturer": "Weidmuller"
+  },
+  {
+    "mcode": "UNID",
+    "manufacturer": "Uniden"
+  },
+  {
+    "mcode": "SWIFTE",
+    "manufacturer": "SWIFTECH"
+  },
+  {
+    "mcode": "MTR",
+    "manufacturer": "Mtron"
+  },
+  {
+    "mcode": "NETLI",
+    "manufacturer": "Netlist"
+  },
+  {
+    "mcode": "LEXAR",
+    "manufacturer": "Lexar"
+  },
+  {
+    "mcode": "LINK",
+    "manufacturer": "Linksys Networking"
+  },
+  {
+    "mcode": "LGSEM",
+    "manufacturer": "LG Semicon"
+  },
+  {
+    "mcode": "HYDIS",
+    "manufacturer": "Hydis"
+  },
+  {
+    "mcode": "INPHI",
+    "manufacturer": "INPHI"
+  },
+  {
+    "mcode": "JRC",
+    "manufacturer": "JRC"
+  },
+  {
+    "mcode": "JOHNS",
+    "manufacturer": "Johnson Components"
+  },
+  {
+    "mcode": "SOURI",
+    "manufacturer": "Souriau"
+  },
+  {
+    "mcode": "SPRAG",
+    "manufacturer": "Sprague"
+  },
+  {
+    "mcode": "RALEC",
+    "manufacturer": "Ralec"
+  },
+  {
+    "mcode": "RAYO",
+    "manufacturer": "Rayovac"
+  },
+  {
+    "mcode": "RICOH",
+    "manufacturer": "Ricoh"
+  },
+  {
+    "mcode": "SALT",
+    "manufacturer": "Salter Labs"
+  },
+  {
+    "mcode": "PCI",
+    "manufacturer": "PCI Limited"
+  },
+  {
+    "mcode": "OPTEK",
+    "manufacturer": "Optek"
+  },
+  {
+    "mcode": "OXFOR",
+    "manufacturer": "Oxford Semi"
+  },
+  {
+    "mcode": "BCD",
+    "manufacturer": "BCD Semiconductor"
+  },
+  {
+    "mcode": "BROCA",
+    "manufacturer": "Brocade"
+  },
+  {
+    "mcode": "CHERR",
+    "manufacturer": "Cherry Electrical Products"
+  },
+  {
+    "mcode": "CORNI",
+    "manufacturer": "Corning"
+  },
+  {
+    "mcode": "CONEC",
+    "manufacturer": "Conec Corp"
+  },
+  {
+    "mcode": "ASTEC",
+    "manufacturer": "Astec America"
+  },
+  {
+    "mcode": "ARCOT",
+    "manufacturer": "Arcotronics"
+  },
+  {
+    "mcode": "ALPHA",
+    "manufacturer": "Alpha Industries"
+  },
+  {
+    "mcode": "ELNA",
+    "manufacturer": "Elna America"
+  },
+  {
+    "mcode": "EVOX",
+    "manufacturer": "Evox-Rifa"
+  },
+  {
+    "mcode": "DEREN",
+    "manufacturer": "Deren"
+  },
+  {
+    "mcode": "FISCH",
+    "manufacturer": "Fischer"
+  },
+  {
+    "mcode": "FTDI",
+    "manufacturer": "FTDI"
+  },
+  {
+    "mcode": "FUJIK",
+    "manufacturer": "Fujikura"
+  },
+  {
+    "mcode": "HEC",
+    "manufacturer": "HEC"
+  },
+  {
+    "mcode": "GMICRO",
+    "manufacturer": "Galaxy Microsystems Ltd"
+  },
+  {
+    "mcode": "HONGF",
+    "manufacturer": "Hongfa"
+  },
+  {
+    "mcode": "HUAWE",
+    "manufacturer": "Huawei"
+  },
+  {
+    "mcode": "HOLTE",
+    "manufacturer": "Holtek"
+  },
+  {
+    "mcode": "GOLDTE",
+    "manufacturer": "Goldtech Electronics Co., Ltd"
+  },
+  {
+    "mcode": "HANNS",
+    "manufacturer": "Hannstar"
+  },
+  {
+    "mcode": "EZ",
+    "manufacturer": "EZ"
+  },
+  {
+    "mcode": "EXLTS",
+    "manufacturer": "Excelitas Technology"
+  },
+  {
+    "mcode": "CUI",
+    "manufacturer": "CUI Inc."
+  },
+  {
+    "mcode": "CREAT",
+    "manufacturer": "Creative Labs"
+  },
+  {
+    "mcode": "CREE",
+    "manufacturer": "Cree"
+  },
+  {
+    "mcode": "ALLWIN",
+    "manufacturer": "All Winner"
+  },
+  {
+    "mcode": "AEM",
+    "manufacturer": "Aem, Inc."
+  },
+  {
+    "mcode": "ABLIC",
+    "manufacturer": "ABLIC Inc"
+  },
+  {
+    "mcode": "ASTE",
+    "manufacturer": "Astec Power"
+  },
+  {
+    "mcode": "APACE",
+    "manufacturer": "Apacer Memory America Inc."
+  },
+  {
+    "mcode": "ANPEC",
+    "manufacturer": "ANPEC"
+  },
+  {
+    "mcode": "ANALO",
+    "manufacturer": "Analogic Tech"
+  },
+  {
+    "mcode": "CONEX",
+    "manufacturer": "Conex"
+  },
+  {
+    "mcode": "CPCLA",
+    "manufacturer": "CP Clare"
+  },
+  {
+    "mcode": "CONE",
+    "manufacturer": "Conexcon"
+  },
+  {
+    "mcode": "CHEMI",
+    "manufacturer": "Chemicon"
+  },
+  {
+    "mcode": "CIDCO",
+    "manufacturer": "CIDCO"
+  },
+  {
+    "mcode": "CINTE",
+    "manufacturer": "Cinterion"
+  },
+  {
+    "mcode": "BURRB",
+    "manufacturer": "Burr-Brown"
+  },
+  {
+    "mcode": "CARLI",
+    "manufacturer": "CarlingSwitch"
+  },
+  {
+    "mcode": "AXIOM",
+    "manufacturer": "Axiom Memory"
+  },
+  {
+    "mcode": "BERG",
+    "manufacturer": "Berg"
+  },
+  {
+    "mcode": "ONEIL",
+    "manufacturer": "Oneil"
+  },
+  {
+    "mcode": "PARDE",
+    "manufacturer": "Parade Technologies"
+  },
+  {
+    "mcode": "NJS",
+    "manufacturer": "New Jersey Semi"
+  },
+  {
+    "mcode": "NTE",
+    "manufacturer": "NTE Electronics"
+  },
+  {
+    "mcode": "PENN",
+    "manufacturer": "Penn Engineering"
+  },
+  {
+    "mcode": "ORTRO",
+    "manufacturer": "Ortronics"
+  },
+  {
+    "mcode": "PLEXT",
+    "manufacturer": "Plextor"
+  },
+  {
+    "mcode": "PREC",
+    "manufacturer": "Precidip"
+  },
+  {
+    "mcode": "SAIA",
+    "manufacturer": "Saia Burgess"
+  },
+  {
+    "mcode": "SCHAF",
+    "manufacturer": "Schaffner EMC"
+  },
+  {
+    "mcode": "RECOM",
+    "manufacturer": "Recom International Power"
+  },
+  {
+    "mcode": "RCD",
+    "manufacturer": "RCD Components"
+  },
+  {
+    "mcode": "QUAIL",
+    "manufacturer": "Quail Electronics"
+  },
+  {
+    "mcode": "SPEC",
+    "manufacturer": "Spectrum Control"
+  },
+  {
+    "mcode": "SMART",
+    "manufacturer": "Smartmedia"
+  },
+  {
+    "mcode": "SLRFL",
+    "manufacturer": "Solarflare"
+  },
+  {
+    "mcode": "SILIC",
+    "manufacturer": "Siliconix"
+  },
+  {
+    "mcode": "JCGL",
+    "manufacturer": "Jabil  Circuit Guangzhou Ltd"
+  },
+  {
+    "mcode": "ITW",
+    "manufacturer": "ITW"
+  },
+  {
+    "mcode": "ILLIN",
+    "manufacturer": "Illinois Capacitor"
+  },
+  {
+    "mcode": "LGDIS",
+    "manufacturer": "LG Displays"
+  },
+  {
+    "mcode": "LELON",
+    "manufacturer": "Lelon Electronics"
+  },
+  {
+    "mcode": "LAMB",
+    "manufacturer": "Lambda"
+  },
+  {
+    "mcode": "LAPIS",
+    "manufacturer": "Lapis Semiconductor (formerly OKI Semi)"
+  },
+  {
+    "mcode": "KNOW",
+    "manufacturer": "Knowles"
+  },
+  {
+    "mcode": "MATSU",
+    "manufacturer": "Matsushita"
+  },
+  {
+    "mcode": "MCMAS",
+    "manufacturer": "McMaster-Carr"
+  },
+  {
+    "mcode": "MABUC",
+    "manufacturer": "Mabuchi"
+  },
+  {
+    "mcode": "TAMRO",
+    "manufacturer": "Tamron"
+  },
+  {
+    "mcode": "TANDB",
+    "manufacturer": "Tandberg"
+  },
+  {
+    "mcode": "TRIDE",
+    "manufacturer": "Trident Microsystems"
+  },
+  {
+    "mcode": "VITRO",
+    "manufacturer": "Vitrohm"
+  },
+  {
+    "mcode": "WAKE",
+    "manufacturer": "Wakefield Engineering"
+  },
+  {
+    "mcode": "WEEN",
+    "manufacturer": "Ween Semiconductor"
+  },
+  {
+    "mcode": "WOLFS",
+    "manufacturer": "Wolfspeed"
+  },
+  {
+    "mcode": "TSST",
+    "manufacturer": "TSST Corp (Toshiba/Samsung)"
+  },
+  {
+    "mcode": "VARTA",
+    "manufacturer": "Varta"
+  },
+  {
+    "mcode": "ZFELE",
+    "manufacturer": "ZF Electronics Corp"
+  },
+  {
+    "mcode": "ZARLI",
+    "manufacturer": "Zarlink Semiconductor"
+  },
+  {
+    "mcode": "VERIF",
+    "manufacturer": "Verifone"
+  },
+  {
+    "mcode": "USI",
+    "manufacturer": "USI"
+  },
+  {
+    "mcode": "VITRA",
+    "manufacturer": "Vitramon"
+  },
+  {
+    "mcode": "WJ",
+    "manufacturer": "WJ Communications"
+  },
+  {
+    "mcode": "WSI",
+    "manufacturer": "WSI Corp"
+  },
+  {
+    "mcode": "XFX",
+    "manufacturer": "XFX"
+  },
+  {
+    "mcode": "XICOR",
+    "manufacturer": "Xicor"
+  },
+  {
+    "mcode": "WUS",
+    "manufacturer": "WUS Printed Circuit"
+  },
+  {
+    "mcode": "WDC",
+    "manufacturer": "Western Design Center"
+  },
+  {
+    "mcode": "TSC",
+    "manufacturer": "TSC Electronics"
+  },
+  {
+    "mcode": "TUNDR",
+    "manufacturer": "Tundra"
+  },
+  {
+    "mcode": "TELXO",
+    "manufacturer": "Telxon"
+  },
+  {
+    "mcode": "TOLL",
+    "manufacturer": "Tollgrade"
+  },
+  {
+    "mcode": "TMEC",
+    "manufacturer": "T-MEC"
+  },
+  {
+    "mcode": "TIANM",
+    "manufacturer": "Tianma Microelectronics"
+  },
+  {
+    "mcode": "SWITC",
+    "manufacturer": "Switchcraft"
+  },
+  {
+    "mcode": "SYMBI",
+    "manufacturer": "Symbios"
+  },
+  {
+    "mcode": "SUMIT",
+    "manufacturer": "Sumitomo"
+  },
+  {
+    "mcode": "SULLI",
+    "manufacturer": "Sullins Electronics Corp"
+  },
+  {
+    "mcode": "SUPWO",
+    "manufacturer": "Super World"
+  },
+  {
+    "mcode": "LUMB",
+    "manufacturer": "Lumberg"
+  },
+  {
+    "mcode": "LUMIL",
+    "manufacturer": "Lumileds"
+  },
+  {
+    "mcode": "MCOMP",
+    "manufacturer": "Multicomponents International"
+  },
+  {
+    "mcode": "METHO",
+    "manufacturer": "Methode Elect"
+  },
+  {
+    "mcode": "NEUTR",
+    "manufacturer": "Neutrik"
+  },
+  {
+    "mcode": "NEE",
+    "manufacturer": "Ningbo East"
+  },
+  {
+    "mcode": "NETGE",
+    "manufacturer": "Netgear"
+  },
+  {
+    "mcode": "MOSEL",
+    "manufacturer": "Mosel Vitalic"
+  },
+  {
+    "mcode": "MOXA",
+    "manufacturer": "MOXA"
+  },
+  {
+    "mcode": "MIDCO",
+    "manufacturer": "Midcom"
+  },
+  {
+    "mcode": "MICST",
+    "manufacturer": "Microstar"
+  },
+  {
+    "mcode": "KINGC",
+    "manufacturer": "King Core Electronics"
+  },
+  {
+    "mcode": "KODEN",
+    "manufacturer": "Kodenshi Corp."
+  },
+  {
+    "mcode": "JW",
+    "manufacturer": "J.W. Miller"
+  },
+  {
+    "mcode": "JUJET",
+    "manufacturer": "JUJET"
+  },
+  {
+    "mcode": "LEGER",
+    "manufacturer": "Legerity"
+  },
+  {
+    "mcode": "LGELE",
+    "manufacturer": "LG Electronics"
+  },
+  {
+    "mcode": "LINGY",
+    "manufacturer": "Ling Yang Precision"
+  },
+  {
+    "mcode": "LINIS",
+    "manufacturer": "Linear Integrated Systems"
+  },
+  {
+    "mcode": "INFI",
+    "manufacturer": "Infinity"
+  },
+  {
+    "mcode": "IQD",
+    "manufacturer": "IQD"
+  },
+  {
+    "mcode": "ISOCO",
+    "manufacturer": "Isocom"
+  },
+  {
+    "mcode": "ITTI",
+    "manufacturer": "ITT Industry"
+  },
+  {
+    "mcode": "JAUCH",
+    "manufacturer": "Jauch Quartz"
+  },
+  {
+    "mcode": "SIEMO",
+    "manufacturer": "Siemon"
+  },
+  {
+    "mcode": "SILSY",
+    "manufacturer": "Silicon Systems"
+  },
+  {
+    "mcode": "RAPCN",
+    "manufacturer": "Rapid Conn"
+  },
+  {
+    "mcode": "RECTR",
+    "manufacturer": "Rectron"
+  },
+  {
+    "mcode": "SCHNE",
+    "manufacturer": "Schneider"
+  },
+  {
+    "mcode": "SANK",
+    "manufacturer": "Sanken Electric"
+  },
+  {
+    "mcode": "SAMWH",
+    "manufacturer": "Samwha"
+  },
+  {
+    "mcode": "SAGAM",
+    "manufacturer": "Sagami Elec. Co. Ltd."
+  },
+  {
+    "mcode": "POWEX",
+    "manufacturer": "Powerex"
+  },
+  {
+    "mcode": "PRIME",
+    "manufacturer": "Prime View"
+  },
+  {
+    "mcode": "PROMO",
+    "manufacturer": "Promotech"
+  },
+  {
+    "mcode": "PROTE",
+    "manufacturer": "Protek"
+  },
+  {
+    "mcode": "PSEMI",
+    "manufacturer": "PSEMI"
+  },
+  {
+    "mcode": "PSION",
+    "manufacturer": "Psion"
+  },
+  {
+    "mcode": "PUI",
+    "manufacturer": "PUI Audio, Inc."
+  },
+  {
+    "mcode": "QUAN",
+    "manufacturer": "Quanta Storage Inc."
+  },
+  {
+    "mcode": "QUANT",
+    "manufacturer": "Quantum"
+  },
+  {
+    "mcode": "PINSHI",
+    "manufacturer": "Pin Shine Industrial"
+  },
+  {
+    "mcode": "PIONE",
+    "manufacturer": "Pioneer"
+  },
+  {
+    "mcode": "PKCELL",
+    "manufacturer": "PKCELL"
+  },
+  {
+    "mcode": "PMC",
+    "manufacturer": "PMC Technologies"
+  },
+  {
+    "mcode": "PHYCO",
+    "manufacturer": "Phycomp Components"
+  },
+  {
+    "mcode": "NTK",
+    "manufacturer": "NTK"
+  },
+  {
+    "mcode": "OCP",
+    "manufacturer": "Optical Communication Products"
+  },
+  {
+    "mcode": "OCZ",
+    "manufacturer": "OCZ Technology"
+  },
+  {
+    "mcode": "NORTH",
+    "manufacturer": "Northern Telecom"
+  },
+  {
+    "mcode": "PARA",
+    "manufacturer": "Paradyne"
+  },
+  {
+    "mcode": "PARAD",
+    "manufacturer": "Paradigm"
+  },
+  {
+    "mcode": "OOS",
+    "manufacturer": "Osram Opto Semiconductors & Co GmbH"
+  },
+  {
+    "mcode": "OLAND",
+    "manufacturer": "Olander Corp."
+  },
+  {
+    "mcode": "ORINO",
+    "manufacturer": "Orinoco"
+  },
+  {
+    "mcode": "BELPO",
+    "manufacturer": "Bel Power Solutions"
+  },
+  {
+    "mcode": "BELS",
+    "manufacturer": "Bel Stewart"
+  },
+  {
+    "mcode": "BIZ",
+    "manufacturer": "Bizlink Technology Inc."
+  },
+  {
+    "mcode": "AZURE",
+    "manufacturer": "Azure/MG Electronics"
+  },
+  {
+    "mcode": "CADD",
+    "manufacturer": "Caddock Electronics Inc"
+  },
+  {
+    "mcode": "BRADY",
+    "manufacturer": "Brady Ind Prod"
+  },
+  {
+    "mcode": "BRILL",
+    "manufacturer": "Brilliance Semiconductor"
+  },
+  {
+    "mcode": "CINE",
+    "manufacturer": "Cintech"
+  },
+  {
+    "mcode": "CMAC",
+    "manufacturer": "C-Mac"
+  },
+  {
+    "mcode": "CMAX",
+    "manufacturer": "Cable Max"
+  },
+  {
+    "mcode": "COOP",
+    "manufacturer": "Cooper/Coiltronics"
+  },
+  {
+    "mcode": "AMS",
+    "manufacturer": "Advanced Monolithic Systems"
+  },
+  {
+    "mcode": "AME",
+    "manufacturer": "AME, Inc."
+  },
+  {
+    "mcode": "ARROW",
+    "manufacturer": "Arrow Electronics"
+  },
+  {
+    "mcode": "ASIX",
+    "manufacturer": "ASIX Electronics Corporation"
+  },
+  {
+    "mcode": "ARIES",
+    "manufacturer": "Aries Electronics"
+  },
+  {
+    "mcode": "AT&T",
+    "manufacturer": "AT&T"
+  },
+  {
+    "mcode": "ATII",
+    "manufacturer": "Asia Tech Image Inc."
+  },
+  {
+    "mcode": "3WARE",
+    "manufacturer": "3Ware"
+  },
+  {
+    "mcode": "2WIRE",
+    "manufacturer": "2Wire"
+  },
+  {
+    "mcode": "ADC T",
+    "manufacturer": "ADC Telecommunications"
+  },
+  {
+    "mcode": "CSI",
+    "manufacturer": "CSI Technologies"
+  },
+  {
+    "mcode": "CSINC",
+    "manufacturer": "Creative Sensor Inc."
+  },
+  {
+    "mcode": "DBOLD",
+    "manufacturer": "Diebold"
+  },
+  {
+    "mcode": "DANAH",
+    "manufacturer": "Danaher"
+  },
+  {
+    "mcode": "DIGIO",
+    "manufacturer": "Digi-One"
+  },
+  {
+    "mcode": "DOW",
+    "manufacturer": "Dow Corning"
+  },
+  {
+    "mcode": "DINKL",
+    "manufacturer": "Dinkle International"
+  },
+  {
+    "mcode": "EUPEC",
+    "manufacturer": "Eupec"
+  },
+  {
+    "mcode": "EUROQ",
+    "manufacturer": "Euroquartz"
+  },
+  {
+    "mcode": "ELO",
+    "manufacturer": "ELO Touchsystem"
+  },
+  {
+    "mcode": "EMOSYS",
+    "manufacturer": "EmoSystems"
+  },
+  {
+    "mcode": "EMC",
+    "manufacturer": "EMC Technology"
+  },
+  {
+    "mcode": "ELF",
+    "manufacturer": "Elf-Power"
+  },
+  {
+    "mcode": "EXTRE",
+    "manufacturer": "Extreme Networks"
+  },
+  {
+    "mcode": "FMY",
+    "manufacturer": "First-MY"
+  },
+  {
+    "mcode": "FERRA",
+    "manufacturer": "Ferraz Shawmut"
+  },
+  {
+    "mcode": "FJL",
+    "manufacturer": "Flextronics Jersey Ltd"
+  },
+  {
+    "mcode": "FRAMA",
+    "manufacturer": "Framatome"
+  },
+  {
+    "mcode": "GIANTC",
+    "manufacturer": "Giantec Semiconductor"
+  },
+  {
+    "mcode": "GAINW",
+    "manufacturer": "Gainward"
+  },
+  {
+    "mcode": "GENEL",
+    "manufacturer": "General Electric"
+  },
+  {
+    "mcode": "HARRI",
+    "manufacturer": "Harris"
+  },
+  {
+    "mcode": "HIRSC",
+    "manufacturer": "Hirschmann"
+  },
+  {
+    "mcode": "GRLNT",
+    "manufacturer": "Greenliant"
+  },
+  {
+    "mcode": "HON",
+    "manufacturer": "Hon Hai"
+  },
+  {
+    "mcode": "HONDA",
+    "manufacturer": "Honda"
+  },
+  {
+    "mcode": "HYUN",
+    "manufacturer": "Hyundai"
+  },
+  {
+    "mcode": "HUBBE",
+    "manufacturer": "Hubbell"
+  },
+  {
+    "mcode": "HONGTE",
+    "manufacturer": "HONG TECH"
+  },
+  {
+    "mcode": "HOLY",
+    "manufacturer": "Holystone Enterprise Co., Ltd."
+  },
+  {
+    "mcode": "HIPRO",
+    "manufacturer": "HiPro"
+  },
+  {
+    "mcode": "HKRES",
+    "manufacturer": "Hong Kong Restistor"
+  },
+  {
+    "mcode": "GLOB",
+    "manufacturer": "Globespan"
+  },
+  {
+    "mcode": "HAMMO",
+    "manufacturer": "Hammond Electronics"
+  },
+  {
+    "mcode": "GENN",
+    "manufacturer": "Gennum"
+  },
+  {
+    "mcode": "GENES",
+    "manufacturer": "Genesis"
+  },
+  {
+    "mcode": "GALAX",
+    "manufacturer": "Galaxy Power"
+  },
+  {
+    "mcode": "GIGADE",
+    "manufacturer": "GigaDevice"
+  },
+  {
+    "mcode": "FUJI",
+    "manufacturer": "Fuji Electrical"
+  },
+  {
+    "mcode": "FUTUR",
+    "manufacturer": "Future Technology Devices Intl"
+  },
+  {
+    "mcode": "FINTEK",
+    "manufacturer": "Feature Integration Technology"
+  },
+  {
+    "mcode": "FITI",
+    "manufacturer": "Fitipower Integrated Technology"
+  },
+  {
+    "mcode": "EXTWI",
+    "manufacturer": "Extending Wire & Cable"
+  },
+  {
+    "mcode": "ETAL",
+    "manufacturer": "ETAL"
+  },
+  {
+    "mcode": "FCIFR",
+    "manufacturer": "FCI Framatome Connectors Iternational"
+  },
+  {
+    "mcode": "FCM",
+    "manufacturer": "Florida Custom Mold"
+  },
+  {
+    "mcode": "ELC",
+    "manufacturer": "ELC"
+  },
+  {
+    "mcode": "ELMA",
+    "manufacturer": "Elma Electronic"
+  },
+  {
+    "mcode": "EBM",
+    "manufacturer": "EBM"
+  },
+  {
+    "mcode": "EBM-P",
+    "manufacturer": "EBM-Papst Industries"
+  },
+  {
+    "mcode": "ECHEL",
+    "manufacturer": "Echelon"
+  },
+  {
+    "mcode": "EAO",
+    "manufacturer": "EAO Switch Corp"
+  },
+  {
+    "mcode": "EEI",
+    "manufacturer": "EBY Electro Inc"
+  },
+  {
+    "mcode": "EMCOR",
+    "manufacturer": "Emcore Corp"
+  },
+  {
+    "mcode": "EMER",
+    "manufacturer": "Emerson Electric"
+  },
+  {
+    "mcode": "EMERS",
+    "manufacturer": "Emerson Energy Systems"
+  },
+  {
+    "mcode": "EMP",
+    "manufacturer": "EMP"
+  },
+  {
+    "mcode": "ENET",
+    "manufacturer": "Emerson Network"
+  },
+  {
+    "mcode": "EON",
+    "manufacturer": "EON Corp"
+  },
+  {
+    "mcode": "EPN",
+    "manufacturer": "Emerson Power Network"
+  },
+  {
+    "mcode": "EXCEL",
+    "manufacturer": "Excelsus"
+  },
+  {
+    "mcode": "DYNAT",
+    "manufacturer": "Dynatron"
+  },
+  {
+    "mcode": "DOLD",
+    "manufacturer": "Dold"
+  },
+  {
+    "mcode": "DELT",
+    "manufacturer": "Deltron Components"
+  },
+  {
+    "mcode": "DIGPE",
+    "manufacturer": "Digital Persona"
+  },
+  {
+    "mcode": "DELOC",
+    "manufacturer": "DeLock"
+  },
+  {
+    "mcode": "DIELE",
+    "manufacturer": "Dielectric"
+  },
+  {
+    "mcode": "DAEW",
+    "manufacturer": "Daewon"
+  },
+  {
+    "mcode": "CRYDO",
+    "manufacturer": "Crydom"
+  },
+  {
+    "mcode": "CRYST",
+    "manufacturer": "Crystal Semiconducto"
+  },
+  {
+    "mcode": "ADDA",
+    "manufacturer": "Adda Technologies"
+  },
+  {
+    "mcode": "AAC",
+    "manufacturer": "American Audio Components"
+  },
+  {
+    "mcode": "ABCOE",
+    "manufacturer": "ABCO Electronics"
+  },
+  {
+    "mcode": "ADLIN",
+    "manufacturer": "Adlink Technology"
+  },
+  {
+    "mcode": "AE",
+    "manufacturer": "Atla Electronics"
+  },
+  {
+    "mcode": "ADTECH",
+    "manufacturer": "Adapter Technology Co., Ltd"
+  },
+  {
+    "mcode": "AIRON",
+    "manufacturer": "Aironet"
+  },
+  {
+    "mcode": "AIRPA",
+    "manufacturer": "Airpax"
+  },
+  {
+    "mcode": "ALLIED",
+    "manufacturer": "Allied Telesis"
+  },
+  {
+    "mcode": "ARIST",
+    "manufacturer": "Arista Networks"
+  },
+  {
+    "mcode": "ARECA",
+    "manufacturer": "Areca Technology"
+  },
+  {
+    "mcode": "ARUBA",
+    "manufacturer": "Aruba"
+  },
+  {
+    "mcode": "AROMA",
+    "manufacturer": "Aromat"
+  },
+  {
+    "mcode": "ASPE",
+    "manufacturer": "Aspeed"
+  },
+  {
+    "mcode": "AMIC",
+    "manufacturer": "Amic Technology"
+  },
+  {
+    "mcode": "ANALOG",
+    "manufacturer": "Analogix Semiconductor, Inc."
+  },
+  {
+    "mcode": "ANTEN",
+    "manufacturer": "Antenova"
+  },
+  {
+    "mcode": "ANIXT",
+    "manufacturer": "Anixter"
+  },
+  {
+    "mcode": "APCB",
+    "manufacturer": "APCB"
+  },
+  {
+    "mcode": "APCSC",
+    "manufacturer": "APC Schneider"
+  },
+  {
+    "mcode": "APEC",
+    "manufacturer": "Advanced Power Electronics"
+  },
+  {
+    "mcode": "APEX",
+    "manufacturer": "Apex PC Solutions"
+  },
+  {
+    "mcode": "COSEL",
+    "manufacturer": "Cosel USA"
+  },
+  {
+    "mcode": "COOPI",
+    "manufacturer": "Cooper Industries"
+  },
+  {
+    "mcode": "COMPE",
+    "manufacturer": "Compex Networks"
+  },
+  {
+    "mcode": "COMAI",
+    "manufacturer": "Comair Rotron"
+  },
+  {
+    "mcode": "CNTRL",
+    "manufacturer": "Central Technologies Inc"
+  },
+  {
+    "mcode": "CLARE",
+    "manufacturer": "Clare Inc."
+  },
+  {
+    "mcode": "CASIO",
+    "manufacturer": "Casio"
+  },
+  {
+    "mcode": "CGIL",
+    "manufacturer": "Corning Gilbert"
+  },
+  {
+    "mcode": "CHAMP",
+    "manufacturer": "Champion Tech"
+  },
+  {
+    "mcode": "CHELS",
+    "manufacturer": "Chelsio"
+  },
+  {
+    "mcode": "BSL",
+    "manufacturer": "BSL"
+  },
+  {
+    "mcode": "C&D",
+    "manufacturer": "C&D Technologies"
+  },
+  {
+    "mcode": "BRACO",
+    "manufacturer": "Brady Corp"
+  },
+  {
+    "mcode": "CALMI",
+    "manufacturer": "California Micro Devices"
+  },
+  {
+    "mcode": "CANVYS",
+    "manufacturer": "Canvys"
+  },
+  {
+    "mcode": "CAMP",
+    "manufacturer": "Cam Plas (S) Pte Ltd"
+  },
+  {
+    "mcode": "CANNO",
+    "manufacturer": "Cannon"
+  },
+  {
+    "mcode": "B2C2",
+    "manufacturer": "B2C2"
+  },
+  {
+    "mcode": "AWARE",
+    "manufacturer": "Azureware"
+  },
+  {
+    "mcode": "AVNET",
+    "manufacturer": "Avnet"
+  },
+  {
+    "mcode": "AVOCE",
+    "manufacturer": "Avocent"
+  },
+  {
+    "mcode": "AUSMI",
+    "manufacturer": "Austria Microsystems"
+  },
+  {
+    "mcode": "BELKI",
+    "manufacturer": "Belkin Components"
+  },
+  {
+    "mcode": "BITEC",
+    "manufacturer": "Bitech"
+  },
+  {
+    "mcode": "BEYSC",
+    "manufacturer": "Beyschlag"
+  },
+  {
+    "mcode": "ORGAN",
+    "manufacturer": "Organic Products Company"
+  },
+  {
+    "mcode": "OPAL",
+    "manufacturer": "Opal"
+  },
+  {
+    "mcode": "PALM",
+    "manufacturer": "Palm"
+  },
+  {
+    "mcode": "PANAC",
+    "manufacturer": "Panacea"
+  },
+  {
+    "mcode": "P-TWO",
+    "manufacturer": "P-TWO INDUSTRIES INC"
+  },
+  {
+    "mcode": "NOVAC",
+    "manufacturer": "Novacap"
+  },
+  {
+    "mcode": "NOET",
+    "manufacturer": "Northstar Electric Technology"
+  },
+  {
+    "mcode": "NI",
+    "manufacturer": "National Instruments"
+  },
+  {
+    "mcode": "NIDEC",
+    "manufacturer": "Nidec Power General Corp"
+  },
+  {
+    "mcode": "NVE",
+    "manufacturer": "NVE Corporation"
+  },
+  {
+    "mcode": "PIHER",
+    "manufacturer": "Piher International"
+  },
+  {
+    "mcode": "PEM",
+    "manufacturer": "PEM Engineering"
+  },
+  {
+    "mcode": "PANCO",
+    "manufacturer": "Pancon"
+  },
+  {
+    "mcode": "PERAN",
+    "manufacturer": "Perancea"
+  },
+  {
+    "mcode": "POWE",
+    "manufacturer": "Power Innovations"
+  },
+  {
+    "mcode": "PLYMR",
+    "manufacturer": "Polymer"
+  },
+  {
+    "mcode": "QUATN",
+    "manufacturer": "Quantenna"
+  },
+  {
+    "mcode": "QUICK",
+    "manufacturer": "QuickLogic"
+  },
+  {
+    "mcode": "PROMI",
+    "manufacturer": "Promise Technology"
+  },
+  {
+    "mcode": "PROSIG",
+    "manufacturer": "Pro Signal"
+  },
+  {
+    "mcode": "SAFT",
+    "manufacturer": "Saft Nife Corp"
+  },
+  {
+    "mcode": "ROSEN",
+    "manufacturer": "Rosenberger"
+  },
+  {
+    "mcode": "SBIT",
+    "manufacturer": "Swissbit"
+  },
+  {
+    "mcode": "SEALI",
+    "manufacturer": "Sealing Devices Inc"
+  },
+  {
+    "mcode": "RHOMB",
+    "manufacturer": "Rhombus Industries"
+  },
+  {
+    "mcode": "ROBIN",
+    "manufacturer": "Robinson-Nugent"
+  },
+  {
+    "mcode": "RIYUE",
+    "manufacturer": "Hangzhou Riyue Electronics Co., Ltd."
+  },
+  {
+    "mcode": "SIMP",
+    "manufacturer": "Simplo"
+  },
+  {
+    "mcode": "SIMTE",
+    "manufacturer": "Simtek"
+  },
+  {
+    "mcode": "SILMO",
+    "manufacturer": "Silicon Motion Mfg"
+  },
+  {
+    "mcode": "SITEL",
+    "manufacturer": "Sitel"
+  },
+  {
+    "mcode": "SPECL",
+    "manufacturer": "Spectra Linear"
+  },
+  {
+    "mcode": "ST",
+    "manufacturer": "ST Electronics"
+  },
+  {
+    "mcode": "SRION",
+    "manufacturer": "Sensirion"
+  },
+  {
+    "mcode": "SENTR",
+    "manufacturer": "Sentronics"
+  },
+  {
+    "mcode": "SGS",
+    "manufacturer": "SGS Thomson"
+  },
+  {
+    "mcode": "SIGE",
+    "manufacturer": "Sige Semiconductor"
+  },
+  {
+    "mcode": "SIIG",
+    "manufacturer": "SIIG, Inc."
+  },
+  {
+    "mcode": "SIL7",
+    "manufacturer": "Silicon 7"
+  },
+  {
+    "mcode": "SD",
+    "manufacturer": "Sigma Designs"
+  },
+  {
+    "mcode": "JSTSA",
+    "manufacturer": "JST Sales America Inc."
+  },
+  {
+    "mcode": "JDS",
+    "manufacturer": "JDS Uniphase"
+  },
+  {
+    "mcode": "JAMIC",
+    "manufacturer": "Jamicon"
+  },
+  {
+    "mcode": "IXXAT",
+    "manufacturer": "IXXAT"
+  },
+  {
+    "mcode": "ITE",
+    "manufacturer": "Integrated Technology Express"
+  },
+  {
+    "mcode": "ITT",
+    "manufacturer": "ITT Transmission"
+  },
+  {
+    "mcode": "IRISO",
+    "manufacturer": "Iriso Electronics"
+  },
+  {
+    "mcode": "INWIN",
+    "manufacturer": "In Win Development"
+  },
+  {
+    "mcode": "INTLL",
+    "manufacturer": "Intellon"
+  },
+  {
+    "mcode": "IDTEC",
+    "manufacturer": "ID Tech"
+  },
+  {
+    "mcode": "IFM",
+    "manufacturer": "IFM"
+  },
+  {
+    "mcode": "INFNX",
+    "manufacturer": "Infinex"
+  },
+  {
+    "mcode": "LEVEL",
+    "manufacturer": "Level One"
+  },
+  {
+    "mcode": "LEADT",
+    "manufacturer": "Leadtek"
+  },
+  {
+    "mcode": "KERB",
+    "manufacturer": "Kerb Konus"
+  },
+  {
+    "mcode": "KONTR",
+    "manufacturer": "Kontron"
+  },
+  {
+    "mcode": "KOSTAL",
+    "manufacturer": "Kostal GmbH & Co KG"
+  },
+  {
+    "mcode": "KOBI",
+    "manufacturer": "Kobicon"
+  },
+  {
+    "mcode": "KINST",
+    "manufacturer": "Kingstate"
+  },
+  {
+    "mcode": "MICON",
+    "manufacturer": "Micon Precise Corp"
+  },
+  {
+    "mcode": "MICROC",
+    "manufacturer": "Microcomercial"
+  },
+  {
+    "mcode": "MILL",
+    "manufacturer": "Mill-Max"
+  },
+  {
+    "mcode": "MINIC",
+    "manufacturer": "Mini-Circuits"
+  },
+  {
+    "mcode": "MICTU",
+    "manufacturer": "Microtune Inc"
+  },
+  {
+    "mcode": "MICSE",
+    "manufacturer": "Micronas Semiconductor"
+  },
+  {
+    "mcode": "MITSI",
+    "manufacturer": "Mitsumi Electronics"
+  },
+  {
+    "mcode": "MOTIEN",
+    "manufacturer": "Motien Technology"
+  },
+  {
+    "mcode": "MONAR",
+    "manufacturer": "Monarch"
+  },
+  {
+    "mcode": "NETOP",
+    "manufacturer": "Net Optics"
+  },
+  {
+    "mcode": "NETSO",
+    "manufacturer": "Netsol Co Ltd"
+  },
+  {
+    "mcode": "MTS",
+    "manufacturer": "Multi Tech Systems"
+  },
+  {
+    "mcode": "NCR",
+    "manufacturer": "NCR"
+  },
+  {
+    "mcode": "MENTGR",
+    "manufacturer": "Mentor Graphics"
+  },
+  {
+    "mcode": "METZ",
+    "manufacturer": "Metz Connect"
+  },
+  {
+    "mcode": "MEIP",
+    "manufacturer": "Meiban Plastics"
+  },
+  {
+    "mcode": "MECHA",
+    "manufacturer": "Mechatronics"
+  },
+  {
+    "mcode": "MEDIQ",
+    "manufacturer": "Media Q"
+  },
+  {
+    "mcode": "MARTI",
+    "manufacturer": "Martin International Enclosures"
+  },
+  {
+    "mcode": "MAXI",
+    "manufacturer": "Maximizer"
+  },
+  {
+    "mcode": "LSICS",
+    "manufacturer": "LSI Computer Systems Inc."
+  },
+  {
+    "mcode": "LODES",
+    "manufacturer": "Lodestone Pacific"
+  },
+  {
+    "mcode": "MALLO",
+    "manufacturer": "Mallory"
+  },
+  {
+    "mcode": "MANDW",
+    "manufacturer": "M and W Systems"
+  },
+  {
+    "mcode": "SUNCN",
+    "manufacturer": "Suncon"
+  },
+  {
+    "mcode": "SUNL",
+    "manufacturer": "Sunled"
+  },
+  {
+    "mcode": "STHCO",
+    "manufacturer": "Southco"
+  },
+  {
+    "mcode": "STEW",
+    "manufacturer": "Steward Connector Systems"
+  },
+  {
+    "mcode": "STECO",
+    "manufacturer": "Stewart Connector"
+  },
+  {
+    "mcode": "STELL",
+    "manufacturer": "Stellex Microwave Systems"
+  },
+  {
+    "mcode": "SYNER",
+    "manufacturer": "Synergy"
+  },
+  {
+    "mcode": "T-ETC",
+    "manufacturer": "Tech-Etch"
+  },
+  {
+    "mcode": "TA-I",
+    "manufacturer": "TA-I Technology"
+  },
+  {
+    "mcode": "TAI-S",
+    "manufacturer": "Tai-Saw Technology"
+  },
+  {
+    "mcode": "TAI-T",
+    "manufacturer": "Tai-Tech Advanced Electronics"
+  },
+  {
+    "mcode": "TAMUR",
+    "manufacturer": "Tamura"
+  },
+  {
+    "mcode": "SYE",
+    "manufacturer": "SamYoung Electronics"
+  },
+  {
+    "mcode": "TAOS",
+    "manufacturer": "Texas Advanced Optoelec"
+  },
+  {
+    "mcode": "TEAPO",
+    "manufacturer": "Teapo Electronics"
+  },
+  {
+    "mcode": "TECAT",
+    "manufacturer": "Tecate"
+  },
+  {
+    "mcode": "TECCO",
+    "manufacturer": "Teccor Electronics"
+  },
+  {
+    "mcode": "TECHNX",
+    "manufacturer": "Technexion"
+  },
+  {
+    "mcode": "THAT",
+    "manufacturer": "That Corporation"
+  },
+  {
+    "mcode": "THINE",
+    "manufacturer": "Thine"
+  },
+  {
+    "mcode": "THOMA",
+    "manufacturer": "Thomas & Betts"
+  },
+  {
+    "mcode": "THRMO",
+    "manufacturer": "Therm-o-disc"
+  },
+  {
+    "mcode": "TOKIN",
+    "manufacturer": "Tokin America"
+  },
+  {
+    "mcode": "TP-L",
+    "manufacturer": "TP-Link"
+  },
+  {
+    "mcode": "TELDY",
+    "manufacturer": "Teledyne"
+  },
+  {
+    "mcode": "TEMIC",
+    "manufacturer": "Temic"
+  },
+  {
+    "mcode": "TURCK",
+    "manufacturer": "Turck, Inc."
+  },
+  {
+    "mcode": "TUSON",
+    "manufacturer": "Tusonix"
+  },
+  {
+    "mcode": "TYAN",
+    "manufacturer": "Tyan Computer Corp."
+  },
+  {
+    "mcode": "TRANS",
+    "manufacturer": "Transwitch"
+  },
+  {
+    "mcode": "TRAY",
+    "manufacturer": "Tray"
+  },
+  {
+    "mcode": "TRC",
+    "manufacturer": "TRC"
+  },
+  {
+    "mcode": "WECO",
+    "manufacturer": "WECO"
+  },
+  {
+    "mcode": "WHITE",
+    "manufacturer": "White Electronic Design"
+  },
+  {
+    "mcode": "WCS",
+    "manufacturer": "World Cord Sets"
+  },
+  {
+    "mcode": "WLG",
+    "manufacturer": "WL Gore & Associates"
+  },
+  {
+    "mcode": "WS",
+    "manufacturer": "Worldsemi"
+  },
+  {
+    "mcode": "WASP",
+    "manufacturer": "Wasp Barcode Technologies"
+  },
+  {
+    "mcode": "VENKE",
+    "manufacturer": "Venkel"
+  },
+  {
+    "mcode": "ZFMIC",
+    "manufacturer": "ZF Micro"
+  },
+  {
+    "mcode": "ZIPPY",
+    "manufacturer": "Zippy Technology Corp."
+  },
+  {
+    "mcode": "ZMD",
+    "manufacturer": "ZMD America"
+  },
+  {
+    "mcode": "YANEC",
+    "manufacturer": "Yanec"
+  },
+  {
+    "mcode": "YOKE",
+    "manufacturer": "Yoketan Corporation"
+  },
+  {
+    "mcode": "YOKOW",
+    "manufacturer": "Yokowo America"
+  },
+  {
+    "mcode": "YUGIU",
+    "manufacturer": "Yuqiu"
+  },
+  {
+    "mcode": "YUNHU",
+    "manufacturer": "Yunhuan Electronics"
+  },
+  {
+    "mcode": "ZALMA",
+    "manufacturer": "Zalman"
+  },
+  {
+    "mcode": "YAMAH",
+    "manufacturer": "Yamaha Systems Technology"
+  },
+  {
+    "mcode": "YAOYA",
+    "manufacturer": "Yaoya Electronics"
+  },
+  {
+    "mcode": "YAZAK",
+    "manufacturer": "Yazaki Europe Ltd  Belgium"
+  },
+  {
+    "mcode": "XIRCO",
+    "manufacturer": "Xircom"
+  },
+  {
+    "mcode": "XMA",
+    "manufacturer": "XMA"
+  },
+  {
+    "mcode": "ZORAN",
+    "manufacturer": "Zoran"
+  },
+  {
+    "mcode": "ZETTL",
+    "manufacturer": "Zettler Magnetics"
+  },
+  {
+    "mcode": "VERB",
+    "manufacturer": "Verbatim"
+  },
+  {
+    "mcode": "VCC",
+    "manufacturer": "Visual Communications Co"
+  },
+  {
+    "mcode": "VICOR",
+    "manufacturer": "Vicor"
+  },
+  {
+    "mcode": "VIEWS",
+    "manufacturer": "Viewsonic"
+  },
+  {
+    "mcode": "USROB",
+    "manufacturer": "US Robotics"
+  },
+  {
+    "mcode": "UTEC",
+    "manufacturer": "Union Technology"
+  },
+  {
+    "mcode": "V3",
+    "manufacturer": "V3 Semiconductor"
+  },
+  {
+    "mcode": "VACUU",
+    "manufacturer": "Vacuum Schmelze"
+  },
+  {
+    "mcode": "VALOR",
+    "manufacturer": "Valor"
+  },
+  {
+    "mcode": "VANGU",
+    "manufacturer": "Vanguard"
+  },
+  {
+    "mcode": "VANSO",
+    "manufacturer": "Vansonics"
+  },
+  {
+    "mcode": "VANTE",
+    "manufacturer": "Vantec"
+  },
+  {
+    "mcode": "VARI",
+    "manufacturer": "Varitronix"
+  },
+  {
+    "mcode": "WATKI",
+    "manufacturer": "Watkins Johnson"
+  },
+  {
+    "mcode": "WAV",
+    "manufacturer": "Wavlink"
+  },
+  {
+    "mcode": "VSC",
+    "manufacturer": "VSCOM"
+  },
+  {
+    "mcode": "VW",
+    "manufacturer": "Volkswagen"
+  },
+  {
+    "mcode": "W+P",
+    "manufacturer": "W+P Products GmbH"
+  },
+  {
+    "mcode": "WAGO",
+    "manufacturer": "WAGO [DE]"
+  },
+  {
+    "mcode": "VIME",
+    "manufacturer": "VIME"
+  },
+  {
+    "mcode": "VITEC",
+    "manufacturer": "Vitec Corp"
+  },
+  {
+    "mcode": "VITEL",
+    "manufacturer": "Vitelic"
+  },
+  {
+    "mcode": "WOLCO",
+    "manufacturer": "WOLCO"
+  },
+  {
+    "mcode": "WISTR",
+    "manufacturer": "Wistron"
+  },
+  {
+    "mcode": "WIZ",
+    "manufacturer": "WIZnet"
+  },
+  {
+    "mcode": "WINCH",
+    "manufacturer": "Winchester Electronics"
+  },
+  {
+    "mcode": "WINMAT",
+    "manufacturer": "Winmate"
+  },
+  {
+    "mcode": "WYSE",
+    "manufacturer": "Wyse Technology"
+  },
+  {
+    "mcode": "XFAN",
+    "manufacturer": "Xinruilian X-FAN"
+  },
+  {
+    "mcode": "XFMRS",
+    "manufacturer": "Xfmrs"
+  },
+  {
+    "mcode": "VOGT",
+    "manufacturer": "Vogt"
+  },
+  {
+    "mcode": "WELCH",
+    "manufacturer": "Welch Allen"
+  },
+  {
+    "mcode": "WELCO",
+    "manufacturer": "WELCO"
+  },
+  {
+    "mcode": "WELLCO",
+    "manufacturer": "Wellco T&C Co"
+  },
+  {
+    "mcode": "WIESO",
+    "manufacturer": "Wieson"
+  },
+  {
+    "mcode": "WESTC",
+    "manufacturer": "Westcode"
+  },
+  {
+    "mcode": "WESTE",
+    "manufacturer": "Western Tel"
+  },
+  {
+    "mcode": "TRANN",
+    "manufacturer": "Transition Networks"
+  },
+  {
+    "mcode": "TRINA",
+    "manufacturer": "Trinamic Motion Control"
+  },
+  {
+    "mcode": "TRIST",
+    "manufacturer": "Tri Star"
+  },
+  {
+    "mcode": "TRT",
+    "manufacturer": "Tripod Technology"
+  },
+  {
+    "mcode": "TTAKE",
+    "manufacturer": "Thermaltake"
+  },
+  {
+    "mcode": "TTI",
+    "manufacturer": "TTI"
+  },
+  {
+    "mcode": "TUCHI",
+    "manufacturer": "Touch International"
+  },
+  {
+    "mcode": "UNIPA",
+    "manufacturer": "Unipac"
+  },
+  {
+    "mcode": "UNITR",
+    "manufacturer": "Unitrode"
+  },
+  {
+    "mcode": "UPEC",
+    "manufacturer": "Upec"
+  },
+  {
+    "mcode": "UPH",
+    "manufacturer": "UPH"
+  },
+  {
+    "mcode": "UPI",
+    "manufacturer": "UPI Semiconductor Corp"
+  },
+  {
+    "mcode": "TUT",
+    "manufacturer": "TUT Systems"
+  },
+  {
+    "mcode": "UBINE",
+    "manufacturer": "Ubinetics"
+  },
+  {
+    "mcode": "UDE",
+    "manufacturer": "UDE CORP."
+  },
+  {
+    "mcode": "UNEX",
+    "manufacturer": "Unex"
+  },
+  {
+    "mcode": "TEMEX",
+    "manufacturer": "Temex"
+  },
+  {
+    "mcode": "TERID",
+    "manufacturer": "TERIDIAN SEMICONDUCTOR CORP"
+  },
+  {
+    "mcode": "TEXT",
+    "manufacturer": "Textron Fasteners"
+  },
+  {
+    "mcode": "TFT",
+    "manufacturer": "Thin Film Technology"
+  },
+  {
+    "mcode": "TELEX",
+    "manufacturer": "Telexis Corporation"
+  },
+  {
+    "mcode": "TELICA",
+    "manufacturer": "Telica"
+  },
+  {
+    "mcode": "TELIT",
+    "manufacturer": "Telit"
+  },
+  {
+    "mcode": "TELME",
+    "manufacturer": "Telemecanique"
+  },
+  {
+    "mcode": "TELUR",
+    "manufacturer": "Telular"
+  },
+  {
+    "mcode": "TECSP",
+    "manufacturer": "Tech Spray"
+  },
+  {
+    "mcode": "TEKNO",
+    "manufacturer": "Teknovus"
+  },
+  {
+    "mcode": "TELCH",
+    "manufacturer": "Telechips"
+  },
+  {
+    "mcode": "TELCO",
+    "manufacturer": "TelCom Semiconductor"
+  },
+  {
+    "mcode": "TR",
+    "manufacturer": "TR Fastners"
+  },
+  {
+    "mcode": "TOSHI",
+    "manufacturer": "Toshin Co., Ltd."
+  },
+  {
+    "mcode": "THU",
+    "manufacturer": "Thunder Resistor Co., Ltd."
+  },
+  {
+    "mcode": "TIANXU",
+    "manufacturer": "Tianxun Electronic"
+  },
+  {
+    "mcode": "TIGER",
+    "manufacturer": "Tiger Technology"
+  },
+  {
+    "mcode": "TKRAM",
+    "manufacturer": "Tekram"
+  },
+  {
+    "mcode": "TMC",
+    "manufacturer": "Top Magnetics Corp"
+  },
+  {
+    "mcode": "TECOM",
+    "manufacturer": "Tecom"
+  },
+  {
+    "mcode": "TARGU",
+    "manufacturer": "Targus"
+  },
+  {
+    "mcode": "TDG",
+    "manufacturer": "TDG Core"
+  },
+  {
+    "mcode": "TEAMG",
+    "manufacturer": "Team Group Inc."
+  },
+  {
+    "mcode": "TAKAM",
+    "manufacturer": "Takamisawa"
+  },
+  {
+    "mcode": "TALEM",
+    "manufacturer": "Talema Group LLC"
+  },
+  {
+    "mcode": "TANE",
+    "manufacturer": "TANE"
+  },
+  {
+    "mcode": "TAO",
+    "manufacturer": "TAOGLAS"
+  },
+  {
+    "mcode": "TAICO",
+    "manufacturer": "Taicon"
+  },
+  {
+    "mcode": "TAITE",
+    "manufacturer": "Taiten"
+  },
+  {
+    "mcode": "TAITWU",
+    "manufacturer": "Tai Twun Enterprise Co.,LTD"
+  },
+  {
+    "mcode": "TADIR",
+    "manufacturer": "TADIRAN TELECOMMUNICATION LTD"
+  },
+  {
+    "mcode": "TAI-I",
+    "manufacturer": "TAI-I Technology"
+  },
+  {
+    "mcode": "SWMIC",
+    "manufacturer": "Southwest Microwave"
+  },
+  {
+    "mcode": "STEPN",
+    "manufacturer": "STEP'N COMPONENTS"
+  },
+  {
+    "mcode": "STRSW",
+    "manufacturer": "Strategic Switch"
+  },
+  {
+    "mcode": "STT",
+    "manufacturer": "Soon Tai Tech Co Ltd"
+  },
+  {
+    "mcode": "STDGR",
+    "manufacturer": "Standard Grigsby"
+  },
+  {
+    "mcode": "STARM",
+    "manufacturer": "STAR MICRONICS"
+  },
+  {
+    "mcode": "STA",
+    "manufacturer": "STAR"
+  },
+  {
+    "mcode": "STANF",
+    "manufacturer": "Stanford Microdevices"
+  },
+  {
+    "mcode": "SUNLO",
+    "manufacturer": "SUNLORD"
+  },
+  {
+    "mcode": "SURGE",
+    "manufacturer": "Surge"
+  },
+  {
+    "mcode": "SURST",
+    "manufacturer": "SURE STAR"
+  },
+  {
+    "mcode": "SUPPL",
+    "manufacturer": "Supply Technologies"
+  },
+  {
+    "mcode": "SUNRIS",
+    "manufacturer": "SUNRISE PLASTICS INDUSTRY CO.,LTD"
+  },
+  {
+    "mcode": "SUNST",
+    "manufacturer": "Sunstone Circuits"
+  },
+  {
+    "mcode": "MANHAT",
+    "manufacturer": "MANHATTAN"
+  },
+  {
+    "mcode": "MARQ",
+    "manufacturer": "Marquardt"
+  },
+  {
+    "mcode": "MARCO",
+    "manufacturer": "Marcon Electronics"
+  },
+  {
+    "mcode": "MARL",
+    "manufacturer": "Marl International"
+  },
+  {
+    "mcode": "MAGCH",
+    "manufacturer": "MAGNACHIP SEMICONDUCTOR"
+  },
+  {
+    "mcode": "MAGCR",
+    "manufacturer": "Magnecraft"
+  },
+  {
+    "mcode": "MAGLA",
+    "manufacturer": "Mag Layers"
+  },
+  {
+    "mcode": "MAGTE",
+    "manufacturer": "Magtek"
+  },
+  {
+    "mcode": "LL",
+    "manufacturer": "LUDWIG LEUCHTEN"
+  },
+  {
+    "mcode": "LMSC",
+    "manufacturer": "LINE MASTER SWITCH CORPORATION"
+  },
+  {
+    "mcode": "LOGSY",
+    "manufacturer": "Logical Systems"
+  },
+  {
+    "mcode": "LOTES",
+    "manufacturer": "Lotes"
+  },
+  {
+    "mcode": "LRC",
+    "manufacturer": "Leshan Radio Company Ltd"
+  },
+  {
+    "mcode": "LOGI",
+    "manufacturer": "LOGIC DEVICES"
+  },
+  {
+    "mcode": "LUMITR",
+    "manufacturer": "LUMITRONIX"
+  },
+  {
+    "mcode": "LYN-T",
+    "manufacturer": "Lyn-Tron"
+  },
+  {
+    "mcode": "MAUDI",
+    "manufacturer": "M-Audio"
+  },
+  {
+    "mcode": "MAXCO",
+    "manufacturer": "Maxconn"
+  },
+  {
+    "mcode": "MATHIS",
+    "manufacturer": "Mathison Manufacturing"
+  },
+  {
+    "mcode": "MEGAC",
+    "manufacturer": "Mega-Chip Electronics"
+  },
+  {
+    "mcode": "MEIBA",
+    "manufacturer": "Meiban SG"
+  },
+  {
+    "mcode": "MEIN",
+    "manufacturer": "MEINBERG"
+  },
+  {
+    "mcode": "MCOM",
+    "manufacturer": "Multicom"
+  },
+  {
+    "mcode": "MEDER",
+    "manufacturer": "Meder Elect"
+  },
+  {
+    "mcode": "MEMBL",
+    "manufacturer": "Memblaze"
+  },
+  {
+    "mcode": "MEMSI",
+    "manufacturer": "Memsic"
+  },
+  {
+    "mcode": "MENARD",
+    "manufacturer": "MENARD"
+  },
+  {
+    "mcode": "MGNTS",
+    "manufacturer": "Magnetics"
+  },
+  {
+    "mcode": "MICCO",
+    "manufacturer": "Micronics Computers"
+  },
+  {
+    "mcode": "MICLI",
+    "manufacturer": "Micro Linear"
+  },
+  {
+    "mcode": "MERIT",
+    "manufacturer": "Meritek Electronics"
+  },
+  {
+    "mcode": "MESOUL",
+    "manufacturer": "Me-Soul Electronic"
+  },
+  {
+    "mcode": "METUC",
+    "manufacturer": "METUCHEN CAPACITORS"
+  },
+  {
+    "mcode": "NAVMA",
+    "manufacturer": "Navman"
+  },
+  {
+    "mcode": "NARDA",
+    "manufacturer": "NARDA-MITEQ"
+  },
+  {
+    "mcode": "MULCO",
+    "manufacturer": "Multi Contact"
+  },
+  {
+    "mcode": "MULTI",
+    "manufacturer": "Multitech Sourcing"
+  },
+  {
+    "mcode": "MULTK",
+    "manufacturer": "Multek"
+  },
+  {
+    "mcode": "MURTE",
+    "manufacturer": "Muratec"
+  },
+  {
+    "mcode": "MUSIC",
+    "manufacturer": "Music Semiconductor"
+  },
+  {
+    "mcode": "MYRRA",
+    "manufacturer": "MYRRA"
+  },
+  {
+    "mcode": "NAKAG",
+    "manufacturer": "NAKAGAWA ELEC"
+  },
+  {
+    "mcode": "NANOT",
+    "manufacturer": "Nanotech"
+  },
+  {
+    "mcode": "NETLO",
+    "manufacturer": "Netlogic"
+  },
+  {
+    "mcode": "NETMOD",
+    "manufacturer": "NETMODULE"
+  },
+  {
+    "mcode": "NEXUS",
+    "manufacturer": "Nexus"
+  },
+  {
+    "mcode": "NHKL",
+    "manufacturer": "Nicera HongKong Limited"
+  },
+  {
+    "mcode": "NETI",
+    "manufacturer": "NETINT Technologies"
+  },
+  {
+    "mcode": "NELTR",
+    "manufacturer": "Neltron Industrial Co. Ltd"
+  },
+  {
+    "mcode": "NEOS",
+    "manufacturer": "Neosid"
+  },
+  {
+    "mcode": "NESCAP",
+    "manufacturer": "NESSCAP ULTRACAPACITOR"
+  },
+  {
+    "mcode": "NETAP",
+    "manufacturer": "NetApp"
+  },
+  {
+    "mcode": "MITAC",
+    "manufacturer": "Mitac International Corp"
+  },
+  {
+    "mcode": "MLGEN",
+    "manufacturer": "Mobilygen"
+  },
+  {
+    "mcode": "MTIPS",
+    "manufacturer": "MICROTIPS TECHNOLOGY"
+  },
+  {
+    "mcode": "MRV",
+    "manufacturer": "MRV Communications"
+  },
+  {
+    "mcode": "MICSL",
+    "manufacturer": "MicroSolutions"
+  },
+  {
+    "mcode": "MIPT",
+    "manufacturer": "MIGHTY PRECISION TECNOLOGY"
+  },
+  {
+    "mcode": "MICRY",
+    "manufacturer": "Micro Crystal"
+  },
+  {
+    "mcode": "MICTE",
+    "manufacturer": "Microtech"
+  },
+  {
+    "mcode": "KIONI",
+    "manufacturer": "Kionix"
+  },
+  {
+    "mcode": "KITAG",
+    "manufacturer": "Kitagawa Industries"
+  },
+  {
+    "mcode": "KODAK",
+    "manufacturer": "Kodak"
+  },
+  {
+    "mcode": "L-COM",
+    "manufacturer": "L-Com"
+  },
+  {
+    "mcode": "KSS",
+    "manufacturer": "Kinseki Ti"
+  },
+  {
+    "mcode": "KUJUN",
+    "manufacturer": "KUJUN"
+  },
+  {
+    "mcode": "KUONYI",
+    "manufacturer": "KUON YI"
+  },
+  {
+    "mcode": "KET",
+    "manufacturer": "Korea Electric Terminal"
+  },
+  {
+    "mcode": "KEYSI",
+    "manufacturer": "KEYSIGHT TECHNOLOGIES"
+  },
+  {
+    "mcode": "KFSPL",
+    "manufacturer": "Kansai Felt Singapoer PTE LTD"
+  },
+  {
+    "mcode": "KING",
+    "manufacturer": "King-Cord"
+  },
+  {
+    "mcode": "KENSI",
+    "manufacturer": "Kensington Technology"
+  },
+  {
+    "mcode": "KANGU",
+    "manufacturer": "Kanguru Solutions"
+  },
+  {
+    "mcode": "KAWAS",
+    "manufacturer": "Kawasaki"
+  },
+  {
+    "mcode": "KDS",
+    "manufacturer": "KDS America"
+  },
+  {
+    "mcode": "KEC",
+    "manufacturer": "Korea Electronics Co., Ltd."
+  },
+  {
+    "mcode": "KEL",
+    "manufacturer": "Kel"
+  },
+  {
+    "mcode": "LEAR",
+    "manufacturer": "Learning Co."
+  },
+  {
+    "mcode": "LEARCO",
+    "manufacturer": "LEAR CORPORATION"
+  },
+  {
+    "mcode": "LEDTR",
+    "manufacturer": "Ledtronics"
+  },
+  {
+    "mcode": "LEA",
+    "manufacturer": "LEA"
+  },
+  {
+    "mcode": "LEACH",
+    "manufacturer": "Leach International"
+  },
+  {
+    "mcode": "LAPTE",
+    "manufacturer": "LAPTECH PRECISION INC"
+  },
+  {
+    "mcode": "LAUER",
+    "manufacturer": "LAUER"
+  },
+  {
+    "mcode": "LANSD",
+    "manufacturer": "Lansdale"
+  },
+  {
+    "mcode": "LEMO",
+    "manufacturer": "LEMO"
+  },
+  {
+    "mcode": "LEOP",
+    "manufacturer": "Leopard Imaging"
+  },
+  {
+    "mcode": "LINDY",
+    "manufacturer": "LINDY Computer Connection Technology"
+  },
+  {
+    "mcode": "LINKD",
+    "manufacturer": "Link Depot"
+  },
+  {
+    "mcode": "LINKS",
+    "manufacturer": "Link Systems"
+  },
+  {
+    "mcode": "INLOG",
+    "manufacturer": "Interlogix"
+  },
+  {
+    "mcode": "INDUC",
+    "manufacturer": "Inductor Supply"
+  },
+  {
+    "mcode": "INPAQ",
+    "manufacturer": "Inpaq Technologies"
+  },
+  {
+    "mcode": "INNET",
+    "manufacturer": "INNET TECHNOLOGIES"
+  },
+  {
+    "mcode": "IGS",
+    "manufacturer": "INDUSTRIAL GAS SPRINGS"
+  },
+  {
+    "mcode": "ILSCO",
+    "manufacturer": "Ilsco"
+  },
+  {
+    "mcode": "ILSI",
+    "manufacturer": "ILSI America"
+  },
+  {
+    "mcode": "INTPL",
+    "manufacturer": "Interplexico Manufacturing"
+  },
+  {
+    "mcode": "INSIG",
+    "manufacturer": "Insight"
+  },
+  {
+    "mcode": "INSUL",
+    "manufacturer": "Insul-Fab of Texas"
+  },
+  {
+    "mcode": "INTCO",
+    "manufacturer": "Interconnect Devices"
+  },
+  {
+    "mcode": "INTE",
+    "manufacturer": "INTEGRAL"
+  },
+  {
+    "mcode": "IOMEG",
+    "manufacturer": "Iomega"
+  },
+  {
+    "mcode": "IPD",
+    "manufacturer": "International Power Devices"
+  },
+  {
+    "mcode": "ISUTRE",
+    "manufacturer": "ISUTREDNG"
+  },
+  {
+    "mcode": "ISO",
+    "manufacturer": "ISO"
+  },
+  {
+    "mcode": "ISPL",
+    "manufacturer": "Intertech Systems Pte Ltd"
+  },
+  {
+    "mcode": "IVO",
+    "manufacturer": "IVO"
+  },
+  {
+    "mcode": "ITTS",
+    "manufacturer": "ITT Semiconductors"
+  },
+  {
+    "mcode": "JABRA",
+    "manufacturer": "Jabra Corp"
+  },
+  {
+    "mcode": "JIANG",
+    "manufacturer": "JIANGHAI"
+  },
+  {
+    "mcode": "JJP",
+    "manufacturer": "Jen Jia Precision Technology"
+  },
+  {
+    "mcode": "JKL",
+    "manufacturer": "JKL COMPONENTS"
+  },
+  {
+    "mcode": "JMC",
+    "manufacturer": "JMC America"
+  },
+  {
+    "mcode": "JMCP",
+    "manufacturer": "JMC Products"
+  },
+  {
+    "mcode": "JSTMF",
+    "manufacturer": "J.S.T. Mfg. Co., Ltd"
+  },
+  {
+    "mcode": "SELTE",
+    "manufacturer": "SELTECH ELECTRONICS INC"
+  },
+  {
+    "mcode": "SEMIT",
+    "manufacturer": "Semitech"
+  },
+  {
+    "mcode": "SENSI",
+    "manufacturer": "Sensitron Semiconductor"
+  },
+  {
+    "mcode": "SHENG",
+    "manufacturer": "Sheng Teng Electron"
+  },
+  {
+    "mcode": "SHERW",
+    "manufacturer": "SHERWOOD CONNECTORS"
+  },
+  {
+    "mcode": "SHINW",
+    "manufacturer": "Shin Way Electronics"
+  },
+  {
+    "mcode": "SHOGY",
+    "manufacturer": "Shogyo"
+  },
+  {
+    "mcode": "SHOUL",
+    "manufacturer": "Shoulder Electronics"
+  },
+  {
+    "mcode": "SHOWMA",
+    "manufacturer": "SHOWMAN"
+  },
+  {
+    "mcode": "SHRX",
+    "manufacturer": "Sherex"
+  },
+  {
+    "mcode": "SIBA",
+    "manufacturer": "SIBA FUSES"
+  },
+  {
+    "mcode": "SILGY",
+    "manufacturer": "SILERGY CORP"
+  },
+  {
+    "mcode": "SEOUL",
+    "manufacturer": "Seoul Semicon"
+  },
+  {
+    "mcode": "SEVENT",
+    "manufacturer": "SEVENTEAM"
+  },
+  {
+    "mcode": "SEWEUR",
+    "manufacturer": "SEWEURODRIVE"
+  },
+  {
+    "mcode": "SFERN",
+    "manufacturer": "Sfernice(Vishay)"
+  },
+  {
+    "mcode": "SSAC",
+    "manufacturer": "SSAC"
+  },
+  {
+    "mcode": "SPTEC",
+    "manufacturer": "Speedtech"
+  },
+  {
+    "mcode": "SOB",
+    "manufacturer": "SOBERTON"
+  },
+  {
+    "mcode": "SOLID",
+    "manufacturer": "Solid State"
+  },
+  {
+    "mcode": "SONIO",
+    "manufacturer": "Sonion"
+  },
+  {
+    "mcode": "SONIT",
+    "manufacturer": "Sonitron"
+  },
+  {
+    "mcode": "SMC",
+    "manufacturer": "SMC Pneumatics"
+  },
+  {
+    "mcode": "SMK",
+    "manufacturer": "SMK ELECTRONICS"
+  },
+  {
+    "mcode": "SILST",
+    "manufacturer": "SILVERSTONE"
+  },
+  {
+    "mcode": "SKYE",
+    "manufacturer": "SKYETEK"
+  },
+  {
+    "mcode": "SKYW",
+    "manufacturer": "Skywell"
+  },
+  {
+    "mcode": "SLC",
+    "manufacturer": "Solidlite Corp"
+  },
+  {
+    "mcode": "RLC",
+    "manufacturer": "RLC Electro"
+  },
+  {
+    "mcode": "RO",
+    "manufacturer": "RO ASSOCIATES"
+  },
+  {
+    "mcode": "ROCHE",
+    "manufacturer": "Rochester"
+  },
+  {
+    "mcode": "ROGER",
+    "manufacturer": "ROGERS SOUTHEAST ASIA INC"
+  },
+  {
+    "mcode": "RIACO",
+    "manufacturer": "Ria Connect"
+  },
+  {
+    "mcode": "RENNS",
+    "manufacturer": "Rennsteig"
+  },
+  {
+    "mcode": "RELP",
+    "manufacturer": "RELPOLE"
+  },
+  {
+    "mcode": "RAMAX",
+    "manufacturer": "Ramaxel Technology"
+  },
+  {
+    "mcode": "RAMI",
+    "manufacturer": "Rami Technology"
+  },
+  {
+    "mcode": "RCHWV",
+    "manufacturer": "Richwave"
+  },
+  {
+    "mcode": "RDA",
+    "manufacturer": "RDA MICROELECTRONICS"
+  },
+  {
+    "mcode": "RAYTH",
+    "manufacturer": "Raytheon"
+  },
+  {
+    "mcode": "QPSEM",
+    "manufacturer": "QP Semiconductor"
+  },
+  {
+    "mcode": "QT",
+    "manufacturer": "Quality Tech"
+  },
+  {
+    "mcode": "QTOPT",
+    "manufacturer": "QT Optoelectronics"
+  },
+  {
+    "mcode": "SEASO",
+    "manufacturer": "Seasonic"
+  },
+  {
+    "mcode": "SEEQ",
+    "manufacturer": "Seeq Technology"
+  },
+  {
+    "mcode": "SEAGU",
+    "manufacturer": "Seagull Scientific"
+  },
+  {
+    "mcode": "SCIW",
+    "manufacturer": "SCI-WORX"
+  },
+  {
+    "mcode": "SCOTC",
+    "manufacturer": "Scotchlok"
+  },
+  {
+    "mcode": "SCRAF",
+    "manufacturer": "Starcraft"
+  },
+  {
+    "mcode": "SCS",
+    "manufacturer": "STATIC CONTROL SOLUTIONS"
+  },
+  {
+    "mcode": "SCGHK",
+    "manufacturer": "SCG HONG KONG SAR LTD"
+  },
+  {
+    "mcode": "SCHRO",
+    "manufacturer": "Schroff GMBH"
+  },
+  {
+    "mcode": "SANY",
+    "manufacturer": "Sany"
+  },
+  {
+    "mcode": "SARON",
+    "manufacturer": "Saronix"
+  },
+  {
+    "mcode": "ROYA",
+    "manufacturer": "Royal OHM"
+  },
+  {
+    "mcode": "RPS",
+    "manufacturer": "Redpine Signals"
+  },
+  {
+    "mcode": "SAFTB",
+    "manufacturer": "SAFT BATTERIES"
+  },
+  {
+    "mcode": "S3",
+    "manufacturer": "S3"
+  },
+  {
+    "mcode": "SABIC",
+    "manufacturer": "SABIC"
+  },
+  {
+    "mcode": "PROX",
+    "manufacturer": "PROXTEND"
+  },
+  {
+    "mcode": "PRIMX",
+    "manufacturer": "Primax Electronics"
+  },
+  {
+    "mcode": "PROEL",
+    "manufacturer": "Protechnic Electric Co Ltd"
+  },
+  {
+    "mcode": "PRESI",
+    "manufacturer": "Presidio Components"
+  },
+  {
+    "mcode": "POWSI",
+    "manufacturer": "POWERDSINE, INC"
+  },
+  {
+    "mcode": "POWTI",
+    "manufacturer": "PowerTip Technology"
+  },
+  {
+    "mcode": "POWTR",
+    "manufacturer": "Power Trends"
+  },
+  {
+    "mcode": "PQI",
+    "manufacturer": "PQI"
+  },
+  {
+    "mcode": "RADHS",
+    "manufacturer": "Radian Heatsinks"
+  },
+  {
+    "mcode": "RADIA",
+    "manufacturer": "Radiall"
+  },
+  {
+    "mcode": "RAF",
+    "manufacturer": "RAF ELECTRONIC HARDWARE"
+  },
+  {
+    "mcode": "RAIO",
+    "manufacturer": "Raio Technology"
+  },
+  {
+    "mcode": "PULSG",
+    "manufacturer": "Pulse Electronics (S) Pte Ltd"
+  },
+  {
+    "mcode": "QAT",
+    "manufacturer": "QANTEK TECHNOLOGY CORP"
+  },
+  {
+    "mcode": "PTCE",
+    "manufacturer": "PTC ELEMENT"
+  },
+  {
+    "mcode": "PLANA",
+    "manufacturer": "Planar Systems"
+  },
+  {
+    "mcode": "PMI",
+    "manufacturer": "Precison Monolithics"
+  },
+  {
+    "mcode": "POMON",
+    "manufacturer": "Pomona Electronics"
+  },
+  {
+    "mcode": "POSIT",
+    "manufacturer": "Positronic"
+  },
+  {
+    "mcode": "POWBO",
+    "manufacturer": "Power Box"
+  },
+  {
+    "mcode": "PERKI",
+    "manufacturer": "Perkin Elmer"
+  },
+  {
+    "mcode": "PETER",
+    "manufacturer": "PETERMANN-TECHNIK"
+  },
+  {
+    "mcode": "PINRE",
+    "manufacturer": "Pinrex"
+  },
+  {
+    "mcode": "PHOE",
+    "manufacturer": "Phoenixcon"
+  },
+  {
+    "mcode": "NORIT",
+    "manufacturer": "Noritake Co"
+  },
+  {
+    "mcode": "NZXT",
+    "manufacturer": "NZXT"
+  },
+  {
+    "mcode": "OCHASS",
+    "manufacturer": "One Chassis Technology CO ., Ltd"
+  },
+  {
+    "mcode": "OFFZO",
+    "manufacturer": "Office Zone"
+  },
+  {
+    "mcode": "OHMCR",
+    "manufacturer": "Ohmcraft"
+  },
+  {
+    "mcode": "OKAYA",
+    "manufacturer": "Okaya Electric America"
+  },
+  {
+    "mcode": "NICERA",
+    "manufacturer": "NICERA EUROPEAN WORKS LTD"
+  },
+  {
+    "mcode": "NOKIA",
+    "manufacturer": "Nokia"
+  },
+  {
+    "mcode": "NORC",
+    "manufacturer": "Norcomp"
+  },
+  {
+    "mcode": "NMB",
+    "manufacturer": "NMB Technologies Inc."
+  },
+  {
+    "mcode": "NOVAL",
+    "manufacturer": "Novalog Inc."
+  },
+  {
+    "mcode": "PACH",
+    "manufacturer": "PARKER CHOMERICS"
+  },
+  {
+    "mcode": "PACRE",
+    "manufacturer": "Pacific Resistor"
+  },
+  {
+    "mcode": "PARAL",
+    "manufacturer": "Para Light Electronics"
+  },
+  {
+    "mcode": "PARKE",
+    "manufacturer": "PARKER HANNIFIN TECHSEAL DIV."
+  },
+  {
+    "mcode": "PARLE",
+    "manufacturer": "Parlex Corporation"
+  },
+  {
+    "mcode": "PAS",
+    "manufacturer": "Primary Automation Systems"
+  },
+  {
+    "mcode": "PASSM",
+    "manufacturer": "PASSMARK SOFTWARE"
+  },
+  {
+    "mcode": "PASTR",
+    "manufacturer": "PASTERNACK"
+  },
+  {
+    "mcode": "PATRI",
+    "manufacturer": "PATRIOT MEMORY"
+  },
+  {
+    "mcode": "PCT",
+    "manufacturer": "Professional Computer Tech"
+  },
+  {
+    "mcode": "PDI",
+    "manufacturer": "PDI"
+  },
+  {
+    "mcode": "PEARS",
+    "manufacturer": "Pearson Electronics"
+  },
+  {
+    "mcode": "OPS",
+    "manufacturer": "Omega Power Systems"
+  },
+  {
+    "mcode": "OMITE",
+    "manufacturer": "OMITEC"
+  },
+  {
+    "mcode": "OMSTA",
+    "manufacturer": "Omnistar"
+  },
+  {
+    "mcode": "OXINT",
+    "manufacturer": "Oxford International"
+  },
+  {
+    "mcode": "OTAX",
+    "manufacturer": "OTAX"
+  },
+  {
+    "mcode": "OTIS",
+    "manufacturer": "OTIS"
+  },
+  {
+    "mcode": "BFG",
+    "manufacturer": "BFG"
+  },
+  {
+    "mcode": "BEY",
+    "manufacturer": "BEY"
+  },
+  {
+    "mcode": "BEND",
+    "manufacturer": "Bender + Wirth"
+  },
+  {
+    "mcode": "BITM",
+    "manufacturer": "Bitmain"
+  },
+  {
+    "mcode": "BOMAR",
+    "manufacturer": "Bomar Interconnect Prod"
+  },
+  {
+    "mcode": "BONAF",
+    "manufacturer": "Bona Fide Technology"
+  },
+  {
+    "mcode": "BLACK",
+    "manufacturer": "Black Box"
+  },
+  {
+    "mcode": "BLUE",
+    "manufacturer": "Blue Tooth"
+  },
+  {
+    "mcode": "BLUET",
+    "manufacturer": "Bluetechnix"
+  },
+  {
+    "mcode": "BMS",
+    "manufacturer": "BMS"
+  },
+  {
+    "mcode": "BELLP",
+    "manufacturer": "Bell Power Systems"
+  },
+  {
+    "mcode": "BEEE",
+    "manufacturer": "BEE Electronics"
+  },
+  {
+    "mcode": "AVT",
+    "manufacturer": "AVT Industrial Components"
+  },
+  {
+    "mcode": "BARCO",
+    "manufacturer": "Barco"
+  },
+  {
+    "mcode": "BAYAS",
+    "manufacturer": "Bay Associates"
+  },
+  {
+    "mcode": "BAYNE",
+    "manufacturer": "Baynetworks"
+  },
+  {
+    "mcode": "CALLU",
+    "manufacturer": "Calluna"
+  },
+  {
+    "mcode": "CAPTE",
+    "manufacturer": "CAPTEKS"
+  },
+  {
+    "mcode": "CARLT",
+    "manufacturer": "Carling Technologies"
+  },
+  {
+    "mcode": "CALOG",
+    "manufacturer": "Calogic"
+  },
+  {
+    "mcode": "CAMBI",
+    "manufacturer": "Cambion"
+  },
+  {
+    "mcode": "CAMBR",
+    "manufacturer": "Cambridge Electronics"
+  },
+  {
+    "mcode": "CAMEL",
+    "manufacturer": "Camelot Hytec Technologies"
+  },
+  {
+    "mcode": "CALCO",
+    "manufacturer": "Calcomp"
+  },
+  {
+    "mcode": "BOSSA",
+    "manufacturer": "Bossard Pte ltd"
+  },
+  {
+    "mcode": "BROTH",
+    "manufacturer": "Brother"
+  },
+  {
+    "mcode": "BSI",
+    "manufacturer": "British Standards Institute"
+  },
+  {
+    "mcode": "BULGI",
+    "manufacturer": "Bulgin"
+  },
+  {
+    "mcode": "BURND",
+    "manufacturer": "Burndy"
+  },
+  {
+    "mcode": "CHICA",
+    "manufacturer": "Chicago Miniature Lamp Inc"
+  },
+  {
+    "mcode": "CHIME",
+    "manufacturer": "Chimei"
+  },
+  {
+    "mcode": "CHIPS",
+    "manufacturer": "Chips & Technology"
+  },
+  {
+    "mcode": "CCCOA",
+    "manufacturer": "Custom Computer Cables of America"
+  },
+  {
+    "mcode": "CDE",
+    "manufacturer": "CDE"
+  },
+  {
+    "mcode": "CDI",
+    "manufacturer": "CDI/Martek"
+  },
+  {
+    "mcode": "CDIL",
+    "manufacturer": "Continental Device India Ltd"
+  },
+  {
+    "mcode": "CELDUC",
+    "manufacturer": "Celduc"
+  },
+  {
+    "mcode": "CENTU",
+    "manufacturer": "Centurion"
+  },
+  {
+    "mcode": "CET",
+    "manufacturer": "Cooper Electronic Tech"
+  },
+  {
+    "mcode": "CATEK",
+    "manufacturer": "Catek Corporation"
+  },
+  {
+    "mcode": "CMD",
+    "manufacturer": "CMD Technology"
+  },
+  {
+    "mcode": "CML",
+    "manufacturer": "Consumer Microcircuits"
+  },
+  {
+    "mcode": "CMLI",
+    "manufacturer": "CML Innovative Technologies"
+  },
+  {
+    "mcode": "CMLMI",
+    "manufacturer": "CML Microcircuits"
+  },
+  {
+    "mcode": "CMATE",
+    "manufacturer": "Ceramate"
+  },
+  {
+    "mcode": "CNCTEC",
+    "manufacturer": "CNC TECH"
+  },
+  {
+    "mcode": "COBY",
+    "manufacturer": "Coby"
+  },
+  {
+    "mcode": "COGNE",
+    "manufacturer": "COGNEX"
+  },
+  {
+    "mcode": "COIL",
+    "manufacturer": "Coiltech Inc."
+  },
+  {
+    "mcode": "COLAB",
+    "manufacturer": "Controlab"
+  },
+  {
+    "mcode": "COLORF",
+    "manufacturer": "Colorful"
+  },
+  {
+    "mcode": "COILS",
+    "manufacturer": "Coils Elect"
+  },
+  {
+    "mcode": "COMCH",
+    "manufacturer": "Comchip Technology Corp"
+  },
+  {
+    "mcode": "COMPC",
+    "manufacturer": "Components Corp."
+  },
+  {
+    "mcode": "COMTE",
+    "manufacturer": "Comtec Crystals"
+  },
+  {
+    "mcode": "COPAL",
+    "manufacturer": "Copal"
+  },
+  {
+    "mcode": "COPP",
+    "manufacturer": "Copper Mountain"
+  },
+  {
+    "mcode": "CORCO",
+    "manufacturer": "Corcom"
+  },
+  {
+    "mcode": "CONNE",
+    "manufacturer": "Connection"
+  },
+  {
+    "mcode": "CONWI",
+    "manufacturer": "Conner Winfield"
+  },
+  {
+    "mcode": "CONXAL",
+    "manufacturer": "Conxall"
+  },
+  {
+    "mcode": "COTOT",
+    "manufacturer": "Coto Technology"
+  },
+  {
+    "mcode": "CPS",
+    "manufacturer": "CPS Printing"
+  },
+  {
+    "mcode": "APTIN",
+    "manufacturer": "Aptina Imaging"
+  },
+  {
+    "mcode": "AQUAN",
+    "manufacturer": "Aquantia"
+  },
+  {
+    "mcode": "ARCOL",
+    "manufacturer": "Arcolectric Ltd."
+  },
+  {
+    "mcode": "AMSAG",
+    "manufacturer": "Austria Mikro Systeme International Aktiengesellschaft m.b.H"
+  },
+  {
+    "mcode": "AMSC",
+    "manufacturer": "Applied Microsystems Corp"
+  },
+  {
+    "mcode": "AMPOW",
+    "manufacturer": "American Power Conversion"
+  },
+  {
+    "mcode": "AMPAK",
+    "manufacturer": "AMPAK"
+  },
+  {
+    "mcode": "ALTAI",
+    "manufacturer": "Altair"
+  },
+  {
+    "mcode": "AMETH",
+    "manufacturer": "Ametherm"
+  },
+  {
+    "mcode": "AMI",
+    "manufacturer": "AMI American Mega Trend"
+  },
+  {
+    "mcode": "ASS",
+    "manufacturer": "Assmann Corporation"
+  },
+  {
+    "mcode": "ASSRE",
+    "manufacturer": "Associated Research"
+  },
+  {
+    "mcode": "ARLAN",
+    "manufacturer": "Arlan"
+  },
+  {
+    "mcode": "ATLASE",
+    "manufacturer": "Atlas Engineering"
+  },
+  {
+    "mcode": "ASTRO",
+    "manufacturer": "Astron"
+  },
+  {
+    "mcode": "ATS",
+    "manufacturer": "Advanced Thermal"
+  },
+  {
+    "mcode": "AURIS",
+    "manufacturer": "AURIS"
+  },
+  {
+    "mcode": "AVANT",
+    "manufacturer": "Avantek"
+  },
+  {
+    "mcode": "AVAYA",
+    "manufacturer": "Avaya"
+  },
+  {
+    "mcode": "AVCC",
+    "manufacturer": "Asia Vital Components Co."
+  },
+  {
+    "mcode": "AVEDM",
+    "manufacturer": "Aved Memory Products"
+  },
+  {
+    "mcode": "ALLIE",
+    "manufacturer": "Allied Telesyn"
+  },
+  {
+    "mcode": "ALFAMO",
+    "manufacturer": "ALFA MOS"
+  },
+  {
+    "mcode": "ALI",
+    "manufacturer": "Ali Corporation"
+  },
+  {
+    "mcode": "ALLEN",
+    "manufacturer": "Allen-Bradley"
+  },
+  {
+    "mcode": "ALOGI",
+    "manufacturer": "Alogic Co., Ltd."
+  },
+  {
+    "mcode": "ALPEL",
+    "manufacturer": "Alpha Electronics"
+  },
+  {
+    "mcode": "ALPIN",
+    "manufacturer": "Alpine"
+  },
+  {
+    "mcode": "ALTOBE",
+    "manufacturer": "AltoBeam"
+  },
+  {
+    "mcode": "ALTSE",
+    "manufacturer": "AltaSens"
+  },
+  {
+    "mcode": "AMATO",
+    "manufacturer": "Amatom Elek Hardware"
+  },
+  {
+    "mcode": "AMBA",
+    "manufacturer": "Ambarella"
+  },
+  {
+    "mcode": "AMC",
+    "manufacturer": "Applied Microcircuits"
+  },
+  {
+    "mcode": "ALCOM",
+    "manufacturer": "Alcom"
+  },
+  {
+    "mcode": "AGW",
+    "manufacturer": "AGW Electronics Ltd"
+  },
+  {
+    "mcode": "AIC",
+    "manufacturer": "Analog Integration Corp"
+  },
+  {
+    "mcode": "AIKOH",
+    "manufacturer": "AIKOH"
+  },
+  {
+    "mcode": "AINTES",
+    "manufacturer": "AINTESOLU"
+  },
+  {
+    "mcode": "ADVSM",
+    "manufacturer": "Advanced Semi"
+  },
+  {
+    "mcode": "ADIC",
+    "manufacturer": "Adic"
+  },
+  {
+    "mcode": "ABIT",
+    "manufacturer": "Abit"
+  },
+  {
+    "mcode": "ABLLTD",
+    "manufacturer": "Air Bearings Limited"
+  },
+  {
+    "mcode": "AASTR",
+    "manufacturer": "Aastra Telecom"
+  },
+  {
+    "mcode": "AAT",
+    "manufacturer": "Advanced Analogic Technologies"
+  },
+  {
+    "mcode": "A-BRIG",
+    "manufacturer": "A-Bright"
+  },
+  {
+    "mcode": "A2V",
+    "manufacturer": "A2V"
+  },
+  {
+    "mcode": "3Q",
+    "manufacturer": "3Q"
+  },
+  {
+    "mcode": "ADATA",
+    "manufacturer": "A-Data Technology"
+  },
+  {
+    "mcode": "ADACT",
+    "manufacturer": "Adactus"
+  },
+  {
+    "mcode": "ACTIO",
+    "manufacturer": "Actiontec Electronics, Inc."
+  },
+  {
+    "mcode": "ACX",
+    "manufacturer": "ACX"
+  },
+  {
+    "mcode": "ACAM",
+    "manufacturer": "Acam Messelectronic"
+  },
+  {
+    "mcode": "ACES",
+    "manufacturer": "Aces Electronic"
+  },
+  {
+    "mcode": "ACON",
+    "manufacturer": "Advanced-Connectek, Inc."
+  },
+  {
+    "mcode": "ACS",
+    "manufacturer": "Advanced Card Systems Holdings Limited"
+  },
+  {
+    "mcode": "ACT",
+    "manufacturer": "Advanced Crystal Technology"
+  },
+  {
+    "mcode": "CSB",
+    "manufacturer": "CSB battery"
+  },
+  {
+    "mcode": "CRY",
+    "manufacturer": "Crystek Corp"
+  },
+  {
+    "mcode": "CREMA",
+    "manufacturer": "Cremax"
+  },
+  {
+    "mcode": "CREST",
+    "manufacturer": "Crestron"
+  },
+  {
+    "mcode": "CURT",
+    "manufacturer": "Curtis Industries"
+  },
+  {
+    "mcode": "CYAN",
+    "manufacturer": "Cyan Optics"
+  },
+  {
+    "mcode": "DAEWO",
+    "manufacturer": "Daewoo"
+  },
+  {
+    "mcode": "DARFO",
+    "manufacturer": "Darfon"
+  },
+  {
+    "mcode": "DATAK",
+    "manufacturer": "Datakey"
+  },
+  {
+    "mcode": "DATEL",
+    "manufacturer": "Datel Systems"
+  },
+  {
+    "mcode": "DCS",
+    "manufacturer": "Delphi Connection Systems"
+  },
+  {
+    "mcode": "DDC",
+    "manufacturer": "Data Device Corporation"
+  },
+  {
+    "mcode": "DEDI",
+    "manufacturer": "Dediprog"
+  },
+  {
+    "mcode": "DELEV",
+    "manufacturer": "Delevan"
+  },
+  {
+    "mcode": "DELO",
+    "manufacturer": "DELO Industrial Adhesives"
+  },
+  {
+    "mcode": "DIGIK",
+    "manufacturer": "Digi-Key"
+  },
+  {
+    "mcode": "DELPH",
+    "manufacturer": "DELPHI PACKARD ELECTRIC SYS"
+  },
+  {
+    "mcode": "DFI",
+    "manufacturer": "DFI"
+  },
+  {
+    "mcode": "DIGIU",
+    "manufacturer": "Digium"
+  },
+  {
+    "mcode": "DIREC",
+    "manufacturer": "Directron"
+  },
+  {
+    "mcode": "DISPL",
+    "manufacturer": "DISPLAYTECH LIMITED"
+  },
+  {
+    "mcode": "DTRON",
+    "manufacturer": "Digitron"
+  },
+  {
+    "mcode": "DTS",
+    "manufacturer": "DTS"
+  },
+  {
+    "mcode": "DUREL",
+    "manufacturer": "Durel"
+  },
+  {
+    "mcode": "DYKEM",
+    "manufacturer": "DYKEM"
+  },
+  {
+    "mcode": "DYNA",
+    "manufacturer": "DYNABOOK"
+  },
+  {
+    "mcode": "DSI",
+    "manufacturer": "Discrete Semiconductor Industries"
+  },
+  {
+    "mcode": "DSP",
+    "manufacturer": "DSP Group"
+  },
+  {
+    "mcode": "E2V",
+    "manufacturer": "E2V"
+  },
+  {
+    "mcode": "EAGL",
+    "manufacturer": "EAGLE ASPEN"
+  },
+  {
+    "mcode": "E-SOLA",
+    "manufacturer": "Ever-Solar"
+  },
+  {
+    "mcode": "ESMT",
+    "manufacturer": "ESMT"
+  },
+  {
+    "mcode": "EVERF",
+    "manufacturer": "Everfuse(PTTC)"
+  },
+  {
+    "mcode": "EVERS",
+    "manufacturer": "Everspin Technologies"
+  },
+  {
+    "mcode": "EPT",
+    "manufacturer": "Electronic Precision"
+  },
+  {
+    "mcode": "ERG",
+    "manufacturer": "Endicott Research Group"
+  },
+  {
+    "mcode": "EUTEC",
+    "manufacturer": "Eutech"
+  },
+  {
+    "mcode": "EVEBR",
+    "manufacturer": "Everbright"
+  },
+  {
+    "mcode": "EPISTA",
+    "manufacturer": "Epistar Corporation"
+  },
+  {
+    "mcode": "ENRG",
+    "manufacturer": "Energizer Holdings Inc"
+  },
+  {
+    "mcode": "ENTRO",
+    "manufacturer": "Entropic Communications"
+  },
+  {
+    "mcode": "ENER",
+    "manufacturer": "ENERSYS"
+  },
+  {
+    "mcode": "ELPA",
+    "manufacturer": "Elpacko"
+  },
+  {
+    "mcode": "EMI",
+    "manufacturer": "EMI SUPPERESSION FERRITE"
+  },
+  {
+    "mcode": "EEMB",
+    "manufacturer": "EEMB BATTERY"
+  },
+  {
+    "mcode": "EASE",
+    "manufacturer": "EXCELIGHT  A SUMITOMO ELECTRIC"
+  },
+  {
+    "mcode": "EASTT",
+    "manufacturer": "EASTERNTRONIC"
+  },
+  {
+    "mcode": "EICL",
+    "manufacturer": "Entery Industrial Co. Ltd."
+  },
+  {
+    "mcode": "ELAN",
+    "manufacturer": "Elan Microelectronics Corp"
+  },
+  {
+    "mcode": "ELANT",
+    "manufacturer": "Elantec"
+  },
+  {
+    "mcode": "EDAC",
+    "manufacturer": "EDAC"
+  },
+  {
+    "mcode": "EDAN",
+    "manufacturer": "Edan Technology Corp"
+  },
+  {
+    "mcode": "EDCON",
+    "manufacturer": "Edcon Components"
+  },
+  {
+    "mcode": "EDSIG",
+    "manufacturer": "Edwards Signaling"
+  },
+  {
+    "mcode": "ELMOS",
+    "manufacturer": "ELMOS SEMICONDUCTOR"
+  },
+  {
+    "mcode": "EM",
+    "manufacturer": "EM Microelectronics"
+  },
+  {
+    "mcode": "EMACS",
+    "manufacturer": "EMACS"
+  },
+  {
+    "mcode": "EMBER",
+    "manufacturer": "EMBER CORPERATION"
+  },
+  {
+    "mcode": "EMBRIO",
+    "manufacturer": "Embrionix"
+  },
+  {
+    "mcode": "ELCOM",
+    "manufacturer": "Elcom Technologies"
+  },
+  {
+    "mcode": "ELECP",
+    "manufacturer": "Electronic Concepts"
+  },
+  {
+    "mcode": "ELECTR",
+    "manufacturer": "Electrolube"
+  },
+  {
+    "mcode": "ELEQ",
+    "manufacturer": "ELEQ MASTERING ELECTRICITY"
+  },
+  {
+    "mcode": "ELEXS",
+    "manufacturer": "Elexsys"
+  },
+  {
+    "mcode": "ELIGR",
+    "manufacturer": "Elite Group"
+  },
+  {
+    "mcode": "ELIXI",
+    "manufacturer": "Elixir"
+  },
+  {
+    "mcode": "FEP",
+    "manufacturer": "FEP Guangzhou"
+  },
+  {
+    "mcode": "FASTE",
+    "manufacturer": "FASTENAL COMPANY"
+  },
+  {
+    "mcode": "FASTR",
+    "manufacturer": "FASTRON"
+  },
+  {
+    "mcode": "FARAT",
+    "manufacturer": "FARATRONIC CO., LTD"
+  },
+  {
+    "mcode": "EZCHI",
+    "manufacturer": "EZchip Technologies"
+  },
+  {
+    "mcode": "FAGOR",
+    "manufacturer": "Fagor Electronic Components"
+  },
+  {
+    "mcode": "EXSYS",
+    "manufacturer": "Excelsys Technologies"
+  },
+  {
+    "mcode": "FLIR",
+    "manufacturer": "FLIR"
+  },
+  {
+    "mcode": "FORSEE",
+    "manufacturer": "FORESEE"
+  },
+  {
+    "mcode": "FORTR",
+    "manufacturer": "Fortron"
+  },
+  {
+    "mcode": "FORWA",
+    "manufacturer": "Forward Electronics"
+  },
+  {
+    "mcode": "FOUND",
+    "manufacturer": "Foundry Networks"
+  },
+  {
+    "mcode": "FIRS",
+    "manufacturer": "First Ohm"
+  },
+  {
+    "mcode": "FERRI",
+    "manufacturer": "Ferrico"
+  },
+  {
+    "mcode": "FINDE",
+    "manufacturer": "Finder"
+  },
+  {
+    "mcode": "G-COM",
+    "manufacturer": "G-Comm"
+  },
+  {
+    "mcode": "FUJIS",
+    "manufacturer": "Fuji Semi"
+  },
+  {
+    "mcode": "FRIWO",
+    "manufacturer": "FRIWO"
+  },
+  {
+    "mcode": "FSCOM",
+    "manufacturer": "FS.COM INC."
+  },
+  {
+    "mcode": "GIGSE",
+    "manufacturer": "Giga Semiconductor"
+  },
+  {
+    "mcode": "GIS",
+    "manufacturer": "GE Infrastructure Sensing"
+  },
+  {
+    "mcode": "GL",
+    "manufacturer": "Genesys Logic"
+  },
+  {
+    "mcode": "GLEN",
+    "manufacturer": "Glenair"
+  },
+  {
+    "mcode": "GENIC",
+    "manufacturer": "Genica"
+  },
+  {
+    "mcode": "GENLO",
+    "manufacturer": "Genesys Logic"
+  },
+  {
+    "mcode": "GCI",
+    "manufacturer": "GCI Technology"
+  },
+  {
+    "mcode": "GCOM",
+    "manufacturer": "Garretcom"
+  },
+  {
+    "mcode": "GE",
+    "manufacturer": "GE Supply Logistics"
+  },
+  {
+    "mcode": "GECP",
+    "manufacturer": "GE Critical Power"
+  },
+  {
+    "mcode": "GEENE",
+    "manufacturer": "GE ENERGY (FORMERLY LINEAGE PWR)"
+  },
+  {
+    "mcode": "GEFEN",
+    "manufacturer": "Gefen"
+  },
+  {
+    "mcode": "HAMAM",
+    "manufacturer": "HAMAMATSU"
+  },
+  {
+    "mcode": "HAMLI",
+    "manufacturer": "Hamlin"
+  },
+  {
+    "mcode": "HANTE",
+    "manufacturer": "Hantechnic Incorporated"
+  },
+  {
+    "mcode": "HISIL",
+    "manufacturer": "Hisilicon Integrated Circuits"
+  },
+  {
+    "mcode": "HIGHP",
+    "manufacturer": "HighPoint"
+  },
+  {
+    "mcode": "HDPLX",
+    "manufacturer": "HDPLEX"
+  },
+  {
+    "mcode": "HARVA",
+    "manufacturer": "Harvatek"
+  },
+  {
+    "mcode": "GLOBE",
+    "manufacturer": "Globe Electric"
+  },
+  {
+    "mcode": "GLOBT",
+    "manufacturer": "Globtek Inc"
+  },
+  {
+    "mcode": "GLOPC",
+    "manufacturer": "GlobalPC"
+  },
+  {
+    "mcode": "GMOTO",
+    "manufacturer": "General Motors"
+  },
+  {
+    "mcode": "GOFOR",
+    "manufacturer": "GO FORWARD"
+  },
+  {
+    "mcode": "GOL",
+    "manufacturer": "Goldenbridge"
+  },
+  {
+    "mcode": "GOWAN",
+    "manufacturer": "Gowanda Electronics"
+  },
+  {
+    "mcode": "GSKIL",
+    "manufacturer": "G.SKILL"
+  },
+  {
+    "mcode": "GSKY",
+    "manufacturer": "GOODSKY"
+  },
+  {
+    "mcode": "GVC",
+    "manufacturer": "GVC"
+  },
+  {
+    "mcode": "HJC",
+    "manufacturer": "HUA JUNG COMPONENTS"
+  },
+  {
+    "mcode": "HOLNAM",
+    "manufacturer": "HOLLAND NAMEPLATE INC."
+  },
+  {
+    "mcode": "HOLT",
+    "manufacturer": "Holt Integrated Circuits"
+  },
+  {
+    "mcode": "HOSID",
+    "manufacturer": "Hosiden"
+  },
+  {
+    "mcode": "HOSON",
+    "manufacturer": "HOSONIC"
+  },
+  {
+    "mcode": "HOTEK",
+    "manufacturer": "Hotek"
+  },
+  {
+    "mcode": "HONG",
+    "manufacturer": "Hong Shao"
+  },
+  {
+    "mcode": "HUBER",
+    "manufacturer": "Huber & Suhner"
+  },
+  {
+    "mcode": "HUGHE",
+    "manufacturer": "Hughes Network"
+  },
+  {
+    "mcode": "HUMME",
+    "manufacturer": "Hummel"
+  },
+  {
+    "mcode": "HPL",
+    "manufacturer": "HPL Stamping"
+  },
+  {
+    "mcode": "HPWIN",
+    "manufacturer": "HP WINNER"
+  },
+  {
+    "mcode": "HTC",
+    "manufacturer": "HTC"
+  },
+  {
+    "mcode": "HTFAS",
+    "manufacturer": "Hi-Tech Fastners"
+  },
+  {
+    "mcode": "ICY",
+    "manufacturer": "Icy Dock"
+  },
+  {
+    "mcode": "IDI",
+    "manufacturer": "IDI"
+  },
+  {
+    "mcode": "ICE",
+    "manufacturer": "Ice Components"
+  },
+  {
+    "mcode": "ICO",
+    "manufacturer": "ICO Rally"
+  },
+  {
+    "mcode": "ICPLUS",
+    "manufacturer": "IC PLUS"
+  }
+ ]
