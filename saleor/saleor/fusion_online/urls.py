@@ -23,4 +23,8 @@ urlpatterns = [
     path("hubspot-companies", hubspot_views.create_company),
     path("sales-orders/<int:pk>", order_views.OrderDetail.as_view()),
     path("orders-create", order_views.create_order),
+
+    # webhook
+    path("install-webhook", hubspot_views.install_webhook),
+    path("contact/changed", hubspot_views.update_contact_approval_status)
 ]
