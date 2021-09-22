@@ -17,7 +17,7 @@ import './App.scss';
 import { useMutation } from '@apollo/client';
 import { CONFIRM_ACCOUNT } from './config';
 
-import { Toast } from 'react-bootstrap';
+import { Alert, Container } from 'react-bootstrap';
 
 type AccountConfirmMutation = {
   confirmAccount: {
@@ -28,7 +28,8 @@ type AccountConfirmMutation = {
   } | null;
 };
 
-type ToastState = {
+type AlertState = {
+  show: boolean;
   message?: string;
   variant?: string;
 };
@@ -47,7 +48,9 @@ function App() {
     updateItem,
     subtractItem,
   } = useCart();
-  const [showToast, setShowToast] = useState<ToastState>();
+  const [showAlert, setShowAlert] = useState<AlertState>(
+    { show: true, message: 'Your email has been confirmed! Please log in.', variant: 'primary' }
+  );
   const [confirming, setConfirming] = useState<Boolean>(false);
   const location = useLocation();
   const history = useHistory();
@@ -88,8 +91,8 @@ function App() {
   if (confirming) {
     if (confirmAccountData?.data?.confirmAccount?.errors.length === 0) {
       console.log('Account confirmed');
-      if (!showToast) {
-        setShowToast({ message: 'Your email has been confirmed! Please log in.', variant: 'success' });
+      if (!showAlert.show) {
+        setShowAlert({ show: true, message: 'Your email has been confirmed! Please log in.', variant: 'primary' });
       }
     } else {
       console.error('confirm errors', confirmAccountData?.data?.confirmAccount?.errors);
@@ -104,7 +107,7 @@ function App() {
     history.replace({
       search: queryParams.toString(),
     });
-    setShowToast(undefined);
+    setShowAlert({show: false});
   };
 
   return authenticated && user ? (
@@ -141,23 +144,26 @@ function App() {
     </>
   ) : (
     <>
+      <Alert
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: "100%"
+        }}
+        show={showAlert.show}
+        variant={showAlert.variant}
+        dismissible
+        onClose={handleCloseConfirmation}
+      >
+        <Container>
+        <Alert.Heading>
+          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+          <strong className="me-auto">RocketChips</strong>
+        </Alert.Heading>
+        <p>{showAlert.message}</p>
+        </Container>
+      </Alert>
       <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
-      {showToast && (
-        <Toast
-          style={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-          }}
-          onClose={handleCloseConfirmation}
-        >
-          <Toast.Header>
-            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-            <strong className="me-auto">RocketChips</strong>
-          </Toast.Header>
-          <Toast.Body>{showToast.message}</Toast.Body>
-        </Toast>
-      )}
     </>
   );
 }
