@@ -32,7 +32,7 @@ type FormValues = {
 export const Register: React.FC<RegisterProps> = ({
   handleRegistration
 }) => {
-  const { register, reset, handleSubmit, formState: {errors, isSubmitSuccessful}} = useForm<FormValues>();
+  const { register, reset, handleSubmit, formState: {errors, isSubmitted, isSubmitSuccessful, isValidating, isValid, touchedFields}} = useForm<FormValues>();
 
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
@@ -55,13 +55,13 @@ export const Register: React.FC<RegisterProps> = ({
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
       <Form.Group>
-        <Form.Label>{label}</Form.Label>
         {required ? (
-          <input type="text" {...register(name, { required: true })} />
+          <Form.Control type="text" className={errors[name] ? "is-invalid" : ""} {...register(name, { required: true })} placeholder={label}/>
         ) : (
-          <input type="text" {...register(name)} />
+          <Form.Control type="text" {...register(name)} placeholder={label}/>
         )}
-        {errors[name] ? <span>This field is required</span> : null}
+        <Form.Label>{label}</Form.Label>
+        {errors[name] ? <div className="invalid-feedback">This field is required</div> : null}
       </Form.Group>
     );
   };
@@ -79,25 +79,26 @@ export const Register: React.FC<RegisterProps> = ({
         {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
           return <p className="text-danger">{error.field}: {error.message}</p>
         })}
-          <Form className="floating-labels" onSubmit={handleSubmit(onSubmit)}>
+          <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)}>
             {textInput('firstName', 'First Name', true)}
             {textInput('lastName', 'Last Name', true)}
             {textInput('email', 'Email', true)}
             <Form.Group>
+              <Form.Control type='password' className={errors["password"] ? "is-invalid" : ""} {...register('password', {required: true})} placeholder="Password"/>
               <Form.Label>Password</Form.Label>
-              <input type='password' {...register('password', {required: true})}/>
+              {errors['password'] ? <div className="invalid-feedback">This field is required</div> : null}
             </Form.Group>
             {textInput('companyName', 'Company Name', true)}
-            <Form.Group>
-            <Form.Label>Select Geographic Region</Form.Label>
-              <select {...register('region', {required: true})}>
+            <Form.Group controlId="region">
+              <Form.Control as="select" className={errors["region"] ? "is-invalid" : ""} required custom {...register('region', {required: true})}>
                 <option disabled selected hidden></option>
                 <option>Americas</option>
                 <option>Asia/Pacific</option>
                 <option>EMEA</option>
                 <option>Other</option>
-              </select>
-              {errors['region'] ? <span>This field is required</span> : null}
+              </Form.Control>
+              <Form.Label>Select Geographic Region</Form.Label>
+              {errors['region'] ? <div className="invalid-feedback">This field is required</div> : null}
             </Form.Group>
             <Button
               variant="primary"
