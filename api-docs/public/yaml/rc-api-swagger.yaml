@@ -128,13 +128,19 @@ components:
       pattern: /^\d+\.\d{0,5}$/
       example: "12.00125"
     LeadTimeDays:
-      type: string 
-      example: "0"
+      type: integer
+      example: 1
       minimum: -1
       description: >
         Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
           * `-1` - Unknown
           * `0` - In Stock
+          * `1` - 1 month lead time
+    LeadTimeDaysFreeForm:
+      type: string 
+      example: "0"
+      description: >
+        Lead time in days (free-form).
     NotificationMessage:
       type: object
       description: >
@@ -353,7 +359,7 @@ components:
           description: Country of origin (free-form text)
           maxLength: 60
         lead_time_days:
-          $ref: '#/components/schemas/LeadTimeDays'
+          $ref: '#/components/schemas/LeadTimeDaysFreeForm'
         rms_response_id:
           type: integer
           description: ID of the RFQ response in RMS
