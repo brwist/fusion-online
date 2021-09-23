@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.4
+  version: 0.0.5
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -31,10 +31,6 @@ paths:
       responses:
         '200':
           description: Created
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/ProductResponse'
   /products/{fo_ref_id}:
     put:
       summary: Updates a product.
@@ -54,10 +50,6 @@ paths:
       responses:
         '200':
           description: Updated
-          content:
-            application/json:
-              schema: 
-                $ref: '#/components/schemas/ProductResponse'
   /rfqs/{fo_rfq_ref_id}:
     get:
       summary: Fetches an RFQ Submission.
@@ -122,45 +114,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SalesOrder'
-  /ship-to-addresses/{fo_ship_to_address_ref_id}:
-    get:
-      summary: Fetches a ship-to address.
-      parameters:
-        - in: path
-          name: fo_ship_to_address_ref_id
-          description: The ID of the ship-to address in RocketChips.
-          schema:
-            type: integer
-          required: true
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ShipToAddress'
-    put:
-      summary: Updates a ship-to address.
-      parameters:
-        - in: path
-          name: fo_ship_to_address_ref_id
-          description: The ID of the ship-to address in RocketChips.
-          schema:
-            type: integer
-          required: true
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ShipToAddressUpdate'
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ShipToAddress'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -175,7 +128,8 @@ components:
       pattern: /^\d+\.\d{0,5}$/
       example: "12.00125"
     LeadTimeDays:
-      type: integer
+      type: string 
+      example: "0"
       minimum: -1
       description: >
         Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
@@ -203,13 +157,13 @@ components:
       properties:
         type:
           type: string
-          enum: [EXCESS_LIST, STOCK_LIST, VENDOR_OFFER, RMS_OFFER, PO]
+          enum: [Excess List, Stock List, Vendor Offer, RMS Offer, RMS PO]
         date_added:
           $ref: '#/components/schemas/Timestamp'
-        source:
+        vendor_number:
           type: integer
           description: Vendor number
-        company:
+        vendor_name:
           type: string
           maxLength: 50
           description: Vendor name
@@ -245,21 +199,20 @@ components:
           description: ID of offer in RMS
         vendor_type:
           type: string
-          enum: [AUTHORIZED_FRANCHISE, BROKER, EXPENSE_NON_PRODUCT, MFG_DIRECT, OEM_CM_EXCESS, SERVICE, UNCLASSIFIED]
+          enum: [Authorized/Franchise, Broker, Expense (non-product), Mfg. Direct, OEM/CM Excess, Service, Unclassified]
         vendor_region:
           type: string
-          enum: [ASIA, ASIA_PACIFIC, EMEA, EUROPE, OTHER, USA]
+          enum: [Americas, Asia/Pacific, EMEA, Other]
       required:
         - type
         - date_added
-        - source
-        - company
+        - vendor_number
+        - vendor_name
         - item_num_id
         - mpn
         - mcode
         - quantity
         - offer_price
-        - coo
         - lead_time_days
         - vendor_type
         - vendor_region
@@ -357,13 +310,6 @@ components:
         - vendors
         - item_price_id
         - status
-    ProductResponse:
-      title: Product Create/Update response
-      type: object
-      properties:
-        fo_ref_id:
-          type: integer
-          description: The ID of the product in the RocketChips system.
     ProductStatus:
       title: Product status
       type: string
@@ -408,16 +354,16 @@ components:
           maxLength: 60
         lead_time_days:
           $ref: '#/components/schemas/LeadTimeDays'
-        offer_id:
+        rms_response_id:
           type: integer
-          description: ID of offer in RMS
+          description: ID of the RFQ response in RMS
       required:
         - result_status
         - mpn
         - mcode
         - quantity
         - offer_price
-        - offer_id
+        - rms_response_id
     RfqSubmission:
       title: RFQ Submission
       type: object
@@ -546,12 +492,6 @@ components:
           type: string
           maxLength: 50
           description: May be an empty string
-    ShipToAddressUpdate:
-      properties:
-        validation_message:
-          type: string
-          description: Description of any validation-related issues with the address.
-          nullable: true
     Timestamp:
       type: integer
       description: Milliseconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
