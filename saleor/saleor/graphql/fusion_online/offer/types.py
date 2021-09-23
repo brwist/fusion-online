@@ -8,7 +8,7 @@ class Offer(CountableDjangoObjectType):
 
     class Meta:
         model = models.Offer
-        fields = ("id", "date_added", "lead_time_days",
+        fields = ("id", "date_added", "lead_time_days", "offer_price", "quantity", "coo", "date_code",
                   "product_variant", "tariff_rate", "type", "item_num_id", "vendor")
 
 
