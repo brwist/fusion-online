@@ -132,6 +132,7 @@ const PricingPage = () => {
         className={classes.link}>
       <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.privateMetadata.find(
         ({key, value}) => key === "mpn")?.value}</TableCell>
+      <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.category.name}</TableCell>
       <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
       <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
       <TableCell className={classes.textRight} colSpan={numberOfColumns}>{moment(node.updatedAt).format("MM/DD/YY hh:mm A")}</TableCell>
@@ -152,6 +153,7 @@ const PricingPage = () => {
         <ResponsiveTable className={classes.table}>
           <TableHead>
             <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>MPN</TableCellHeader>
+            <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>Category</TableCellHeader>
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Low</TableCellHeader>
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>High</TableCellHeader>
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Last Updated</TableCellHeader>
