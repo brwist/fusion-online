@@ -92,10 +92,6 @@ paths:
       responses:
         '200':
           description: Created
-          content:
-            application/json:
-              schema:
-                type: object
   /sales-orders/{fo_order_ref_id}:
     get:
       summary: Fetches a sales order.
