@@ -47,7 +47,7 @@ import PageSection from "./pages";
 import PermissionGroupSection from "./permissionGroups";
 import PluginsSection from "./plugins";
 import ProductSection from "./products";
-import PricingSection from "./pricing";
+import PricingSection from "./pricing/components/PricingPage";
 import ProductTypesSection from "./productTypes";
 import ShippingSection from "./shipping";
 import SiteSettingsSection from "./siteSettings";
