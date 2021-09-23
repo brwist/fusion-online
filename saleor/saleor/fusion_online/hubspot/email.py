@@ -36,9 +36,9 @@ class HubspotEmails:
                 "sendId": hubspot_user['id']
             },
             "customProperties": {
-                "verifyurl": verifyurl
+                "LinkToVerifyEmail": verifyurl
             },
-            "emailId": 55348375898
+            "emailId": 55513011793
         }
 
         r = requests.post(self.single_send_endpoint, data=json.dumps(payload), headers=(

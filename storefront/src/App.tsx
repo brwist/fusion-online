@@ -48,9 +48,11 @@ function App() {
     updateItem,
     subtractItem,
   } = useCart();
-  const [showAlert, setShowAlert] = useState<AlertState>(
-    { show: true, message: 'Your email has been confirmed! Please log in.', variant: 'primary' }
-  );
+  const [showAlert, setShowAlert] = useState<AlertState>({
+    show: false,
+    message: 'Your email has been confirmed! Please log in.',
+    variant: 'primary',
+  });
   const [confirming, setConfirming] = useState<Boolean>(false);
   const location = useLocation();
   const history = useHistory();
@@ -107,7 +109,7 @@ function App() {
     history.replace({
       search: queryParams.toString(),
     });
-    setShowAlert({show: false});
+    setShowAlert({ show: false });
   };
 
   return authenticated && user ? (
@@ -148,7 +150,7 @@ function App() {
         style={{
           position: 'absolute',
           top: 0,
-          width: "100%"
+          width: '100%',
         }}
         show={showAlert.show}
         variant={showAlert.variant}
@@ -156,11 +158,11 @@ function App() {
         onClose={handleCloseConfirmation}
       >
         <Container>
-        <Alert.Heading>
-          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-          <strong className="me-auto">RocketChips</strong>
-        </Alert.Heading>
-        <p>{showAlert.message}</p>
+          <Alert.Heading>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">RocketChips</strong>
+          </Alert.Heading>
+          <p>{showAlert.message}</p>
         </Container>
       </Alert>
       <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />

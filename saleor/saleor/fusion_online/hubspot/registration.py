@@ -130,7 +130,12 @@ class HubspotRegistration:
             "firstname": user.first_name,
             "lastname": user.last_name,
             "customer_approval_status_rc": "Limited",
-            "role_rc": role
+            "role_rc": role,
+            "hubspot_owner_id": "107014024",
+            "phone": "603-555-5555",
+            "phone_rms": "603-555-5555",
+            "jobtitle": "Software Developer",
+            "hs_language": "en-us"
         }
         payload = {
             "properties": data
@@ -170,7 +175,23 @@ class HubspotRegistration:
     def create_company(self, company_payload):
 
         payload = {
-            "properties": company_payload
+            "properties": {
+                **company_payload,
+                "hubspot_owner_id": "107014024",
+                "annualrevenue": "100000",
+                "annual_revenue_rms": "100000",
+                # "total_revenue": "100000",
+                "numberofemployees": "25",
+                "country_rms": "USA",
+                "state": "NH",
+                "state_rms": "NH",
+                "city": "Portsmouth",
+                "city_rms": "Portsmouth",
+                "address_rms": "123 Test Rd.",
+                "address": "123 Test Rd.",
+                "type": "Computing",
+                "verticals_rms": "Data Center"
+            }
         }
         r = requests.post(self.companies_endpoint, data=json.dumps(payload), headers=(
             {
