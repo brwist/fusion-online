@@ -135,6 +135,12 @@ components:
         Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
           * `-1` - Unknown
           * `0` - In Stock
+          * `1` - 1 month lead time
+    LeadTimeDaysFreeForm:
+      type: string 
+      example: "0"
+      description: >
+        Lead time in days (free-form).
     NotificationMessage:
       type: object
       description: >
