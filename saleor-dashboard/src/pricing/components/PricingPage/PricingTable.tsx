@@ -7,6 +7,7 @@ import {usePricingProductListQuery} from "../../queries"
 import Money from "@saleor/components/Money";
 import { PricingDetailDrawer } from "./PricingDetailDrawer";
 import moment from "moment-timezone";
+import { useCategoryDetailsQuery } from "@saleor/categories/queries";
 
 
 const useStyles = makeStyles(
@@ -16,7 +17,7 @@ const useStyles = makeStyles(
         width: "auto"
       },
       colPrice: {
-        width: 300
+        width: "auto"
       },
       colPublished: {
         width: 200
@@ -34,7 +35,7 @@ const useStyles = makeStyles(
     },
     colName: {
       "&$colNameFixed": {
-        width: 250
+        width: "auto"
       }
     },
     colNameFixed: {},
@@ -86,11 +87,17 @@ export const PricingTable: React.FC<PricingTableProps> = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [activeProduct, setActiveProduct] = useState("")
 
-  const numberOfColumns = 3
-  const {data, loading} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 100} })
+
+  const {data, loading} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 50} })
+  const categoryDetails = useCategoryDetailsQuery({variables: {id: categoryId || "a", first: 10}})
+  const categorySlug = categoryDetails.data?.category?.slug
+  const attributeFilter = categorySlug?.split("-")[0]
   const productList = data?.products?.edges
-
-
+  const tableAttributes = productList && productList.length > 0 ? productList[0]?.node.attributes.filter(({attribute: {slug}}) => slug?.startsWith(attributeFilter)) : []
+  const numberOfColumns = 4 + tableAttributes.length
+  const attributeColumnHeadings = tableAttributes.map(({attribute}) => (
+    <TableCellHeader key={attribute?.id} colSpan={numberOfColumns} className={classes.colNameHeader}>{attribute?.name}</TableCellHeader>
+  ))
   const getProductPrice = (product, amountType) => {
     const priceRangeUndiscounted = product?.pricing?.priceRangeUndiscounted;
 
@@ -141,7 +148,12 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         </TableCell>
       </TableRow>)
   } else if (productList.length > 0) {
-    productRows = productList.map(({node}) => (
+    productRows = productList.map(({node}) => {
+      const relevantAttributes = node.attributes.filter(({attribute: {slug}}) => slug?.startsWith(attributeFilter))
+      const attributeValues = relevantAttributes?.map(({values}) => (
+        <TableCell key={values[0]?.id} className={classes.colName} colSpan={numberOfColumns}>{values[0]?.name}</TableCell>
+      ))
+      return (
         <TableRow 
           onClick={() => {
             setIsDrawerOpen(!isDrawerOpen);
@@ -151,12 +163,12 @@ export const PricingTable: React.FC<PricingTableProps> = ({
           className={classes.link}>
         <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.metadata.find(
           ({key, value}) => key === "mpn")?.value}</TableCell>
-        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.category.name}</TableCell>
+        {attributeValues}
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
         <TableCell className={classes.textRight} colSpan={numberOfColumns}>{moment(node.updatedAt).format("MM/DD/YY hh:mm A")}</TableCell>
       </TableRow>
-    ));
+    )});
   } else {
     productRows = (
       <TableRow>
@@ -176,7 +188,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         <ResponsiveTable className={classes.table}>
           <TableHead>
             <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>MPN</TableCellHeader>
-            <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>Category</TableCellHeader>
+            {attributeColumnHeadings}
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Low</TableCellHeader>
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>High</TableCellHeader>
             <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Last Updated</TableCellHeader>

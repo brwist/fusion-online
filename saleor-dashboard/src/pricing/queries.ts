@@ -54,6 +54,7 @@ const pricingProductListQuery = gql`
             attribute {
               id
               slug
+              name
             }
             values {
               id

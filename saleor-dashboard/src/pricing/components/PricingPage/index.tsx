@@ -57,11 +57,12 @@ const PricingPage = () => {
   const [categoryId, setCategoryId] = useState(activeTabId || "")
 
   const {data} = useSubCategoriesQuery({variables: {first: 100}})
+  console.log(data?.categories.edges)
   const subCategories = data?.categories?.edges?.map(
     ({node: {name, id}}) => ({ name, id })) || []
 
   const tabData = [{name: "All Products", id: ""}, ...subCategories]
-  const activeTabValue = tabData.findIndex(({name, id}) => id === activeTabId)
+  const activeTabValue = tabData.findIndex(({id}) => id === activeTabId)
   const [tabValue, setTabValue] = useState(0)
 
   useEffect(() => {
