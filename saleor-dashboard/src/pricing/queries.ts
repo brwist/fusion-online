@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import makeQuery from "@saleor/hooks/makeQuery";
-import { ProductList, ProductListVariables } from "../products/types/ProductList";
+import { ProductListVariables } from "../products/types/ProductList";
 
 const MoneyFragmentDoc = gql`
   fragment Money on Money {
@@ -89,4 +89,4 @@ const pricingProductListQuery = gql`
   ${MoneyFragmentDoc}
 `;
 
-export const usePricingProductListQuery = makeQuery<ProductList, ProductListVariables>(pricingProductListQuery);
+export const usePricingProductListQuery = makeQuery<any, ProductListVariables>(pricingProductListQuery);

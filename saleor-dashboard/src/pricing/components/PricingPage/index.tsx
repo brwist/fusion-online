@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Route} from "react-router-dom";
+import { Route, useLocation} from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {pricingListPath, pricingListUrl} from "../../urls"
 import { PricingTable } from "./PricingTable";
@@ -11,7 +11,6 @@ import Tab from '@material-ui/core/Tab';
 import Card from '@material-ui/core/Card';
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import useNavigator from "@saleor/hooks/useNavigator";
-import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(
   theme => ({
@@ -51,17 +50,15 @@ const useStyles = makeStyles(
 const PricingPage = () => {
   const classes = useStyles()
   const navigate = useNavigator();
-  const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-  }
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  
   const query = useQuery();
   const activeTabId = query.get('activeTab');
   const [categoryId, setCategoryId] = useState(activeTabId || "")
 
   const {data} = useSubCategoriesQuery({variables: {first: 100}})
-  const subCategories = data?.categories?.edges?.map(({node: {name, id}}) => {
-    return {name, id}
-  }) || []
+  const subCategories = data?.categories?.edges?.map(
+    ({node: {name, id}}) => ({ name, id })) || []
 
   const tabData = [{name: "All Products", id: ""}, ...subCategories]
   const activeTabValue = tabData.findIndex(({name, id}) => id === activeTabId)
@@ -72,12 +69,9 @@ const PricingPage = () => {
     setTabValue(newValue)
   }, [activeTabValue])
 
-  const tabs = tabData.map(({name, id})=> {
-    return <Tab key={id} label={name} id={id}/>
-  });
+  const tabs = tabData.map(({name, id})=> <Tab key={id} label={name} id={id}/>);
 
   const handleTabChange = (event, newValue) => {
-    console.log("event", event.currentTarget)
     setTabValue(newValue)
     setCategoryId(event.currentTarget.id)
     navigate(pricingListUrl({activeTab: event.currentTarget.id}))

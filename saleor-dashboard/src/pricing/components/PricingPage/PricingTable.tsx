@@ -130,7 +130,6 @@ export const PricingTable: React.FC<PricingTableProps> = ({
       )
     }
   };
-  console.log("productList", productList)
   
   let productRows;
 
@@ -142,8 +141,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         </TableCell>
       </TableRow>)
   } else if (productList.length > 0) {
-    productRows = productList.map(({node}) => {
-      return (
+    productRows = productList.map(({node}) => (
         <TableRow 
           onClick={() => {
             setIsDrawerOpen(!isDrawerOpen);
@@ -158,8 +156,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
         <TableCell className={classes.textRight} colSpan={numberOfColumns}>{moment(node.updatedAt).format("MM/DD/YY hh:mm A")}</TableCell>
       </TableRow>
-      );
-    });
+    ));
   } else {
     productRows = (
       <TableRow>
