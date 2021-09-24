@@ -1,16 +1,17 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Route} from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import {pricingListPath} from "../../urls"
+import {pricingListPath, pricingListUrl} from "../../urls"
 import { PricingTable } from "./PricingTable";
 import PageHeader from "../../../components/PageHeader";
 import Container from "@saleor/components/Container";
 import { useSubCategoriesQuery} from "@saleor/categories/queries";
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Card from '@material-ui/core/Card';
 import { fade } from "@material-ui/core/styles/colorManipulator";
+import useNavigator from "@saleor/hooks/useNavigator";
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles(
   theme => ({
@@ -49,14 +50,27 @@ const useStyles = makeStyles(
 
 const PricingPage = () => {
   const classes = useStyles()
-  const [categoryId, setCategoryId] = useState("")
-  const [tabValue, setTabValue] = useState(0)
+  const navigate = useNavigator();
+  const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+  }
+  const query = useQuery();
+  const activeTabId = query.get('activeTab');
+  const [categoryId, setCategoryId] = useState(activeTabId || "")
+
   const {data} = useSubCategoriesQuery({variables: {first: 100}})
   const subCategories = data?.categories?.edges?.map(({node: {name, id}}) => {
     return {name, id}
   }) || []
+
   const tabData = [{name: "All Products", id: ""}, ...subCategories]
-  console.log("tabs", tabData)
+  const activeTabValue = tabData.findIndex(({name, id}) => id === activeTabId)
+  const [tabValue, setTabValue] = useState(0)
+
+  useEffect(() => {
+    const newValue = activeTabValue > -1 ? activeTabValue : 0
+    setTabValue(newValue)
+  }, [activeTabValue])
 
   const tabs = tabData.map(({name, id})=> {
     return <Tab key={id} label={name} id={id}/>
@@ -66,6 +80,7 @@ const PricingPage = () => {
     console.log("event", event.currentTarget)
     setTabValue(newValue)
     setCategoryId(event.currentTarget.id)
+    navigate(pricingListUrl({activeTab: event.currentTarget.id}))
   }
 
   return (

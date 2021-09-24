@@ -151,7 +151,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
           }}
           key={node.id}
           className={classes.link}>
-        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.privateMetadata.find(
+        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.metadata.find(
           ({key, value}) => key === "mpn")?.value}</TableCell>
         <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.category.name}</TableCell>
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
