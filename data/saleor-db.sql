@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.1
+-- Dumped from database version 12.6
 -- Dumped by pg_dump version 13.2
 
 SET statement_timeout = 0;
@@ -59,6 +59,8 @@ COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching
 
 
 SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
 -- Name: account_address; Type: TABLE; Schema: public; Owner: saleor
@@ -1376,7 +1378,7 @@ CREATE TABLE public.fusion_online_offer (
     comment character varying(300),
     product_variant_id integer,
     tariff_rate numeric(14,5),
-    coo character varying(60) NOT NULL,
+    coo character varying(60),
     item_num_id bigint NOT NULL,
     mcode character varying(10) NOT NULL,
     mpn character varying(50) NOT NULL,
@@ -1425,7 +1427,7 @@ CREATE TABLE public.fusion_online_rfqlineitem (
     comment character varying(500) NOT NULL,
     cipn character varying(50) NOT NULL,
     commodity_code integer NOT NULL,
-    offer_id integer NOT NULL,
+    rms_response_id integer NOT NULL,
     rfq_submission_id integer NOT NULL
 );
 
@@ -1468,8 +1470,8 @@ CREATE TABLE public.fusion_online_rfqresponse (
     date_code character varying(50) NOT NULL,
     comment character varying(300) NOT NULL,
     coo character varying(60) NOT NULL,
-    lead_time_days integer NOT NULL,
-    offer_id integer NOT NULL,
+    lead_time_days character varying(50) NOT NULL,
+    rms_response_id integer NOT NULL,
     line_item_id integer NOT NULL
 );
 
@@ -4735,7 +4737,6 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 76	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
 77	Test	Barstow	Bowst	13 Maverick St		Boston	33137	US	MA	+19782704786		345	Home	USPS	pending	not sure
 78	Dustin	Kahn	Bowst	13 Maverick St		Brookline	33137	US	MA	+19782704786		347	Home	USPS	pending	not sure
-79	Test	Barstow	Test Company	13 Maverick St		Boston	33137	US	MA	+19782704786		345	Home	USPS	pending	not sure
 \.
 
 
@@ -4789,6 +4790,12 @@ COPY public.account_customerevent (id, date, type, parameters, order_id, user_id
 44	2021-09-09 15:21:49.232493+00	account_created	{}	\N	28
 45	2021-09-09 15:32:50.412853+00	account_created	{}	\N	29
 46	2021-09-09 16:10:48.774413+00	account_created	{}	\N	30
+47	2021-09-16 17:10:17.54216+00	account_created	{}	\N	31
+48	2021-09-16 17:30:41.273628+00	account_created	{}	\N	32
+49	2021-09-16 17:47:14.105502+00	account_created	{}	\N	33
+50	2021-09-16 17:49:10.135284+00	account_created	{}	\N	34
+51	2021-09-16 17:53:54.846519+00	account_created	{}	\N	35
+52	2021-09-16 17:55:07.4648+00	account_created	{}	\N	36
 \.
 
 
@@ -4815,10 +4822,12 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key) FROM stdin;
 2	f	samantha.hardy@example.com	t	t	pbkdf2_sha256$216000$BYG0cje7jm4k$4oClWOSHwFIguqpyfstyD44yVa05zGaVFBhL/hh9ZnA=	2021-05-19 15:49:25.684364+00	\N	3	3	\N	Samantha	Hardy		{}	{}	2Vcvm2mC0kll
 3	f	nicholas.nelson@example.com	t	t	pbkdf2_sha256$216000$7hUgpMhlxgtq$OpsniCUxUTmUqmjRrsbhqnXcu+8UM523zQiMktiTr1s=	2021-05-19 15:49:25.795732+00	\N	4	4	\N	Nicholas	Nelson		{}	{}	xR2SUxE8VhMk
+34	f	tester123@example.com	f	f	pbkdf2_sha256$216000$cgY0mw4jgBHf$lD88b6CtTBSo9rsg9VAdVwB42Nh/veZ5Ph0H6zuiQ1Y=	2021-09-16 17:49:10.003943+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	bNQaqfd7oViV
 6	f	test@test.com	f	t	pbkdf2_sha256$216000$98hum632Vr3k$cb3Rrv3Ero7bmO6zMWtZQsiWkv2mWob9UgSV2T21Ujs=	2021-06-23 19:50:31.314872+00	2021-09-08 19:52:31.129342+00	\N	\N	\N	Molly	Provencher		{}	{"company": "ACME"}	09Kf0cCTz9M7
 12	f	test6@test.com	f	t	pbkdf2_sha256$216000$0xhARmJk724y$E71nyzvuxXFTYg6S57khV5fqLXqC4cALWG+T8QrarM4=	2021-06-25 19:30:10.352771+00	2021-06-25 19:30:34.071893+00	\N	\N	\N				{}	{}	YKPlJVsdtksf
 22	f	jimtest@example.com	f	f	pbkdf2_sha256$216000$opf4j7k8T0UF$NwVydFhnD0hKIXh1Y+piB2vXo9qKzvbTr6megGuhkcI=	2021-09-08 20:25:16.926635+00	\N	\N	\N	\N				{}	{}	RanxpGXOTsU7
 23	f	mm@example.com	f	f	pbkdf2_sha256$216000$m29e57uIeii8$j6R+534CqYrvcmCnr1039+wM5linIZUqEsy3KSq5xnQ=	2021-09-09 14:19:09.76061+00	\N	\N	\N	\N	Maeghan	Maguire		{}	{}	q5HVPk2qs09o
+31	f	maeghanexample@example.com	f	t	pbkdf2_sha256$216000$BXUZye6GgD0M$SnOVl6o1iUjbLZfrnE9yGV3XjoM8yHrty7FwfCHrv+I=	2021-09-16 17:10:17.294874+00	2021-09-16 17:13:46.313101+00	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "ACME"}	6zJkNVo4vgph
 11	f	test5@test.com	f	t	pbkdf2_sha256$216000$heJlDRr9QOH3$UCD/S8yE8//lRhbDmgwcsuWUf0sP7yTsEk5sRXBDKqI=	2021-06-25 14:26:50.031077+00	2021-06-25 14:27:28.150407+00	\N	\N	\N				{}	{}	onk8A1n97PYz
 26	f	jwhite@example.com	f	t	pbkdf2_sha256$216000$EuipeHuHoN0O$ibZMPwdxxOvwI8hBKUX0tJqZEiNLaUKFKSeMR5JZnV4=	2021-09-09 15:10:24.40271+00	2021-09-09 15:10:46.72579+00	\N	\N	\N	Jack	White		{}	{"region": "Region 2", "company": "ACME"}	jrMOIUMU3rUD
 27	f	test10@test.com	f	f	pbkdf2_sha256$216000$G3ctUJwZWb0M$2y6yEAux30CNerdVHgaU/OY71BUTEViR/mnH4/sfu5Y=	2021-09-09 15:14:59.014058+00	\N	\N	\N	\N				{}	{"region": "Region 2", "company": ""}	xf2ld6WXnhYl
@@ -4839,9 +4848,13 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 25	f	marg@example.com	f	f	pbkdf2_sha256$216000$QBnP79Qo3CvY$LBGH8cqGJI4aMWBVYPahbqbVpMvTBz3SiIfj8V4mBto=	2021-09-09 14:43:30.979392+00	\N	\N	\N	\N	Margaret	Mac		{}	{"region": "Region 1", "company": "ACME"}	bb8nUsxnoqJm
 29	f	hgwells@example.com	f	f	pbkdf2_sha256$216000$h9LSica7oG8H$UvePYq3dA4puOQHIzfSpIlsgkZxgl53jL7yONPdv3jo=	2021-09-09 15:32:50.282923+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6sexxyyWl1kZ
 30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-14 18:47:24.025635+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
-5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-03 17:17:15.532342+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-20 18:43:08.623923+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
+35	f	mprovenc@wellesley.edu	f	f	pbkdf2_sha256$216000$Ynd4yVShm7rm$IIne8IVm3Jv7l7K94lnpCs+1SExaaGbkrnW0cZLP7p8=	2021-09-16 17:53:54.687918+00	\N	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "Test"}	r9vE8wLDNWyJ
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-22 19:42:50.781194+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+32	f	ziggy@example.com	f	t	pbkdf2_sha256$216000$IZ3VmjuHO78N$DGYRcL8BMekoVApZhyYRmSryo+e+O8Seou6tGeepr3g=	2021-09-16 17:30:41.030409+00	2021-09-16 17:33:49.39617+00	\N	\N	\N				{}	{}	DWJ1hxf9b5Ov
+33	f	test123@example.com	f	f	pbkdf2_sha256$216000$K1SBq227yMAW$k8IYHRAQmfalq+Hmv1uPD2PS8dyqu9mKQnmSEqmwozo=	2021-09-16 17:47:13.770693+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	0gykgHOyc9sx
 21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
+36	f	1234test@example.com	f	f	pbkdf2_sha256$216000$IkYyi21OkCML$AkpT/BZFdlAYAyPbHWatCEnaoZVFKWmUL4WiPWJIYps=	2021-09-16 17:55:07.331893+00	\N	\N	\N	\N	Test	TESt		{}	{"region": "Americas", "company": "TESt"}	FfYGcf8n47iS
 \.
 
 
@@ -6059,14 +6072,18 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 554	fusion_online	0013_auto_20210903_1854	2021-09-03 18:55:19.915496+00
 555	fusion_online	0013_auto_20210914_1800	2021-09-14 18:05:30.45946+00
 556	fusion_online	0014_merge_20210914_1939	2021-09-14 19:40:22.79668+00
-557	fusion_online	0015_auto_20210917_1441	2021-09-21 18:24:43.241901+00
-558	fusion_online	0016_auto_20210917_1445	2021-09-21 18:24:43.296027+00
-559	fusion_online	0017_auto_20210917_1513	2021-09-21 18:24:43.307006+00
-560	fusion_online	0018_auto_20210917_1831	2021-09-21 18:24:43.671127+00
-561	fusion_online	0019_auto_20210917_1832	2021-09-21 18:24:43.686271+00
-562	fusion_online	0020_auto_20210917_1913	2021-09-21 18:24:43.711526+00
-563	fusion_online	0021_auto_20210920_1435	2021-09-21 18:24:43.726666+00
-564	fusion_online	0022_auto_20210920_1527	2021-09-21 18:24:43.745325+00
+557	fusion_online	0015_auto_20210917_1441	2021-09-17 14:42:36.078371+00
+558	fusion_online	0016_auto_20210917_1445	2021-09-17 14:46:26.46521+00
+559	fusion_online	0017_auto_20210917_1513	2021-09-17 15:13:31.015425+00
+560	fusion_online	0018_auto_20210917_1831	2021-09-17 18:31:53.539194+00
+561	fusion_online	0019_auto_20210917_1832	2021-09-17 18:33:15.975521+00
+562	fusion_online	0020_auto_20210917_1913	2021-09-17 19:14:02.333343+00
+566	fusion_online	0021_auto_20210920_1435	2021-09-23 17:44:24.144188+00
+568	fusion_online	0021_auto_20210923_1737	2021-09-23 17:52:34.026011+00
+569	fusion_online	0022_auto_20210923_1758	2021-09-23 17:58:57.956674+00
+570	fusion_online	0022_auto_20210920_1527	2021-09-23 18:13:43.827618+00
+571	fusion_online	0023_merge_20210923_1813	2021-09-23 18:13:43.831533+00
+572	fusion_online	0024_auto_20210923_1816	2021-09-23 18:16:57.248094+00
 \.
 
 
@@ -6126,6 +6143,45 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 16	EXCESS_LIST	-1	0	string	string	62	12.00125	string	0	string	string	0	0.00000	1	\N
 17	EXCESS_LIST	-1	1630696738000	string	string	64	12.00125	string	0	string	string	0	0.00000	1	\N
 18	EXCESS_LIST	-1	0	string	string	65	12.00125	string	0	string	string	0	0.00000	1	\N
+19	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+20	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+21	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+22	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+23	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+24	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+25	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+26	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+27	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+28	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+29	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1
+30	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+31	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+32	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+33	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2
+34	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+35	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+36	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+37	Excess List	0	1632422107157	10-1	Test offer 1	\N	12.00125	United States	99998	ACME	2501-99998	77776	60.50000	100	15
+38	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106	\N	0.25000		3	INTEL	SR3GL	206891032	285.00000	84	4
+39	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 4108	\N	0.25000		3	INTEL	SR3GJ	206891033	485.00000	38	4
+40	Vendor Offer	0	1628139600000		NEW. SEALED. STOCK. MOQ=SPQ=968PCS PER SEALED PACK. J1900	\N	0.25000		3	INTEL	SR3V5	206963913	32.00000	3872	16
+41	Vendor Offer	0	1629176400000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	207681074	133.00000	300	9
+42	RMS Offer	-1	1632264360000		no offer. cant booking	\N	0.25000		5	INTEL	SR3GK	209268239	0.00000	1	4
+43	RMS Offer	-1	1632285900000		no offer	\N	0.25000		5	INTEL	SR3GK	209275645	0.00000	1	4
+44	Vendor Offer	-1	1632373200000		new. Stock. fcfs. 8500	\N	0.25000		3	INTEL	SR3XE	209338049	177.00000	588	17
+45	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106. DC:19+	\N	0.25000		3	INTEL	SR3GL	209340118	285.00000	53	4
+46	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. DC:19+. 4108	\N	0.25000		3	INTEL	SR3GJ	209340119	485.00000	38	4
+47	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use.DC:19+ 5118	\N	0.25000		3	INTEL	SR3GF	209340120	710.00000	80	4
+48	Vendor Offer	-1	1632373200000		NEW, STOCK, 4110	\N	0.25000		3	INTEL	SR3GH	209341121	445.00000	298	18
+49	Vendor Offer	-1	1632373200000		booking LT: 2-3weeks,6138	\N	0.25000		3	INTEL	SR3B5	209341140	2050.00000	1	18
+50	Vendor Offer	-1	1632373200000		booking LT: 4-6weeks,6130	\N	0.25000		3	INTEL	SR3B9	209341141	1400.00000	1	18
+51	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3QT	209341725	158.00000	3500	16
+52	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341726	172.00000	3000	16
+53	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341778	180.00000	2000	19
+54	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3X9	209342247	82.00000	259	9
+55	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3QT	209342286	159.00000	500	9
+56	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	209342293	124.00000	1000	9
+57	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3XE	209342298	177.00000	1500	9
 \.
 
 
@@ -6133,13 +6189,13 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 -- Data for Name: fusion_online_rfqlineitem; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_code, comment, cipn, commodity_code, offer_id, rfq_submission_id) FROM stdin;
-1	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	2
-2	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	3
-3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	1008	1234	3
-4	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234	4
-5	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234546	5
-80	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1000	1234547	80
+COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_code, comment, cipn, commodity_code, rms_response_id, rfq_submission_id) FROM stdin;
+1	AAA	Intel	1	12.00125	2 days	string	123	1008	123	2
+2	AAA	Intel	1	12.00125	2 days	string	123	1008	123	3
+3	CCCC	Intel	2	12.00125	2 days	string	1234	1008	1234	3
+4	CCCC	Intel	4	12.00125	2 days	string	123	1008	1234	4
+5	CCCC	Intel	4	12.00125	2 days	string	123	1008	1234546	5
+80	CCCC	Intel	4	12.00125	2 days	string	123	1000	1234547	80
 \.
 
 
@@ -6147,11 +6203,11 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 -- Data for Name: fusion_online_rfqresponse; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, offer_id, line_item_id) FROM stdin;
-1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
-2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
-3	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	1
-4	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	4
+COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, rms_response_id, line_item_id) FROM stdin;
+1	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	3
+2	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	2
+3	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	1
+4	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	4
 \.
 
 
@@ -6215,6 +6271,24 @@ COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_v
 --
 
 COPY public.fusion_online_vendor (id, vendor_name, vendor_number, vendor_region, vendor_type) FROM stdin;
+1	Test Company	1	ASIA	AUTHORIZED_FRANCHISE
+2	Test Name Change	3	USA	AUTHORIZED_FRANCHISE
+3	Test Company	2	USA	AUTHORIZED_FRANCHISE
+6	EX-CHANNEL GROUP LTD	9321		
+7	STARTECH PACIFIC LIMITED	10393		
+8	E-ENERGY LIMITED	12431		
+10	Digital China (HK) Ltd	12430		
+11	HONGKONG YOUCHENG TECHNOLOGY LIMITED	13749		
+12	UHOP TECH CO., LIMITED	17199		
+14	SHANGHAI NAME CHANGE	12790		
+5	JOINTHARVEST(HONG KONG) NAME CHANGE	12089		
+15	Acme 1	2501	Americas	Authorized/Franchise
+17	SYNNEX TECHNOLOGY INT'L CORP	5233	Asia/Pacific	Authorized/Franchise
+4	TCH INTERNATIONAL CO., LIMITED	12882	Asia/Pacific	Broker
+18	HONG KONG SUPERPHI TECHNOLOGY LIMITED	19053	Asia/Pacific	Broker
+16	WPI INTERNATIONAL (HK) LIMITED	8493	Asia/Pacific	Authorized/Franchise
+19	WORLD PEACE INDUSTRIAL CO. LTD	5140	Asia/Pacific	Authorized/Franchise
+9	YICK WAH HONG CO., LTD	9565	Asia/Pacific	Broker
 \.
 
 
@@ -6366,9 +6440,6 @@ COPY public.order_order (id, created, tracking_client_id, user_email, token, bil
 69	2021-09-02 20:55:15.932096+00			d7f7574b-9cdd-4e0c-9880-f4dde11d4042	\N	77	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
 70	2021-09-02 20:56:28.771877+00			dadd23b4-8cec-43aa-b47c-2c72a8aa1879	\N	78	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
 71	2021-09-02 20:56:49.491309+00			05f0d12c-b821-405a-9630-2bca8fff66ff	\N	78	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1629891534, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
-72	2021-09-16 13:10:13.672593+00			8080d303-5b4d-453a-80fd-f793d3b0466f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
-73	2021-09-16 21:03:23.983177+00			df3d4fef-d660-4dbc-9f75-436e119cfe0f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
-74	2021-09-16 21:05:08.483615+00			93a7be09-3a98-4e5e-889d-5ffecf1e85fb	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "3"}
 \.
 
 
@@ -6477,9 +6548,6 @@ COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price
 49			1	50.000	50.000	t	69	0	63	0.00		USD		
 50			1	50.000	50.000	t	70	0	63	0.00		USD		
 51			1	50.000	50.000	t	71	0	63	0.00		USD		
-52			1	50.000	50.000	t	72	0	63	0.00		USD		
-53			1	50.000	50.000	t	73	0	63	0.00		USD		
-54			1	50.000	50.000	t	74	0	63	0.00		USD		
 \.
 
 
@@ -6638,7 +6706,24 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 184	88	59
 185	88	60
 352	122	81
+353	124	75
+354	124	77
+355	124	76
+356	124	85
 318	116	75
+357	124	81
+358	125	75
+359	125	77
+360	125	76
+361	125	85
+362	125	81
+393	88	82
+394	88	86
+395	120	78
+396	120	79
+397	120	80
+398	89	82
+399	89	86
 319	116	77
 320	116	76
 321	116	78
@@ -6648,6 +6733,16 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 335	118	79
 336	118	80
 337	118	85
+363	126	75
+364	126	77
+365	126	76
+366	126	85
+367	126	81
+388	132	75
+389	132	77
+390	132	76
+391	132	85
+392	132	81
 324	117	75
 325	117	77
 326	117	76
@@ -6779,20 +6874,66 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 490	350	142
 491	351	140
 492	352	130
-493	352	131
-494	352	132
-495	352	133
-496	352	134
 411	318	6
 412	319	13
 413	320	142
 414	321	3
 415	322	140
 416	323	129
-497	352	135
-498	352	136
-499	352	137
-500	352	138
+501	353	6
+502	354	13
+503	355	142
+504	356	140
+505	357	130
+506	357	131
+507	357	132
+508	357	133
+509	357	134
+510	357	135
+511	357	136
+512	357	137
+513	357	138
+514	358	6
+515	359	13
+516	360	142
+517	361	140
+518	362	130
+519	362	131
+520	362	132
+521	362	133
+522	362	134
+523	362	135
+524	362	136
+525	362	137
+526	362	138
+573	352	129
+575	393	129
+576	394	140
+577	395	34
+578	396	21
+579	397	18
+580	398	129
+581	399	140
+527	363	6
+528	364	13
+529	365	142
+530	366	140
+531	367	130
+532	367	131
+533	367	132
+534	367	133
+535	367	134
+536	367	135
+537	367	136
+538	367	137
+539	367	138
+560	388	6
+561	389	13
+562	390	142
+563	391	140
+564	392	130
+565	392	131
+574	392	129
 417	323	130
 418	323	131
 419	323	132
@@ -7126,9 +7267,9 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 74	10GB	23	10gb	0	
 75	Unknown	12	unknown	1	
 76	test	21	test	0	
-79	SHANGHAI SUPERSERVER INFORMATION	10	12790	4	
-80	TCH INTERNATIONAL CO., LIMITED	10	12882	5	
-81	JOINTHARVEST(HONG KONG) LIMITED	10	12089	6	
+89	HONG KONG SUPERPHI TECHNOLOGY LIMITED	10	19053	14	
+129	SHANGHAI NAME CHANGE	29	12790	0	
+79	SHANGHAI NAME CHANGE	10	12790	4	
 82	EX-CHANNEL GROUP LTD	10	9321	7	
 83	STARTECH PACIFIC LIMITED	10	10393	8	
 84	E-ENERGY LIMITED	10	12431	9	
@@ -7136,10 +7277,13 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 86	Digital China (HK) Ltd	10	12430	11	
 87	HONGKONG YOUCHENG TECHNOLOGY LIMITED	10	13749	12	
 88	UHOP TECH CO., LIMITED	10	17199	13	
-89	HONG KONG SUPERPHI TECHNOLOGY LIMITED	10	19053	14	
-129	SHANGHAI SUPERSERVER INFORMATION	29	12790	0	
 130	TCH INTERNATIONAL CO., LIMITED	29	12882	1	
-131	JOINTHARVEST(HONG KONG) LIMITED	29	12089	2	
+80	TCH INTERNATIONAL CO., LIMITED	10	12882	5	
+81	JOINTHARVEST(HONG KONG) NAME CHANGE	10	12089	6	
+139	HONG KONG SUPERPHI TECHNOLOGY LIMITED	29	19053	10	
+140	Active	30	active	0	
+141	Inactive	30	inactive	1	
+142	NVDS-2	6	nvds-2	10	
 132	EX-CHANNEL GROUP LTD	29	9321	3	
 133	STARTECH PACIFIC LIMITED	29	10393	4	
 134	E-ENERGY LIMITED	29	12431	5	
@@ -7147,10 +7291,7 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 136	Digital China (HK) Ltd	29	12430	7	
 137	HONGKONG YOUCHENG TECHNOLOGY LIMITED	29	13749	8	
 138	UHOP TECH CO., LIMITED	29	17199	9	
-139	HONG KONG SUPERPHI TECHNOLOGY LIMITED	29	19053	10	
-140	Active	30	active	0	
-141	Inactive	30	inactive	1	
-142	NVDS-2	6	nvds-2	10	
+131	JOINTHARVEST(HONG KONG) NAME CHANGE	29	12089	2	
 \.
 
 
@@ -7203,6 +7344,7 @@ COPY public.product_category (id, name, slug, description, lft, rght, tree_id, l
 16	GPU_ENTERPRISE	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 17	GPU_CONSUMER	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 18	STOR_SOLID_STATE_DRIVES	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+19	Integrated Circuits	integrated-circuits		1	2	5	0	\N					{"blocks": [{"key": "ffqa7", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -7260,23 +7402,27 @@ COPY public.product_digitalcontenturl (id, token, created, download_num, content
 
 COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id) FROM stdin;
 6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-27 15:27:00.403838+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	3.000	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
-27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-08-27 15:27:00.527386+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	48.000	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
 9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9
 121	Intel H12FT2		\N	2021-09-02 17:11:00.363402+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT2", "mcode": "Intel", "item_num_id": 28}	{}	50.000	USD	intel-h12ft2	\N	t	63
-8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-07-21 18:58:40.528318+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
-89	Gigabyte AAAAA		2021-08-04	2021-08-27 15:27:02.274003+00	9	t	2	\N	\N	t	\N	{}	{}	{}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	\N
+8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-09-21 16:26:25.772719+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mcode": "INTEL"}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
 28	M386A8K40CM2-CVF		2021-07-23	2021-08-27 15:27:01.78138+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	62.560	USD	m386a8k40cm2-cvf	2021-07-23	t	13
 116	Intel hfglmn		\N	2021-08-27 15:27:02.662869+00	12	t	11	\N	\N	t	\N	{}	{}	{}	59.990	USD	intel-hfglmn	\N	t	\N
 30	ST10000NM0016		2021-07-23	2021-08-27 15:27:01.808843+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	36.000	USD	st10000nm0016	2021-07-23	t	14
-120	Intel H12FT		\N	2021-09-03 19:19:42.486045+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "Intel", "item_num_id": 27}	{}	49.990	USD	intel-h12ft	\N	t	\N
+27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-09-23 15:30:05.615435+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{"mpn": "AAAA"}	48.000	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
 117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N
 7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-27 15:27:01.380457+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	39.990	USD	intel-celeron-processor-n3010	2021-06-10	t	7
 29	HMA82GR7CJR4N-WM		2021-07-23	2021-08-27 15:27:01.818641+00	6	t	3			f	\N	{}	{}	{}	41.000	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
 31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-08-27 15:27:01.979304+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	114.990	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
 32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-08-27 15:27:02.034962+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	255.250	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
-88	Gigabyte DDDD		2021-08-04	2021-08-27 15:27:02.236117+00	9	t	2	\N	\N	t	\N	{}	{}	{}	999.990	USD	gigabyte-dddd	2021-08-04	t	\N
-122	Intel A12CZ		\N	2021-09-14 18:56:02.868821+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
+124	Intel A13CZ		\N	2021-09-20 14:38:31.49295+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a13cz	\N	t	\N
+122	Intel A12CZ		\N	2021-09-20 16:13:03.104249+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
 118	Intel HGFS		2021-08-12	2021-09-02 17:08:23.78459+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	2021-09-02	t	\N
+126	Intel C13CZ		\N	2021-09-20 15:44:44.558402+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "C13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-c13cz	\N	t	\N
+125	Intel B13CZ		\N	2021-09-20 15:30:23.741564+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "B13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-b13cz	\N	t	\N
+132	Intel D13CZ		\N	2021-09-20 16:19:52.381044+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "D13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-d13cz	\N	t	\N
+88	Gigabyte DDDD		2021-08-04	2021-09-23 15:30:57.43188+00	9	t	2	\N	\N	t	\N	{}	{"mpn": "MAEGHAN"}	{"mpn": "DDDD"}	999.990	USD	gigabyte-dddd	2021-08-04	t	\N
+89	Gigabyte AAAAA		2021-08-04	2021-09-23 15:42:06.803525+00	9	t	2	\N	\N	t	\N	{}	{}	{"mpn": "BBBB"}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	\N
+120	Intel H12FT		2021-09-21	2021-09-21 16:21:01.066906+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "HP", "item_num_id": "27"}	{}	49.990	USD	intel-h12ft	\N	t	\N
 \.
 
 
@@ -7542,7 +7688,7 @@ COPY public.wishlist_wishlistitem_variants (id, wishlistitem_id, productvariant_
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 46, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 52, true);
 
 
 --
@@ -7731,7 +7877,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 564, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 572, true);
 
 
 --
@@ -7766,7 +7912,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 18, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 57, true);
 
 
 --
@@ -7801,7 +7947,7 @@ SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true
 -- Name: fusion_online_vendor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 1, false);
+SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 19, true);
 
 
 --
@@ -7871,14 +8017,14 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_order_id_seq', 74, true);
+SELECT pg_catalog.setval('public.order_order_id_seq', 71, true);
 
 
 --
 -- Name: order_ordereditem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 54, true);
+SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 51, true);
 
 
 --
@@ -7927,14 +8073,14 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 352, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 399, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 500, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 581, true);
 
 
 --
@@ -7955,7 +8101,7 @@ SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq'
 -- Name: product_attributechoicevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 145, true);
+SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 149, true);
 
 
 --
@@ -7983,7 +8129,7 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 12, true);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 18, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 19, true);
 
 
 --
@@ -8032,7 +8178,7 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 122, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 132, true);
 
 
 --
@@ -8137,7 +8283,7 @@ SELECT pg_catalog.setval('public.site_sitesettingstranslation_id_seq', 1, false)
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 79, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 78, true);
 
 
 --
@@ -8158,7 +8304,7 @@ SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 5, true);
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 30, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 36, true);
 
 
 --
@@ -11963,6 +12109,13 @@ ALTER TABLE ONLY public.wishlist_wishlistitem_variants
 
 ALTER TABLE ONLY public.wishlist_wishlistitem
     ADD CONSTRAINT wishlist_wishlistitem_product_id_8309716a_fk_product_product_id FOREIGN KEY (product_id) REFERENCES public.product_product(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: saleor
+--
+
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
