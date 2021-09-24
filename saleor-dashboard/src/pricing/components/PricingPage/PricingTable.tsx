@@ -130,7 +130,6 @@ export const PricingTable: React.FC<PricingTableProps> = ({
       )
     }
   };
-  console.log("productList", productList)
   
   let productRows;
 
@@ -142,8 +141,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         </TableCell>
       </TableRow>)
   } else if (productList.length > 0) {
-    productRows = productList.map(({node}) => {
-      return (
+    productRows = productList.map(({node}) => (
         <TableRow 
           onClick={() => {
             setIsDrawerOpen(!isDrawerOpen);
@@ -151,15 +149,14 @@ export const PricingTable: React.FC<PricingTableProps> = ({
           }}
           key={node.id}
           className={classes.link}>
-        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.privateMetadata.find(
+        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.metadata.find(
           ({key, value}) => key === "mpn")?.value}</TableCell>
         <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.category.name}</TableCell>
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
         <TableCell className={classes.textRight} colSpan={numberOfColumns}>{moment(node.updatedAt).format("MM/DD/YY hh:mm A")}</TableCell>
       </TableRow>
-      );
-    });
+    ));
   } else {
     productRows = (
       <TableRow>
