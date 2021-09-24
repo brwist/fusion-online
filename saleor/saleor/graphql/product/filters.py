@@ -21,6 +21,7 @@ from ...warehouse.models import Stock
 from ..core.filters import EnumFilter, ListObjectTypeFilter, ObjectTypeFilter
 from ..core.types import FilterInputObjectType
 from ..core.types.common import IntRangeInput, PriceRangeInput
+from ..meta.mutations import MetadataInput
 from ..core.utils import from_global_id_strict_type
 from ..utils import (
     get_nodes,
@@ -156,6 +157,16 @@ def filter_collections(qs, _, value):
     if value:
         collections = get_nodes(value, "Collection", Collection)
         qs = filter_products_by_collections(qs, collections)
+    return qs
+
+
+def filter_metadata(qs, _, value):
+    meta_val = value.get('value')
+    meta_key = value.get('key')
+    if meta_val:
+        qs = qs.filter(metadata__has_key=meta_key, metadata__has_value=meta_val)
+    else:
+        qs = qs.filter(metadata__has_key=meta_key)
     return qs
 
 
@@ -327,6 +338,7 @@ class ProductFilter(django_filters.FilterSet):
     stocks = ObjectTypeFilter(input_class=ProductStockFilterInput, method=filter_stocks)
     search = django_filters.CharFilter(method=filter_search)
     ids = GlobalIDMultipleChoiceFilter(field_name="id")
+    metadata = ObjectTypeFilter(input_class=MetadataInput, method=filter_metadata)
 
     class Meta:
         model = Product
@@ -340,6 +352,7 @@ class ProductFilter(django_filters.FilterSet):
             "product_type",
             "stocks",
             "search",
+            "metadata"
         ]
 
 
