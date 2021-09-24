@@ -18,7 +18,7 @@ const ProductFragmentDoc = gql`
       name
     }
     updatedAt
-    privateMetadata {
+    metadata {
       key
       value
     }
