@@ -29,6 +29,8 @@ class HubspotEmails:
 
         verifyurl = self.prepare_registration_confirmation_url(user, redirect_url)
 
+        print(verifyurl)
+
         payload = {
             "message": {
                 "from": "info@fusion_online.com",
