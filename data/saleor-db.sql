@@ -1425,7 +1425,7 @@ CREATE TABLE public.fusion_online_rfqlineitem (
     comment character varying(500) NOT NULL,
     cipn character varying(50) NOT NULL,
     commodity_code integer NOT NULL,
-    rms_response_id integer NOT NULL,
+    rms_response_id integer,
     rfq_submission_id integer NOT NULL
 );
 
@@ -4848,11 +4848,11 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
 5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-20 18:43:08.623923+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 35	f	mprovenc@wellesley.edu	f	f	pbkdf2_sha256$216000$Ynd4yVShm7rm$IIne8IVm3Jv7l7K94lnpCs+1SExaaGbkrnW0cZLP7p8=	2021-09-16 17:53:54.687918+00	\N	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "Test"}	r9vE8wLDNWyJ
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-22 19:42:50.781194+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 32	f	ziggy@example.com	f	t	pbkdf2_sha256$216000$IZ3VmjuHO78N$DGYRcL8BMekoVApZhyYRmSryo+e+O8Seou6tGeepr3g=	2021-09-16 17:30:41.030409+00	2021-09-16 17:33:49.39617+00	\N	\N	\N				{}	{}	DWJ1hxf9b5Ov
 33	f	test123@example.com	f	f	pbkdf2_sha256$216000$K1SBq227yMAW$k8IYHRAQmfalq+Hmv1uPD2PS8dyqu9mKQnmSEqmwozo=	2021-09-16 17:47:13.770693+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	0gykgHOyc9sx
 21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
 36	f	1234test@example.com	f	f	pbkdf2_sha256$216000$IkYyi21OkCML$AkpT/BZFdlAYAyPbHWatCEnaoZVFKWmUL4WiPWJIYps=	2021-09-16 17:55:07.331893+00	\N	\N	\N	\N	Test	TESt		{}	{"region": "Americas", "company": "TESt"}	FfYGcf8n47iS
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-27 17:02:58.961359+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 \.
 
 
@@ -5321,7 +5321,6 @@ COPY public.checkout_checkout_gift_cards (id, checkout_id, giftcard_id) FROM std
 --
 
 COPY public.checkout_checkoutline (id, quantity, checkout_id, variant_id, data) FROM stdin;
-10	12	5f124ec1-5932-4fec-bc2d-1797e5defc42	56	{}
 \.
 
 
@@ -6082,6 +6081,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 570	fusion_online	0022_auto_20210920_1527	2021-09-23 18:13:43.827618+00
 571	fusion_online	0023_merge_20210923_1813	2021-09-23 18:13:43.831533+00
 572	fusion_online	0024_auto_20210923_1816	2021-09-23 18:16:57.248094+00
+573	fusion_online	0025_auto_20210927_1719	2021-09-27 17:19:50.261492+00
 \.
 
 
@@ -6127,17 +6127,8 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 2	vendor_offer	0	1625254322	2 days		23	\N		0	string	string	0	0.00000	1	\N
 3	vendor_offer	10	1625254322	2 days		24	\N		0	string	string	0	0.00000	1	\N
 4	vendor_offer	10	1625254322	2 days		46	\N		0	string	string	0	0.00000	1	\N
-5	vendor_offer	10	1625254322	2 days		47	\N		0	string	string	0	0.00000	1	\N
-6	vendor_offer	10	1625254322	2 days		48	\N		0	string	string	0	0.00000	1	\N
-7	vendor_offer	10	1625254322	2 days		49	\N		0	string	string	0	0.00000	1	\N
-8	vendor_offer	10	1625254322	2 days		50	\N		0	string	string	0	0.00000	1	\N
-9	vendor_offer	10	1625254322	2 days		51	0.00000		0	string	string	0	0.00000	1	\N
 10	VENDOR_OFFER	10	1625254322	2 days		54	0.00000		0	string	string	0	0.00000	1	\N
 11	VENDOR_OFFER	0	1625254322	2 days		55	0.00000		0	string	string	0	0.00000	1	\N
-12	VENDOR_OFFER	-1	1625254322	2 days		56	0.00000		0	string	string	0	0.00000	1	\N
-13	VENDOR_OFFER	-1	1625254322	2 days		58	0.00000		0	string	string	0	0.00000	1	\N
-14	EXCESS_LIST	-1	0	string	string	59	12.00125	string	0	string	string	0	0.00000	1	\N
-15	EXCESS_LIST	-1	0	string	string	60	12.00125	string	0	string	string	0	0.00000	1	\N
 16	EXCESS_LIST	-1	0	string	string	62	12.00125	string	0	string	string	0	0.00000	1	\N
 17	EXCESS_LIST	-1	1630696738000	string	string	64	12.00125	string	0	string	string	0	0.00000	1	\N
 18	EXCESS_LIST	-1	0	string	string	65	12.00125	string	0	string	string	0	0.00000	1	\N
@@ -6159,6 +6150,27 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 34	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
 35	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
 36	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
+37	Excess List	0	1632422107157	10-1	Test offer 1	\N	12.00125	United States	99998	ACME	2501-99998	77776	60.50000	100	15
+38	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106	\N	0.25000		3	INTEL	SR3GL	206891032	285.00000	84	4
+39	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 4108	\N	0.25000		3	INTEL	SR3GJ	206891033	485.00000	38	4
+40	Vendor Offer	0	1628139600000		NEW. SEALED. STOCK. MOQ=SPQ=968PCS PER SEALED PACK. J1900	\N	0.25000		3	INTEL	SR3V5	206963913	32.00000	3872	16
+41	Vendor Offer	0	1629176400000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	207681074	133.00000	300	9
+42	RMS Offer	-1	1632264360000		no offer. cant booking	\N	0.25000		5	INTEL	SR3GK	209268239	0.00000	1	4
+43	RMS Offer	-1	1632285900000		no offer	\N	0.25000		5	INTEL	SR3GK	209275645	0.00000	1	4
+44	Vendor Offer	-1	1632373200000		new. Stock. fcfs. 8500	\N	0.25000		3	INTEL	SR3XE	209338049	177.00000	588	17
+45	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106. DC:19+	\N	0.25000		3	INTEL	SR3GL	209340118	285.00000	53	4
+46	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. DC:19+. 4108	\N	0.25000		3	INTEL	SR3GJ	209340119	485.00000	38	4
+47	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use.DC:19+ 5118	\N	0.25000		3	INTEL	SR3GF	209340120	710.00000	80	4
+48	Vendor Offer	-1	1632373200000		NEW, STOCK, 4110	\N	0.25000		3	INTEL	SR3GH	209341121	445.00000	298	18
+49	Vendor Offer	-1	1632373200000		booking LT: 2-3weeks,6138	\N	0.25000		3	INTEL	SR3B5	209341140	2050.00000	1	18
+50	Vendor Offer	-1	1632373200000		booking LT: 4-6weeks,6130	\N	0.25000		3	INTEL	SR3B9	209341141	1400.00000	1	18
+51	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3QT	209341725	158.00000	3500	16
+52	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341726	172.00000	3000	16
+53	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341778	180.00000	2000	19
+54	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3X9	209342247	82.00000	259	9
+55	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3QT	209342286	159.00000	500	9
+56	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	209342293	124.00000	1000	9
+57	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3XE	209342298	177.00000	1500	9
 \.
 
 
@@ -6254,13 +6266,18 @@ COPY public.fusion_online_vendor (id, vendor_name, vendor_number, vendor_region,
 6	EX-CHANNEL GROUP LTD	9321		
 7	STARTECH PACIFIC LIMITED	10393		
 8	E-ENERGY LIMITED	12431		
-9	YICK WAH HONG CO., LTD	9565		
 10	Digital China (HK) Ltd	12430		
 11	HONGKONG YOUCHENG TECHNOLOGY LIMITED	13749		
 12	UHOP TECH CO., LIMITED	17199		
 14	SHANGHAI NAME CHANGE	12790		
-4	TCH INTERNATIONAL CO., LIMITED	12882		
 5	JOINTHARVEST(HONG KONG) NAME CHANGE	12089		
+15	Acme 1	2501	Americas	Authorized/Franchise
+17	SYNNEX TECHNOLOGY INT'L CORP	5233	Asia/Pacific	Authorized/Franchise
+4	TCH INTERNATIONAL CO., LIMITED	12882	Asia/Pacific	Broker
+18	HONG KONG SUPERPHI TECHNOLOGY LIMITED	19053	Asia/Pacific	Broker
+16	WPI INTERNATIONAL (HK) LIMITED	8493	Asia/Pacific	Authorized/Franchise
+19	WORLD PEACE INDUSTRIAL CO. LTD	5140	Asia/Pacific	Authorized/Franchise
+9	YICK WAH HONG CO., LTD	9565	Asia/Pacific	Broker
 \.
 
 
@@ -6331,8 +6348,8 @@ COPY public.order_fulfillment (id, tracking_number, created, order_id, fulfillme
 --
 
 COPY public.order_fulfillmentline (id, order_line_id, quantity, fulfillment_id, stock_id) FROM stdin;
-1	6	2	1	4
-2	7	1	1	1
+2	7	1	1	\N
+1	6	2	1	\N
 \.
 
 
@@ -6479,13 +6496,6 @@ COPY public.order_orderevent (id, date, type, order_id, user_id, parameters) FRO
 COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price_net_amount, unit_price_gross_amount, is_shipping_required, order_id, quantity_fulfilled, variant_id, tax_rate, translated_product_name, currency, translated_variant_name, variant_name) FROM stdin;
 1	Intel Pentium Gold 7505 Processor A	1234	1	1.000	1.000	t	1	0	\N	0.00		USD		1234
 2	Intel Pentium Gold 7505 Processor C	12345	1	0.000	0.000	t	2	0	\N	0.00		USD		12345
-3	Intel® Celeron® Processor N3010	12345	5	105.000	105.000	t	3	0	7	0.00		USD		12345
-4	Intel® Core™ i3-8100 Processor	1234	3	200.590	200.590	t	4	0	6	0.00		USD		1 day / 1
-5	Intel® Xeon® Gold 6130T Processor	123456	1	1200.460	1200.460	t	4	0	8	0.00		USD		123456
-6	Intel® Xeon® Gold 6130T Processor	123456	2	1200.460	1200.460	t	5	2	8	0.00		USD		123456
-7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	6	0.00		USD		1 day / 1
-8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	7	0.00		USD		4
-9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	18	0.00		USD		4
 18			1	50.000	50.000	t	33	0	63	0.00		USD		
 19			1	50.000	50.000	t	34	0	63	0.00		USD		
 20			1	50.000	50.000	t	35	0	63	0.00		USD		
@@ -6520,6 +6530,13 @@ COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price
 49			1	50.000	50.000	t	69	0	63	0.00		USD		
 50			1	50.000	50.000	t	70	0	63	0.00		USD		
 51			1	50.000	50.000	t	71	0	63	0.00		USD		
+9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	\N	0.00		USD		4
+4	Intel® Core™ i3-8100 Processor	1234	3	200.590	200.590	t	4	0	\N	0.00		USD		1 day / 1
+7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	\N	0.00		USD		1 day / 1
+3	Intel® Celeron® Processor N3010	12345	5	105.000	105.000	t	3	0	\N	0.00		USD		12345
+8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	\N	0.00		USD		4
+5	Intel® Xeon® Gold 6130T Processor	123456	1	1200.460	1200.460	t	4	0	\N	0.00		USD		123456
+6	Intel® Xeon® Gold 6130T Processor	123456	2	1200.460	1200.460	t	5	2	\N	0.00		USD		123456
 \.
 
 
@@ -6603,76 +6620,12 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 171	88	53
 172	88	52
 173	88	57
-21	6	5
-22	6	6
-23	6	7
-24	6	8
-25	7	13
-26	7	14
-27	7	15
-28	7	16
-29	8	9
-30	8	10
-31	8	11
-32	8	12
-33	9	5
-34	9	6
-35	9	7
-36	9	8
-37	7	21
-38	7	22
-39	6	19
-40	6	20
-41	9	19
-42	9	20
-43	8	17
-44	8	18
-174	88	58
 175	89	54
 176	89	56
 177	89	55
 178	89	53
 179	89	52
-51	27	23
 180	89	57
-53	27	24
-54	27	26
-55	28	27
-56	28	28
-57	28	29
-58	28	30
-59	29	27
-60	29	28
-61	29	29
-62	29	30
-63	30	34
-64	30	35
-65	30	33
-66	27	36
-67	27	37
-68	27	41
-69	27	38
-70	27	39
-71	27	40
-72	31	36
-73	31	23
-74	31	37
-75	31	41
-181	89	58
-77	31	26
-78	31	38
-79	31	39
-80	31	40
-81	31	24
-82	32	42
-83	32	43
-84	32	44
-85	32	45
-86	32	47
-87	32	48
-88	32	49
-89	32	50
-90	32	51
 182	89	59
 183	89	60
 184	88	59
@@ -6691,17 +6644,14 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 362	125	81
 393	88	82
 394	88	86
-395	120	78
 396	120	79
 397	120	80
 398	89	82
 399	89	86
 319	116	77
 320	116	76
-321	116	78
 322	116	85
 323	116	81
-334	118	78
 335	118	79
 336	118	80
 337	118	85
@@ -6718,13 +6668,77 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 324	117	75
 325	117	77
 326	117	76
-327	117	78
 328	117	85
 329	117	81
 330	118	75
 331	118	77
 332	118	76
 333	118	81
+400	133	52
+401	133	53
+402	133	54
+403	133	55
+404	133	56
+405	133	57
+407	133	59
+408	133	82
+409	133	60
+410	133	86
+412	134	62
+413	134	63
+414	134	64
+415	134	65
+416	134	66
+417	134	67
+418	134	83
+419	134	68
+420	134	88
+422	135	70
+423	135	84
+424	135	71
+425	135	87
+426	135	72
+427	135	73
+428	135	74
+430	136	62
+431	136	63
+432	136	64
+433	136	65
+434	136	66
+435	136	67
+436	136	83
+437	136	68
+438	136	88
+439	137	75
+440	137	76
+441	137	77
+443	137	79
+444	137	81
+445	137	80
+446	137	85
+447	138	75
+448	138	76
+449	138	77
+451	138	79
+452	138	81
+453	138	80
+454	138	85
+455	117	79
+456	117	80
+457	116	79
+458	116	80
+459	122	79
+460	122	80
+461	124	79
+462	124	80
+463	125	79
+464	125	80
+465	126	79
+466	126	80
+467	132	79
+468	132	80
+469	121	79
+470	121	80
 \.
 
 
@@ -6745,79 +6759,15 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 174	171	75
 175	172	30
 176	173	76
-21	21	13
-22	22	7
-23	23	3
-24	24	16
-25	25	14
-26	26	8
-27	27	3
-28	28	17
-29	29	12
-30	30	6
-31	31	3
-32	32	15
-33	33	13
-34	34	7
-35	35	3
-36	36	16
-37	37	24
-38	38	20
-39	39	22
-40	40	19
-41	41	23
-42	42	19
-43	43	21
-44	44	18
-177	174	66
 178	175	72
 179	176	73
 180	177	74
 181	178	75
 182	179	30
-51	51	30
 183	180	76
-184	181	66
-54	54	33
-55	55	12
-56	56	37
-57	57	34
-58	58	39
-59	59	12
-60	60	38
-61	61	35
-62	62	39
-63	63	42
-64	64	40
-65	65	41
 185	182	21
 186	183	18
-68	68	47
-69	69	55
-70	70	52
-71	71	58
-72	66	61
-73	67	60
-74	53	62
-75	72	61
-76	73	30
-77	74	60
-78	75	43
 187	184	21
-80	77	66
-81	78	53
-82	79	48
-83	80	56
-84	81	63
-85	82	61
-86	83	30
-87	84	60
-88	85	44
-89	86	66
-90	87	54
-91	88	49
-92	89	57
-93	90	64
 188	185	18
 466	342	132
 467	342	133
@@ -6849,7 +6799,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 411	318	6
 412	319	13
 413	320	142
-414	321	3
 415	322	140
 416	323	129
 501	353	6
@@ -6879,12 +6828,9 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 525	362	137
 526	362	138
 573	352	129
-575	393	129
 576	394	140
-577	395	34
 578	396	21
 579	397	18
-580	398	129
 581	399	140
 527	363	6
 528	364	13
@@ -6919,8 +6865,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 427	324	6
 428	325	13
 429	326	142
-430	327	3
-431	328	140
 432	329	129
 433	329	130
 434	329	131
@@ -6945,10 +6889,79 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 453	333	137
 454	333	138
 455	333	139
-456	334	3
 457	335	21
 458	336	18
 459	337	140
+582	398	130
+583	398	137
+584	393	132
+585	400	30
+586	401	75
+587	402	72
+588	403	74
+589	404	73
+590	405	76
+592	407	22
+593	408	139
+594	409	19
+595	410	140
+597	412	150
+598	413	38
+599	414	151
+600	415	39
+601	416	56
+602	417	23
+603	418	131
+604	419	18
+605	420	140
+607	422	22
+608	423	131
+609	424	19
+610	425	140
+611	426	42
+612	427	152
+613	428	153
+615	430	150
+616	431	37
+617	432	151
+618	433	39
+619	434	56
+620	435	21
+621	436	130
+622	436	132
+623	437	19
+624	438	140
+625	439	7
+626	440	16
+627	441	13
+629	443	21
+630	444	133
+631	445	19
+632	446	140
+633	447	8
+634	448	17
+635	449	14
+637	451	24
+638	452	139
+639	453	20
+640	454	140
+641	455	21
+642	456	18
+643	328	141
+644	457	21
+645	458	18
+646	459	21
+647	460	19
+648	461	22
+649	462	19
+650	463	22
+651	464	19
+652	465	22
+653	466	19
+654	467	22
+655	468	19
+656	469	23
+657	470	20
 \.
 
 
@@ -6957,40 +6970,17 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 --
 
 COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FROM stdin;
-1	10	1
-2	6	1
-3	6	2
-4	10	2
-5	8	3
-6	7	4
-7	13	5
-8	14	6
-9	15	6
-10	16	5
-11	17	5
-12	18	7
-13	12	7
-14	19	7
-15	20	8
 16	21	9
 17	23	9
 18	24	9
 40	46	9
-41	47	9
-42	48	9
-43	49	9
-44	50	9
-45	51	9
 47	54	12
 48	55	12
-49	56	4
-50	58	4
-51	59	4
-52	60	4
 53	62	12
 54	63	12
 55	64	12
 56	65	12
+57	66	12
 \.
 
 
@@ -6999,40 +6989,17 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 --
 
 COPY public.product_assignedvariantattribute_values (id, assignedvariantattribute_id, attributevalue_id) FROM stdin;
-1	1	25
-2	2	25
-3	3	26
-4	4	27
-5	5	26
-6	6	29
-7	7	26
-8	8	28
-9	9	27
-10	10	26
-11	11	27
-12	12	29
-13	13	26
-14	14	27
-15	15	26
-16	16	79
-17	17	79
-18	18	79
-40	40	79
-41	41	79
-42	42	79
-43	43	79
-44	44	79
-45	45	79
-47	47	79
-48	48	79
-49	49	79
-50	50	79
-51	51	79
-52	52	79
 53	53	79
 54	54	79
 55	55	79
 56	56	79
+57	17	80
+58	18	87
+59	40	83
+60	16	82
+61	57	80
+62	48	86
+63	47	89
 \.
 
 
@@ -7041,12 +7008,8 @@ COPY public.product_assignedvariantattribute_values (id, assignedvariantattribut
 --
 
 COPY public.product_attribute (id, slug, name, metadata, private_metadata, input_type, available_in_grid, visible_in_storefront, filterable_in_dashboard, filterable_in_storefront, value_required, storefront_search_position, is_variant_only) FROM stdin;
-9	lead-time	Lead time	{}	{}	dropdown	t	t	t	f	t	0	f
 8	ordering-code	Ordering Code	{}	{}	dropdown	t	t	t	f	t	0	f
 7	spec-code	Spec Code	{}	{}	dropdown	t	t	t	f	t	0	f
-16	groupsfamily	Groups/Family	{}	{}	dropdown	t	t	t	t	t	0	f
-17	memory-clock	Memory Clock	{}	{}	dropdown	t	t	t	t	t	0	f
-18	memory	Memory	{}	{}	dropdown	t	t	t	t	t	0	f
 1	cpu_family	Core Family	{}	{}	dropdown	t	t	t	t	t	0	f
 5	cpu_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
 6	cpu_model	Model	{}	{}	dropdown	t	t	t	f	t	0	f
@@ -7055,8 +7018,6 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 22	gpu_model	Model	{}	{}	dropdown	t	t	t	t	t	0	f
 12	gpu_interface	Interface	{}	{}	dropdown	t	t	t	t	t	0	f
 11	gpu_cooling	Cooling	{}	{}	dropdown	t	t	t	t	t	0	f
-23	gpu_memory_config	Memory Configutation	{}	{}	dropdown	t	t	t	t	t	0	f
-4	mcode	Manufacturer	{}	{}	dropdown	t	t	t	t	t	0	f
 19	memory_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
 13	memory_density	Density	{}	{}	dropdown	t	t	t	t	t	0	f
 14	memory_speed	Speed	{}	{}	dropdown	t	t	t	t	t	0	f
@@ -7069,6 +7030,7 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 28	storage_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
 29	primary-vendors	Primary Vendors	{}	{}	multiselect	t	f	t	t	t	0	f
 30	status	Status	{}	{}	dropdown	t	f	t	t	t	0	f
+23	gpu_memory_config	Memory Configuration	{}	{}	dropdown	t	t	t	t	t	0	f
 \.
 
 
@@ -7077,59 +7039,14 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 --
 
 COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_order) FROM stdin;
-5	5	3	0
-6	1	3	1
-7	4	3	2
-8	6	3	3
-9	5	2	0
-10	1	2	1
-11	4	2	2
-12	6	2	3
-13	5	4	0
-14	1	4	1
-15	4	4	2
-16	6	4	3
-17	8	2	4
-18	7	2	5
-19	8	3	4
-20	7	3	5
-21	8	4	4
-22	7	4	5
-23	11	5	0
-24	6	5	1
-26	4	5	3
-27	5	6	0
-28	13	6	1
-29	4	6	2
-30	14	6	3
-33	4	7	0
-34	15	7	1
-35	5	7	2
-36	5	5	4
-37	1	5	5
-38	18	5	6
-39	17	5	7
-40	19	5	8
-41	16	5	9
-42	5	8	0
-43	11	8	1
-44	1	8	2
-45	16	8	3
-47	4	8	5
-48	18	8	6
-49	17	8	7
-50	19	8	8
-51	6	8	9
 52	11	9	0
 53	12	9	1
 54	20	9	2
 55	23	9	3
 56	22	9	4
 57	21	9	5
-58	4	9	6
 59	8	9	7
 60	7	9	8
-61	4	10	0
 62	24	10	1
 63	13	10	2
 64	25	10	3
@@ -7137,7 +7054,6 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 66	19	10	5
 67	8	10	6
 68	7	10	7
-69	4	11	0
 70	8	11	1
 71	7	11	2
 72	15	11	3
@@ -7146,7 +7062,6 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 75	1	12	0
 76	6	12	1
 77	5	12	2
-78	4	12	3
 79	8	12	4
 80	7	12	5
 81	29	12	6
@@ -7189,32 +7104,17 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 22	CM8068403377308	8	cm8068403377308	1	
 23	BX80684I38100	8	bx80684i38100	2	
 24	FH8066501715938	8	fh8066501715938	3	
-25	1 day	9	1-day	0	
 26	1	10	1	0	
 27	2	10	2	1	
 28	3	10	3	2	
 29	4	10	4	3	
 31	PCI Express 2.0	12	pci-express-20	0	
 32	VCGGT7102XPB-BB	6	vcggt7102xpb-bb	3	
-33	PNY	4	pny	1	
 37	64GB	13	64gb	0	
 38	16GB	13	16gb	1	
 39	2933 Mbps	14	2933-mbps	0	
 40	Hard Drive	5	hard-drive	3	
 42	10TB	15	10tb	0	
-43	GeForce RTX™ 3070	16	geforce-rtxtm-3070	0	
-44	GeForce GTX TITAN X	16	geforce-gtx-titan-x	1	
-45	GeForce GTX TITAN Z	16	geforce-gtx-titan-z	2	
-46	GeForce RTX 3070	16	geforce-rtx-3070	3	
-47	GeForce RTX 3090	16	geforce-rtx-3090	4	
-48	14000 MHz	17	14000-mhz	0	
-49	7Gbps	17	7gbps	1	
-50	7000MHz	17	7000mhz	2	
-51	14Gbps	17	14gbps	3	
-52	19.5Gbps	17	195gbps	4	
-53	8GB	18	8gb	0	
-54	12GB	18	12gb	1	
-55	24GB	18	24gb	2	
 56	GDDR6	19	gddr6	0	
 57	GDDR5	19	gddr5	1	
 58	GDDR6X	19	gddr6x	2	
@@ -7226,12 +7126,6 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 63	3070	6	3070	5	
 64	TITAN X	6	titan-x	6	
 65	TITAN Z	6	titan-z	7	
-66	Gigabyte	4	gigabyte	5	
-3	Intel	4	intel	0	
-34	Samsung	4	samsung	2	
-41	Seagate	4	seagate	4	
-35	Hynix	4	hynix	3	
-67	Inno3D	4	inno3d	6	
 68	12345	6	12345	8	
 69	AB123	6	ab123	9	
 72	Nvidia	20	nvidia	0	
@@ -7264,6 +7158,11 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 137	HONGKONG YOUCHENG TECHNOLOGY LIMITED	29	13749	8	
 138	UHOP TECH CO., LIMITED	29	17199	9	
 131	JOINTHARVEST(HONG KONG) NAME CHANGE	29	12089	2	
+150	4	24	4	0	
+151	Single	25	single	0	
+152	Enterprise	26	enterprise	0	
+153	10TB	27	10tb	0	
+155	Hard Disk Drive	28	hard-disk-drive	0	
 \.
 
 
@@ -7280,14 +7179,6 @@ COPY public.product_attributevaluetranslation (id, language_code, name, attribut
 --
 
 COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_order) FROM stdin;
-1	9	3	0
-2	10	3	1
-3	10	2	0
-4	10	4	0
-5	10	6	0
-6	10	7	0
-7	10	5	0
-8	10	8	0
 9	10	9	0
 10	10	10	0
 11	10	11	0
@@ -7316,6 +7207,7 @@ COPY public.product_category (id, name, slug, description, lft, rght, tree_id, l
 16	GPU_ENTERPRISE	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 17	GPU_CONSUMER	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 18	STOR_SOLID_STATE_DRIVES	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+19	Integrated Circuits	integrated-circuits		1	2	5	0	\N					{"blocks": [{"key": "ffqa7", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -7372,28 +7264,24 @@ COPY public.product_digitalcontenturl (id, token, created, download_num, content
 --
 
 COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id) FROM stdin;
-6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-27 15:27:00.403838+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	3.000	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
-9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9
-121	Intel H12FT2		\N	2021-09-02 17:11:00.363402+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT2", "mcode": "Intel", "item_num_id": 28}	{}	50.000	USD	intel-h12ft2	\N	t	63
-8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-09-21 16:26:25.772719+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mcode": "INTEL"}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
-28	M386A8K40CM2-CVF		2021-07-23	2021-08-27 15:27:01.78138+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	62.560	USD	m386a8k40cm2-cvf	2021-07-23	t	13
-116	Intel hfglmn		\N	2021-08-27 15:27:02.662869+00	12	t	11	\N	\N	t	\N	{}	{}	{}	59.990	USD	intel-hfglmn	\N	t	\N
-30	ST10000NM0016		2021-07-23	2021-08-27 15:27:01.808843+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	36.000	USD	st10000nm0016	2021-07-23	t	14
-27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-09-23 15:30:05.615435+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{"mpn": "AAAA"}	48.000	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
-117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N
-7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-27 15:27:01.380457+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	39.990	USD	intel-celeron-processor-n3010	2021-06-10	t	7
-29	HMA82GR7CJR4N-WM		2021-07-23	2021-08-27 15:27:01.818641+00	6	t	3			f	\N	{}	{}	{}	41.000	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
-31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-08-27 15:27:01.979304+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	114.990	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
-32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-08-27 15:27:02.034962+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	255.250	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
-124	Intel A13CZ		\N	2021-09-20 14:38:31.49295+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a13cz	\N	t	\N
-122	Intel A12CZ		\N	2021-09-20 16:13:03.104249+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
-118	Intel HGFS		2021-08-12	2021-09-02 17:08:23.78459+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	2021-09-02	t	\N
-126	Intel C13CZ		\N	2021-09-20 15:44:44.558402+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "C13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-c13cz	\N	t	\N
-125	Intel B13CZ		\N	2021-09-20 15:30:23.741564+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "B13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-b13cz	\N	t	\N
-132	Intel D13CZ		\N	2021-09-20 16:19:52.381044+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "D13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-d13cz	\N	t	\N
-88	Gigabyte DDDD		2021-08-04	2021-09-23 15:30:57.43188+00	9	t	2	\N	\N	t	\N	{}	{"mpn": "MAEGHAN"}	{"mpn": "DDDD"}	999.990	USD	gigabyte-dddd	2021-08-04	t	\N
-89	Gigabyte AAAAA		2021-08-04	2021-09-23 15:42:06.803525+00	9	t	2	\N	\N	t	\N	{}	{}	{"mpn": "BBBB"}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	\N
-120	Intel H12FT		2021-09-21	2021-09-21 16:21:01.066906+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "HP", "item_num_id": "27"}	{}	49.990	USD	intel-h12ft	\N	t	\N
+133	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-09-27	2021-09-27 15:21:40.436269+00	9	t	17			f	\N	{}	{"mpn": "GY5BN", "mcode": "PNY", "item_num_id": "32"}	{}	\N	USD	geforce-rtx-3090-24gb-xlr8-gaming-revel-epic-x-rgb-triple-fan-edition	2021-09-27	t	\N
+89	GIGAB ASP2F		2021-08-04	2021-09-27 15:12:51.339341+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	24
+88	GIGAB DF7BH		2021-08-04	2021-09-27 15:16:31.071525+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "DF7BH", "mcode": "GIGAB", "item_num_id": "31"}	{}	999.990	USD	gigabyte-dddd	2021-08-04	t	21
+134	HYNIX HMA82GR7CJR4N-WM		2021-09-27	2021-09-27 15:30:39.633345+00	10	t	12			f	\N	{}	{"mpn": "HMA82GR7CJR4N-WM", "mcode": "HYNIX", "item_num_id": "33"}	{}	\N	USD	hynix-hma82gr7cjr4n-wm	2021-09-27	t	\N
+136	SAM M386A8K40CM2-CVF		2021-09-27	2021-09-27 15:43:48.05269+00	10	t	15			f	\N	{}	{"mpn": "M386A8K40CM2-CVF", "mcode": "SAM", "item_num_id": "35"}	{}	\N	USD	sam-m386a8k40cm2-cvf	2021-09-27	t	\N
+138	Intel® Celeron® Processor N3010		2021-09-27	2021-09-27 15:52:03.892056+00	12	t	11			f	\N	{}	{"mpn": "SR2KM", "mcode": "INTEL", "item_num_id": "4"}	{}	\N	USD	intel-celeron-processor-n3010	2021-09-27	t	\N
+137	Intel® Core™ i3-8100 Processor		2021-09-27	2021-09-27 15:47:40.355372+00	12	t	9			f	\N	{}	{"mpn": "HGB67T", "mcode": "INTEL", "item_num_id": "3"}	{}	\N	USD	intel-coretm-i3-8100-processor	2021-09-27	t	66
+122	INTEL A12CZ		2021-09-27	2021-09-27 17:08:45.992571+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
+124	INTEL A13CZ		2021-09-27	2021-09-27 17:09:21.168437+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a13cz	\N	t	\N
+125	INTEL B13CZ		2021-09-27	2021-09-27 17:09:44.562943+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "B13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-b13cz	\N	t	\N
+135	SEA ST10000NM0016		2021-09-27	2021-09-27 15:54:12.716316+00	11	t	18			f	\N	{"blocks": [{"key": "glnu", "data": {}, "text": "Enterprise capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "ST10000NM0016", "mcode": "SEA", "item_num_id": "34"}	{}	\N	USD	sea-st10000nm0016	2021-09-27	t	\N
+126	INTEL C13CZ		2021-09-27	2021-09-27 17:10:03.904476+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "C13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-c13cz	\N	t	\N
+132	INTEL D13CZ		2021-09-27	2021-09-27 17:10:24.817726+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "D13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-d13cz	\N	t	\N
+120	INTEL H12FT		2021-09-21	2021-09-27 17:10:50.313466+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "HP", "item_num_id": "27"}	{}	49.990	USD	intel-h12ft	\N	t	\N
+121	INTEL H12FT2		2021-09-27	2021-09-27 17:11:10.575211+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT2", "mcode": "Intel", "item_num_id": 28}	{}	50.000	USD	intel-h12ft2	\N	t	63
+116	INTEL HFGLMN		2021-09-27	2021-09-27 17:11:40.794535+00	12	t	8	\N	\N	t	\N	{}	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	59.990	USD	intel-hfglmn	\N	t	54
+118	INTEL HGFS		2021-08-12	2021-09-27 17:12:19.826936+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "HGFS", "mcode": "INTEL", "item_num_id": "6"}	{}	\N	USD	intel-hgfs	2021-09-02	t	\N
+117	INTEL YNFP		\N	2021-09-27 17:12:38.532891+00	12	f	11	\N	\N	t	\N	{}	{"mpn": "YNFP", "mcode": "INTEL", "item_num_id": "36"}	{}	\N	USD	intel-ynfp	\N	f	\N
 \.
 
 
@@ -7418,16 +7306,9 @@ COPY public.product_producttranslation (id, seo_title, seo_description, language
 --
 
 COPY public.product_producttype (id, name, has_variants, is_shipping_required, weight, is_digital, metadata, private_metadata, slug) FROM stdin;
-2	Gold	t	t	0	f	{}	{}	gold
-4	Intel® Celeron® Processor N Series	t	t	0	f	{}	{}	intel-celeron-processor-n-series
-6	Memory Module	t	f	0	f	{}	{}	memory-module
-7	Storage Hard Drive	t	f	0	f	{}	{}	storage-hard-drive
-5	RTX	t	t	0	f	{}	{}	nvidia-geforce-gt-710
-8	GTX	t	t	0	f	{}	{}	gtx
 9	GPU	t	t	0	f	{}	{}	gpu
 10	Memory	t	t	0	f	{}	{}	memory
 11	Storage	t	t	0	f	{}	{}	storage
-3	8th Generation Intel® Core™ i3 Processors	t	t	0	f	{}	{}	8th-generation-intel-coretm-i3-processors
 12	CPU	t	t	0	f	{}	{}	cpu
 \.
 
@@ -7437,39 +7318,17 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 --
 
 COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount, track_inventory, weight, metadata, private_metadata, currency, price_amount, sort_order) FROM stdin;
-46	654321		89	\N	t	\N	{}	{}	USD	59.990	2
-47	654322		89	\N	t	\N	{}	{}	USD	59.990	3
-48	654323		89	\N	t	\N	{}	{}	USD	59.990	4
-49	654324		89	\N	t	\N	{}	{}	USD	59.990	5
-50	654325		89	\N	t	\N	{}	{}	USD	59.990	6
-51	654326		89	\N	t	\N	{}	{}	USD	59.990	7
-54	654327		116	\N	t	\N	{}	{}	USD	59.990	0
-55	654329		116	\N	t	\N	{}	{}	USD	79.990	1
-56	654328		7	\N	t	\N	{}	{}	USD	39.990	1
-58	6543200		7	\N	t	\N	{}	{}	USD	39.990	2
-59	2348791		7	\N	t	\N	{}	{}	USD	49.990	3
-19	123412323	2	31	\N	t	\N	{}	{}	USD	114.990	0
-8	123456	1	8	\N	t	\N	{}	{}	USD	1200.460	0
-12	246	1	27	\N	f	\N	{}	{}	USD	79.990	0
-7	12345	4	7	\N	t	\N	{}	{}	USD	105.000	0
-13	65784	1	28	\N	t	\N	{}	{}	USD	62.560	0
-14	123123	3	30	\N	t	\N	{}	{}	USD	39.990	0
-15	978987	2	30	\N	t	\N	{}	{}	USD	36.000	1
-16	345345	1	29	\N	t	\N	{}	{}	USD	41.000	0
-17	543543	2	29	\N	t	\N	{}	{}	USD	45.000	1
-18	432432	4	27	\N	t	\N	{}	{}	USD	48.000	1
-20	4532634	1	32	\N	t	\N	{}	{}	USD	255.250	0
-21	777789		88	\N	t	\N	{}	{}	USD	999.990	0
-23	777765		89	\N	t	\N	{}	{}	USD	999.990	0
-24	777766		89	\N	t	\N	{}	{}	USD	49.990	1
-6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
-9	9876		9	\N	f	\N	{}	{}	USD	201.000	0
-10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
-60	2348792		7	\N	t	\N	{}	{}	USD	49.990	4
 62	2348793		120	\N	t	\N	{}	{}	USD	49.990	0
 63	92	SHANGHAI SUPERSERVER INFORMATION	121	\N	t	\N	{}	{}	USD	50.000	0
 64	2348794		120	\N	t	\N	{}	{}	USD	49.990	1
 65	2348798		120	\N	t	\N	{}	{}	USD	49.990	2
+55	654329	Digital China (HK) Ltd	116	\N	t	\N	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	USD	79.990	1
+54	654327	HONG KONG SUPERPHI TECHNOLOGY LIMITED	116	\N	t	\N	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	USD	59.990	0
+23	777765	TCH INTERNATIONAL CO., LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	999.990	0
+24	777766	HONGKONG YOUCHENG TECHNOLOGY LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	49.990	1
+46	654321	STARTECH PACIFIC LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	59.990	2
+21	777789	EX-CHANNEL GROUP LTD	88	\N	t	\N	{"mpn": "DF7BH", "mcode": "GIGAB", "item_num_id": "31"}	{}	USD	999.990	0
+66	897658765	TCH INTERNATIONAL CO., LIMITED	137	\N	t	\N	{"mpn": "HGB67T", "mcode": "INTEL", "item_num_id": "3"}	{}	USD	89.990	0
 \.
 
 
@@ -7555,8 +7414,6 @@ COPY public.site_sitesettingstranslation (id, language_code, header_text, descri
 --
 
 COPY public.warehouse_allocation (id, quantity_allocated, order_line_id, stock_id) FROM stdin;
-1	2	8	5
-2	2	9	11
 \.
 
 
@@ -7565,35 +7422,17 @@ COPY public.warehouse_allocation (id, quantity_allocated, order_line_id, stock_i
 --
 
 COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FROM stdin;
-2	20	10	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-5	10	7	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-4	38	8	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-1	24	6	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-6	11	13	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-7	30	14	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-8	2	15	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-9	15	16	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-10	1	17	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-11	6	18	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-3	2	12	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-12	5000	19	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-13	1500	20	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-14	1000	46	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-15	1000	47	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-16	1000	48	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-17	1000	49	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-18	1000	50	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-19	1000	51	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-23	100	56	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-25	100	58	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-26	1	59	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-27	1	60	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 28	1	62	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 29	10	63	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 30	1	64	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 31	1	65	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+34	12	23	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+32	10	24	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+14	1000	46	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+33	7	21	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+35	25	66	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -7848,7 +7687,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 572, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 573, true);
 
 
 --
@@ -7883,7 +7722,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 36, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 57, true);
 
 
 --
@@ -7918,7 +7757,7 @@ SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true
 -- Name: fusion_online_vendor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 14, true);
+SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 19, true);
 
 
 --
@@ -8044,35 +7883,35 @@ SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 399, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 470, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 581, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 657, true);
 
 
 --
 -- Name: product_assignedvariantattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 56, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 57, true);
 
 
 --
 -- Name: product_assignedvariantattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 56, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 63, true);
 
 
 --
 -- Name: product_attributechoicevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 149, true);
+SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 155, true);
 
 
 --
@@ -8100,7 +7939,7 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 12, true);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 18, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 19, true);
 
 
 --
@@ -8149,7 +7988,7 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 132, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 138, true);
 
 
 --
@@ -8191,7 +8030,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 65, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 66, true);
 
 
 --
@@ -8296,7 +8135,7 @@ SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 2, true);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 31, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 35, true);
 
 
 --
