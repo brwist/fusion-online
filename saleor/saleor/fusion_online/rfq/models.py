@@ -30,7 +30,7 @@ class RFQLineItem(models.Model):
     commodity_code = models.IntegerField(
         choices=CATEGORY_ID_CHOICES
     )
-    rms_response_id = models.IntegerField()
+    rms_response_id = models.IntegerField(null=True)
     rfq_submission = models.ForeignKey(
         RFQSubmission,
         related_name="items",

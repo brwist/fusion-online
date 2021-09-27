@@ -30,7 +30,8 @@ def post_handler(request):
                 return JsonResponse(serializer.errors, status=400)
             else:
                 result = serializer.save()
-                return Response(status=status.HTTP_201_CREATED)
+
+                return Response({"fo_product_ref_id": result.pk})
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)
 
@@ -48,6 +49,6 @@ def put_handler(request, pk):
                 return JsonResponse(serializer.errors, status=400)
             else:
                 result = serializer.save()
-                return Response(status=status.HTTP_200_OK)
+                return Response({"fo_product_ref_id": result.pk})
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)
