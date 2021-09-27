@@ -47,7 +47,7 @@ export const Register: React.FC<RegisterProps> = ({
       } else {
         reset({region: ""})
         setMutationErrors([])
-        alert('Email confirmation link sent. Please check your inbox.')
+        // alert('Email confirmation link sent. Please check your inbox.')
       }
     }
   }
@@ -79,7 +79,7 @@ export const Register: React.FC<RegisterProps> = ({
         {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
           return <p className="text-danger">{error.field}: {error.message}</p>
         })}
-          <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)}>
+          <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             {textInput('firstName', 'First Name', true)}
             {textInput('lastName', 'Last Name', true)}
             {textInput('email', 'Email', true)}

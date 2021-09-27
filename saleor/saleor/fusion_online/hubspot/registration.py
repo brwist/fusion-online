@@ -131,7 +131,7 @@ class HubspotRegistration:
             "lastname": user.last_name,
             "customer_approval_status_rc": "Limited",
             "role_rc": role,
-            "hubspot_owner_id": "107014024",
+            "hubspot_owner_id": settings.HUBSPOT_API_CONTACT_OWNER_ID,
             "phone": "603-555-5555",
             "jobtitle": "Software Developer",
             "hs_language": "en-us"
@@ -176,7 +176,7 @@ class HubspotRegistration:
         payload = {
             "properties": {
                 **company_payload,
-                "hubspot_owner_id": "107014024",
+                "hubspot_owner_id": settings.HUBSPOT_API_CONTACT_OWNER_ID,
                 "numberofemployees": "25",
                 "country_rms": "USA",
                 "state": "NH",
