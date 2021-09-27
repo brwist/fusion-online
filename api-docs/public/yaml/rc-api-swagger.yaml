@@ -35,12 +35,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
-  /products/{fo_ref_id}:
+  /products/{fo_product_ref_id}:
     put:
       summary: Updates a product.
       parameters:
         - in: path
-          name: fo_ref_id
+          name: fo_product_ref_id
           description: The ID of the product in RocketChips.
           schema:
             type: integer
