@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 12.6
--- Dumped by pg_dump version 13.2
+-- Dumped from database version 11.1
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -6161,27 +6161,6 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 34	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
 35	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
 36	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3
-37	Excess List	0	1632422107157	10-1	Test offer 1	\N	12.00125	United States	99998	ACME	2501-99998	77776	60.50000	100	15
-38	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106	\N	0.25000		3	INTEL	SR3GL	206891032	285.00000	84	4
-39	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 4108	\N	0.25000		3	INTEL	SR3GJ	206891033	485.00000	38	4
-40	Vendor Offer	0	1628139600000		NEW. SEALED. STOCK. MOQ=SPQ=968PCS PER SEALED PACK. J1900	\N	0.25000		3	INTEL	SR3V5	206963913	32.00000	3872	16
-41	Vendor Offer	0	1629176400000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	207681074	133.00000	300	9
-42	RMS Offer	-1	1632264360000		no offer. cant booking	\N	0.25000		5	INTEL	SR3GK	209268239	0.00000	1	4
-43	RMS Offer	-1	1632285900000		no offer	\N	0.25000		5	INTEL	SR3GK	209275645	0.00000	1	4
-44	Vendor Offer	-1	1632373200000		new. Stock. fcfs. 8500	\N	0.25000		3	INTEL	SR3XE	209338049	177.00000	588	17
-45	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106. DC:19+	\N	0.25000		3	INTEL	SR3GL	209340118	285.00000	53	4
-46	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use. DC:19+. 4108	\N	0.25000		3	INTEL	SR3GJ	209340119	485.00000	38	4
-47	Vendor Offer	-1	1632373200000		new, stock, fcfs. Need to rcfm, may pull to factory use.DC:19+ 5118	\N	0.25000		3	INTEL	SR3GF	209340120	710.00000	80	4
-48	Vendor Offer	-1	1632373200000		NEW, STOCK, 4110	\N	0.25000		3	INTEL	SR3GH	209341121	445.00000	298	18
-49	Vendor Offer	-1	1632373200000		booking LT: 2-3weeks,6138	\N	0.25000		3	INTEL	SR3B5	209341140	2050.00000	1	18
-50	Vendor Offer	-1	1632373200000		booking LT: 4-6weeks,6130	\N	0.25000		3	INTEL	SR3B9	209341141	1400.00000	1	18
-51	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3QT	209341725	158.00000	3500	16
-52	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341726	172.00000	3000	16
-53	Vendor Offer	-1	1632373200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209341778	180.00000	2000	19
-54	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3X9	209342247	82.00000	259	9
-55	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3QT	209342286	159.00000	500	9
-56	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	209342293	124.00000	1000	9
-57	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3XE	209342298	177.00000	1500	9
 \.
 
 
@@ -6190,12 +6169,12 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 --
 
 COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_code, comment, cipn, commodity_code, rms_response_id, rfq_submission_id) FROM stdin;
-1	AAA	Intel	1	12.00125	2 days	string	123	1008	123	2
-2	AAA	Intel	1	12.00125	2 days	string	123	1008	123	3
-3	CCCC	Intel	2	12.00125	2 days	string	1234	1008	1234	3
-4	CCCC	Intel	4	12.00125	2 days	string	123	1008	1234	4
-5	CCCC	Intel	4	12.00125	2 days	string	123	1008	1234546	5
-80	CCCC	Intel	4	12.00125	2 days	string	123	1000	1234547	80
+1	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	2
+2	AAA	Intel	1	12.0012500000000006	2 days	string	123	1008	123	3
+3	CCCC	Intel	2	12.0012500000000006	2 days	string	1234	1008	1234	3
+4	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234	4
+5	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1008	1234546	5
+80	CCCC	Intel	4	12.0012500000000006	2 days	string	123	1000	1234547	80
 \.
 
 
@@ -6204,10 +6183,10 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 --
 
 COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, rms_response_id, line_item_id) FROM stdin;
-1	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	3
-2	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	2
-3	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	1
-4	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	4
+1	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	3
+2	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	2
+3	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	1
+4	OFFER	CCCC	Intel	2	12.0012500000000006	2 days	string	China	0	1234	4
 \.
 
 
@@ -6277,18 +6256,13 @@ COPY public.fusion_online_vendor (id, vendor_name, vendor_number, vendor_region,
 6	EX-CHANNEL GROUP LTD	9321		
 7	STARTECH PACIFIC LIMITED	10393		
 8	E-ENERGY LIMITED	12431		
+9	YICK WAH HONG CO., LTD	9565		
 10	Digital China (HK) Ltd	12430		
 11	HONGKONG YOUCHENG TECHNOLOGY LIMITED	13749		
 12	UHOP TECH CO., LIMITED	17199		
 14	SHANGHAI NAME CHANGE	12790		
+4	TCH INTERNATIONAL CO., LIMITED	12882		
 5	JOINTHARVEST(HONG KONG) NAME CHANGE	12089		
-15	Acme 1	2501	Americas	Authorized/Franchise
-17	SYNNEX TECHNOLOGY INT'L CORP	5233	Asia/Pacific	Authorized/Franchise
-4	TCH INTERNATIONAL CO., LIMITED	12882	Asia/Pacific	Broker
-18	HONG KONG SUPERPHI TECHNOLOGY LIMITED	19053	Asia/Pacific	Broker
-16	WPI INTERNATIONAL (HK) LIMITED	8493	Asia/Pacific	Authorized/Franchise
-19	WORLD PEACE INDUSTRIAL CO. LTD	5140	Asia/Pacific	Authorized/Franchise
-9	YICK WAH HONG CO., LTD	9565	Asia/Pacific	Broker
 \.
 
 
@@ -7912,7 +7886,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 57, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 36, true);
 
 
 --
@@ -7947,7 +7921,7 @@ SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true
 -- Name: fusion_online_vendor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 19, true);
+SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 14, true);
 
 
 --

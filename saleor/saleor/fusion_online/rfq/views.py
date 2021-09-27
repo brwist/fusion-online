@@ -59,6 +59,6 @@ def post_rfq_response_handler(request, rfq_submission_pk, rfq_line_item_pk):
                 return JsonResponse(serializer.errors, status=400)
             else:
                 serializer.save()
-                return Response({})
+                return Response(status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({"error": True, "message": str(e)}, status=500)

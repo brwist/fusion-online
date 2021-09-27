@@ -35,7 +35,7 @@ def handler(request):
         offer_serializer = OfferSerializer(data=data)
         if offer_serializer.is_valid():
             result = offer_serializer.save()
-            return Response({'fo_ref_id': result.pk}, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return JsonResponse(offer_serializer.errors, status=400)
 

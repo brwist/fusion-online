@@ -18,7 +18,7 @@ class RFQLineItemSerializer(serializers.ModelSerializer):
             'comment',
             'cipn',
             'commodity_code',
-            'offer_id',
+            'rms_response_id',
             'fo_rfq_line_item_ref_id'
         ]
 
@@ -67,7 +67,7 @@ class RFQResponseSerializer(serializers.ModelSerializer):
             'comment',
             'coo',
             'lead_time_days',
-            'offer_id',
+            'rms_response_id',
             'line_item'
         ]
 

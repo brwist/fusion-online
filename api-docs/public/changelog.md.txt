@@ -1,5 +1,7 @@
 RocketChips API Changelog
 ==========================
+### 2021-09-23 (version 0.0.6):
+  - Include `fo_product_ref_id` in response for /products POST and PUT endpoints.
 
 ### 2021-09-23 (version 0.0.5):
   - Removed/deprecated the /ship-to-address API endpoints.
@@ -8,7 +10,7 @@ RocketChips API Changelog
   - Changed property names for Offer schema and made the coo property optional.
   - Eliminated the response body for the /products API endpoints.
   - Updated enums for the vendor_type, vendor_region and type properties on the Offer schema.
-  - Change lead_time_days data type to string on the Offer schema.
+  - Change lead_time_days data type to string on the RFQ line item schema.
 
 ### 2021-09-09 (version 0.0.4):
   - Updated SNS notification sample messages.

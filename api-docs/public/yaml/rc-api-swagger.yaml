@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.5
+  version: 0.0.6
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -31,12 +31,16 @@ paths:
       responses:
         '200':
           description: Created
-  /products/{fo_ref_id}:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+  /products/{fo_product_ref_id}:
     put:
       summary: Updates a product.
       parameters:
         - in: path
-          name: fo_ref_id
+          name: fo_product_ref_id
           description: The ID of the product in RocketChips.
           schema:
             type: integer
@@ -50,6 +54,10 @@ paths:
       responses:
         '200':
           description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
   /rfqs/{fo_rfq_ref_id}:
     get:
       summary: Fetches an RFQ Submission.
@@ -92,10 +100,6 @@ paths:
       responses:
         '200':
           description: Created
-          content:
-            application/json:
-              schema:
-                type: object
   /sales-orders/{fo_order_ref_id}:
     get:
       summary: Fetches a sales order.
@@ -135,6 +139,12 @@ components:
         Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
           * `-1` - Unknown
           * `0` - In Stock
+          * `1` - 1 month lead time
+    LeadTimeDaysFreeForm:
+      type: string 
+      example: "0"
+      description: >
+        Lead time in days (free-form).
     NotificationMessage:
       type: object
       description: >
@@ -324,6 +334,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Vendor'
+    ProductResponse:
+      title: Product create/update response
+      type: object
+      properties:
+        fo_product_ref_id:
+          type: integer
+          description: ID of the product in the RocketChips database.
+          example: 138
     RfqLineItem:
       title: RFQ Line-item
       type: object
