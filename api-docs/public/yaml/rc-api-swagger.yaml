@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.5
+  version: 0.0.6
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -31,6 +31,10 @@ paths:
       responses:
         '200':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
   /products/{fo_ref_id}:
     put:
       summary: Updates a product.
@@ -50,6 +54,10 @@ paths:
       responses:
         '200':
           description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
   /rfqs/{fo_rfq_ref_id}:
     get:
       summary: Fetches an RFQ Submission.
@@ -326,6 +334,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Vendor'
+    ProductResponse:
+      title: Product create/update response
+      type: object
+      properties:
+        fo_product_ref_id:
+          type: integer
+          description: ID of the product in the RocketChips database.
+          example: 138
     RfqLineItem:
       title: RFQ Line-item
       type: object
