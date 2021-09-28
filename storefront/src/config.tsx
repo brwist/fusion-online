@@ -287,14 +287,3 @@ export const GET_CATEGORY_LIST = gql`
     }
   }
 `;
-
-export const CONFIRM_ACCOUNT = gql`
-  mutation AccountConfirm($email: String!, $token: String!) {
-    confirmAccount(email: $email, token: $token) {
-      errors {
-        field
-        message
-      }
-    }
-  }
-`;

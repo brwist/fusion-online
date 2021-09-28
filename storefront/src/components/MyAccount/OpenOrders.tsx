@@ -8,7 +8,7 @@ import { OrderCountableEdge } from '../../generated/graphql';
 
 
 export interface OpenOrdersProps {
-  orders: OrderCountableEdge[]
+  orders: OrderCountableEdge[] | []
 }
 
 export const OpenOrders: React.FC<OpenOrdersProps> = ({

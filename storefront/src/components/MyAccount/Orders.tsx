@@ -1,16 +1,14 @@
 import React from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
-import {useQuery} from '@apollo/client'
 
-import { useOrdersByUser } from '@saleor/sdk';
 import { OpenOrders } from './OpenOrders';
 import { OrderDetails } from './OrderDetails';
 import { ScheduledOrders } from './ScheduledOrders';
 import { PastOrders } from './PastOrders';
 import { OpenRFQs } from './OpenRFQs';
 import { PastRFQs } from './PastRFQs';
-import {useOrdersByUserQuery, OrdersByUserDocument} from '../../generated/graphql'
+import {useOrdersByUserQuery} from '../../graphql/account'
 
 import './myaccount.scss';
 
