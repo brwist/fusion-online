@@ -25,7 +25,7 @@ urlpatterns = [
     ),
 
     # Fusion Online custom patterns
-    url(r"^fo-api/", include("saleor.fusion_online.api.urls")),
+    url(r"^fo-api/", include("saleor.fusion_online.urls")),
 ]
 
 if settings.DEBUG:

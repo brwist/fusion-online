@@ -30,7 +30,7 @@ export const Register: React.FC<RegisterProps> = ({
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault()
     const {data} = await handleRegistration(formValues.email, formValues.password)
-    console.log('registration response', data)
+
     if (data.error) {
       setErrors(data.error)
     } else {

@@ -1,30 +1,44 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+// eslint-disable-next-line
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-import {useProductDetailsQuery} from '../../generated/graphql';
+import { Maybe, Product } from '../../generated/graphql';
+import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
+import {ScrollToTopOnMount} from '../../utils/ScrollToTopOnMount';
+
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_DETAILS } from '../../config';
 
 import './productdetail.scss';
 
 export interface ProductDetailProps {
   addItem: any
 }
+type ProductDetailsQuery = 
+{ product?: Maybe<Product>}
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
   addItem
 }) => {
-  const {id} = useParams<{id: string}>()
+  const {slug} = useParams<{slug: string}>()
   const history = useHistory()
-  const {data, loading, error} = useProductDetailsQuery({variables: {id: id}})
-  if (data) {
-    console.log(data)
-  }
-  
+  const { data } = useQuery<ProductDetailsQuery>(GET_PRODUCT_DETAILS, {variables: {slug: slug}})
+  const [showAlert, setShowAlert] = useState(false)
+  const [selectedQuantity, setSelectedQuantity ] = useState(1)
   return (
-    <Container className="product-detail">
+    <>
+    <ScrollToTopOnMount />
+    <ItemAddedAlert 
+      productName={data?.product?.name || "Item"}
+      quantity={selectedQuantity}
+      show={showAlert}
+      hideAlert={() => setShowAlert(false)}
+    />
+    <Container className="product-detail" onClick={() => showAlert && setShowAlert(false)}>
         <header className="my-5 pb-4 border-bottom d-flex justify-content-between align-items-center">
           <div>
             <Button variant="link" className="btn-go-back" onClick={() => history.goBack()}>GO BACK</Button>
@@ -58,7 +72,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <Col lg={6}>
             {data?.product?.attributes.map(({attribute, values}) => {
               return (
-               <div className="mb-4" key={attribute.id}>
+                <div className="mb-4" key={attribute.id}>
                   <div className="font-weight-bold">{attribute.name}</div>
                     {values[0]?.name}
                 </div>
@@ -88,16 +102,19 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <div className="mb-4">
               <div className="font-weight-bold">Market Insight</div>
-              {data?.product?.metadata[0]?.value}
+              {(data?.product?.metadata.find(item => item?.key === "market_insight"))?.value}
             </div>
           </Col>
           <Col lg={4}>
-            <AddToCart 
+            <AddToCart
               variant={data?.product?.variants && data?.product?.variants[0]}
               addItem={addItem}
+              updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
+              showItemAddedAlert={() => setShowAlert(true)}
             />
           </Col>
         </Row>
     </Container>
+    </>
   );
 };

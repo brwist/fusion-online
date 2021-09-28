@@ -1,0 +1,31 @@
+# Shipping Address Testing
+
+### CREATE SHIPPING ADDRESS
+
+POST http://127.0.0.1:7000/fo-api/ship-to-addresses
+Content-Type: application/json
+Authorization: Api-Key {{$dotenv API_KEY}}
+
+{
+    "first_name": "Alex",
+    "last_name": "Vallejo",
+    "company_name": "My Company",
+    "city": "Miami",
+    "country": "US",
+    "country_area": "FL",
+    "phone": "+19782704786",
+    "postal_code": "33137",
+    "street_address_1": "180 NE 29th St",
+    "street_address_2": "Apt 1904",
+    "customer_id": 123,
+    "ship_to_name": "home",
+    "ship_via": "UPS",
+    "vat_id": "44788801",
+    "ship_to_num": null
+}
+
+### GET SHIPPING ADDRESSES
+
+GET http://127.0.0.1:7000/fo-api/ship-to-addresses/1
+Content-Type: application/json
+Authorization: Api-Key {{$dotenv API_KEY}}

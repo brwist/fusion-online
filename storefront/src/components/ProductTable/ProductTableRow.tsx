@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Modal, Table, Form, Alert } from 'react-bootstrap';
+import { Button, Modal, Table, Form} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faShoppingCart } from '@fortawesome/pro-regular-svg-icons';
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
-
+import manufacturers from '../../utils/manufacturers.json'
 import { Product } from '../../generated/graphql';
 
 import './producttable.scss';
@@ -15,7 +15,10 @@ export interface ProductTableRowProps {
     status?: string | undefined,
   },
   product: Product,
-  addItem?: any
+  addItem?: any,
+  updateSelectedProduct: (productName: string) => void,
+  updateSelectedQuantity: (quantity: number) => void,
+  showItemAddedAlert: () => void
 }
 export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   saved,
@@ -23,28 +26,29 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
   product: {
     name,
     id,
+    slug,
+    metadata,
     variants,
     attributes,
     pricing
   },
-  addItem
+  addItem,
+  updateSelectedProduct,
+  updateSelectedQuantity,
+  showItemAddedAlert
 }) => {
   const [show, setShow] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [quantitySelected, setQuantitySelected] = useState(1)
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const handleAddToCart = (event: React.SyntheticEvent) => {
     event.preventDefault()
     if(variants && variants[0]) {
       addItem(variants[0].id, quantitySelected)
+      updateSelectedQuantity(quantitySelected)
+      updateSelectedProduct(name)
+      showItemAddedAlert()
+      setShow(false)
     }
-    setShowAlert(true)
-    setTimeout(() => {
-      handleClose()
-      setShowAlert(false)
-    }, 3500)
   }
 
   const unitPrice = (pricing?.priceRangeUndiscounted?.start?.gross.amount || 0).toFixed(2)
@@ -55,6 +59,9 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
 
+  const productMcode = (metadata.find((item) => item?.key === 'mcode'))?.value
+  const manufacturer = manufacturers.find(({mcode, manufacturer}) => mcode === productMcode)?.manufacturer || productMcode
+
   return (<tr>
     <td className="pr-0">
       {saved ? <FontAwesomeIcon icon={fasFaBookmark} className="text-primary" />
@@ -62,9 +69,9 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     </td>
     <td>
       <div className="small">
-        <strong className="text-uppercase">{getAttributeValue("manufacturer")}</strong> {variants && variants[0]?.sku}
+        <strong className="text-uppercase">{manufacturer}</strong> {variants && variants[0]?.sku}
       </div>
-      <Link style={{textDecoration: "underline"}} to={`/products/${id}`}>{name}</Link>
+      <Link style={{textDecoration: "underline"}} to={`/products/${slug}`}>{name}</Link>
       <div className="small mt-1">
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
@@ -73,13 +80,13 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
     <td className="text-center">${unitPrice}</td>
     <td className="text-center">
-      <Button variant="primary" onClick={handleShow}>
+      <Button variant="primary" onClick={() => setShow(true)}>
         Select Quantity
       </Button>
 
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={() => setShow(false)}
         size="lg"
         centered
       >
@@ -88,16 +95,6 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
             <Modal.Title className="mb-0">Select Quantity to Order</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Alert 
-              variant="primary"
-              show={showAlert}
-              dismissible
-              onClose={() => {
-                setShowAlert(false)
-                handleClose()
-              }}>
-              Item has been added to your cart!
-            </Alert>
             <Table borderless className="mb-0">
               <thead>
                 <tr>
@@ -133,10 +130,10 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
             <em>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</em>
           </Modal.Body>
           <Modal.Footer>
-            <Button disabled={showAlert} type="submit" variant="primary" onClick={handleAddToCart}>
+            <Button type="submit" variant="primary" onClick={handleAddToCart}>
               Add to Order <FontAwesomeIcon icon={faShoppingCart} />
             </Button>
-            <Button variant="link" onClick={handleClose}>
+            <Button variant="link" onClick={() => setShow(false)}>
               Cancel
             </Button>
           </Modal.Footer>

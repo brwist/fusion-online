@@ -1,28 +1,35 @@
-import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { ProductTable } from '../ProductTable/ProductTable';
 import { SearchBar } from '../SearchBar/SearchBar';
-import { useProductListQuery, AttributeInput } from '../../generated/graphql';
+import { AttributeInput } from '../../generated/graphql';
 import { ProductFilters } from '../ProductFilters/ProductFilters';
+import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
 
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_LIST } from '../../config';
+import { ProductListQuery } from '../CategoryPage/CategoryPage'
 
 export interface SearchContainerProps {
   addItem: any
 };
 
 export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
-  const useQuery = () => {
+  const useQuerySearch = () => {
     return new URLSearchParams(useLocation().search);
   }
-  const query = useQuery();
-  const initialSearchQuery = query.get('q')
-  console.log(initialSearchQuery)
-  const [searchQuery, setSearchquery] = useState(initialSearchQuery|| '')
-  const [attributes, setAttributes] = useState<Array<AttributeInput>>([])
-  const { loading, error, data} = useProductListQuery({
+  const query = useQuerySearch();
+  const initialSearchQuery = query.get('q');
+  const [searchQuery, setSearchquery] = useState(initialSearchQuery|| '');
+  const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const [selectedQuantity, setSelectedQuantity ] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const { data, loading } = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
-});
+  })
+
 
   let results: any = [];
   if (data) {
@@ -37,16 +44,31 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
     }) || []
   }
   return (
-    <Container>
+    <>
+    <ItemAddedAlert 
+      productName={selectedProduct || "Item"}
+      quantity={selectedQuantity}
+      show={showAlert}
+      hideAlert={() => setShowAlert(false)}
+    />
+    <Container onClick={() => showAlert && setShowAlert(false)}>
       <Row>
         <Col lg={2}>
-          <ProductFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}/>
+          <ProductFilters setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}} />
         </Col>
         <Col>
-          <SearchBar initialSearchQuery={initialSearchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
-          <ProductTable loading={loading} productData={results} addItem={addItem}/>
+          <SearchBar initialSearchQuery={initialSearchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}} />
+          <ProductTable 
+            loading={loading}
+            productData={results}
+            addItem={addItem}
+            updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
+            updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}
+            showItemAddedAlert={ () => setShowAlert(true)}
+          />
         </Col>
       </Row>
     </Container>
+    </>
   )
 }

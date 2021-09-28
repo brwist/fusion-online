@@ -1,28 +1,56 @@
 import React from 'react';
 import { Card, Table } from 'react-bootstrap';
-import {ProductTableRow, ProductTableRowProps} from './ProductTableRow';
-
+import {ProductTableRow} from './ProductTableRow';
+import {Product} from '../../generated/graphql'
+import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 import './producttable.scss';
+
+type ProductData = {
+  otherData: {
+    saved: boolean,
+    status: string
+  },
+  product: Product
+}
 
 export interface ProductTableProps {
   loading: boolean,
-  productData: Array<ProductTableRowProps>,
-  addItem?: any
+  productData: Array<ProductData>,
+  addItem?: any,
+  updateSelectedProduct: (productName: string) => void,
+  updateSelectedQuantity: (quantity: number) => void,
+  showItemAddedAlert: () => void
 }
 
 export const ProductTable: React.FC<ProductTableProps> = ({
-  loading, productData, addItem
+  loading,
+  productData,
+  addItem,
+  updateSelectedProduct,
+  updateSelectedQuantity,
+  showItemAddedAlert
 }) => {
 
   if (loading) {
-    return <h5>Loading...</h5>
+    return (
+      <>
+        <ScrollToTopOnMount />
+        <h5>Loading...</h5>
+      </>
+    )
   }
-  console.log(productData)
+
   if (productData?.length === 0) {
-    return <h5>No Products</h5>
+    return (
+      <>
+        <ScrollToTopOnMount />
+        <h5>No Products</h5>
+      </>
+    )
   }
   return (
     <Card className="search-results">
+      <ScrollToTopOnMount />
       <Table striped borderless responsive>
         <thead className="bg-dark text-white">
           <tr>
@@ -42,6 +70,9 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 otherData={otherData}
                 product={product}
                 addItem={addItem}
+                showItemAddedAlert={showItemAddedAlert}
+                updateSelectedProduct={updateSelectedProduct}
+                updateSelectedQuantity={updateSelectedQuantity}
               />
             )
           })}

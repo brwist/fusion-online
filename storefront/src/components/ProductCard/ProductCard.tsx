@@ -3,6 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 import { Tag } from '../../components/Tag/Tag';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+// eslint-disable-next-line
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 
 import './productcard.scss';
@@ -33,7 +34,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Tag label="Desktop" variant="secondary" size="sm" />
         </Card.Subtitle>
         <Card.Title as="h3">
-          <a href="#">{title}</a>
+          <a href="/" >{title}</a>
         </Card.Title>
         <Card.Text>
           <div className="small mb-3">

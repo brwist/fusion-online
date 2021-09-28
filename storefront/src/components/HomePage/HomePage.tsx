@@ -18,7 +18,7 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
   return (
     <Container>
       <SectionHeader subheading="Lorem Impsum Dolor" heading="RocketChips Product Portal" />
-      <SearchBar updateSearchQuery={(searchString) => console.log(searchString) }/>
+      <SearchBar />
       <Row>
         <Col className="my-auto" md="auto">
           <h3 className="my-auto">Recent Searches:</h3>

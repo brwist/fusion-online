@@ -2,18 +2,52 @@ import React, { useState } from 'react';
 import { Form } from 'react-bootstrap';
 
 import './productfilters.scss';
-import {useInitialProductFilterDataQuery, AttributeInput} from '../../generated/graphql';
+import {
+  Attribute,
+  AttributeInput,
+  AttributeValue,
+  Category,
+  Maybe,
+  ProductType
+} from '../../generated/graphql';
+import { useQuery } from '@apollo/client';
+import { GET_INITIAL_PRODUCT_FILTER_DATA } from '../../config';
 
 export interface ProductFiltersProps {
   setFilters(filters: AttributeInput[]): void,
   categoryId?: string
 }
 
+type InitialProductFilterDataQuery = (
+  { attributes?: Maybe<(
+    & { edges: Array<(
+      & { node: (
+        & Pick<Attribute, 'id' | 'name' | 'slug'>
+        & { values?: Maybe<Array<Maybe<(
+          & Pick<AttributeValue, 'id' | 'name' | 'slug'>
+        )>>> }
+      ) }
+    )> }
+  )>, categories?: Maybe<(
+    & { edges: Array<(
+      & { node: (
+        & Pick<Category, 'id' | 'name'>
+      ) }
+    )> }
+  )>, productTypes?: Maybe<(
+    & { edges: Array<(
+      & { node: (
+        & Pick<ProductType, 'id' | 'name'>
+      ) }
+    )> }
+  )> }
+);
+
 export const ProductFilters: React.FC<ProductFiltersProps> = ({
   setFilters, categoryId
 }) => {
-  const { loading, error, data} = useInitialProductFilterDataQuery({
-    variables: {categories: categoryId ? [categoryId] : [], collections: [], productTypes: [], inCategory: categoryId }
+  const { loading, error, data} = useQuery<InitialProductFilterDataQuery>(GET_INITIAL_PRODUCT_FILTER_DATA, {
+    variables: {categories: categoryId ? [categoryId] : [], productTypes: [], inCategory: categoryId }
   });
   const [currentFilters, setCurrentFilters] = useState<Array<AttributeInput>>([])
 

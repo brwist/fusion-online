@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons';
+// eslint-disable-next-line
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import {useOrderDetails} from '@saleor/sdk'
 import {useUserOrderByTokenQuery} from '../../generated/graphql'

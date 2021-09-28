@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useLocation, useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/pro-regular-svg-icons';
@@ -10,19 +10,20 @@ export interface SearchBarProps {
   /**
    * handler from searchContainer that sets the searchQuery
    */
-  updateSearchQuery(searchString: string): void
+  updateSearchQuery?(searchString: string): void
   initialSearchQuery?: string | null
+  closeSearchModal?: () => void
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-  updateSearchQuery, initialSearchQuery
+  updateSearchQuery, initialSearchQuery, closeSearchModal
 }) => {
   const history = useHistory();
   const [searchString, setSearchString] = useState(initialSearchQuery || "")
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(event.currentTarget.value)
-    updateSearchQuery(event.currentTarget.value)
+    updateSearchQuery && updateSearchQuery(event.currentTarget.value)
   }
 
   return (
@@ -30,6 +31,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       <Form onSubmit={(e) => {
         e.preventDefault()
         history.push(`/search?q=${encodeURI(searchString)}`)
+        closeSearchModal && closeSearchModal()
       }}>
         <Form.Group controlId="search-products" className="m-0">
           <Form.Label className="sr-only">Search by Part Name, Number or Keyword</Form.Label>
@@ -45,6 +47,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           (e) => {
             e.preventDefault()
             history.push(`/search?q=${searchString}`)
+            closeSearchModal && closeSearchModal()
           }
         }>
           <FontAwesomeIcon icon={faSearch} />

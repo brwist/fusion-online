@@ -1,6 +1,6 @@
 import backgroundArt from "@assets/images/fusionww-logo-only-white.svg";
 import fusionDarkLogo from "@assets/images/fusionww-logo-color-green.svg";
-import fusionLightLogo from "@assets/images/fusionww-logo-color-green.svg";
+import fusionLightLogo from "@assets/images/rocketChips.png";
 import { makeStyles } from "@material-ui/core/styles";
 import useTheme from "@saleor/hooks/useTheme";
 import React from "react";
@@ -9,7 +9,7 @@ import SVG from "react-inlinesvg";
 const useStyles = makeStyles(
   theme => ({
     logo: {
-      "& svg": {
+      "& img": {
         display: "block",
         height: 40,
         marginBottom: theme.spacing(4)
@@ -85,7 +85,7 @@ const Layout: React.FC = props => {
       </div>
       <div className={classes.mainPanel}>
         <div className={classes.mainPanelContent}>
-          <SVG
+          <img
             className={classes.logo}
             src={isDark ? fusionDarkLogo : fusionLightLogo}
           />

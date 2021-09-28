@@ -18,9 +18,7 @@ export interface OrdersProps {
 
 }
 
-export const Orders: React.FC<OrdersProps> = ({
-
-}) => {
+export const Orders: React.FC<OrdersProps> = (props) => {
   const {data} = useOrdersByUserQuery( {variables: {perPage: 10}});
   
   console.log("ordersCustom", data)

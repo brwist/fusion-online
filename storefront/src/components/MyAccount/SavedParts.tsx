@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Table, Button } from 'react-bootstrap';
+import { Card, Table, Button, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faUpload } from '@fortawesome/pro-regular-svg-icons';
 
 import './myaccount.scss';
 
@@ -21,103 +23,94 @@ export const SavedParts: React.FC<SavedPartsProps> = ({
         </Button>
       </header>
 
+      <Card className="flex-row justify-content-between align-items-center">
+        <div>
+          <Button variant="link">
+            <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove List
+          </Button>
+          <Button variant="link">
+            <FontAwesomeIcon icon={faUpload} size="lg" className="mr-1 text-primary" /> Bill of Materials
+          </Button>
+        </div>
+        <div className="font-weight-bold small mr-4">
+          Total: <span className="pl-2">$0000.00</span>
+        </div>
+      </Card>
+
       <Card>
         <Table borderless striped responsive>
-          <thead className="bg-dark text-white">
-            <tr>
-              <th>RFQ Number <Link to="/">123456789</Link></th>
-              <th>Monday 00, 0000</th>
-              <th>$0000.00</th>
-              <th className="text-center">
-                <Link to="/">See Details</Link>
-              </th>
-            </tr>
-          </thead>
           <tbody>
             <tr>
-              <td>
-                <div>
-                  <strong>INTEL</strong> 123456789
-                </div>
-                <div>
-                  <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-                </div>
-                <div className="small mb-2">
-                  CIPN: AB1234567
-                </div>
+              <td style={{'width': '300px'}}>
                 <div className="small">
-                  <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <strong>Qty: 100</strong>
+                  <strong className="text-uppercase">INTEL</strong> 123456789
+                </div>
+                <a href="/">Intel® Pentium® Gold 7505 Processor</a>
+                <div className="small mt-1">
+                  Spec Code: 12345 | Ordering Code: 12345
                 </div>
               </td>
-              <td colSpan={2}>
-                  <div className="font-weight-bold small">Shipping Address</div>
-                  Full Name<br />
-                  123 Main St.<br />
-                  City, State 01234, US
+              <td className="text-center">
+                <div className="font-weight-bold small mb-2">Per Unit Price</div>
+                <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
               </td>
-              <td className="text-center" style={{'verticalAlign': 'middle'}}>
-                <Button variant="primary">
-                  Track Package
+              <td className="text-center" style={{'width': '90px'}}>
+                <div className="font-weight-bold small mb-1">Qty</div>
+                <Form.Group controlId="qty-1" className="m-0">
+                  <Form.Label className="sr-only">Qty</Form.Label>
+                  <Form.Control
+                    size="sm"
+                    type="number"
+                    min={1}
+                    max={50}
+                    name="quantity"
+                  />
+                </Form.Group>
+              </td>
+              <td className="text-right font-weight-bold">
+                <div className="font-weight-bold small mb-2">Product Total</div>
+                $0000.00
+              </td>
+              <td className="text-right">
+                <Button variant="link">
+                  <FontAwesomeIcon icon={faTimes} size="lg" className="text-danger" />
                 </Button>
               </td>
             </tr>
             <tr>
-              <td>
-                <div>
-                  <strong>INTEL</strong> 123456789
-                </div>
-                <div>
-                  <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-                </div>
-                <div className="small mb-2">
-                  CIPN: AB1234567
-                </div>
+              <td style={{'width': '300px'}}>
                 <div className="small">
-                  <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <strong>Qty: 100</strong>
+                  <strong className="text-uppercase">INTEL</strong> 123456789
+                </div>
+                <a href="/">Intel® Pentium® Gold 7505 Processor</a>
+                <div className="small mt-1">
+                  Spec Code: 12345 | Ordering Code: 12345
                 </div>
               </td>
-              <td colSpan={2}>
-                  <div className="font-weight-bold small">Shipping Address</div>
-                  Full Name<br />
-                  123 Main St.<br />
-                  City, State 01234, US
+              <td className="text-center">
+                <div className="font-weight-bold small mb-2">Per Unit Price</div>
+                <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
               </td>
-              <td className="text-center" style={{'verticalAlign': 'middle'}}>
-                <Button variant="primary">
-                  Track Package
-                </Button>
+              <td className="text-center" style={{'width': '90px'}}>
+                <div className="font-weight-bold small mb-1">Qty</div>
+                <Form.Group controlId="qty-1" className="m-0">
+                  <Form.Label className="sr-only">Qty</Form.Label>
+                  <Form.Control
+                    size="sm"
+                    type="number"
+                    min={1}
+                    max={50}
+                    name="quantity"
+                  />
+                </Form.Group>
               </td>
-            </tr>
-            <tr>
-              <td>
-                <div>
-                  <strong>INTEL</strong> 123456789
-                </div>
-                <div>
-                  <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-                </div>
-                <div className="small mb-2">
-                  CIPN: AB1234567
-                </div>
-                <div className="small">
-                  <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <strong>Qty: 100</strong>
-                </div>
+              <td className="text-right font-weight-bold">
+                <div className="font-weight-bold small mb-2">Product Total</div>
+                $0000.00
               </td>
-              <td colSpan={2}>
-                  <div className="font-weight-bold small">Shipping Address</div>
-                  Full Name<br />
-                  123 Main St.<br />
-                  City, State 01234, US
-              </td>
-              <td className="text-center" style={{'verticalAlign': 'middle'}}>
-                <Button variant="primary">
-                  Track Package
+              <td className="text-right">
+                <Button variant="link">
+                  <FontAwesomeIcon icon={faTimes} size="lg" className="text-danger" />
                 </Button>
               </td>
             </tr>

@@ -505,7 +505,6 @@ class Product(CountableDjangoObjectType):
             "description",
             "description_json",
             "id",
-            "mpn",
             "name",
             "slug",
             "product_type",

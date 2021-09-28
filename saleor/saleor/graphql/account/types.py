@@ -34,6 +34,11 @@ class AddressInput(graphene.InputObjectType):
     country = CountryCodeEnum(description="Country.")
     country_area = graphene.String(description="State or province.")
     phone = graphene.String(description="Phone number.")
+    customer_id = graphene.String(description="ID of customer.")
+    ship_to_name = graphene.String(description="Given name.")
+    ship_via = graphene.String(description="Given name.")
+    vat_id = graphene.String(description="Given name.", default=None)
+    validation_message = graphene.String(description="Given name.")
 
 
 @key(fields="id")
@@ -65,6 +70,12 @@ class Address(CountableDjangoObjectType):
             "postal_code",
             "street_address_1",
             "street_address_2",
+            "customer_id",
+            "ship_to_name",
+            "ship_via",
+            "vat_id",
+            "ship_to_num",
+            "validation_message"
         ]
 
     @staticmethod

@@ -1,0 +1,528 @@
+openapi: 3.0.0
+info:
+  title: RocketChips API
+  description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
+  version: 0.0.6
+servers:
+  - url: https://api-sandbox.fusiononline.io/fo-api
+    description: Sandbox environment
+paths:
+  /offers:
+    post:
+      summary: Creates an offer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+      responses:
+        '200':
+          description: Created
+  /products:
+    post:
+      summary: Creates a product (adds the product to the catalog).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+  /products/{fo_product_ref_id}:
+    put:
+      summary: Updates a product.
+      parameters:
+        - in: path
+          name: fo_product_ref_id
+          description: The ID of the product in RocketChips.
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+  /rfqs/{fo_rfq_ref_id}:
+    get:
+      summary: Fetches an RFQ Submission.
+      parameters:
+        - in: path
+          name: fo_rfq_ref_id
+          description: The ID of the RFQ submission in RocketChips.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RfqSubmission'
+  /rfqs/{fo_rfq_ref_id}/responses/{fo_rfq_line_item_ref_id}:
+    post:
+      summary: Creates a response to an individual (single line item) RFQ within an RFQ submission
+      parameters:
+        - in: path
+          name: fo_rfq_ref_id
+          description: The ID of the RFQ submission in RocketChips.
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: fo_rfq_line_item_ref_id
+          description: The ID of the RFQ line item in RocketChips.
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RfqLineItem'
+      responses:
+        '200':
+          description: Created
+  /sales-orders/{fo_order_ref_id}:
+    get:
+      summary: Fetches a sales order.
+      description: Fetches the sales order.
+      parameters:
+        - in: path
+          name: fo_order_ref_id
+          description: The ID of the sales order in RocketChips.
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrder'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization 
+  schemas:
+    Decimal:
+      type: string
+      title: Decimal (encoded as a string)
+      description: A decimal value encoded as a string. Precision is 14 digits and scale is 5 digits.
+      pattern: /^\d+\.\d{0,5}$/
+      example: "12.00125"
+    LeadTimeDays:
+      type: string 
+      example: "0"
+      minimum: -1
+      description: >
+        Lead time in days. Certain values have special meaning (all other values interpreted as number of days):
+          * `-1` - Unknown
+          * `0` - In Stock
+          * `1` - 1 month lead time
+    LeadTimeDaysFreeForm:
+      type: string 
+      example: "0"
+      description: >
+        Lead time in days (free-form).
+    NotificationMessage:
+      type: object
+      description: >
+        A notification message. When receiving a notification message via AWS SNS the message will
+        be wrapped in an SNS message wrapper. For details about the wrapper schema see the
+        <a href="https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html#http-notification-json">AWS documentation</a>.
+      properties:
+        fo_entity_type:
+          type: string
+          description: The type of RocketChips entity to which the notification pertains
+          enum: [RFQ, SALES_ORDER, SHIP_TO_ADDRESS]
+        fo_entity_data:
+          oneOf:
+            - $ref: '#/components/schemas/RfqSubmission'
+            - $ref: '#/components/schemas/SalesOrder'
+          description: The ID of the entity within the RocketChips system
+    Offer:
+      title: Offer
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Excess List, Stock List, Vendor Offer, RMS Offer, RMS PO]
+        date_added:
+          $ref: '#/components/schemas/Timestamp'
+        vendor_number:
+          type: integer
+          description: Vendor number
+        vendor_name:
+          type: string
+          maxLength: 50
+          description: Vendor name
+        item_num_id:
+          type: integer
+        mpn:
+          type: string
+          maxLength: 50
+        mcode:
+          type: string
+          maxLength: 10 
+        quantity:
+          type: integer
+          minimum: 1
+        offer_price:
+          $ref: '#/components/schemas/Decimal'
+        date_code:
+          type: string
+          maxLength: 50
+        tariff_rate:
+          $ref: '#/components/schemas/Decimal'
+        comment:
+          type: string
+          maxLength: 300
+        coo:
+          type: string
+          description: Country of origin (free-form text)
+          maxLength: 60
+        lead_time_days:
+          $ref: '#/components/schemas/LeadTimeDays'
+        offer_id:
+          type: integer
+          description: ID of offer in RMS
+        vendor_type:
+          type: string
+          enum: [Authorized/Franchise, Broker, Expense (non-product), Mfg. Direct, OEM/CM Excess, Service, Unclassified]
+        vendor_region:
+          type: string
+          enum: [Americas, Asia/Pacific, EMEA, Other]
+      required:
+        - type
+        - date_added
+        - vendor_number
+        - vendor_name
+        - item_num_id
+        - mpn
+        - mcode
+        - quantity
+        - offer_price
+        - lead_time_days
+        - vendor_type
+        - vendor_region
+    Product:
+      title: Product
+      type: object
+      properties:
+        item_num_id:
+          type: integer
+        mpn:
+          type: string
+          maxLength: 50
+        mcode:
+          type: string
+          maxLength: 10
+        vendors:
+          type: array
+          items:
+            type: object
+            properties:
+              vendor_name:
+                type: string
+              vendor_number:
+                type: integer
+            required:
+              - vendor_name
+              - vendor_number
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        price_item_id:
+          type: integer
+        category_id:
+          type: integer
+        all_description:
+          type: string
+          maxLength: 250
+        cpu_family:
+          type: string
+          maxLength: 100
+        cpu_type:
+          type: string
+          maxLength: 100
+        cpu_model:
+          type: string
+          maxLength: 100
+        memory_ddr:
+          type: string
+          maxLength: 100
+        memory_type:
+          type: string
+          maxLength: 100
+        memory_density:
+          type: string
+          maxLength: 100
+        memory_rank_org:
+          type: string
+          maxLength: 100
+        memory_speed:
+          type: string
+          maxLength: 100
+        storage_class:
+          type: string
+          maxLength: 100
+        storage_capacity:
+          type: string
+          maxLength: 100
+        storage_size:
+          type: string
+          maxLength: 100
+        storage_type:
+          type: string
+          maxLength: 100
+        gpu_line:
+          type: string
+          maxLength: 100
+        gpu_model:
+          type: string
+          maxLength: 100
+        gpu_memory_config:
+          type: string
+          maxLength: 100
+        gpu_interface:
+          type: string
+          maxLength: 100
+        gpu_cooling:
+          type: string
+          maxLength: 100
+        gpu_packaging:
+          type: string
+          maxLength: 100
+      required:
+        - item_num_id
+        - mpn
+        - mcode
+        - vendors
+        - item_price_id
+        - status
+    ProductStatus:
+      title: Product status
+      type: string
+      enum: ['ACTIVE', 'INACTIVE']
+    ProductUpdate:
+      title: Product Update
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/ProductStatus'
+        vendors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vendor'
+    ProductResponse:
+      title: Product create/update response
+      type: object
+      properties:
+        fo_product_ref_id:
+          type: integer
+          description: ID of the product in the RocketChips database.
+          example: 138
+    RfqLineItem:
+      title: RFQ Line-item
+      type: object
+      properties:
+        result_status:
+          type: string
+          enum: [ 'NO_BID', 'OFFER' ]
+        mpn:
+          type: string
+          maxLength: 50
+        mcode:
+          type: string
+          maxLength: 10 
+        quantity:
+          type: integer
+          minimum: 1
+        offer_price:
+          $ref: '#/components/schemas/Decimal'
+        date_code:
+          type: string
+          maxLength: 50
+        comment:
+          type: string
+          maxLength: 300
+        coo:
+          type: string
+          description: Country of origin (free-form text)
+          maxLength: 60
+        lead_time_days:
+          $ref: '#/components/schemas/LeadTimeDays'
+        rms_response_id:
+          type: integer
+          description: ID of the RFQ response in RMS
+      required:
+        - result_status
+        - mpn
+        - mcode
+        - quantity
+        - offer_price
+        - rms_response_id
+    RfqSubmission:
+      title: RFQ Submission
+      type: object
+      properties:
+        salesperson:
+          type: integer
+        hubspot_vid:
+          type: integer
+          description: The HubSpot contact ID (vid) of the customer that submitted the RFQ.
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              mpn:
+                type: string
+                maxLength: 50
+              mcode:
+                type: string
+                maxLength: 50
+              quantity:
+                type: integer
+                minimum: 1
+              target:
+                $ref: '#/components/schemas/Decimal'
+              date_code:
+                type: string
+                maxLength: 50
+              comment:
+                type: string
+                maxLength: 500
+              cipn:
+                type: string
+                maxLength: 50
+              commodity_code:
+                type: integer
+              offer_id:
+                type: integer
+              fo_rfq_line_item_ref_id:
+                type: integer
+                description: RocketChips ID that identifies an RFQ line item within an RFQ submission.
+        fo_rfq_ref_id:
+          type: integer
+          description: RocketChips ID that identifies an RFQ submission (which contains one or more line items).
+    SalesOrder:
+      title: Sales Order
+      type: object
+      properties:
+        hubspot_vid:
+          type: integer
+          description: The HubSpot contact ID (vid) of the customer that placed the sales order.
+        customer_purchase_order_num:
+          type: string
+        entered_by_hubspot_owner_id:
+          type: integer
+          description: A HubSpot owner ID.
+        ship_to:
+          type: object
+          $ref: '#/components/schemas/ShipToAddress'
+          description: The ship-to address.
+        due_date:
+          $ref: '#/components/schemas/Timestamp'
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              item_num_id:
+                type: integer
+              cipn:
+                type: string
+                maxLength: 50
+              mpn:
+                type: string
+              mcode:
+                type: string
+              quantity:
+                type: integer
+                minimum: 1
+              unit_sell_price:
+                $ref: '#/components/schemas/Decimal'
+            required:
+              - item_num_id
+              - quantity
+              - unit_sell_price
+        fo_order_ref_id:
+          type: integer
+          description: Multi-item orders will have this field's value in common.
+        fo_payment_status:
+          type: string
+          enum: [PREPAID, CREDIT]
+    ShipToAddress:
+      title: Ship-To Address
+      type: object
+      properties:
+        fo_ship_to_address_ref_id:
+          type: integer
+          description: The ID of the shipping address in RocketChips.
+        hubspot_company_id:
+          type: integer
+          description: The HubSpot ID of the customer company.
+        ship_to_name:
+          type: string
+          description: A unique name that identifies the ship-to address.
+        address:
+          type: string
+          description: Multi-line string that describes the address.
+          example: "1 Marina Park Drive\nSuite 7"
+        city:
+          type: string
+        state:
+          type: string
+          description: May be an empty string
+        country:
+          type: string
+          maxLength: 2
+          minLength: 2
+          description: ISO country code (2 characters).
+          example: US
+        ship_via:
+          type: string
+          maxLength: 100
+          description: Free-form string that could reference a carrier, an account number or a service name.
+          example: 'FedEx next day + account #'
+        vat_id:
+          type: string
+          maxLength: 50
+          description: May be an empty string
+    Timestamp:
+      type: integer
+      description: Milliseconds since the Unix epoch (00:00:00 UTC on 1 January 1970)
+    Vendor:
+      type: object
+      properties:
+        vendor_name:
+          type: string
+        vendor_number:
+          type: integer
+      required:
+        - vendor_name
+        - vendor_number
+
+security:
+  - ApiKeyAuth: []

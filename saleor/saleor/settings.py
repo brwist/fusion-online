@@ -46,7 +46,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1"
+_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,0.0.0.0"
 
 ALLOWED_CLIENT_HOSTS = os.environ.get("ALLOWED_CLIENT_HOSTS")
 if not ALLOWED_CLIENT_HOSTS:
@@ -208,6 +208,7 @@ if not SECRET_KEY and DEBUG:
 
 MIDDLEWARE = [
     "saleor.fusion_online.middleware.health_check_allow_any_host",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "saleor.core.middleware.request_time",
@@ -253,9 +254,9 @@ INSTALLED_APPS = [
     "saleor.webhook",
     "saleor.wishlist",
     "saleor.app",
-    "saleor.fusion_online.rfq",
-    "saleor.fusion_online.api",
+    "saleor.fusion_online",
     # External apps
+    "corsheaders",
     "rest_framework",
     "rest_framework_api_key",
     "versatileimagefield",
@@ -524,6 +525,7 @@ PLUGINS = [
     "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
     "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
+    "saleor.plugins.orders.plugin.OrderCreatedPlugin"
 ]
 
 # Plugin discovery
@@ -588,11 +590,31 @@ JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
     seconds=parse(os.environ.get("JWT_TTL_REQUEST_EMAIL_CHANGE", "1 hour")),
 )
 
+CORS_ALLOWED_ORIGINS = [
+    "https://api-docs-sandbox.fusiononline.io"
+]
+
+CORS_URLS_REGEX = r'^/fo-api/.*$'
+
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework_api_key.permissions.HasAPIKey",
-    ]
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '6/second'
+    }
 }
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+# Local settings override
+if DEBUG:
+    from .settings_local import *
