@@ -32,7 +32,7 @@ from saleor.fusion_online.shipping_address.models import ShippingAddress
 class SalesOrderItemSerializer(ModelSerializer):
     unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
     cipn = IntegerField(read_only=True, default=123)
-    item_num_id = IntegerField()
+    item_num_id = IntegerField(default=99999)
     item_master_id = IntegerField()
     mpn = CharField(read_only=True)
     mcode = CharField(read_only=True)
