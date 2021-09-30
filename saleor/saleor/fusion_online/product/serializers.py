@@ -2,14 +2,14 @@ from rest_framework import serializers
 from ...product.models import Product, ProductType, Category, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
 from ..offer.serializers import VendorSerializer
-from ..offer.models import Vendor, ITEM_TYPE_IT_CHOICES
+from ..offer.models import Vendor
 from django.utils.text import slugify
 
 
 CATEGORY_ID_CHOICES = [
     (1000, "CPU_SERVER_INTEL"),
     (1004, "CPU_SERVER_AMD_EPYC"),
-    (1006, "CPU_DESKTOP_INTEL"),
+    (1006, "CPU_DESKTOP_INTEL"),s
     (1007, "CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU"),
     (1008, "CPU_INTEL"),
     (1001, "MEM_SERVER_DIMM"),
@@ -25,7 +25,7 @@ CATEGORY_ID_DICT = dict(CATEGORY_ID_CHOICES)
 
 class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
-    item_master_id = serializers.ChoiceField(choices=ITEM_TYPE_IT_CHOICES)
+    item_master_id = serializers.IntegerField()
     mcode = serializers.CharField(max_length=10)
     status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
     vendors = VendorSerializer(many=True)
