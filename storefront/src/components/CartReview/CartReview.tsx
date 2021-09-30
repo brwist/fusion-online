@@ -124,7 +124,7 @@ export const CartReview: React.FC<CartProps> = ({
               <Accordion defaultActiveKey="0">
                 <Card>
                   <Card.Header>
-                    Shipping
+                    Shipping Step 1
                     <ContextAwareToggle eventKey="0" />
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
@@ -132,7 +132,7 @@ export const CartReview: React.FC<CartProps> = ({
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Payment
+                    Payment Step 2
                     <ContextAwareToggle eventKey="1" />
                   </Card.Header>
                   <Accordion.Collapse eventKey="1">
@@ -140,7 +140,7 @@ export const CartReview: React.FC<CartProps> = ({
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Agreement
+                    Agreement Step 3
                     <ContextAwareToggle eventKey="2" />
                   </Card.Header>
                   <Accordion.Collapse eventKey="2">
@@ -148,7 +148,7 @@ export const CartReview: React.FC<CartProps> = ({
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Notes
+                    Notes Step 4
                     <ContextAwareToggle eventKey="3" />
                   </Card.Header>
                   <Accordion.Collapse eventKey="3">
