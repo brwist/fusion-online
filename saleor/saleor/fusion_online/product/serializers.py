@@ -9,7 +9,7 @@ from django.utils.text import slugify
 CATEGORY_ID_CHOICES = [
     (1000, "CPU_SERVER_INTEL"),
     (1004, "CPU_SERVER_AMD_EPYC"),
-    (1006, "CPU_DESKTOP_INTEL"),s
+    (1006, "CPU_DESKTOP_INTEL")
     (1007, "CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU"),
     (1008, "CPU_INTEL"),
     (1001, "MEM_SERVER_DIMM"),
