@@ -26,6 +26,9 @@ import { GET_CART_PRODUCT_DETAILS } from '../../config';
 import './cart.scss';
 
 import { ShippingInventory } from './components/ShippingInventory';
+import { Payment } from './components/Payment';
+import { Agreement } from './components/Agreement';
+import { Notes } from './components/Notes';
 
 type CartProductDetailsQuery = {
   productVariants?: Maybe<{
@@ -124,12 +127,36 @@ export const CartReview: React.FC<CartProps> = ({
                     Shipping
                     <ContextAwareToggle eventKey="0" />
                   </Card.Header>
-
                   <Accordion.Collapse eventKey="0">
                     <ShippingInventory items={items} />
                   </Accordion.Collapse>
+
+                  <Card.Header>
+                    Payment
+                    <ContextAwareToggle eventKey="1" />
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Payment />
+                  </Accordion.Collapse>
+
+                  <Card.Header>
+                    Agreement
+                    <ContextAwareToggle eventKey="2" />
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="2">
+                    <Agreement />
+                  </Accordion.Collapse>
+
+                  <Card.Header>
+                    Notes
+                    <ContextAwareToggle eventKey="3" />
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="3">
+                    <Notes />
+                  </Accordion.Collapse>
                 </Card>
               </Accordion>
+              <Button>Place Your Order</Button>
             </Col>
 
             <Col lg={3}>
