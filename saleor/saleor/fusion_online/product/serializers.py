@@ -2,8 +2,9 @@ from rest_framework import serializers
 from ...product.models import Product, ProductType, Category, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
 from ..offer.serializers import VendorSerializer
-from ..offer.models import Vendor
+from ..offer.models import Vendor, ITEM_TYPE_IT_CHOICES
 from django.utils.text import slugify
+
 
 CATEGORY_ID_CHOICES = [
     (1000, "CPU_SERVER_INTEL"),
@@ -24,7 +25,7 @@ CATEGORY_ID_DICT = dict(CATEGORY_ID_CHOICES)
 
 class ProductSerializer(serializers.Serializer):
     mpn = serializers.CharField(max_length=50)
-    item_num_id = serializers.IntegerField(max_value=None, min_value=None)
+    item_master_id = serializers.ChoiceField(choices=ITEM_TYPE_IT_CHOICES)
     mcode = serializers.CharField(max_length=10)
     status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
     vendors = VendorSerializer(many=True)
@@ -90,14 +91,14 @@ class ProductSerializer(serializers.Serializer):
         print("--ATTRIBUTE VALUES STORED--")
 
 
-        # save mcode, mpn, item_num_id as private metadata
+        # save mcode, mpn, item_master_id as public metadata
         product_queryset = Product.objects.filter(pk=product.pk)
         product_queryset.update(metadata={
             "mpn": validated_data["mpn"],
             "mcode": validated_data["mcode"],
-            "item_num_id": validated_data["item_num_id"]
+            "item_master_id": validated_data["item_master_id"]
         })
-        print("--PRIVATE METADATA STORED--")
+        print("--METADATA STORED--")
 
         # assign status attribute value
         attribute_status = Attribute.objects.get(slug="status")
