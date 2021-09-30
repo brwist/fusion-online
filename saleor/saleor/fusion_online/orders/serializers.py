@@ -1,4 +1,5 @@
 from django.db.models import fields
+from rest_framework.fields import ChoiceField
 from rest_framework.serializers import CharField, DecimalField, RelatedField, IntegerField, ModelSerializer, SerializerMethodField, Field, PrimaryKeyRelatedField
 from django.conf import settings
 from saleor.order.models import Order, OrderLine
@@ -32,12 +33,13 @@ class SalesOrderItemSerializer(ModelSerializer):
     unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
     cipn = IntegerField(read_only=True, default=123)
     item_num_id = IntegerField()
+    item_master_id = IntegerField()
     mpn = CharField(read_only=True)
     mcode = CharField(read_only=True)
 
     class Meta:
         model = OrderLine
-        fields = ['item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
+        fields = ['item_master_id', 'item_num_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
 
 class ShipToFieldSerializer(ModelSerializer):
     fo_ship_to_address_ref_id = IntegerField(source="pk")
@@ -87,7 +89,7 @@ class SalesOrderSerializer(ModelSerializer):
         sales_order = Order.objects.create(**validated_data, shipping_address=shipping_data)
 
         for item in order_items_data:
-            product = Product.objects.get(metadata__item_num_id=item['item_num_id'])
+            product = Product.objects.get(metadata__item_master_id=item['item_master_id'])
             product_variant = product.default_variant
             OrderLine.objects.create(
                 order=sales_order,

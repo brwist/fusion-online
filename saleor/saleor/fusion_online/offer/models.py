@@ -27,6 +27,19 @@ VENDOR_REGION_CHOICES = [
     ("Other", "Other")
 ]
 
+ITEM_TYPE_IT_CHOICES = [
+    (0, "Excess List"),
+    (1, "Opportunity List"),
+    (2, "Buyer Offer"),
+    (3, "Vendor Offer"),
+    (4, "Stock List"),
+    (5, "RMS Offer"),
+    (6, "RMS Req"),
+    (7, "RMS SO"),
+    (8, "RMS PO"),
+    (9, "RMQ Quote")
+]
+
 
 class Vendor(models.Model):
     vendor_name = models.CharField(max_length=50)
@@ -51,10 +64,11 @@ class Offer(models.Model):
         max_length=50,
         choices=TYPE_CHOICES
     )
+    item_type_id = models.IntegerField(choices=ITEM_TYPE_IT_CHOICES)
     offer_id = models.IntegerField(null=True)
     lead_time_days = models.IntegerField(MinValueValidator(limit_value=-1))
     date_added = models.BigIntegerField()
-    item_num_id = models.BigIntegerField()
+    item_master_id = models.BigIntegerField()
     mpn = models.CharField(max_length=50)
     mcode = models.CharField(max_length=10)
     quantity = models.IntegerField(MinValueValidator(limit_value=1))
