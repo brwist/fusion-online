@@ -11,6 +11,7 @@ import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from "./components/Footer/Footer";
 import {AccountPage} from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
+import { CheckoutPage } from './components/CheckoutPage/CheckoutPage'
 
 import './App.scss';
 
@@ -112,6 +113,7 @@ function App() {
                 user={user}
               />
             </Route>
+            <Route exact path="/checkout" component={CheckoutPage} />
           </Switch>
           <Footer />
           </>
