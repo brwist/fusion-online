@@ -62,6 +62,8 @@ from ..utils import (
 )
 from .common import ReorderInput
 
+from saleor.fusion_online.offer.models import Offer
+
 
 class CategoryInput(graphene.InputObjectType):
     description = graphene.String(description="Category description (HTML/text).")
@@ -1173,7 +1175,7 @@ class ProductVariantInput(graphene.InputObjectType):
 class ProductVariantCreateInput(ProductVariantInput):
     attributes = graphene.List(
         AttributeValueInput,
-        required=True,
+        required=False,
         description="List of attributes specific to this variant.",
     )
     product = graphene.ID(
@@ -1185,6 +1187,11 @@ class ProductVariantCreateInput(ProductVariantInput):
         graphene.NonNull(StockInput),
         description=("Stocks of a product available for sale."),
         required=False,
+    )
+    offer = graphene.Int(
+        description="Offer ID associated with this variant.",
+        name="offer",
+        required=False
     )
 
 
@@ -1219,13 +1226,13 @@ class ProductVariantCreate(ModelMutation):
         attribute_values = defaultdict(list)
         for attribute in attributes:
             attribute_values[attribute.id].extend(attribute.values)
-        if attribute_values in used_attribute_values:
-            raise ValidationError(
-                "Duplicated attribute values for product variant.",
-                ProductErrorCode.DUPLICATED_INPUT_ITEM,
-            )
-        else:
-            used_attribute_values.append(attribute_values)
+        # if attribute_values in used_attribute_values:
+        #     raise ValidationError(
+        #         "Duplicated attribute values for product variant.",
+        #         ProductErrorCode.DUPLICATED_INPUT_ITEM,
+        #     )
+        # else:
+        used_attribute_values.append(attribute_values)
 
     @classmethod
     def clean_input(
@@ -1365,6 +1372,14 @@ class ProductVariantCreate(ModelMutation):
             AttributeAssignmentMixin.save(instance, attributes)
             instance.name = generate_name_for_variant(instance)
             instance.save(update_fields=["name"])
+
+        # If an offer id is passed, load the offer and associate it with this instance.
+        if 'offer' in cleaned_input:
+            offer = Offer.objects.get(pk=cleaned_input['offer'])
+            if offer:
+                offer.product_variant = instance
+                offer.save()
+
         info.context.plugins.product_updated(instance.product)
 
     @classmethod

@@ -164,7 +164,7 @@ def filter_metadata(qs, _, value):
     meta_val = value.get('value')
     meta_key = value.get('key')
     if meta_val:
-        qs = qs.filter(metadata__has_key=meta_key, metadata__has_value=meta_val)
+        qs = qs.filter(metadata__has_key=meta_key, metadata__values__contains=meta_val)
     else:
         qs = qs.filter(metadata__has_key=meta_key)
     return qs
