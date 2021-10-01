@@ -1,168 +1,101 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import { Route, useLocation} from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Route, RouteComponentProps } from "react-router-dom";
-import {pricingListPath} from "../../urls"
-import {Card, TableRow, TableCell, TableBody, Drawer, TableHead} from "@material-ui/core"
+import {pricingListPath, pricingListUrl} from "../../urls"
+import { PricingTable } from "./PricingTable";
+import PageHeader from "../../../components/PageHeader";
 import Container from "@saleor/components/Container";
-import PageHeader from "../../../components/PageHeader"
-import ResponsiveTable from "../../../components/ResponsiveTable"
-import TableCellHeader from "../../../components/TableCellHeader"
-import {usePricingProductListQuery} from "../../queries"
-import Money from "@saleor/components/Money";
-import { PricingDetailDrawer } from "./PricingDetailDrawer";
-import moment from "moment-timezone";
+import { useSubCategoriesQuery} from "@saleor/categories/queries";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Card from '@material-ui/core/Card';
+import { fade } from "@material-ui/core/styles/colorManipulator";
+import useNavigator from "@saleor/hooks/useNavigator";
 
 const useStyles = makeStyles(
   theme => ({
-    [theme.breakpoints.up("lg")]: {
-      colName: {
-        width: "auto"
+    root: {
+      borderBottom: `1px solid ${theme.palette.divider}`
+    },
+    tab: {
+      active: {
+        color: theme.palette.text.secondary
       },
-      colPrice: {
-        width: 300
-      },
-      colPublished: {
-        width: 200
-      },
-      colType: {
-        width: 200
+      root: {
+        "&$active": {
+          borderBottomColor: theme.palette.primary.main,
+          color: theme.typography.body1.color
+        },
+        "&:focus": {
+          color: theme.palette.primary.main
+        },
+        "&:hover": {
+          color: theme.palette.primary.main
+        },
+        borderBottom: "1px solid transparent",
+        color: fade(theme.palette.text.secondary, 0.6),
+        cursor: "pointer",
+        display: "inline-block",
+        fontWeight: theme.typography.fontWeightRegular,
+        marginRight: theme.spacing(2),
+        minWidth: 40,
+        padding: theme.spacing(1),
+        transition: theme.transitions.duration.short + "ms"
       }
-    },
-    colAttribute: {
-      width: 150
-    },
-    colFill: {
-      padding: 0,
-      width: "100%"
-    },
-    colName: {
-      "&$colNameFixed": {
-        width: 250
-      }
-    },
-    colNameFixed: {},
-    colNameHeader: {
-      marginLeft: 32
-    },
-    colNameWrapper: {
-      display: "block"
-    },
-    colPrice: {
-      textAlign: "right"
-    },
-    colPublished: {},
-    colType: {},
-    link: {
-      cursor: "pointer"
-    },
-    table: {
-      tableLayout: "fixed"
-    },
-    tableContainer: {
-      overflowX: "scroll"
-    },
-    textLeft: {
-      textAlign: "left"
-    },
-    textRight: {
-      textAlign: "right"
     }
   }),
-  { name: "PricingList" }
+  { name: "TabContainer" }
 );
 
 const PricingPage = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [activeProduct, setActiveProduct] = useState("")
   const classes = useStyles()
-  const numberOfColumns = 3
-  const {data} = usePricingProductListQuery({variables: {filter: {categories: []}, first: 100} })
-  const productList = data?.products?.edges || []
+  const navigate = useNavigator();
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  
+  const query = useQuery();
+  const activeTabId = query.get('activeTab');
+  const [categoryId, setCategoryId] = useState(activeTabId || "")
 
+  const {data} = useSubCategoriesQuery({variables: {first: 100}})
+  console.log(data?.categories.edges)
+  const subCategories = data?.categories?.edges?.map(
+    ({node: {name, id}}) => ({ name, id })) || []
 
-  const getProductPrice = (product, amountType) => {
-    const priceRangeUndiscounted = product?.pricing?.priceRangeUndiscounted;
+  const tabData = [{name: "All Products", id: ""}, ...subCategories]
+  const activeTabValue = tabData.findIndex(({id}) => id === activeTabId)
+  const [tabValue, setTabValue] = useState(0)
 
-    if (!priceRangeUndiscounted) {
-      return "-";
-    }
+  useEffect(() => {
+    const newValue = activeTabValue > -1 ? activeTabValue : 0
+    setTabValue(newValue)
+  }, [activeTabValue])
 
-    const { start, stop } = priceRangeUndiscounted;
-    const {
-      gross: { amount: startAmount }
-    } = start;
-    const {
-      gross: { amount: stopAmount }
-    } = stop;
+  const tabs = tabData.map(({name, id})=> <Tab key={id} label={name} id={id}/>);
 
-    if ( amountType === "low" && startAmount) {
-      return (
-        <Money
-          money={{
-            amount: startAmount,
-            currency: start.gross.currency
-          }}
-        />
-      );
-    } else if ( amountType === "high" && stopAmount){
-      return (
-        <Money
-          money={{
-            amount: stopAmount,
-            currency: stop.gross.currency
-          }}
-        />
-      );
-    } else {
-      return (
-        "-"
-      )
-    }
-  };
-  console.log(productList)
-
-  const productRows = productList.map(({node}) => {
-    return (
-      <TableRow 
-        onClick={() => {
-          setIsDrawerOpen(!isDrawerOpen);
-          setActiveProduct(node.id)
-        }}
-        key={node.id}
-        className={classes.link}>
-      <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.privateMetadata.find(
-        ({key, value}) => key === "mpn")?.value}</TableCell>
-      <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.category.name}</TableCell>
-      <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
-      <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
-      <TableCell className={classes.textRight} colSpan={numberOfColumns}>{moment(node.updatedAt).format("MM/DD/YY hh:mm A")}</TableCell>
-    </TableRow>
-    );
-  });
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue)
+    setCategoryId(event.currentTarget.id)
+    navigate(pricingListUrl({activeTab: event.currentTarget.id}))
+  }
 
   return (
     <Container>
-      <PricingDetailDrawer 
-        open={isDrawerOpen}
-        closeDrawer={() => setIsDrawerOpen(false)}
-        productId={activeProduct}
-      />
       <PageHeader title="Pricing"/>
       <Card>
-        <div className={classes.tableContainer}>
-        <ResponsiveTable className={classes.table}>
-          <TableHead>
-            <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>MPN</TableCellHeader>
-            <TableCellHeader colSpan={numberOfColumns} className={classes.colNameHeader}>Category</TableCellHeader>
-            <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Low</TableCellHeader>
-            <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>High</TableCellHeader>
-            <TableCellHeader colSpan={numberOfColumns} textAlign="right" className={classes.colPrice}>Last Updated</TableCellHeader>
-          </TableHead>
-          <TableBody>
-            {productRows}
-          </TableBody>
-        </ResponsiveTable>
+      <div className={classes.root}>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+            className={classes.tab}
+          >
+            {tabs}
+          </Tabs>
       </div>
+      <PricingTable categoryId={categoryId}/>
       </Card>
     </Container>
   )

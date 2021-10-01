@@ -34,10 +34,12 @@ class Vendor(models.Model):
     vendor_type = models.CharField(
         max_length=50,
         choices=VENDOR_TYPE_CHOICES,
+        null=True
     )
     vendor_region = models.CharField(
         max_length=50,
         choices=VENDOR_REGION_CHOICES,
+        null=True
     )
     
     class Meta:
@@ -59,7 +61,7 @@ class Offer(models.Model):
     offer_price = models.DecimalField(max_digits=14, decimal_places=5)
     date_code = models.CharField(max_length=50, blank=True, null=True)
     comment = models.CharField(max_length=300, blank=True, null=True)
-    coo = models.CharField(max_length=60)
+    coo = models.CharField(max_length=60, blank=True, null=True)
     vendor = models.ForeignKey(
         Vendor,
         related_name="offers",
