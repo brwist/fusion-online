@@ -8,8 +8,6 @@ import { GET_CART_PRODUCT_DETAILS } from '../../../config';
 import { GET_USER_ADDRESSES } from '../../../graphql/account';
 import { User, Address } from '../../../generated/graphql';
 
-import '../cart.scss';
-
 const mockShippingMethods = [
   {
     carrier: 'FedEx',
@@ -98,153 +96,172 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
     console.log('items: ', items);
     console.log('data: ', data);
     return (
-      <>
-        <Card>
-          <div className="d-flex justify-content-between align-items-start">
-            <Row className="mx-n1 small">
-              <span className="px-1">
-                PRODUCTS:
-                {items?.length}
-              </span>
-              <span className="px-1">UNITS:</span>
-              <span className="font-weight-bold px-1">
-                {items?.reduce((acc: number, curr: { quantity: number }) => acc + curr.quantity, 0)}
-              </span>
-              <span className="px-1">SUBTOTAL:</span>
-              <span className="font-weight-bold px-1">${calculateSubtotal()}</span>
-
-              <Form.Group as={Row} controlId="deliver-to" className="small m-0" style={{ width: '45%' }}>
-                <Form.Label column sm={3} className="col-form-label-sm font-weight-bold px-1">
-                  Deliver to
-                </Form.Label>
-                <Col sm={9} className="px-0">
-                  <Form.Control as="select" size="sm" custom readOnly={true}>
-                    <option>123 Main St, Haverhill, MA 01835, USA</option>
-                  </Form.Control>
-                </Col>
-              </Form.Group>
-            </Row>
-          </div>
-          <div className="d-flex justify-content-between align-items-start">Shipment Inventory</div>
-          <Table borderless striped responsive>
-            <thead className="border-bottom">
-              <tr>
-                <th>Product Details</th>
-                <th>Available Quantity</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items?.map(
-                (
-                  { quantity, totalPrice, variant }: { quantity: number; totalPrice: number; variant: any },
-                  index: number
-                ) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <div className="small">{variant.sku}</div>
-                        {variant.product.name}
-                      </td>
-                      <td className="text-center font-weight-bold">{variant.quantityAvailable}</td>
-                      <td className="text-center">{quantity}</td>
-
-                      {variant.pricing?.onSale ? (
-                        <td className="text-right">
-                          <div className="small">
-                            <s>${(variant.pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}</s>
-                          </div>
-                          <div className="font-weight-bold text-primary">
-                            ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
-                          </div>
-                        </td>
-                      ) : (
-                        <td className="text-right">${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}</td>
-                      )}
-                      <td className="text-right font-weight-bold">
-                        ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </Table>
-          <div className="d-flex justify-content-between align-items-start">Shipping Address</div>
-          <Table borderless striped responsive>
-            <thead className="border-bottom">
-              <tr>
-                <th></th>
-                <th className="text-center">Name / Company</th>
-                <th className="text-center">Address</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {addressQuery?.data?.me.addresses.map((address, index: number) => {
-                console.log('address: ', address);
+      <Card.Body>
+        <Row className="mx-n1 mb-4 small">
+          <Col lg={2} className="px-1">
+            <h6 className="m-0">Shipment 1</h6>
+          </Col>
+          <Col lg={2} className="px-1">
+            <span>PRODUCTS:</span>
+            <span className="font-weight-bold px-1">{items?.length}</span>
+          </Col>
+          <Col lg={2} className="px-1">
+            <span>UNITS:</span>
+            <span className="font-weight-bold px-1">
+              {items?.reduce((acc: number, curr: { quantity: number }) => acc + curr.quantity, 0)}
+            </span>
+          </Col>
+          <Col lg={2} className="px-1">
+            <span>SUBTOTAL:</span>
+            <span className="font-weight-bold px-1">${calculateSubtotal()}</span>
+          </Col>
+          <Col lg={4} className="px-1">
+            <div>DELIVERY TO:</div>
+            <span className="font-weight-bold">123 Main St, Haverhill, MA 01835, USA</span>
+          </Col>
+        </Row>
+        <h5>Shipment Inventory</h5>
+        <Table
+          className="mb-4"
+          borderless
+          striped
+          responsive
+        >
+          <thead className="border-bottom">
+            <tr>
+              <th>Product Details</th>
+              <th className="text-right">Available Quantity</th>
+              <th className="text-right">Quantity</th>
+              <th className="text-right">Unit Price</th>
+              <th className="text-right">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items?.map(
+              (
+                { quantity, totalPrice, variant }: { quantity: number; totalPrice: number; variant: any },
+                index: number
+              ) => {
                 return (
                   <tr key={index}>
                     <td>
-                      <input type="radio" defaultChecked={index === 0} onChange={() => setSelectedAddress(address)} />
+                      <div className="small">{variant.sku}</div>
+                      {variant.product.name}
                     </td>
-                    <td>
-                      <div>
-                        Johnny Howell
-                        <br />
-                        36 Creative
-                      </div>
+                    <td className="text-right">{variant.quantityAvailable}</td>
+                    <td className="text-right">{quantity}</td>
+
+                    {variant.pricing?.onSale ? (
+                      <td className="text-right">
+                        <div className="small">
+                          ${(variant.pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}
+                        </div>
+                        <div className="font-weight-bold text-primary">
+                          ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
+                        </div>
+                      </td>
+                    ) : (
+                      <td className="text-right font-weight-bold">${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}</td>
+                    )}
+                    <td className="text-right font-weight-bold">
+                      ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
                     </td>
-                    <td>
-                      123 Turkey Street
-                      <br />
-                      Haverhill, MA 01835
-                      <br />
-                      USA
-                    </td>
-                    <td>{index === 0 && `Default`}</td>
                   </tr>
                 );
-              })}
-            </tbody>
-          </Table>
+              }
+            )}
+          </tbody>
+        </Table>
+        <h5>Shipping Address</h5>
+        <Table
+          className="mb-4"
+          borderless
+          striped
+          responsive
+        >
+          <thead className="border-bottom">
+            <tr>
+              <th></th>
+              <th>Name / Company</th>
+              <th>Address</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {addressQuery?.data?.me.addresses.map((address, index: number) => {
+              console.log('address: ', address);
+              return (
+                <tr key={index}>
+                  <td>
+                    <Form.Check
+                      custom
+                      type="radio"
+                      name="shippingAddress"
+                      defaultChecked={index === 0}
+                      onChange={() => setSelectedAddress(address)}
+                    />
+                  </td>
+                  <td>
+                    Johnny Howell
+                    <br />
+                    36 Creative
+                  </td>
+                  <td>
+                    123 Turkey Street
+                    <br />
+                    Haverhill, MA 01835
+                    <br />
+                    USA
+                  </td>
+                  <td>{index === 0 && `Default`}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+        <div className="mb-4">
           Deliver By <Button variant="link">Set a delivery date</Button>
-          <div className="d-flex justify-content-between align-items-start">Domestic Shipping Method</div>
-          <Table borderless striped responsive>
-            <thead className="border-bottom">
-              <tr>
-                <th></th>
-                <th>Carrier</th>
-                <th>Method</th>
-                <th>Estimated Transit</th>
-                <th>Account</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockShippingMethods.map((shippingMethod, index: number) => {
-                return (
-                  <tr key={index}>
-                    <td>
-                      <input
-                        type="radio"
-                        defaultChecked={index === 0}
-                        onChange={() => setSelectedShippingMethod(shippingMethod)}
-                      />
-                    </td>
-                    <td>{shippingMethod.carrier}</td>
-                    <td>{shippingMethod.method}</td>
-                    <td>{shippingMethod.transit_time}</td>
-                    <td>{shippingMethod.account}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-          <Button>Continue to Payment</Button>
-        </Card>
-      </>
+        </div>
+        <h5>Domestic Shipping Method</h5>
+        <Table
+          className="mb-4"
+          borderless
+          striped
+          responsive
+        >
+          <thead className="border-bottom">
+            <tr>
+              <th></th>
+              <th>Carrier</th>
+              <th>Method</th>
+              <th>Estimated Transit</th>
+              <th>Account</th>
+            </tr>
+          </thead>
+          <tbody>
+            {mockShippingMethods.map((shippingMethod, index: number) => {
+              return (
+                <tr key={index}>
+                  <td>
+                    <Form.Check
+                      custom
+                      type="radio"
+                      name="shippingMethod"
+                      defaultChecked={index === 0}
+                      onChange={() => setSelectedShippingMethod(shippingMethod)}
+                    />
+                  </td>
+                  <td>{shippingMethod.carrier}</td>
+                  <td>{shippingMethod.method}</td>
+                  <td>{shippingMethod.transit_time}</td>
+                  <td>{shippingMethod.account}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+        <Button>Continue to Payment</Button>
+      </Card.Body>
     );
   } else {
     return <h5>Loading Cart...</h5>;

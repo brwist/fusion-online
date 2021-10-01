@@ -23,7 +23,7 @@ import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
 
-import './cart.scss';
+import './cart-review.scss';
 
 import { ShippingInventory } from './components/ShippingInventory';
 import { Payment } from './components/Payment';
@@ -67,7 +67,7 @@ export const CartReview: React.FC<CartProps> = ({
     const isCurrentEventKey = currentEventKey === eventKey;
 
     return (
-      <Button variant="link" className="py-0 pl-0 pr-3" onClick={decoratedOnClick}>
+      <Button variant="link" className="p-0" onClick={decoratedOnClick}>
         <FontAwesomeIcon icon={isCurrentEventKey ? faChevronDown : faChevronUp} size="lg" />
       </Button>
     );
@@ -117,39 +117,47 @@ export const CartReview: React.FC<CartProps> = ({
   } else if (items && data) {
     return (
       <Container>
-        <SectionHeader subheading="checkout" heading="Review Order" />
-        <div className="cart">
+        <SectionHeader subheading="checkout" heading="Review &amp; Place Your Order" />
+        <div className="cart-review">
           <Row>
             <Col lg={9}>
               <Accordion defaultActiveKey="0">
                 <Card>
                   <Card.Header>
-                    Shipping Step 1
-                    <ContextAwareToggle eventKey="0" />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="m-0 text-capitalize">Shipping <small className="text-muted">Step 1</small></h5>
+                      <ContextAwareToggle eventKey="0" />
+                    </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
                     <ShippingInventory items={items} />
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Payment Step 2
-                    <ContextAwareToggle eventKey="1" />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="m-0 text-capitalize">Payment <small className="text-muted">Step 2</small></h5>
+                      <ContextAwareToggle eventKey="1" />
+                    </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="1">
                     <Payment />
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Agreement Step 3
-                    <ContextAwareToggle eventKey="2" />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="m-0 text-capitalize">Agreement <small className="text-muted">Step 3</small></h5>
+                      <ContextAwareToggle eventKey="2" />
+                    </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="2">
                     <Agreement />
                   </Accordion.Collapse>
 
                   <Card.Header>
-                    Notes Step 4
-                    <ContextAwareToggle eventKey="3" />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="m-0 text-capitalize">Notes <small className="text-muted">Step 4</small></h5>
+                      <ContextAwareToggle eventKey="3" />
+                    </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="3">
                     <Notes />

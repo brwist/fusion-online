@@ -24,7 +24,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal }) => {
                 <td className="text-right font-weight-bold">$0.00</td>
               </tr>
               <tr>
-                <td>Shipping & Handling</td>
+                <td>Shipping &amp; Handling</td>
                 <td className="text-right font-weight-bold">$0.00</td>
               </tr>
               <tr>
@@ -44,7 +44,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal }) => {
             Place Order
           </Button>
 
-          <div>Your data will be securely transmitted</div>
+          <p className="my-3">
+            <em>Your data will be securely transmitted</em>
+          </p>
         </Card.Text>
       </Card.Body>
     </Card>
