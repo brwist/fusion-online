@@ -1,5 +1,12 @@
 RocketChips API Changelog
 ==========================
+### 2021-09-30 (version 0.0.7):
+  - Made the max length (50 characters) consistent across  mpn, cipn and mcode attributes for all schemas.
+  - Indicated max length (20 characters) for the Decimal schema.
+  - Changed item_num_id to item_master_id for the Offer and Product schemas.
+  - Added item_master_id to the SalesOrder schema.
+  - Added item_type_id to the Offer schema.
+
 ### 2021-09-23 (version 0.0.6):
   - Include `fo_product_ref_id` in response for /products POST and PUT endpoints.
 
