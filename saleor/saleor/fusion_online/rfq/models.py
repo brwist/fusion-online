@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from ...account.models import User
-from ..product.serializers import CATEGORY_ID_CHOICES
 
 RFQ_RESPONSE_TYPES_CHOICES = [
     ("OFFER", "Offer"),
@@ -27,9 +26,7 @@ class RFQLineItem(models.Model):
     date_code = models.CharField(max_length=50)
     comment = models.CharField(max_length=500)
     cipn = models.CharField(max_length=50)
-    commodity_code = models.IntegerField(
-        choices=CATEGORY_ID_CHOICES
-    )
+    commodity_code = models.IntegerField()
     rms_response_id = models.IntegerField(null=True)
     rfq_submission = models.ForeignKey(
         RFQSubmission,
