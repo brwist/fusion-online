@@ -91,3 +91,41 @@ const pricingProductListQuery = gql`
 `;
 
 export const usePricingProductListQuery = makeQuery<any, ProductListVariables>(pricingProductListQuery);
+
+const offerListQuery = gql `
+query OfferList ($itemMasterId: String) {
+  offers (itemMasterId: $itemMasterId) {
+    id
+    type
+    itemTypeId
+    offerId
+    leadTimeDays
+    dateAdded
+    itemMasterId
+    mpn
+    mcode
+    quantity
+    offerPrice
+    dateCode
+    comment
+    coo
+    vendor {
+      id
+      vendorName
+      vendorType
+      vendorNumber
+      vendorRegion
+    }
+    tariffRate
+    productVariant {
+      id
+      sku
+      margin
+      price {
+        ...Money
+      }
+    }
+  }
+  }${MoneyFragmentDoc}`
+
+  export const useOfferListQuery = makeQuery<any, {itemMasterId: string}>(offerListQuery);

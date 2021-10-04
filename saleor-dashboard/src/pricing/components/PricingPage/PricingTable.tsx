@@ -85,7 +85,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
 }) => {
   const classes = useStyles()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [activeProduct, setActiveProduct] = useState("")
+  const [activeProduct, setActiveProduct] = useState({id: "", mpn: "", itemMasterId: ""})
 
 
   const {data, loading} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 50} })
@@ -150,6 +150,8 @@ export const PricingTable: React.FC<PricingTableProps> = ({
   } else if (productList.length > 0) {
     productRows = productList.map(({node}) => {
       const relevantAttributes = node.attributes.filter(({attribute: {slug}}) => slug?.startsWith(attributeFilter))
+      const mpn = node.metadata.find(({key}) => key === "mpn")?.value
+      const itemMasterId = node.metadata.find(({key}) => key === "item_master_id")?.value
       const attributeValues = relevantAttributes?.map(({values}) => (
         <TableCell key={values[0]?.id} className={classes.colName} colSpan={numberOfColumns}>{values[0]?.name}</TableCell>
       ))
@@ -157,12 +159,15 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         <TableRow 
           onClick={() => {
             setIsDrawerOpen(!isDrawerOpen);
-            setActiveProduct(node.id)
+            setActiveProduct({
+              id: node.id,
+              mpn,
+              itemMasterId
+            })
           }}
           key={node.id}
           className={classes.link}>
-        <TableCell className={classes.colName} colSpan={numberOfColumns}>{node.metadata.find(
-          ({key, value}) => key === "mpn")?.value}</TableCell>
+        <TableCell className={classes.colName} colSpan={numberOfColumns}>{mpn}</TableCell>
         {attributeValues}
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "low")}</TableCell>
         <TableCell className={classes.colPrice} colSpan={numberOfColumns}>{getProductPrice(node, "high")}</TableCell>
@@ -182,7 +187,9 @@ export const PricingTable: React.FC<PricingTableProps> = ({
       <PricingDetailDrawer 
         open={isDrawerOpen}
         closeDrawer={() => setIsDrawerOpen(false)}
-        productId={activeProduct}
+        productId={activeProduct.id}
+        productMPN={activeProduct.mpn}
+        productItemMasterId={activeProduct.itemMasterId?.toString()}
       />
         <div className={classes.tableContainer}>
         <ResponsiveTable className={classes.table}>

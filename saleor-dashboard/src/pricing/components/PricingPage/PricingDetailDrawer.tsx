@@ -15,6 +15,8 @@ import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/s
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 // import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
+import { useProductDetails } from "../../../products/queries";
+import { useOfferListQuery } from "../../queries";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -123,30 +125,6 @@ const columns: GridColDef[] = [
     sortable: false,
   },
   {
-    field: 'min',
-    headerName: 'Min',
-    type: 'number',
-    width: 80,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'max',
-    headerName: 'Max',
-    type: 'number',
-    width: 80,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'spq',
-    headerName: 'SPQ',
-    type: 'number',
-    width: 80,
-    editable: true,
-    sortable: false,
-  },
-  {
     field: 'cost',
     headerName: 'Cost',
     editable: true,
@@ -166,23 +144,40 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
-  { id: 1, origin: 'United States', leadTime: '2 days', qty: 35, min: 1, max: 100, spq: 1, cost: '$00.00', margin: '00%', sellPrice: '$00.00', },
-  { id: 2, origin: 'United States', leadTime: '2 days', qty: 35, min: 1, max: 100, spq: 1, cost: '$00.00', margin: '00%', sellPrice: '$00.00', },
-  { id: 3, origin: 'United States', leadTime: '2 days', qty: 35, min: 1, max: 100, spq: 1, cost: '$00.00', margin: '00%', sellPrice: '$00.00', },
-  { id: 4, origin: 'United States', leadTime: '2 days', qty: 35, min: 1, max: 100, spq: 1, cost: '$00.00', margin: '00%', sellPrice: '$00.00', },
-];
-
 export interface PricingDetailDrawerProps {
   open: boolean;
   closeDrawer: () => void;
   productId: string;
+  productMPN: string;
+  productItemMasterId: string;
 }
 
 export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
-  {open, closeDrawer, productId}) => {
+  {
+    open,
+    closeDrawer,
+    productId,
+    productMPN,
+    productItemMasterId
+  }) => {
   const classes = useStyles();
+  const {data} = useProductDetails({variables: {id: productId ? productId : "id"}})
+  const offerData = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
+  console.log(offerData.data)
+  const offersWithVariants = offerData.data?.offers?.filter((offer) => offer.productVariant)
+  console.log("offers with variants:", offersWithVariants)
+  const variants = data?.product?.variants || []
 
+  const variantTableRows = variants.map(variant => ({
+      id: variant?.id,
+      origin: "United States",
+      leadTime: '2 days',
+      qty: variant?.stocks[0]?.quantity || "0",
+      cost: `$${variant?.price?.amount}` || "-", 
+      margin: variant?.margin || "-",
+      sellPrice: "$00.00"
+    }))
+  console.log(data)
   return (
     <Drawer
       classes={{
@@ -195,7 +190,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       <div className={classes.padding}>
         <PageHeader
           className={classes.root}
-          title={productId}
+          title={productMPN}
         >
           <Button
             onClick={() => console.log("click")}
@@ -260,7 +255,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               autoPageSize
               pagination
               rowHeight={40}
-              rows={rows}
+              rows={variantTableRows}
               columns={columns}
               // pageSize={5}
               // rowsPerPageOptions={[5]}
