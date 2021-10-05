@@ -15,7 +15,7 @@ import { Cart } from './components/Cart/Cart';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
-import { CONFIRM_ACCOUNT } from './config';
+import { CONFIRM_ACCOUNT } from './graphql/account';
 
 
 type AccountConfirmMutation = {
