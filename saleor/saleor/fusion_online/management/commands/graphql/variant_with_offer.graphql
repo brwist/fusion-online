@@ -1,0 +1,181 @@
+fragment Money on Money {
+  amount
+  currency
+  __typename
+}
+
+fragment ProductImageFragment on ProductImage {
+  id
+  alt
+  sortOrder
+  url
+  __typename
+}
+
+fragment StockFragment on Stock {
+  id
+  quantity
+  quantityAllocated
+  warehouse {
+    id
+    name
+    __typename
+  }
+  __typename
+}
+
+fragment WeightFragment on Weight {
+  unit
+  value
+  __typename
+}
+
+fragment MetadataItem on MetadataItem {
+  key
+  value
+  __typename
+}
+
+fragment MetadataFragment on ObjectWithMetadata {
+  metadata {
+    ...MetadataItem
+    __typename
+  }
+  privateMetadata {
+    ...MetadataItem
+    __typename
+  }
+  __typename
+}
+
+fragment ProductVariant on ProductVariant {
+  id
+  ...MetadataFragment
+  attributes {
+    attribute {
+      id
+      name
+      slug
+      valueRequired
+      values {
+        id
+        name
+        slug
+        __typename
+      }
+      __typename
+    }
+    values {
+      id
+      name
+      slug
+      __typename
+    }
+    __typename
+  }
+  costPrice {
+    ...Money
+    __typename
+  }
+  images {
+    id
+    url
+    __typename
+  }
+  name
+  price {
+    ...Money
+    __typename
+  }
+  product {
+    id
+    defaultVariant {
+      id
+      __typename
+    }
+    images {
+      ...ProductImageFragment
+      __typename
+    }
+    name
+    thumbnail {
+      url
+      __typename
+    }
+    variants {
+      id
+      name
+      sku
+      images {
+        id
+        url
+        __typename
+      }
+      __typename
+    }
+    defaultVariant {
+      id
+      __typename
+    }
+    __typename
+  }
+  sku
+  stocks {
+    ...StockFragment
+    __typename
+  }
+  trackInventory
+  weight {
+    ...WeightFragment
+    __typename
+  }
+  __typename
+}
+
+fragment ProductErrorFragment on ProductError {
+  code
+  field
+  __typename
+}
+
+fragment ProductErrorWithAttributesFragment on ProductError {
+  ...ProductErrorFragment
+  attributes
+  __typename
+}
+
+mutation VariantCreate($input: ProductVariantCreateInput!) {
+  productVariantCreate(input: $input) {
+    errors: productErrors {
+      ...ProductErrorWithAttributesFragment
+      __typename
+    }
+    productVariant {
+      ...ProductVariant
+      __typename
+    }
+    __typename
+  }
+}
+
+/** Query Variables **/
+{
+    "input": {
+        "attributes": [
+          {
+            "id": "QXR0cmlidXRlOjMx",
+            "values": [
+                "yes"
+            ]
+        	}
+        ],
+        "costPrice": "5",
+        "price": "12",
+        "product": "UHJvZHVjdDoxMzM=",
+        "sku": "1238905",
+        "stocks": [],
+        "trackInventory": true,
+        "weight": 12,
+        "offer": 19
+    }
+}

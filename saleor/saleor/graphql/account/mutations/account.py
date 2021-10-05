@@ -29,7 +29,8 @@ from .base import (
 class AccountRegisterInput(graphene.InputObjectType):
     first_name = graphene.String(description="User first name", required=True)
     last_name = graphene.String(description="User last name", required=True)
-    company_name = graphene.String(description="User company or organization", required=True)
+    company_name = graphene.String(
+        description="User company or organization", required=True)
     region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
