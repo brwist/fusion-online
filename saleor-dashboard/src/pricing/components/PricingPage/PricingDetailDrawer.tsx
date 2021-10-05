@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import {
   Button,
   Drawer,
@@ -15,8 +15,8 @@ import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/s
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 // import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
-import { useProductDetails } from "../../../products/queries";
 import { useOfferListQuery } from "../../queries";
+import moment from "moment-timezone"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -104,6 +104,7 @@ const columns: GridColDef[] = [
     headerName: 'Origin',
     headerAlign: 'right',
     align: 'right',
+    width: 120,
     editable: true,
     sortable: false,
   },
@@ -120,6 +121,8 @@ const columns: GridColDef[] = [
     field: 'qty',
     headerName: 'Qty',
     type: 'number',
+    headerAlign: 'right',
+    align: 'right',
     width: 80,
     editable: true,
     sortable: false,
@@ -127,18 +130,25 @@ const columns: GridColDef[] = [
   {
     field: 'cost',
     headerName: 'Cost',
+    headerAlign: 'right',
+    align: 'right',
     editable: true,
     sortable: false,
   },
   {
     field: 'margin',
     headerName: 'Margin',
+    headerAlign: 'right',
+    align: 'right',
     editable: true,
     sortable: false,
   },
   {
     field: 'sellPrice',
     headerName: 'Sell Price',
+    headerAlign: 'right',
+    align: 'right',
+    width: 110,
     editable: true,
     sortable: false,
   },
@@ -161,23 +171,65 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     productItemMasterId
   }) => {
   const classes = useStyles();
-  const {data} = useProductDetails({variables: {id: productId ? productId : "id"}})
-  const offerData = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
-  console.log(offerData.data)
-  const offersWithVariants = offerData.data?.offers?.filter((offer) => offer.productVariant)
-  console.log("offers with variants:", offersWithVariants)
-  const variants = data?.product?.variants || []
-
-  const variantTableRows = variants.map(variant => ({
-      id: variant?.id,
-      origin: "United States",
-      leadTime: '2 days',
-      qty: variant?.stocks[0]?.quantity || "0",
-      cost: `$${variant?.price?.amount}` || "-", 
-      margin: variant?.margin || "-",
-      sellPrice: "$00.00"
-    }))
+  const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
   console.log(data)
+  const offersWithVariants = productItemMasterId && data?.offers?.filter((offer) => offer.productVariant) || []
+  console.log("offers with variants:", offersWithVariants)
+  
+  const offers = data?.offers || []
+  const priceSortedOffers = productItemMasterId && offers.length > 0 ? [...offers].sort(
+    (a,b) => (a.offerPrice > b.offerPrice) ? 1 : ((b.offerPrice > a.offerPrice) ? -1 : 0)) : []
+
+  const formatLeadTime = (leadTime) => {
+    if (leadTime === -1) {
+      return "Unknown"
+    } else if (leadTime === 0) {
+      return "In Stock"
+    } else if (leadTime === 1) {
+      return "1 Month"
+    } else {
+      return `${leadTime} days`
+    }
+  }
+
+  const defaultVariantTableRows = offersWithVariants.map(offer => ({
+      id: offer?.id,
+      origin: offer?.coo || "-",
+      leadTime: formatLeadTime(offer?.leadTimeDays),
+      qty: offer?.quantity,
+      cost: `$${offer?.offerPrice?.toFixed(2)}`, 
+      margin: offer?.productVariant.margin || "-",
+      sellPrice: `$${offer?.productVariant.price.amount}` || "-"
+    }));
+  
+  const [variantTableRows, setVariantTableRows] = useState([])
+
+  useEffect(() => {
+    setVariantTableRows(defaultVariantTableRows)
+  }, [productItemMasterId])
+  
+  const handleCellEditCommit = useCallback(({id, field, value}) => {
+    return variantTableRows.map(row => {
+      if (row.id === id) {
+        return {...row, [field]: value}
+      }
+      return row
+    })
+  }, [variantTableRows])
+
+  const offerTableRows = productItemMasterId && data?.offers?.map(offer => {
+    return (
+      <StyledTableRow key={offer?.id}>
+        <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
+        <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
+        <StyledTableCell align="right">{offer?.coo || "-"}</StyledTableCell>
+        <StyledTableCell align="right">{formatLeadTime(offer?.leadTimeDays)}</StyledTableCell>
+        <StyledTableCell align="right">{offer?.quantity}</StyledTableCell>
+        <StyledTableCell align="right">${offer?.offerPrice}</StyledTableCell>
+      </StyledTableRow>
+    )
+  })
+
   return (
     <Drawer
       classes={{
@@ -213,15 +265,19 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           <TableBody>
             <TableRow>
               <StyledTableCell className={classes.noBorder}>Low</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">$000.00</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">00/00/00</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">XX0004</StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">${priceSortedOffers[0]?.offerPrice}</StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">
+                {priceSortedOffers[0] ? moment(parseInt(priceSortedOffers[0].dateAdded)).format("MM/DD/YY") : "-"}
+              </StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">{priceSortedOffers[0]?.vendor.vendorNumber}</StyledTableCell>
             </TableRow>
             <TableRow>
               <StyledTableCell className={classes.noBorder}>High</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">$000.00</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">00/00/00</StyledTableCell>
-              <StyledTableCell className={classes.noBorder} align="right">XX0004</StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">${priceSortedOffers[priceSortedOffers.length - 1]?.offerPrice}</StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">
+                {priceSortedOffers[priceSortedOffers.length - 1] ? moment(parseInt(priceSortedOffers[priceSortedOffers.length - 1].dateAdded)).format("MM/DD/YY") : "-"}
+              </StyledTableCell>
+              <StyledTableCell className={classes.noBorder} align="right">{priceSortedOffers[priceSortedOffers.length - 1]?.vendor.vendorNumber}</StyledTableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -257,6 +313,8 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               rowHeight={40}
               rows={variantTableRows}
               columns={columns}
+              disableColumnMenu
+              onCellEditCommit={handleCellEditCommit}
               // pageSize={5}
               // rowsPerPageOptions={[5]}
               // disableSelectionOnClick
@@ -279,62 +337,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
-            <StyledTableRow>
-              <StyledTableCell>XX0004</StyledTableCell>
-              <StyledTableCell align="right">00/00</StyledTableCell>
-              <StyledTableCell align="right">United States</StyledTableCell>
-              <StyledTableCell align="right">2 days</StyledTableCell>
-              <StyledTableCell align="right">3</StyledTableCell>
-              <StyledTableCell align="right">$00.00</StyledTableCell>
-            </StyledTableRow>
+            {offerTableRows}
           </TableBody>
         </Table>
       </div>
