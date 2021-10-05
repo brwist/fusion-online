@@ -175,6 +175,14 @@ export type AccountRegister = {
 };
 
 export type AccountRegisterInput = {
+  /** User first name */
+  firstName: Scalars['String'];
+  /** User last name */
+  lastName: Scalars['String'];
+  /** User company or organization */
+  companyName: Scalars['String'];
+  /** User geographic region */
+  region: Scalars['String'];
   /** The email address of the user. */
   email: Scalars['String'];
   /** Password. */
@@ -252,7 +260,6 @@ export type Address = Node & {
   shipToName?: Maybe<Scalars['String']>;
   shipVia?: Maybe<Scalars['String']>;
   vatId?: Maybe<Scalars['String']>;
-  shipToNum?: Maybe<Scalars['Int']>;
   validationMessage?: Maybe<Scalars['String']>;
   /** Address is user's default shipping address. */
   isDefaultShippingAddress?: Maybe<Scalars['Boolean']>;
@@ -12153,43 +12160,9 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type UserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+export type MoneyFragment = { __typename?: 'Money', amount: number, currency: string };
 
-
-export type UserAddressesQuery = (
-  { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & { addresses?: Maybe<Array<Maybe<(
-      { __typename?: 'Address' }
-      & Pick<Address, 'id' | 'isDefaultBillingAddress' | 'isDefaultShippingAddress' | 'firstName' | 'lastName' | 'streetAddress1' | 'streetAddress2' | 'city' | 'countryArea' | 'postalCode' | 'phone' | 'shipToName' | 'customerId' | 'vatId'>
-      & { country: (
-        { __typename?: 'CountryDisplay' }
-        & Pick<CountryDisplay, 'code'>
-      ) }
-    )>>> }
-  )> }
-);
-
-export type MoneyFragment = (
-  { __typename?: 'Money' }
-  & Pick<Money, 'amount' | 'currency'>
-);
-
-export type ProductFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'name' | 'slug' | 'description' | 'descriptionJson' | 'isAvailable' | 'isPublished'>
-  & { metadata: Array<Maybe<(
-    { __typename?: 'MetadataItem' }
-    & Pick<MetadataItem, 'key' | 'value'>
-  )>>, variants?: Maybe<Array<Maybe<(
-    { __typename?: 'ProductVariant' }
-    & Pick<ProductVariant, 'id' | 'sku' | 'quantityAvailable'>
-  )>>>, productType: (
-    { __typename?: 'ProductType' }
-    & Pick<ProductType, 'id' | 'name' | 'hasVariants'>
-  ) }
-);
+export type ProductFragment = { __typename?: 'Product', id: string, name: string, slug: string, description: string, descriptionJson: any, isAvailable?: Maybe<boolean>, isPublished: boolean, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, quantityAvailable: number }>>>, productType: { __typename?: 'ProductType', id: string, name: string, hasVariants: boolean } };
 
 export type ProductListQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -12201,51 +12174,7 @@ export type ProductListQueryVariables = Exact<{
 }>;
 
 
-export type ProductListQuery = (
-  { __typename?: 'Query' }
-  & { products?: Maybe<(
-    { __typename?: 'ProductCountableConnection' }
-    & Pick<ProductCountableConnection, 'totalCount'>
-    & { edges: Array<(
-      { __typename?: 'ProductCountableEdge' }
-      & { node: (
-        { __typename?: 'Product' }
-        & { attributes: Array<(
-          { __typename?: 'SelectedAttribute' }
-          & { attribute: (
-            { __typename?: 'Attribute' }
-            & Pick<Attribute, 'id' | 'slug'>
-          ), values: Array<Maybe<(
-            { __typename?: 'AttributeValue' }
-            & Pick<AttributeValue, 'id' | 'name'>
-          )>> }
-        )>, pricing?: Maybe<(
-          { __typename?: 'ProductPricingInfo' }
-          & { priceRangeUndiscounted?: Maybe<(
-            { __typename?: 'TaxedMoneyRange' }
-            & { start?: Maybe<(
-              { __typename?: 'TaxedMoney' }
-              & { gross: (
-                { __typename?: 'Money' }
-                & MoneyFragment
-              ) }
-            )>, stop?: Maybe<(
-              { __typename?: 'TaxedMoney' }
-              & { gross: (
-                { __typename?: 'Money' }
-                & MoneyFragment
-              ) }
-            )> }
-          )> }
-        )> }
-        & ProductFragment
-      ) }
-    )>, pageInfo: (
-      { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'>
-    ) }
-  )> }
-);
+export type ProductListQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, slug: string, description: string, descriptionJson: any, isAvailable?: Maybe<boolean>, isPublished: boolean, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } }> }> }>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, quantityAvailable: number }>>>, productType: { __typename?: 'ProductType', id: string, name: string, hasVariants: boolean } } }>, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> };
 
 export type InitialProductFilterDataQueryVariables = Exact<{
   categories?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
@@ -12254,123 +12183,17 @@ export type InitialProductFilterDataQueryVariables = Exact<{
 }>;
 
 
-export type InitialProductFilterDataQuery = (
-  { __typename?: 'Query' }
-  & { attributes?: Maybe<(
-    { __typename?: 'AttributeCountableConnection' }
-    & { edges: Array<(
-      { __typename?: 'AttributeCountableEdge' }
-      & { node: (
-        { __typename?: 'Attribute' }
-        & Pick<Attribute, 'id' | 'name' | 'slug'>
-        & { values?: Maybe<Array<Maybe<(
-          { __typename?: 'AttributeValue' }
-          & Pick<AttributeValue, 'id' | 'name' | 'slug'>
-        )>>> }
-      ) }
-    )> }
-  )>, categories?: Maybe<(
-    { __typename?: 'CategoryCountableConnection' }
-    & { edges: Array<(
-      { __typename?: 'CategoryCountableEdge' }
-      & { node: (
-        { __typename?: 'Category' }
-        & Pick<Category, 'id' | 'name'>
-      ) }
-    )> }
-  )>, productTypes?: Maybe<(
-    { __typename?: 'ProductTypeCountableConnection' }
-    & { edges: Array<(
-      { __typename?: 'ProductTypeCountableEdge' }
-      & { node: (
-        { __typename?: 'ProductType' }
-        & Pick<ProductType, 'id' | 'name'>
-      ) }
-    )> }
-  )> }
-);
+export type InitialProductFilterDataQuery = { __typename?: 'Query', attributes?: Maybe<{ __typename?: 'AttributeCountableConnection', edges: Array<{ __typename?: 'AttributeCountableEdge', node: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string>, values?: Maybe<Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string>, slug?: Maybe<string> }>>> } }> }>, categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string } }> }>, productTypes?: Maybe<{ __typename?: 'ProductTypeCountableConnection', edges: Array<{ __typename?: 'ProductTypeCountableEdge', node: { __typename?: 'ProductType', id: string, name: string } }> }> };
 
-export type PriceFragment = (
-  { __typename?: 'TaxedMoney' }
-  & { gross: (
-    { __typename?: 'Money' }
-    & MoneyFragment
-  ), net: (
-    { __typename?: 'Money' }
-    & MoneyFragment
-  ) }
-);
+export type PriceFragment = { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } };
 
-export type BasicProductFieldsFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, 'id' | 'name'>
-);
+export type BasicProductFieldsFragment = { __typename?: 'Product', id: string, name: string };
 
-export type SelectedAttributeFieldsFragment = (
-  { __typename?: 'SelectedAttribute' }
-  & { attribute: (
-    { __typename?: 'Attribute' }
-    & Pick<Attribute, 'id' | 'name'>
-  ), values: Array<Maybe<(
-    { __typename?: 'AttributeValue' }
-    & Pick<AttributeValue, 'id' | 'name'>
-  )>> }
-);
+export type SelectedAttributeFieldsFragment = { __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> };
 
-export type ProductVariantFieldsFragment = (
-  { __typename?: 'ProductVariant' }
-  & Pick<ProductVariant, 'id' | 'sku' | 'name' | 'isAvailable' | 'quantityAvailable'>
-  & { metadata: Array<Maybe<(
-    { __typename?: 'MetadataItem' }
-    & Pick<MetadataItem, 'key' | 'value'>
-  )>>, pricing?: Maybe<(
-    { __typename?: 'VariantPricingInfo' }
-    & Pick<VariantPricingInfo, 'onSale'>
-    & { priceUndiscounted?: Maybe<(
-      { __typename?: 'TaxedMoney' }
-      & PriceFragment
-    )>, price?: Maybe<(
-      { __typename?: 'TaxedMoney' }
-      & PriceFragment
-    )> }
-  )>, attributes: Array<(
-    { __typename?: 'SelectedAttribute' }
-    & { attribute: (
-      { __typename?: 'Attribute' }
-      & Pick<Attribute, 'id' | 'name' | 'slug'>
-    ), values: Array<Maybe<(
-      { __typename?: 'AttributeValue' }
-      & Pick<AttributeValue, 'id' | 'name'>
-    )>> }
-  )> }
-);
+export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> };
 
-export type ProductPricingFieldFragment = (
-  { __typename?: 'Product' }
-  & { pricing?: Maybe<(
-    { __typename?: 'ProductPricingInfo' }
-    & Pick<ProductPricingInfo, 'onSale'>
-    & { priceRangeUndiscounted?: Maybe<(
-      { __typename?: 'TaxedMoneyRange' }
-      & { start?: Maybe<(
-        { __typename?: 'TaxedMoney' }
-        & PriceFragment
-      )>, stop?: Maybe<(
-        { __typename?: 'TaxedMoney' }
-        & PriceFragment
-      )> }
-    )>, priceRange?: Maybe<(
-      { __typename?: 'TaxedMoneyRange' }
-      & { start?: Maybe<(
-        { __typename?: 'TaxedMoney' }
-        & PriceFragment
-      )>, stop?: Maybe<(
-        { __typename?: 'TaxedMoney' }
-        & PriceFragment
-      )> }
-    )> }
-  )> }
-);
+export type ProductPricingFieldFragment = { __typename?: 'Product', pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> };
 
 export type ProductDetailsQueryVariables = Exact<{
   slug: Scalars['String'];
@@ -12378,28 +12201,7 @@ export type ProductDetailsQueryVariables = Exact<{
 }>;
 
 
-export type ProductDetailsQuery = (
-  { __typename?: 'Query' }
-  & { product?: Maybe<(
-    { __typename?: 'Product' }
-    & Pick<Product, 'descriptionJson' | 'isAvailable' | 'isAvailableForPurchase' | 'availableForPurchase'>
-    & { metadata: Array<Maybe<(
-      { __typename?: 'MetadataItem' }
-      & Pick<MetadataItem, 'key' | 'value'>
-    )>>, category?: Maybe<(
-      { __typename?: 'Category' }
-      & Pick<Category, 'id' | 'name'>
-    )>, attributes: Array<(
-      { __typename?: 'SelectedAttribute' }
-      & SelectedAttributeFieldsFragment
-    )>, variants?: Maybe<Array<Maybe<(
-      { __typename?: 'ProductVariant' }
-      & ProductVariantFieldsFragment
-    )>>> }
-    & BasicProductFieldsFragment
-    & ProductPricingFieldFragment
-  )> }
-);
+export type ProductDetailsQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', descriptionJson: any, isAvailable?: Maybe<boolean>, isAvailableForPurchase?: Maybe<boolean>, availableForPurchase?: Maybe<any>, id: string, name: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, category?: Maybe<{ __typename?: 'Category', id: string, name: string }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> }> };
 
 export type CartProductDetailsQueryVariables = Exact<{
   ids?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
@@ -12407,66 +12209,14 @@ export type CartProductDetailsQueryVariables = Exact<{
 }>;
 
 
-export type CartProductDetailsQuery = (
-  { __typename?: 'Query' }
-  & { productVariants?: Maybe<(
-    { __typename?: 'ProductVariantCountableConnection' }
-    & { edges: Array<(
-      { __typename?: 'ProductVariantCountableEdge' }
-      & { node: (
-        { __typename?: 'ProductVariant' }
-        & Pick<ProductVariant, 'id' | 'name' | 'sku' | 'quantityAvailable'>
-        & { pricing?: Maybe<(
-          { __typename?: 'VariantPricingInfo' }
-          & Pick<VariantPricingInfo, 'onSale'>
-          & { priceUndiscounted?: Maybe<(
-            { __typename?: 'TaxedMoney' }
-            & PriceFragment
-          )>, price?: Maybe<(
-            { __typename?: 'TaxedMoney' }
-            & PriceFragment
-          )> }
-        )>, product: (
-          { __typename?: 'Product' }
-          & Pick<Product, 'id' | 'name' | 'slug'>
-          & { attributes: Array<(
-            { __typename?: 'SelectedAttribute' }
-            & { attribute: (
-              { __typename?: 'Attribute' }
-              & Pick<Attribute, 'id' | 'name' | 'slug'>
-            ), values: Array<Maybe<(
-              { __typename?: 'AttributeValue' }
-              & Pick<AttributeValue, 'id' | 'name'>
-            )>> }
-          )> }
-        ) }
-      ) }
-    )> }
-  )> }
-);
+export type CartProductDetailsQuery = { __typename?: 'Query', productVariants?: Maybe<{ __typename?: 'ProductVariantCountableConnection', edges: Array<{ __typename?: 'ProductVariantCountableEdge', node: { __typename?: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, product: { __typename?: 'Product', id: string, name: string, slug: string, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> } } }> }> };
 
 export type CategoryListQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type CategoryListQuery = (
-  { __typename?: 'Query' }
-  & { categories?: Maybe<(
-    { __typename?: 'CategoryCountableConnection' }
-    & { edges: Array<(
-      { __typename?: 'CategoryCountableEdge' }
-      & { node: (
-        { __typename?: 'Category' }
-        & Pick<Category, 'id' | 'name' | 'slug'>
-        & { parent?: Maybe<(
-          { __typename?: 'Category' }
-          & Pick<Category, 'id'>
-        )> }
-      ) }
-    )> }
-  )> }
-);
+export type CategoryListQuery = { __typename?: 'Query', categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, parent?: Maybe<{ __typename?: 'Category', id: string }> } }> }> };
 
 export type AccountConfirmMutationVariables = Exact<{
   email: Scalars['String'];
@@ -12474,16 +12224,41 @@ export type AccountConfirmMutationVariables = Exact<{
 }>;
 
 
-export type AccountConfirmMutation = (
-  { __typename?: 'Mutation' }
-  & { confirmAccount?: Maybe<(
-    { __typename?: 'ConfirmAccount' }
-    & { errors: Array<(
-      { __typename?: 'Error' }
-      & Pick<Error, 'field' | 'message'>
-    )> }
-  )> }
-);
+export type AccountConfirmMutation = { __typename?: 'Mutation', confirmAccount?: Maybe<{ __typename?: 'ConfirmAccount', errors: Array<{ __typename?: 'Error', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
+export type UserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserAddressesQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, phone?: Maybe<string>, shipToName?: Maybe<string>, customerId?: Maybe<number>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', code: string } }>>> }> };
+
+export type AddressFieldsFragment = { __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } };
+
+export type EditAddressMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: AddressInput;
+}>;
+
+
+export type EditAddressMutation = { __typename?: 'Mutation', accountAddressUpdate?: Maybe<{ __typename?: 'AccountAddressUpdate', address?: Maybe<{ __typename?: 'Address', id: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type CreateAddressMutationVariables = Exact<{
+  input: AddressInput;
+}>;
+
+
+export type CreateAddressMutation = { __typename?: 'Mutation', accountAddressCreate?: Maybe<{ __typename?: 'AccountAddressCreate', address?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type RegisterUserMutationVariables = Exact<{
+  input: AccountRegisterInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', accountRegister?: Maybe<{ __typename?: 'AccountRegister', accountErrors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }>, user?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>> }> }> };
+
+export type ShopQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ShopQueryQuery = { __typename?: 'Query', shop: { __typename?: 'Shop', displayGrossPrices: boolean, defaultCountry?: Maybe<{ __typename?: 'CountryDisplay', code: string, country: string }>, countries: Array<{ __typename?: 'CountryDisplay', country: string, code: string }>, geolocalization?: Maybe<{ __typename?: 'Geolocalization', country?: Maybe<{ __typename?: 'CountryDisplay', code: string, country: string }> }> } };
 
 export const ProductFragmentDoc = gql`
     fragment Product on Product {
@@ -12600,58 +12375,25 @@ export const ProductPricingFieldFragmentDoc = gql`
   }
 }
     ${PriceFragmentDoc}`;
-export const UserAddressesDocument = gql`
-    query userAddresses {
-  me {
-    addresses {
-      id
-      isDefaultBillingAddress
-      isDefaultShippingAddress
-      firstName
-      lastName
-      streetAddress1
-      streetAddress2
-      city
-      countryArea
-      postalCode
-      country {
-        code
-      }
-      phone
-      shipToName
-      customerId
-      vatId
-    }
+export const AddressFieldsFragmentDoc = gql`
+    fragment AddressFields on Address {
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  city
+  country {
+    country
+    code
   }
+  countryArea
+  postalCode
+  customerId
+  shipToName
+  shipVia
+  vatId
 }
     `;
-
-/**
- * __useUserAddressesQuery__
- *
- * To run a query within a React component, call `useUserAddressesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserAddressesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserAddressesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUserAddressesQuery(baseOptions?: Apollo.QueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
-      }
-export function useUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
-        }
-export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
-export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
-export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
 export const ProductListDocument = gql`
     query ProductList($first: Int, $after: String, $last: Int, $before: String, $filter: ProductFilterInput, $sort: ProductOrder) {
   products(
@@ -13009,3 +12751,222 @@ export function useAccountConfirmMutation(baseOptions?: Apollo.MutationHookOptio
 export type AccountConfirmMutationHookResult = ReturnType<typeof useAccountConfirmMutation>;
 export type AccountConfirmMutationResult = Apollo.MutationResult<AccountConfirmMutation>;
 export type AccountConfirmMutationOptions = Apollo.BaseMutationOptions<AccountConfirmMutation, AccountConfirmMutationVariables>;
+export const UserAddressesDocument = gql`
+    query userAddresses {
+  me {
+    addresses {
+      id
+      isDefaultBillingAddress
+      isDefaultShippingAddress
+      firstName
+      lastName
+      streetAddress1
+      streetAddress2
+      city
+      countryArea
+      postalCode
+      country {
+        code
+      }
+      phone
+      shipToName
+      customerId
+      vatId
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserAddressesQuery__
+ *
+ * To run a query within a React component, call `useUserAddressesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserAddressesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserAddressesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserAddressesQuery(baseOptions?: Apollo.QueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+      }
+export function useUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+        }
+export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
+export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
+export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
+export const EditAddressDocument = gql`
+    mutation editAddress($id: ID!, $input: AddressInput!) {
+  accountAddressUpdate(id: $id, input: $input) {
+    address {
+      id
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type EditAddressMutationFn = Apollo.MutationFunction<EditAddressMutation, EditAddressMutationVariables>;
+
+/**
+ * __useEditAddressMutation__
+ *
+ * To run a mutation, you first call `useEditAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editAddressMutation, { data, loading, error }] = useEditAddressMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEditAddressMutation(baseOptions?: Apollo.MutationHookOptions<EditAddressMutation, EditAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditAddressMutation, EditAddressMutationVariables>(EditAddressDocument, options);
+      }
+export type EditAddressMutationHookResult = ReturnType<typeof useEditAddressMutation>;
+export type EditAddressMutationResult = Apollo.MutationResult<EditAddressMutation>;
+export type EditAddressMutationOptions = Apollo.BaseMutationOptions<EditAddressMutation, EditAddressMutationVariables>;
+export const CreateAddressDocument = gql`
+    mutation createAddress($input: AddressInput!) {
+  accountAddressCreate(input: $input) {
+    address {
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type CreateAddressMutationFn = Apollo.MutationFunction<CreateAddressMutation, CreateAddressMutationVariables>;
+
+/**
+ * __useCreateAddressMutation__
+ *
+ * To run a mutation, you first call `useCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAddressMutation, { data, loading, error }] = useCreateAddressMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<CreateAddressMutation, CreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAddressMutation, CreateAddressMutationVariables>(CreateAddressDocument, options);
+      }
+export type CreateAddressMutationHookResult = ReturnType<typeof useCreateAddressMutation>;
+export type CreateAddressMutationResult = Apollo.MutationResult<CreateAddressMutation>;
+export type CreateAddressMutationOptions = Apollo.BaseMutationOptions<CreateAddressMutation, CreateAddressMutationVariables>;
+export const RegisterUserDocument = gql`
+    mutation registerUser($input: AccountRegisterInput!) {
+  accountRegister(input: $input) {
+    accountErrors {
+      field
+      message
+      code
+    }
+    user {
+      id
+      firstName
+      lastName
+      email
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}
+    `;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
+
+/**
+ * __useRegisterUserMutation__
+ *
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const ShopQueryDocument = gql`
+    query shopQuery {
+  shop {
+    displayGrossPrices
+    defaultCountry {
+      code
+      country
+    }
+    countries {
+      country
+      code
+    }
+    geolocalization {
+      country {
+        code
+        country
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useShopQueryQuery__
+ *
+ * To run a query within a React component, call `useShopQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShopQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShopQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useShopQueryQuery(baseOptions?: Apollo.QueryHookOptions<ShopQueryQuery, ShopQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ShopQueryQuery, ShopQueryQueryVariables>(ShopQueryDocument, options);
+      }
+export function useShopQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShopQueryQuery, ShopQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ShopQueryQuery, ShopQueryQueryVariables>(ShopQueryDocument, options);
+        }
+export type ShopQueryQueryHookResult = ReturnType<typeof useShopQueryQuery>;
+export type ShopQueryLazyQueryHookResult = ReturnType<typeof useShopQueryLazyQuery>;
+export type ShopQueryQueryResult = Apollo.QueryResult<ShopQueryQuery, ShopQueryQueryVariables>;
