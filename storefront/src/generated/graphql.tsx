@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {};
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -146,7 +146,7 @@ export enum AccountErrorCode {
   JwtInvalidToken = 'JWT_INVALID_TOKEN',
   JwtDecodeError = 'JWT_DECODE_ERROR',
   JwtMissingToken = 'JWT_MISSING_TOKEN',
-  JwtInvalidCsrfToken = 'JWT_INVALID_CSRF_TOKEN',
+  JwtInvalidCsrfToken = 'JWT_INVALID_CSRF_TOKEN'
 }
 
 export type AccountInput = {
@@ -175,6 +175,14 @@ export type AccountRegister = {
 };
 
 export type AccountRegisterInput = {
+  /** User first name */
+  firstName: Scalars['String'];
+  /** User last name */
+  lastName: Scalars['String'];
+  /** User company or organization */
+  companyName: Scalars['String'];
+  /** User geographic region */
+  region: Scalars['String'];
   /** The email address of the user. */
   email: Scalars['String'];
   /** Password. */
@@ -248,12 +256,10 @@ export type Address = Node & {
   country: CountryDisplay;
   countryArea: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
-  company?: Maybe<Scalars['String']>;
   customerId?: Maybe<Scalars['Int']>;
   shipToName?: Maybe<Scalars['String']>;
   shipVia?: Maybe<Scalars['String']>;
   vatId?: Maybe<Scalars['String']>;
-  shipToNum?: Maybe<Scalars['Int']>;
   validationMessage?: Maybe<Scalars['String']>;
   /** Address is user's default shipping address. */
   isDefaultShippingAddress?: Maybe<Scalars['Boolean']>;
@@ -340,7 +346,7 @@ export type AddressSetDefault = {
 /** An enumeration. */
 export enum AddressTypeEnum {
   Billing = 'BILLING',
-  Shipping = 'SHIPPING',
+  Shipping = 'SHIPPING'
 }
 
 /** Updates an address. */
@@ -390,58 +396,57 @@ export type Allocation = Node & {
 };
 
 /** Represents app data. */
-export type App = Node &
-  ObjectWithMetadata & {
-    __typename?: 'App';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** Name of the app. */
-    name?: Maybe<Scalars['String']>;
-    /** The date and time when the app was created. */
-    created?: Maybe<Scalars['DateTime']>;
-    /** Determine if app will be set active or not. */
-    isActive?: Maybe<Scalars['Boolean']>;
-    /** List of the app's permissions. */
-    permissions?: Maybe<Array<Maybe<Permission>>>;
-    /** Last 4 characters of the tokens. */
-    tokens?: Maybe<Array<Maybe<AppToken>>>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** Type of the app. */
-    type?: Maybe<AppTypeEnum>;
-    /** List of webhooks assigned to this app. */
-    webhooks?: Maybe<Array<Maybe<Webhook>>>;
-    /** Description of this app. */
-    aboutApp?: Maybe<Scalars['String']>;
-    /** Description of the data privacy defined for this app. */
-    dataPrivacy?: Maybe<Scalars['String']>;
-    /** Url to details about the privacy policy on the app owner page. */
-    dataPrivacyUrl?: Maybe<Scalars['String']>;
-    /** Homepage of the app. */
-    homepageUrl?: Maybe<Scalars['String']>;
-    /** Support page for the app. */
-    supportUrl?: Maybe<Scalars['String']>;
-    /** Url to iframe with the configuration for the app. */
-    configurationUrl?: Maybe<Scalars['String']>;
-    /** Url to iframe with the app. */
-    appUrl?: Maybe<Scalars['String']>;
-    /** Version number of the app. */
-    version?: Maybe<Scalars['String']>;
-    /** JWT token used to authenticate by thridparty app. */
-    accessToken?: Maybe<Scalars['String']>;
-  };
+export type App = Node & ObjectWithMetadata & {
+  __typename?: 'App';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Name of the app. */
+  name?: Maybe<Scalars['String']>;
+  /** The date and time when the app was created. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Determine if app will be set active or not. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** List of the app's permissions. */
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  /** Last 4 characters of the tokens. */
+  tokens?: Maybe<Array<Maybe<AppToken>>>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** Type of the app. */
+  type?: Maybe<AppTypeEnum>;
+  /** List of webhooks assigned to this app. */
+  webhooks?: Maybe<Array<Maybe<Webhook>>>;
+  /** Description of this app. */
+  aboutApp?: Maybe<Scalars['String']>;
+  /** Description of the data privacy defined for this app. */
+  dataPrivacy?: Maybe<Scalars['String']>;
+  /** Url to details about the privacy policy on the app owner page. */
+  dataPrivacyUrl?: Maybe<Scalars['String']>;
+  /** Homepage of the app. */
+  homepageUrl?: Maybe<Scalars['String']>;
+  /** Support page for the app. */
+  supportUrl?: Maybe<Scalars['String']>;
+  /** Url to iframe with the configuration for the app. */
+  configurationUrl?: Maybe<Scalars['String']>;
+  /** Url to iframe with the app. */
+  appUrl?: Maybe<Scalars['String']>;
+  /** Version number of the app. */
+  version?: Maybe<Scalars['String']>;
+  /** JWT token used to authenticate by thridparty app. */
+  accessToken?: Maybe<Scalars['String']>;
+};
 
 /** Activate the app. */
 export type AppActivate = {
@@ -548,7 +553,7 @@ export enum AppErrorCode {
   Required = 'REQUIRED',
   Unique = 'UNIQUE',
   OutOfScopeApp = 'OUT_OF_SCOPE_APP',
-  OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION',
+  OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION'
 }
 
 /** Fetch and validate manifest. */
@@ -602,22 +607,21 @@ export type AppInstallInput = {
 };
 
 /** Represents ongoing installation of app. */
-export type AppInstallation = Node &
-  Job & {
-    __typename?: 'AppInstallation';
-    appName: Scalars['String'];
-    manifestUrl: Scalars['String'];
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** Job status. */
-    status: JobStatusEnum;
-    /** Created date time of job in ISO 8601 format. */
-    createdAt: Scalars['DateTime'];
-    /** Date time of job last update in ISO 8601 format. */
-    updatedAt: Scalars['DateTime'];
-    /** Job message. */
-    message?: Maybe<Scalars['String']>;
-  };
+export type AppInstallation = Node & Job & {
+  __typename?: 'AppInstallation';
+  appName: Scalars['String'];
+  manifestUrl: Scalars['String'];
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Job status. */
+  status: JobStatusEnum;
+  /** Created date time of job in ISO 8601 format. */
+  createdAt: Scalars['DateTime'];
+  /** Date time of job last update in ISO 8601 format. */
+  updatedAt: Scalars['DateTime'];
+  /** Job message. */
+  message?: Maybe<Scalars['String']>;
+};
 
 /** Retry failed installation of new app. */
 export type AppRetryInstall = {
@@ -635,7 +639,7 @@ export enum AppSortField {
   /** Sort apps by name. */
   Name = 'NAME',
   /** Sort apps by creation date. */
-  CreationDate = 'CREATION_DATE',
+  CreationDate = 'CREATION_DATE'
 }
 
 export type AppSortingInput = {
@@ -705,7 +709,7 @@ export type AppTokenVerify = {
 /** An enumeration. */
 export enum AppTypeEnum {
   Local = 'LOCAL',
-  Thirdparty = 'THIRDPARTY',
+  Thirdparty = 'THIRDPARTY'
 }
 
 /** Updates an existing app. */
@@ -734,50 +738,50 @@ export type AssignNavigation = {
 };
 
 /** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
-export type Attribute = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Attribute';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    productTypes: ProductTypeCountableConnection;
-    productVariantTypes: ProductTypeCountableConnection;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** The input type to use for entering attribute values in the dashboard. */
-    inputType?: Maybe<AttributeInputTypeEnum>;
-    /** Name of an attribute displayed in the interface. */
-    name?: Maybe<Scalars['String']>;
-    /** Internal representation of an attribute name. */
-    slug?: Maybe<Scalars['String']>;
-    /** List of attribute's values. */
-    values?: Maybe<Array<Maybe<AttributeValue>>>;
-    /** Whether the attribute requires values to be passed or not. */
-    valueRequired: Scalars['Boolean'];
-    /** Whether the attribute should be visible or not in storefront. */
-    visibleInStorefront: Scalars['Boolean'];
-    /** Whether the attribute can be filtered in storefront. */
-    filterableInStorefront: Scalars['Boolean'];
-    /** Whether the attribute can be filtered in dashboard. */
-    filterableInDashboard: Scalars['Boolean'];
-    /** Whether the attribute can be displayed in the admin product list. */
-    availableInGrid: Scalars['Boolean'];
-    /** Returns translated attribute fields for the given language code. */
-    translation?: Maybe<AttributeTranslation>;
-    /** The position of the attribute in the storefront navigation (0 by default). */
-    storefrontSearchPosition: Scalars['Int'];
-  };
+export type Attribute = Node & ObjectWithMetadata & {
+  __typename?: 'Attribute';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  productTypes: ProductTypeCountableConnection;
+  productVariantTypes: ProductTypeCountableConnection;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** The input type to use for entering attribute values in the dashboard. */
+  inputType?: Maybe<AttributeInputTypeEnum>;
+  /** Name of an attribute displayed in the interface. */
+  name?: Maybe<Scalars['String']>;
+  /** Internal representation of an attribute name. */
+  slug?: Maybe<Scalars['String']>;
+  /** List of attribute's values. */
+  values?: Maybe<Array<Maybe<AttributeValue>>>;
+  /** Whether the attribute requires values to be passed or not. */
+  valueRequired: Scalars['Boolean'];
+  /** Whether the attribute should be visible or not in storefront. */
+  visibleInStorefront: Scalars['Boolean'];
+  /** Whether the attribute can be filtered in storefront. */
+  filterableInStorefront: Scalars['Boolean'];
+  /** Whether the attribute can be filtered in dashboard. */
+  filterableInDashboard: Scalars['Boolean'];
+  /** Whether the attribute can be displayed in the admin product list. */
+  availableInGrid: Scalars['Boolean'];
+  /** Returns translated attribute fields for the given language code. */
+  translation?: Maybe<AttributeTranslation>;
+  /** The position of the attribute in the storefront navigation (0 by default). */
+  storefrontSearchPosition: Scalars['Int'];
+};
+
 
 /** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
 export type AttributeProductTypesArgs = {
@@ -787,6 +791,7 @@ export type AttributeProductTypesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
 export type AttributeProductVariantTypesArgs = {
   before?: Maybe<Scalars['String']>;
@@ -794,6 +799,7 @@ export type AttributeProductVariantTypesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Custom attribute of a product. Attributes can be assigned to products and variants at the product type level. */
 export type AttributeTranslationArgs = {
@@ -948,7 +954,7 @@ export type AttributeInput = {
 /** An enumeration. */
 export enum AttributeInputTypeEnum {
   Dropdown = 'DROPDOWN',
-  Multiselect = 'MULTISELECT',
+  Multiselect = 'MULTISELECT'
 }
 
 /** Reorder the values of an attribute. */
@@ -982,7 +988,7 @@ export enum AttributeSortField {
   /** Sort attributes by their position in storefront */
   StorefrontSearchPosition = 'STOREFRONT_SEARCH_POSITION',
   /** Sort attributes based on whether they can be displayed or not in a product grid. */
-  AvailableInGrid = 'AVAILABLE_IN_GRID',
+  AvailableInGrid = 'AVAILABLE_IN_GRID'
 }
 
 export type AttributeSortingInput = {
@@ -1002,6 +1008,7 @@ export type AttributeTranslatableContent = Node & {
   /** Custom attribute of a product. */
   attribute?: Maybe<Attribute>;
 };
+
 
 export type AttributeTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -1030,7 +1037,7 @@ export type AttributeTranslation = Node & {
 
 export enum AttributeTypeEnum {
   Product = 'PRODUCT',
-  Variant = 'VARIANT',
+  Variant = 'VARIANT'
 }
 
 /** Un-assign attributes from a given product type. */
@@ -1127,6 +1134,7 @@ export type AttributeValue = Node & {
   inputType?: Maybe<AttributeInputTypeEnum>;
 };
 
+
 /** Represents a value of an attribute. */
 export type AttributeValueTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -1196,6 +1204,7 @@ export type AttributeValueTranslatableContent = Node & {
   attributeValue?: Maybe<AttributeValue>;
 };
 
+
 export type AttributeValueTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
@@ -1225,7 +1234,7 @@ export enum AttributeValueType {
   Color = 'COLOR',
   Gradient = 'GRADIENT',
   Url = 'URL',
-  String = 'STRING',
+  String = 'STRING'
 }
 
 /** Updates value of an attribute. */
@@ -1290,7 +1299,7 @@ export type AuthorizationKeyInput = {
 /** An enumeration. */
 export enum AuthorizationKeyType {
   Facebook = 'FACEBOOK',
-  GoogleOauth2 = 'GOOGLE_OAUTH2',
+  GoogleOauth2 = 'GOOGLE_OAUTH2'
 }
 
 export type BulkProductError = {
@@ -1333,48 +1342,48 @@ export type CatalogueInput = {
 };
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
-export type Category = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Category';
-    seoTitle?: Maybe<Scalars['String']>;
-    seoDescription?: Maybe<Scalars['String']>;
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    name: Scalars['String'];
-    description: Scalars['String'];
-    descriptionJson: Scalars['JSONString'];
-    slug: Scalars['String'];
-    parent?: Maybe<Category>;
-    level: Scalars['Int'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of ancestors of the category. */
-    ancestors?: Maybe<CategoryCountableConnection>;
-    /** List of products in the category. */
-    products?: Maybe<ProductCountableConnection>;
-    /**
-     * The storefront's URL for the category.
-     * @deprecated This field will be removed after 2020-07-31.
-     */
-    url?: Maybe<Scalars['String']>;
-    /** List of children of the category. */
-    children?: Maybe<CategoryCountableConnection>;
-    backgroundImage?: Maybe<Image>;
-    /** Returns translated category fields for the given language code. */
-    translation?: Maybe<CategoryTranslation>;
-  };
+export type Category = Node & ObjectWithMetadata & {
+  __typename?: 'Category';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  slug: Scalars['String'];
+  parent?: Maybe<Category>;
+  level: Scalars['Int'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of ancestors of the category. */
+  ancestors?: Maybe<CategoryCountableConnection>;
+  /** List of products in the category. */
+  products?: Maybe<ProductCountableConnection>;
+  /**
+   * The storefront's URL for the category.
+   * @deprecated This field will be removed after 2020-07-31.
+   */
+  url?: Maybe<Scalars['String']>;
+  /** List of children of the category. */
+  children?: Maybe<CategoryCountableConnection>;
+  backgroundImage?: Maybe<Image>;
+  /** Returns translated category fields for the given language code. */
+  translation?: Maybe<CategoryTranslation>;
+};
+
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
 export type CategoryAncestorsArgs = {
@@ -1384,6 +1393,7 @@ export type CategoryAncestorsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
 export type CategoryProductsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -1391,6 +1401,7 @@ export type CategoryProductsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
 export type CategoryChildrenArgs = {
@@ -1400,10 +1411,12 @@ export type CategoryChildrenArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
 export type CategoryBackgroundImageArgs = {
   size?: Maybe<Scalars['Int']>;
 };
+
 
 /** Represents a single category of products. Categories allow to organize products in a tree-hierarchies which can be used for navigation in the storefront. */
 export type CategoryTranslationArgs = {
@@ -1516,7 +1529,7 @@ export enum CategorySortField {
   /** Sort categories by product count. */
   ProductCount = 'PRODUCT_COUNT',
   /** Sort categories by subcategory count. */
-  SubcategoryCount = 'SUBCATEGORY_COUNT',
+  SubcategoryCount = 'SUBCATEGORY_COUNT'
 }
 
 export type CategorySortingInput = {
@@ -1540,6 +1553,7 @@ export type CategoryTranslatableContent = Node & {
   /** Represents a single category of products. */
   category?: Maybe<Category>;
 };
+
 
 export type CategoryTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -1607,58 +1621,57 @@ export type CategoryUpdatePrivateMeta = {
 };
 
 /** Checkout object. */
-export type Checkout = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Checkout';
-    created: Scalars['DateTime'];
-    lastChange: Scalars['DateTime'];
-    user?: Maybe<User>;
-    quantity: Scalars['Int'];
-    billingAddress?: Maybe<Address>;
-    shippingAddress?: Maybe<Address>;
-    shippingMethod?: Maybe<ShippingMethod>;
-    note: Scalars['String'];
-    discount?: Maybe<Money>;
-    discountName?: Maybe<Scalars['String']>;
-    translatedDiscountName?: Maybe<Scalars['String']>;
-    voucherCode?: Maybe<Scalars['String']>;
-    /** List of gift cards associated with this checkout. */
-    giftCards?: Maybe<Array<Maybe<GiftCard>>>;
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** Shipping methods that can be used with this order. */
-    availableShippingMethods: Array<Maybe<ShippingMethod>>;
-    /** List of available payment gateways. */
-    availablePaymentGateways: Array<PaymentGateway>;
-    /** Email of a customer. */
-    email: Scalars['String'];
-    /** Returns True, if checkout requires shipping. */
-    isShippingRequired: Scalars['Boolean'];
-    /** A list of checkout lines, each containing information about an item in the checkout. */
-    lines?: Maybe<Array<Maybe<CheckoutLine>>>;
-    /** The price of the shipping, with all the taxes included. */
-    shippingPrice?: Maybe<TaxedMoney>;
-    /** The price of the checkout before shipping, with taxes included. */
-    subtotalPrice?: Maybe<TaxedMoney>;
-    /** The checkout's token. */
-    token: Scalars['UUID'];
-    /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
-    totalPrice?: Maybe<TaxedMoney>;
-  };
+export type Checkout = Node & ObjectWithMetadata & {
+  __typename?: 'Checkout';
+  created: Scalars['DateTime'];
+  lastChange: Scalars['DateTime'];
+  user?: Maybe<User>;
+  quantity: Scalars['Int'];
+  billingAddress?: Maybe<Address>;
+  shippingAddress?: Maybe<Address>;
+  shippingMethod?: Maybe<ShippingMethod>;
+  note: Scalars['String'];
+  discount?: Maybe<Money>;
+  discountName?: Maybe<Scalars['String']>;
+  translatedDiscountName?: Maybe<Scalars['String']>;
+  voucherCode?: Maybe<Scalars['String']>;
+  /** List of gift cards associated with this checkout. */
+  giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** Shipping methods that can be used with this order. */
+  availableShippingMethods: Array<Maybe<ShippingMethod>>;
+  /** List of available payment gateways. */
+  availablePaymentGateways: Array<PaymentGateway>;
+  /** Email of a customer. */
+  email: Scalars['String'];
+  /** Returns True, if checkout requires shipping. */
+  isShippingRequired: Scalars['Boolean'];
+  /** A list of checkout lines, each containing information about an item in the checkout. */
+  lines?: Maybe<Array<Maybe<CheckoutLine>>>;
+  /** The price of the shipping, with all the taxes included. */
+  shippingPrice?: Maybe<TaxedMoney>;
+  /** The price of the checkout before shipping, with taxes included. */
+  subtotalPrice?: Maybe<TaxedMoney>;
+  /** The checkout's token. */
+  token: Scalars['UUID'];
+  /** The sum of the the checkout line prices, with all the taxes,shipping costs, and discounts included. */
+  totalPrice?: Maybe<TaxedMoney>;
+};
 
 /** Adds a gift card or a voucher to a checkout. */
 export type CheckoutAddPromoCode = {
@@ -1841,7 +1854,7 @@ export enum CheckoutErrorCode {
   TaxError = 'TAX_ERROR',
   Unique = 'UNIQUE',
   VoucherNotApplicable = 'VOUCHER_NOT_APPLICABLE',
-  ZeroQuantity = 'ZERO_QUANTITY',
+  ZeroQuantity = 'ZERO_QUANTITY'
 }
 
 /** Represents an item in the checkout. */
@@ -2005,40 +2018,40 @@ export type ChoiceValue = {
 };
 
 /** Represents a collection of products. */
-export type Collection = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Collection';
-    seoTitle?: Maybe<Scalars['String']>;
-    seoDescription?: Maybe<Scalars['String']>;
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    name: Scalars['String'];
-    description: Scalars['String'];
-    descriptionJson: Scalars['JSONString'];
-    publicationDate?: Maybe<Scalars['Date']>;
-    slug: Scalars['String'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of products in this collection. */
-    products?: Maybe<ProductCountableConnection>;
-    backgroundImage?: Maybe<Image>;
-    /** Returns translated collection fields for the given language code. */
-    translation?: Maybe<CollectionTranslation>;
-    /** Whether the collection is published. */
-    isPublished: Scalars['Boolean'];
-  };
+export type Collection = Node & ObjectWithMetadata & {
+  __typename?: 'Collection';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  publicationDate?: Maybe<Scalars['Date']>;
+  slug: Scalars['String'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of products in this collection. */
+  products?: Maybe<ProductCountableConnection>;
+  backgroundImage?: Maybe<Image>;
+  /** Returns translated collection fields for the given language code. */
+  translation?: Maybe<CollectionTranslation>;
+  /** Whether the collection is published. */
+  isPublished: Scalars['Boolean'];
+};
+
 
 /** Represents a collection of products. */
 export type CollectionProductsArgs = {
@@ -2050,10 +2063,12 @@ export type CollectionProductsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Represents a collection of products. */
 export type CollectionBackgroundImageArgs = {
   size?: Maybe<Scalars['Int']>;
 };
+
 
 /** Represents a collection of products. */
 export type CollectionTranslationArgs = {
@@ -2216,7 +2231,7 @@ export type CollectionInput = {
 
 export enum CollectionPublished {
   Published = 'PUBLISHED',
-  Hidden = 'HIDDEN',
+  Hidden = 'HIDDEN'
 }
 
 /** Remove products from a collection. */
@@ -2253,7 +2268,7 @@ export enum CollectionSortField {
   /** Sort collections by product count. */
   ProductCount = 'PRODUCT_COUNT',
   /** Sort collections by publication date. */
-  PublicationDate = 'PUBLICATION_DATE',
+  PublicationDate = 'PUBLICATION_DATE'
 }
 
 export type CollectionSortingInput = {
@@ -2277,6 +2292,7 @@ export type CollectionTranslatableContent = Node & {
   /** Represents a collection of products. */
   collection?: Maybe<Collection>;
 };
+
 
 export type CollectionTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -2370,7 +2386,7 @@ export enum ConfigurationTypeFieldEnum {
   String = 'STRING',
   Boolean = 'BOOLEAN',
   Secret = 'SECRET',
-  Password = 'PASSWORD',
+  Password = 'PASSWORD'
 }
 
 /** Confirm user account with token sent by email during registration. */
@@ -2650,7 +2666,7 @@ export enum CountryCode {
   Eh = 'EH',
   Ye = 'YE',
   Zm = 'ZM',
-  Zw = 'ZW',
+  Zw = 'ZW'
 }
 
 export type CountryDisplay = {
@@ -2768,7 +2784,7 @@ export enum CustomerEventsEnum {
   CustomerDeleted = 'CUSTOMER_DELETED',
   NameAssigned = 'NAME_ASSIGNED',
   EmailAssigned = 'EMAIL_ASSIGNED',
-  NoteAdded = 'NOTE_ADDED',
+  NoteAdded = 'NOTE_ADDED'
 }
 
 export type CustomerFilterInput = {
@@ -2808,12 +2824,14 @@ export type CustomerUpdate = {
   user?: Maybe<User>;
 };
 
+
 export type DateRangeInput = {
   /** Start date. */
   gte?: Maybe<Scalars['Date']>;
   /** End date. */
   lte?: Maybe<Scalars['Date']>;
 };
+
 
 export type DateTimeRangeInput = {
   /** Start date. */
@@ -2857,34 +2875,33 @@ export type DeletePrivateMetadata = {
   item?: Maybe<ObjectWithMetadata>;
 };
 
-export type DigitalContent = Node &
-  ObjectWithMetadata & {
-    __typename?: 'DigitalContent';
-    useDefaultSettings: Scalars['Boolean'];
-    automaticFulfillment: Scalars['Boolean'];
-    productVariant: ProductVariant;
-    contentFile: Scalars['String'];
-    maxDownloads?: Maybe<Scalars['Int']>;
-    urlValidDays?: Maybe<Scalars['Int']>;
-    /** List of URLs for the digital variant. */
-    urls?: Maybe<Array<Maybe<DigitalContentUrl>>>;
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-  };
+export type DigitalContent = Node & ObjectWithMetadata & {
+  __typename?: 'DigitalContent';
+  useDefaultSettings: Scalars['Boolean'];
+  automaticFulfillment: Scalars['Boolean'];
+  productVariant: ProductVariant;
+  contentFile: Scalars['String'];
+  maxDownloads?: Maybe<Scalars['Int']>;
+  urlValidDays?: Maybe<Scalars['Int']>;
+  /** List of URLs for the digital variant. */
+  urls?: Maybe<Array<Maybe<DigitalContentUrl>>>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+};
 
 export type DigitalContentCountableConnection = {
   __typename?: 'DigitalContentCountableConnection';
@@ -3012,18 +3029,18 @@ export enum DiscountErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export enum DiscountStatusEnum {
   Active = 'ACTIVE',
   Expired = 'EXPIRED',
-  Scheduled = 'SCHEDULED',
+  Scheduled = 'SCHEDULED'
 }
 
 export enum DiscountValueTypeEnum {
   Fixed = 'FIXED',
-  Percentage = 'PERCENTAGE',
+  Percentage = 'PERCENTAGE'
 }
 
 /** Represents shop's domain. */
@@ -3217,7 +3234,7 @@ export type ExportError = {
 export enum ExportErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
-  Required = 'REQUIRED',
+  Required = 'REQUIRED'
 }
 
 /** History log of export file. */
@@ -3244,30 +3261,29 @@ export enum ExportEventsEnum {
   ExportFailed = 'EXPORT_FAILED',
   ExportDeleted = 'EXPORT_DELETED',
   ExportedFileSent = 'EXPORTED_FILE_SENT',
-  ExportFailedInfoSent = 'EXPORT_FAILED_INFO_SENT',
+  ExportFailedInfoSent = 'EXPORT_FAILED_INFO_SENT'
 }
 
 /** Represents a job data of exported file. */
-export type ExportFile = Node &
-  Job & {
-    __typename?: 'ExportFile';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    user?: Maybe<User>;
-    app?: Maybe<App>;
-    /** Job status. */
-    status: JobStatusEnum;
-    /** Created date time of job in ISO 8601 format. */
-    createdAt: Scalars['DateTime'];
-    /** Date time of job last update in ISO 8601 format. */
-    updatedAt: Scalars['DateTime'];
-    /** Job message. */
-    message?: Maybe<Scalars['String']>;
-    /** The URL of field to download. */
-    url?: Maybe<Scalars['String']>;
-    /** List of events associated with the export. */
-    events?: Maybe<Array<ExportEvent>>;
-  };
+export type ExportFile = Node & Job & {
+  __typename?: 'ExportFile';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  user?: Maybe<User>;
+  app?: Maybe<App>;
+  /** Job status. */
+  status: JobStatusEnum;
+  /** Created date time of job in ISO 8601 format. */
+  createdAt: Scalars['DateTime'];
+  /** Date time of job last update in ISO 8601 format. */
+  updatedAt: Scalars['DateTime'];
+  /** Job message. */
+  message?: Maybe<Scalars['String']>;
+  /** The URL of field to download. */
+  url?: Maybe<Scalars['String']>;
+  /** List of events associated with the export. */
+  events?: Maybe<Array<ExportEvent>>;
+};
 
 export type ExportFileCountableConnection = {
   __typename?: 'ExportFileCountableConnection';
@@ -3300,7 +3316,7 @@ export enum ExportFileSortField {
   /** Sort export file by created at. */
   CreatedAt = 'CREATED_AT',
   /** Sort export file by updated at. */
-  UpdatedAt = 'UPDATED_AT',
+  UpdatedAt = 'UPDATED_AT'
 }
 
 export type ExportFileSortingInput = {
@@ -3351,46 +3367,45 @@ export enum ExportScope {
   /** Export products with given ids. */
   Ids = 'IDS',
   /** Export the filtered products. */
-  Filter = 'FILTER',
+  Filter = 'FILTER'
 }
 
 /** An enumeration. */
 export enum FileTypesEnum {
   Csv = 'CSV',
-  Xlsx = 'XLSX',
+  Xlsx = 'XLSX'
 }
 
 /** Represents order fulfillment. */
-export type Fulfillment = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Fulfillment';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    fulfillmentOrder: Scalars['Int'];
-    status: FulfillmentStatus;
-    trackingNumber: Scalars['String'];
-    created: Scalars['DateTime'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of lines for the fulfillment. */
-    lines?: Maybe<Array<Maybe<FulfillmentLine>>>;
-    /** User-friendly fulfillment status. */
-    statusDisplay?: Maybe<Scalars['String']>;
-    /** Warehouse from fulfillment was fulfilled. */
-    warehouse?: Maybe<Warehouse>;
-  };
+export type Fulfillment = Node & ObjectWithMetadata & {
+  __typename?: 'Fulfillment';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  fulfillmentOrder: Scalars['Int'];
+  status: FulfillmentStatus;
+  trackingNumber: Scalars['String'];
+  created: Scalars['DateTime'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of lines for the fulfillment. */
+  lines?: Maybe<Array<Maybe<FulfillmentLine>>>;
+  /** User-friendly fulfillment status. */
+  statusDisplay?: Maybe<Scalars['String']>;
+  /** Warehouse from fulfillment was fulfilled. */
+  warehouse?: Maybe<Warehouse>;
+};
 
 /** Cancels existing fulfillment and optionally restocks items. */
 export type FulfillmentCancel = {
@@ -3448,7 +3463,7 @@ export enum FulfillmentStatus {
   /** Fulfilled */
   Fulfilled = 'FULFILLED',
   /** Canceled */
-  Canceled = 'CANCELED',
+  Canceled = 'CANCELED'
 }
 
 /** Updates metadata for fulfillment. */
@@ -3503,6 +3518,7 @@ export type GatewayConfigLine = {
   /** Gateway config value for key. */
   value?: Maybe<Scalars['String']>;
 };
+
 
 /** Represents customers's geolocalization data. */
 export type Geolocalization = {
@@ -3616,7 +3632,7 @@ export enum GiftCardErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 /** Update a gift card. */
@@ -3703,39 +3719,37 @@ export type IntRangeInput = {
 };
 
 /** Represents an Invoice. */
-export type Invoice = ObjectWithMetadata &
-  Job &
-  Node & {
-    __typename?: 'Invoice';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /** Job status. */
-    status: JobStatusEnum;
-    number?: Maybe<Scalars['String']>;
-    externalUrl?: Maybe<Scalars['String']>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** Created date time of job in ISO 8601 format. */
-    createdAt: Scalars['DateTime'];
-    /** Date time of job last update in ISO 8601 format. */
-    updatedAt: Scalars['DateTime'];
-    /** Job message. */
-    message?: Maybe<Scalars['String']>;
-    /** URL to download an invoice. */
-    url?: Maybe<Scalars['String']>;
-  };
+export type Invoice = ObjectWithMetadata & Job & Node & {
+  __typename?: 'Invoice';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /** Job status. */
+  status: JobStatusEnum;
+  number?: Maybe<Scalars['String']>;
+  externalUrl?: Maybe<Scalars['String']>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** Created date time of job in ISO 8601 format. */
+  createdAt: Scalars['DateTime'];
+  /** Date time of job last update in ISO 8601 format. */
+  updatedAt: Scalars['DateTime'];
+  /** Job message. */
+  message?: Maybe<Scalars['String']>;
+  /** URL to download an invoice. */
+  url?: Maybe<Scalars['String']>;
+};
 
 /** Creates a ready to send invoice. */
 export type InvoiceCreate = {
@@ -3786,7 +3800,7 @@ export enum InvoiceErrorCode {
   EmailNotSet = 'EMAIL_NOT_SET',
   NumberNotSet = 'NUMBER_NOT_SET',
   NotFound = 'NOT_FOUND',
-  InvalidStatus = 'INVALID_STATUS',
+  InvalidStatus = 'INVALID_STATUS'
 }
 
 /** Request an invoice for the order using plugin. */
@@ -3839,6 +3853,7 @@ export type InvoiceUpdate = {
   invoice?: Maybe<Invoice>;
 };
 
+
 export type Job = {
   /** Job status. */
   status: JobStatusEnum;
@@ -3855,7 +3870,7 @@ export enum JobStatusEnum {
   Pending = 'PENDING',
   Success = 'SUCCESS',
   Failed = 'FAILED',
-  Deleted = 'DELETED',
+  Deleted = 'DELETED'
 }
 
 /** An enumeration. */
@@ -3908,7 +3923,7 @@ export enum LanguageCodeEnum {
   Uk = 'UK',
   Vi = 'VI',
   ZhHans = 'ZH_HANS',
-  ZhHant = 'ZH_HANT',
+  ZhHant = 'ZH_HANT'
 }
 
 export type LanguageDisplay = {
@@ -4035,7 +4050,7 @@ export enum MenuErrorCode {
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
   TooManyMenuItems = 'TOO_MANY_MENU_ITEMS',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type MenuFilterInput = {
@@ -4068,6 +4083,7 @@ export type MenuItem = Node & {
   /** Returns translated menu item fields for the given language code. */
   translation?: Maybe<MenuItemTranslation>;
 };
+
 
 /** Represents a single item of the related menu. Can store categories, collection or pages. */
 export type MenuItemTranslationArgs = {
@@ -4202,6 +4218,7 @@ export type MenuItemTranslatableContent = Node & {
   menuItem?: Maybe<MenuItem>;
 };
 
+
 export type MenuItemTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
@@ -4241,14 +4258,14 @@ export type MenuItemUpdate = {
 
 export enum MenuItemsSortField {
   /** Sort menu items by name. */
-  Name = 'NAME',
+  Name = 'NAME'
 }
 
 export enum MenuSortField {
   /** Sort menus by name. */
   Name = 'NAME',
   /** Sort menus by items count. */
-  ItemsCount = 'ITEMS_COUNT',
+  ItemsCount = 'ITEMS_COUNT'
 }
 
 export type MenuSortingInput = {
@@ -4329,7 +4346,7 @@ export enum MetadataErrorCode {
   GraphqlError = 'GRAPHQL_ERROR',
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
-  Required = 'REQUIRED',
+  Required = 'REQUIRED'
 }
 
 export type MetadataInput = {
@@ -5065,101 +5082,124 @@ export type Mutation = {
   permissionGroupDelete?: Maybe<PermissionGroupDelete>;
 };
 
+
 export type MutationWebhookCreateArgs = {
   input: WebhookCreateInput;
 };
 
+
 export type MutationWebhookDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationWebhookUpdateArgs = {
   id: Scalars['ID'];
   input: WebhookUpdateInput;
 };
 
+
 export type MutationCreateWarehouseArgs = {
   input: WarehouseCreateInput;
 };
+
 
 export type MutationUpdateWarehouseArgs = {
   id: Scalars['ID'];
   input: WarehouseUpdateInput;
 };
 
+
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAssignWarehouseShippingZoneArgs = {
   id: Scalars['ID'];
   shippingZoneIds: Array<Scalars['ID']>;
 };
 
+
 export type MutationUnassignWarehouseShippingZoneArgs = {
   id: Scalars['ID'];
   shippingZoneIds: Array<Scalars['ID']>;
 };
+
 
 export type MutationAuthorizationKeyAddArgs = {
   input: AuthorizationKeyInput;
   keyType: AuthorizationKeyType;
 };
 
+
 export type MutationAuthorizationKeyDeleteArgs = {
   keyType: AuthorizationKeyType;
 };
 
+
 export type MutationStaffNotificationRecipientCreateArgs = {
   input: StaffNotificationRecipientInput;
 };
+
 
 export type MutationStaffNotificationRecipientUpdateArgs = {
   id: Scalars['ID'];
   input: StaffNotificationRecipientInput;
 };
 
+
 export type MutationStaffNotificationRecipientDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationHomepageCollectionUpdateArgs = {
   collection?: Maybe<Scalars['ID']>;
 };
 
+
 export type MutationShopDomainUpdateArgs = {
   input?: Maybe<SiteDomainInput>;
 };
 
+
 export type MutationShopSettingsUpdateArgs = {
   input: ShopSettingsInput;
 };
+
 
 export type MutationShopSettingsTranslateArgs = {
   input: ShopSettingsTranslationInput;
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationShopAddressUpdateArgs = {
   input?: Maybe<AddressInput>;
 };
+
 
 export type MutationShippingPriceCreateArgs = {
   input: ShippingPriceInput;
 };
 
+
 export type MutationShippingPriceDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationShippingPriceBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationShippingPriceUpdateArgs = {
   id: Scalars['ID'];
   input: ShippingPriceInput;
 };
+
 
 export type MutationShippingPriceTranslateArgs = {
   id: Scalars['ID'];
@@ -5167,49 +5207,60 @@ export type MutationShippingPriceTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationShippingZoneCreateArgs = {
   input: ShippingZoneCreateInput;
 };
+
 
 export type MutationShippingZoneDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationShippingZoneBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationShippingZoneUpdateArgs = {
   id: Scalars['ID'];
   input: ShippingZoneUpdateInput;
 };
 
+
 export type MutationAttributeCreateArgs = {
   input: AttributeCreateInput;
 };
+
 
 export type MutationAttributeDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationAttributeBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationAttributeAssignArgs = {
   operations: Array<Maybe<AttributeAssignInput>>;
   productTypeId: Scalars['ID'];
 };
 
+
 export type MutationAttributeUnassignArgs = {
   attributeIds: Array<Maybe<Scalars['ID']>>;
   productTypeId: Scalars['ID'];
 };
 
+
 export type MutationAttributeUpdateArgs = {
   id: Scalars['ID'];
   input: AttributeUpdateInput;
 };
+
 
 export type MutationAttributeTranslateArgs = {
   id: Scalars['ID'];
@@ -5217,43 +5268,52 @@ export type MutationAttributeTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationAttributeUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationAttributeClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationAttributeUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationAttributeClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationAttributeValueCreateArgs = {
   attribute: Scalars['ID'];
   input: AttributeValueCreateInput;
 };
 
+
 export type MutationAttributeValueDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAttributeValueBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationAttributeValueUpdateArgs = {
   id: Scalars['ID'];
   input: AttributeValueCreateInput;
 };
+
 
 export type MutationAttributeValueTranslateArgs = {
   id: Scalars['ID'];
@@ -5261,28 +5321,34 @@ export type MutationAttributeValueTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationAttributeReorderValuesArgs = {
   attributeId: Scalars['ID'];
   moves: Array<Maybe<ReorderInput>>;
 };
+
 
 export type MutationCategoryCreateArgs = {
   input: CategoryInput;
   parent?: Maybe<Scalars['ID']>;
 };
 
+
 export type MutationCategoryDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationCategoryBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationCategoryUpdateArgs = {
   id: Scalars['ID'];
   input: CategoryInput;
 };
+
 
 export type MutationCategoryTranslateArgs = {
   id: Scalars['ID'];
@@ -5290,62 +5356,75 @@ export type MutationCategoryTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationCategoryUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationCategoryClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationCategoryUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationCategoryClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationCollectionAddProductsArgs = {
   collectionId: Scalars['ID'];
   products: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationCollectionCreateArgs = {
   input: CollectionCreateInput;
 };
 
+
 export type MutationCollectionDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationCollectionReorderProductsArgs = {
   collectionId: Scalars['ID'];
   moves: Array<Maybe<MoveProductInput>>;
 };
 
+
 export type MutationCollectionBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationCollectionBulkPublishArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
   isPublished: Scalars['Boolean'];
 };
 
+
 export type MutationCollectionRemoveProductsArgs = {
   collectionId: Scalars['ID'];
   products: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationCollectionUpdateArgs = {
   id: Scalars['ID'];
   input: CollectionInput;
 };
+
 
 export type MutationCollectionTranslateArgs = {
   id: Scalars['ID'];
@@ -5353,47 +5432,57 @@ export type MutationCollectionTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationCollectionUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationCollectionClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationCollectionUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationCollectionClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationProductCreateArgs = {
   input: ProductCreateInput;
 };
+
 
 export type MutationProductDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationProductBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationProductBulkPublishArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
   isPublished: Scalars['Boolean'];
 };
 
+
 export type MutationProductUpdateArgs = {
   id: Scalars['ID'];
   input: ProductInput;
 };
+
 
 export type MutationProductTranslateArgs = {
   id: Scalars['ID'];
@@ -5401,25 +5490,30 @@ export type MutationProductTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationProductUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationProductClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationProductUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationProductClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
+
 
 export type MutationProductSetAvailabilityForPurchaseArgs = {
   isAvailable: Scalars['Boolean'];
@@ -5427,49 +5521,60 @@ export type MutationProductSetAvailabilityForPurchaseArgs = {
   startDate?: Maybe<Scalars['Date']>;
 };
 
+
 export type MutationProductImageCreateArgs = {
   input: ProductImageCreateInput;
 };
+
 
 export type MutationProductVariantReorderArgs = {
   moves: Array<Maybe<ReorderInput>>;
   productId: Scalars['ID'];
 };
 
+
 export type MutationProductImageDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationProductImageBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationProductImageReorderArgs = {
   imagesIds: Array<Maybe<Scalars['ID']>>;
   productId: Scalars['ID'];
 };
 
+
 export type MutationProductImageUpdateArgs = {
   id: Scalars['ID'];
   input: ProductImageUpdateInput;
 };
 
+
 export type MutationProductTypeCreateArgs = {
   input: ProductTypeInput;
 };
+
 
 export type MutationProductTypeDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationProductTypeBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationProductTypeUpdateArgs = {
   id: Scalars['ID'];
   input: ProductTypeInput;
 };
+
 
 export type MutationProductTypeReorderAttributesArgs = {
   moves: Array<Maybe<ReorderInput>>;
@@ -5477,85 +5582,103 @@ export type MutationProductTypeReorderAttributesArgs = {
   type: AttributeTypeEnum;
 };
 
+
 export type MutationProductTypeUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationProductTypeClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationProductTypeUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationProductTypeClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationDigitalContentCreateArgs = {
   input: DigitalContentUploadInput;
   variantId: Scalars['ID'];
 };
 
+
 export type MutationDigitalContentDeleteArgs = {
   variantId: Scalars['ID'];
 };
+
 
 export type MutationDigitalContentUpdateArgs = {
   input: DigitalContentInput;
   variantId: Scalars['ID'];
 };
 
+
 export type MutationDigitalContentUrlCreateArgs = {
   input: DigitalContentUrlCreateInput;
 };
+
 
 export type MutationProductVariantCreateArgs = {
   input: ProductVariantCreateInput;
 };
 
+
 export type MutationProductVariantDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationProductVariantBulkCreateArgs = {
   product: Scalars['ID'];
   variants: Array<Maybe<ProductVariantBulkCreateInput>>;
 };
 
+
 export type MutationProductVariantBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationProductVariantStocksCreateArgs = {
   stocks: Array<StockInput>;
   variantId: Scalars['ID'];
 };
 
+
 export type MutationProductVariantStocksDeleteArgs = {
   variantId: Scalars['ID'];
   warehouseIds?: Maybe<Array<Scalars['ID']>>;
 };
+
 
 export type MutationProductVariantStocksUpdateArgs = {
   stocks: Array<StockInput>;
   variantId: Scalars['ID'];
 };
 
+
 export type MutationProductVariantUpdateArgs = {
   id: Scalars['ID'];
   input: ProductVariantInput;
 };
 
+
 export type MutationProductVariantSetDefaultArgs = {
   productId: Scalars['ID'];
   variantId: Scalars['ID'];
 };
+
 
 export type MutationProductVariantTranslateArgs = {
   id: Scalars['ID'];
@@ -5563,71 +5686,86 @@ export type MutationProductVariantTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationProductVariantUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationProductVariantClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationProductVariantUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationProductVariantClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationVariantImageAssignArgs = {
   imageId: Scalars['ID'];
   variantId: Scalars['ID'];
 };
+
 
 export type MutationVariantImageUnassignArgs = {
   imageId: Scalars['ID'];
   variantId: Scalars['ID'];
 };
 
+
 export type MutationPaymentCaptureArgs = {
   amount?: Maybe<Scalars['PositiveDecimal']>;
   paymentId: Scalars['ID'];
 };
+
 
 export type MutationPaymentRefundArgs = {
   amount?: Maybe<Scalars['PositiveDecimal']>;
   paymentId: Scalars['ID'];
 };
 
+
 export type MutationPaymentVoidArgs = {
   paymentId: Scalars['ID'];
 };
+
 
 export type MutationPageCreateArgs = {
   input: PageInput;
 };
 
+
 export type MutationPageDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationPageBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationPageBulkPublishArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
   isPublished: Scalars['Boolean'];
 };
 
+
 export type MutationPageUpdateArgs = {
   id: Scalars['ID'];
   input: PageInput;
 };
+
 
 export type MutationPageTranslateArgs = {
   id: Scalars['ID'];
@@ -5635,199 +5773,242 @@ export type MutationPageTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationDraftOrderCompleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationDraftOrderCreateArgs = {
   input: DraftOrderCreateInput;
 };
 
+
 export type MutationDraftOrderDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationDraftOrderBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationDraftOrderLinesBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationDraftOrderLinesCreateArgs = {
   id: Scalars['ID'];
   input: Array<Maybe<OrderLineCreateInput>>;
 };
 
+
 export type MutationDraftOrderLineDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationDraftOrderLineUpdateArgs = {
   id: Scalars['ID'];
   input: OrderLineInput;
 };
 
+
 export type MutationDraftOrderUpdateArgs = {
   id: Scalars['ID'];
   input: DraftOrderInput;
 };
+
 
 export type MutationOrderAddNoteArgs = {
   order: Scalars['ID'];
   input: OrderAddNoteInput;
 };
 
+
 export type MutationOrderCancelArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationOrderCaptureArgs = {
   amount: Scalars['PositiveDecimal'];
   id: Scalars['ID'];
 };
 
+
 export type MutationOrderClearPrivateMetaArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
+
 
 export type MutationOrderClearMetaArgs = {
   input: MetaPath;
   token: Scalars['UUID'];
 };
 
+
 export type MutationOrderFulfillArgs = {
   input: OrderFulfillInput;
   order?: Maybe<Scalars['ID']>;
 };
+
 
 export type MutationOrderFulfillmentCancelArgs = {
   id: Scalars['ID'];
   input: FulfillmentCancelInput;
 };
 
+
 export type MutationOrderFulfillmentUpdateTrackingArgs = {
   id: Scalars['ID'];
   input: FulfillmentUpdateTrackingInput;
 };
+
 
 export type MutationOrderFulfillmentClearMetaArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationOrderFulfillmentClearPrivateMetaArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
+
 
 export type MutationOrderFulfillmentUpdateMetaArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationOrderFulfillmentUpdatePrivateMetaArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationOrderMarkAsPaidArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationOrderRefundArgs = {
   amount: Scalars['PositiveDecimal'];
   id: Scalars['ID'];
 };
 
+
 export type MutationOrderUpdateArgs = {
   id: Scalars['ID'];
   input: OrderUpdateInput;
 };
+
 
 export type MutationOrderUpdateMetaArgs = {
   input: MetaInput;
   token: Scalars['UUID'];
 };
 
+
 export type MutationOrderUpdatePrivateMetaArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationOrderUpdateShippingArgs = {
   order: Scalars['ID'];
   input?: Maybe<OrderUpdateShippingInput>;
 };
 
+
 export type MutationOrderVoidArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationOrderBulkCancelArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationDeleteMetadataArgs = {
   id: Scalars['ID'];
   keys: Array<Scalars['String']>;
 };
 
+
 export type MutationDeletePrivateMetadataArgs = {
   id: Scalars['ID'];
   keys: Array<Scalars['String']>;
 };
+
 
 export type MutationUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: Array<MetadataInput>;
 };
 
+
 export type MutationUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: Array<MetadataInput>;
 };
+
 
 export type MutationAssignNavigationArgs = {
   menu?: Maybe<Scalars['ID']>;
   navigationType: NavigationType;
 };
 
+
 export type MutationMenuCreateArgs = {
   input: MenuCreateInput;
 };
+
 
 export type MutationMenuDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationMenuBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationMenuUpdateArgs = {
   id: Scalars['ID'];
   input: MenuInput;
 };
 
+
 export type MutationMenuItemCreateArgs = {
   input: MenuItemCreateInput;
 };
+
 
 export type MutationMenuItemDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationMenuItemBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationMenuItemUpdateArgs = {
   id: Scalars['ID'];
   input: MenuItemInput;
 };
+
 
 export type MutationMenuItemTranslateArgs = {
   id: Scalars['ID'];
@@ -5835,86 +6016,105 @@ export type MutationMenuItemTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationMenuItemMoveArgs = {
   menu: Scalars['ID'];
   moves: Array<Maybe<MenuItemMoveInput>>;
 };
+
 
 export type MutationInvoiceRequestArgs = {
   number?: Maybe<Scalars['String']>;
   orderId: Scalars['ID'];
 };
 
+
 export type MutationInvoiceRequestDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationInvoiceCreateArgs = {
   input: InvoiceCreateInput;
   orderId: Scalars['ID'];
 };
 
+
 export type MutationInvoiceDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationInvoiceUpdateArgs = {
   id: Scalars['ID'];
   input: UpdateInvoiceInput;
 };
 
+
 export type MutationInvoiceSendEmailArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationGiftCardActivateArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationGiftCardCreateArgs = {
   input: GiftCardCreateInput;
 };
 
+
 export type MutationGiftCardDeactivateArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationGiftCardUpdateArgs = {
   id: Scalars['ID'];
   input: GiftCardUpdateInput;
 };
 
+
 export type MutationPluginUpdateArgs = {
   id: Scalars['ID'];
   input: PluginUpdateInput;
 };
 
+
 export type MutationSaleCreateArgs = {
   input: SaleInput;
 };
+
 
 export type MutationSaleDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationSaleBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationSaleUpdateArgs = {
   id: Scalars['ID'];
   input: SaleInput;
 };
 
+
 export type MutationSaleCataloguesAddArgs = {
   id: Scalars['ID'];
   input: CatalogueInput;
 };
 
+
 export type MutationSaleCataloguesRemoveArgs = {
   id: Scalars['ID'];
   input: CatalogueInput;
 };
+
 
 export type MutationSaleTranslateArgs = {
   id: Scalars['ID'];
@@ -5922,32 +6122,39 @@ export type MutationSaleTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationVoucherCreateArgs = {
   input: VoucherInput;
 };
+
 
 export type MutationVoucherDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationVoucherBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
+
 
 export type MutationVoucherUpdateArgs = {
   id: Scalars['ID'];
   input: VoucherInput;
 };
 
+
 export type MutationVoucherCataloguesAddArgs = {
   id: Scalars['ID'];
   input: CatalogueInput;
 };
 
+
 export type MutationVoucherCataloguesRemoveArgs = {
   id: Scalars['ID'];
   input: CatalogueInput;
 };
+
 
 export type MutationVoucherTranslateArgs = {
   id: Scalars['ID'];
@@ -5955,19 +6162,23 @@ export type MutationVoucherTranslateArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 export type MutationExportProductsArgs = {
   input: ExportProductsInput;
 };
+
 
 export type MutationCheckoutAddPromoCodeArgs = {
   checkoutId: Scalars['ID'];
   promoCode: Scalars['String'];
 };
 
+
 export type MutationCheckoutBillingAddressUpdateArgs = {
   billingAddress: AddressInput;
   checkoutId: Scalars['ID'];
 };
+
 
 export type MutationCheckoutCompleteArgs = {
   checkoutId: Scalars['ID'];
@@ -5976,152 +6187,185 @@ export type MutationCheckoutCompleteArgs = {
   storeSource?: Maybe<Scalars['Boolean']>;
 };
 
+
 export type MutationCheckoutCreateArgs = {
   input: CheckoutCreateInput;
 };
+
 
 export type MutationCheckoutCustomerAttachArgs = {
   checkoutId: Scalars['ID'];
   customerId?: Maybe<Scalars['ID']>;
 };
 
+
 export type MutationCheckoutCustomerDetachArgs = {
   checkoutId: Scalars['ID'];
 };
+
 
 export type MutationCheckoutEmailUpdateArgs = {
   checkoutId?: Maybe<Scalars['ID']>;
   email: Scalars['String'];
 };
 
+
 export type MutationCheckoutLineDeleteArgs = {
   checkoutId: Scalars['ID'];
   lineId?: Maybe<Scalars['ID']>;
 };
+
 
 export type MutationCheckoutLinesAddArgs = {
   checkoutId: Scalars['ID'];
   lines: Array<Maybe<CheckoutLineInput>>;
 };
 
+
 export type MutationCheckoutLinesUpdateArgs = {
   checkoutId: Scalars['ID'];
   lines: Array<Maybe<CheckoutLineInput>>;
 };
+
 
 export type MutationCheckoutRemovePromoCodeArgs = {
   checkoutId: Scalars['ID'];
   promoCode: Scalars['String'];
 };
 
+
 export type MutationCheckoutPaymentCreateArgs = {
   checkoutId: Scalars['ID'];
   input: PaymentInput;
 };
+
 
 export type MutationCheckoutShippingAddressUpdateArgs = {
   checkoutId: Scalars['ID'];
   shippingAddress: AddressInput;
 };
 
+
 export type MutationCheckoutShippingMethodUpdateArgs = {
   checkoutId?: Maybe<Scalars['ID']>;
   shippingMethodId: Scalars['ID'];
 };
+
 
 export type MutationCheckoutUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationCheckoutClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
+
 
 export type MutationCheckoutUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationCheckoutClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationAppCreateArgs = {
   input: AppInput;
 };
+
 
 export type MutationAppUpdateArgs = {
   id: Scalars['ID'];
   input: AppInput;
 };
 
+
 export type MutationAppDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAppTokenCreateArgs = {
   input: AppTokenInput;
 };
 
+
 export type MutationAppTokenDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAppTokenVerifyArgs = {
   token: Scalars['String'];
 };
 
+
 export type MutationAppInstallArgs = {
   input: AppInstallInput;
 };
+
 
 export type MutationAppRetryInstallArgs = {
   activateAfterInstallation?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
 };
 
+
 export type MutationAppDeleteFailedInstallationArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAppFetchManifestArgs = {
   manifestUrl: Scalars['String'];
 };
 
+
 export type MutationAppActivateArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationAppDeactivateArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationTokenCreateArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
 
+
 export type MutationTokenRefreshArgs = {
   csrfToken?: Maybe<Scalars['String']>;
   refreshToken?: Maybe<Scalars['String']>;
 };
 
+
 export type MutationTokenVerifyArgs = {
   token: Scalars['String'];
 };
+
 
 export type MutationRequestPasswordResetArgs = {
   email: Scalars['String'];
   redirectUrl: Scalars['String'];
 };
 
+
 export type MutationConfirmAccountArgs = {
   email: Scalars['String'];
   token: Scalars['String'];
 };
+
 
 export type MutationSetPasswordArgs = {
   email: Scalars['String'];
@@ -6129,10 +6373,12 @@ export type MutationSetPasswordArgs = {
   token: Scalars['String'];
 };
 
+
 export type MutationPasswordChangeArgs = {
   newPassword: Scalars['String'];
   oldPassword: Scalars['String'];
 };
+
 
 export type MutationRequestEmailChangeArgs = {
   newEmail: Scalars['String'];
@@ -6140,62 +6386,76 @@ export type MutationRequestEmailChangeArgs = {
   redirectUrl: Scalars['String'];
 };
 
+
 export type MutationConfirmEmailChangeArgs = {
   token: Scalars['String'];
 };
+
 
 export type MutationAccountAddressCreateArgs = {
   input: AddressInput;
   type?: Maybe<AddressTypeEnum>;
 };
 
+
 export type MutationAccountAddressUpdateArgs = {
   id: Scalars['ID'];
   input: AddressInput;
 };
 
+
 export type MutationAccountAddressDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAccountSetDefaultAddressArgs = {
   id: Scalars['ID'];
   type: AddressTypeEnum;
 };
 
+
 export type MutationAccountRegisterArgs = {
   input: AccountRegisterInput;
 };
+
 
 export type MutationAccountUpdateArgs = {
   input: AccountInput;
 };
 
+
 export type MutationAccountRequestDeletionArgs = {
   redirectUrl: Scalars['String'];
 };
+
 
 export type MutationAccountDeleteArgs = {
   token: Scalars['String'];
 };
 
+
 export type MutationAccountUpdateMetaArgs = {
   input: MetaInput;
 };
+
 
 export type MutationAddressCreateArgs = {
   input: AddressInput;
   userId: Scalars['ID'];
 };
 
+
 export type MutationAddressUpdateArgs = {
   id: Scalars['ID'];
   input: AddressInput;
 };
 
+
 export type MutationAddressDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationAddressSetDefaultArgs = {
   addressId: Scalars['ID'];
@@ -6203,108 +6463,132 @@ export type MutationAddressSetDefaultArgs = {
   userId: Scalars['ID'];
 };
 
+
 export type MutationCustomerCreateArgs = {
   input: UserCreateInput;
 };
+
 
 export type MutationCustomerUpdateArgs = {
   id: Scalars['ID'];
   input: CustomerInput;
 };
 
+
 export type MutationCustomerDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationCustomerBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationStaffCreateArgs = {
   input: StaffCreateInput;
 };
+
 
 export type MutationStaffUpdateArgs = {
   id: Scalars['ID'];
   input: StaffUpdateInput;
 };
 
+
 export type MutationStaffDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationStaffBulkDeleteArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
 };
 
+
 export type MutationUserAvatarUpdateArgs = {
   image: Scalars['Upload'];
 };
+
 
 export type MutationUserBulkSetActiveArgs = {
   ids: Array<Maybe<Scalars['ID']>>;
   isActive: Scalars['Boolean'];
 };
 
+
 export type MutationUserUpdateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationUserClearMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationUserUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
+
 
 export type MutationUserClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationServiceAccountCreateArgs = {
   input: ServiceAccountInput;
 };
+
 
 export type MutationServiceAccountUpdateArgs = {
   id: Scalars['ID'];
   input: ServiceAccountInput;
 };
 
+
 export type MutationServiceAccountDeleteArgs = {
   id: Scalars['ID'];
 };
+
 
 export type MutationServiceAccountUpdatePrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaInput;
 };
 
+
 export type MutationServiceAccountClearPrivateMetadataArgs = {
   id: Scalars['ID'];
   input: MetaPath;
 };
 
+
 export type MutationServiceAccountTokenCreateArgs = {
   input: ServiceAccountTokenInput;
 };
+
 
 export type MutationServiceAccountTokenDeleteArgs = {
   id: Scalars['ID'];
 };
 
+
 export type MutationPermissionGroupCreateArgs = {
   input: PermissionGroupCreateInput;
 };
+
 
 export type MutationPermissionGroupUpdateArgs = {
   id: Scalars['ID'];
   input: PermissionGroupUpdateInput;
 };
+
 
 export type MutationPermissionGroupDeleteArgs = {
   id: Scalars['ID'];
@@ -6327,7 +6611,7 @@ export enum NavigationType {
   /** Main storefront navigation. */
   Main = 'MAIN',
   /** Secondary storefront navigation. */
-  Secondary = 'SECONDARY',
+  Secondary = 'SECONDARY'
 }
 
 /** An object with an ID */
@@ -6356,11 +6640,11 @@ export type ObjectWithMetadata = {
 export type Offer = {
   __typename?: 'Offer';
   id: Scalars['ID'];
-  type?: Maybe<OfferType>;
+  type: OfferType;
   leadTimeDays: Scalars['Int'];
-  dateAdded?: Maybe<Scalars['Int']>;
+  dateAdded: Scalars['Int'];
   tariffRate?: Maybe<Scalars['Float']>;
-  productVariant: ProductVariant;
+  productVariant?: Maybe<ProductVariant>;
 };
 
 /** An enumeration. */
@@ -6373,92 +6657,91 @@ export enum OfferType {
   VendorOffer = 'VENDOR_OFFER',
   /** RMS Offer */
   RmsOffer = 'RMS_OFFER',
-  /** PO */
-  Po = 'PO',
+  /** RMS PO */
+  RmsPo = 'RMS_PO'
 }
 
 /** Represents an order in the shop. */
-export type Order = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Order';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    created: Scalars['DateTime'];
-    status: OrderStatus;
-    user?: Maybe<User>;
-    languageCode: Scalars['String'];
-    trackingClientId: Scalars['String'];
-    billingAddress?: Maybe<Address>;
-    shippingAddress?: Maybe<Address>;
-    shippingMethod?: Maybe<ShippingMethod>;
-    shippingMethodName?: Maybe<Scalars['String']>;
-    /** Total price of shipping. */
-    shippingPrice?: Maybe<TaxedMoney>;
-    token: Scalars['String'];
-    voucher?: Maybe<Voucher>;
-    /** List of user gift cards. */
-    giftCards?: Maybe<Array<Maybe<GiftCard>>>;
-    discount?: Maybe<Money>;
-    discountName?: Maybe<Scalars['String']>;
-    translatedDiscountName?: Maybe<Scalars['String']>;
-    displayGrossPrices: Scalars['Boolean'];
-    customerNote: Scalars['String'];
-    weight?: Maybe<Weight>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of shipments for the order. */
-    fulfillments: Array<Maybe<Fulfillment>>;
-    /** List of order lines. */
-    lines: Array<Maybe<OrderLine>>;
-    /** List of actions that can be performed in the current state of an order. */
-    actions: Array<Maybe<OrderAction>>;
-    /** Shipping methods that can be used with this order. */
-    availableShippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
-    /** List of order invoices. */
-    invoices?: Maybe<Array<Maybe<Invoice>>>;
-    /** User-friendly number of an order. */
-    number?: Maybe<Scalars['String']>;
-    /** Informs if an order is fully paid. */
-    isPaid?: Maybe<Scalars['Boolean']>;
-    /** Internal payment status. */
-    paymentStatus?: Maybe<PaymentChargeStatusEnum>;
-    /** User-friendly payment status. */
-    paymentStatusDisplay?: Maybe<Scalars['String']>;
-    /** List of payments for the order. */
-    payments?: Maybe<Array<Maybe<Payment>>>;
-    /** Total amount of the order. */
-    total?: Maybe<TaxedMoney>;
-    /** The sum of line prices not including shipping. */
-    subtotal?: Maybe<TaxedMoney>;
-    /** User-friendly order status. */
-    statusDisplay?: Maybe<Scalars['String']>;
-    /** Informs whether a draft order can be finalized(turned into a regular order). */
-    canFinalize: Scalars['Boolean'];
-    /** Amount authorized for the order. */
-    totalAuthorized?: Maybe<Money>;
-    /** Amount captured by payment. */
-    totalCaptured?: Maybe<Money>;
-    /** List of events associated with the order. */
-    events?: Maybe<Array<Maybe<OrderEvent>>>;
-    /** The difference between the paid and the order total amount. */
-    totalBalance: Money;
-    /** Email address of the customer. */
-    userEmail?: Maybe<Scalars['String']>;
-    /** Returns True, if order requires shipping. */
-    isShippingRequired: Scalars['Boolean'];
-  };
+export type Order = Node & ObjectWithMetadata & {
+  __typename?: 'Order';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  created: Scalars['DateTime'];
+  status: OrderStatus;
+  user?: Maybe<User>;
+  languageCode: Scalars['String'];
+  trackingClientId: Scalars['String'];
+  billingAddress?: Maybe<Address>;
+  shippingAddress?: Maybe<Address>;
+  shippingMethod?: Maybe<ShippingMethod>;
+  shippingMethodName?: Maybe<Scalars['String']>;
+  /** Total price of shipping. */
+  shippingPrice?: Maybe<TaxedMoney>;
+  token: Scalars['String'];
+  voucher?: Maybe<Voucher>;
+  /** List of user gift cards. */
+  giftCards?: Maybe<Array<Maybe<GiftCard>>>;
+  discount?: Maybe<Money>;
+  discountName?: Maybe<Scalars['String']>;
+  translatedDiscountName?: Maybe<Scalars['String']>;
+  displayGrossPrices: Scalars['Boolean'];
+  customerNote: Scalars['String'];
+  weight?: Maybe<Weight>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of shipments for the order. */
+  fulfillments: Array<Maybe<Fulfillment>>;
+  /** List of order lines. */
+  lines: Array<Maybe<OrderLine>>;
+  /** List of actions that can be performed in the current state of an order. */
+  actions: Array<Maybe<OrderAction>>;
+  /** Shipping methods that can be used with this order. */
+  availableShippingMethods?: Maybe<Array<Maybe<ShippingMethod>>>;
+  /** List of order invoices. */
+  invoices?: Maybe<Array<Maybe<Invoice>>>;
+  /** User-friendly number of an order. */
+  number?: Maybe<Scalars['String']>;
+  /** Informs if an order is fully paid. */
+  isPaid?: Maybe<Scalars['Boolean']>;
+  /** Internal payment status. */
+  paymentStatus?: Maybe<PaymentChargeStatusEnum>;
+  /** User-friendly payment status. */
+  paymentStatusDisplay?: Maybe<Scalars['String']>;
+  /** List of payments for the order. */
+  payments?: Maybe<Array<Maybe<Payment>>>;
+  /** Total amount of the order. */
+  total?: Maybe<TaxedMoney>;
+  /** The sum of line prices not including shipping. */
+  subtotal?: Maybe<TaxedMoney>;
+  /** User-friendly order status. */
+  statusDisplay?: Maybe<Scalars['String']>;
+  /** Informs whether a draft order can be finalized(turned into a regular order). */
+  canFinalize: Scalars['Boolean'];
+  /** Amount authorized for the order. */
+  totalAuthorized?: Maybe<Money>;
+  /** Amount captured by payment. */
+  totalCaptured?: Maybe<Money>;
+  /** List of events associated with the order. */
+  events?: Maybe<Array<Maybe<OrderEvent>>>;
+  /** The difference between the paid and the order total amount. */
+  totalBalance: Money;
+  /** Email address of the customer. */
+  userEmail?: Maybe<Scalars['String']>;
+  /** Returns True, if order requires shipping. */
+  isShippingRequired: Scalars['Boolean'];
+};
 
 export enum OrderAction {
   /** Represents the capture action. */
@@ -6468,7 +6751,7 @@ export enum OrderAction {
   /** Represents a refund action. */
   Refund = 'REFUND',
   /** Represents a void action. */
-  Void = 'VOID',
+  Void = 'VOID'
 }
 
 /** Adds note to the order. */
@@ -6573,7 +6856,7 @@ export enum OrderDirection {
   /** Specifies an ascending sort order. */
   Asc = 'ASC',
   /** Specifies a descending sort order. */
-  Desc = 'DESC',
+  Desc = 'DESC'
 }
 
 export type OrderDraftFilterInput = {
@@ -6622,7 +6905,7 @@ export enum OrderErrorCode {
   VoidInactivePayment = 'VOID_INACTIVE_PAYMENT',
   ZeroQuantity = 'ZERO_QUANTITY',
   InsufficientStock = 'INSUFFICIENT_STOCK',
-  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM'
 }
 
 /** History log of the order. */
@@ -6702,7 +6985,7 @@ export enum OrderEventsEmailsEnum {
   OrderCancel = 'ORDER_CANCEL',
   OrderRefund = 'ORDER_REFUND',
   FulfillmentConfirmation = 'FULFILLMENT_CONFIRMATION',
-  DigitalLinks = 'DIGITAL_LINKS',
+  DigitalLinks = 'DIGITAL_LINKS'
 }
 
 /** An enumeration. */
@@ -6733,7 +7016,7 @@ export enum OrderEventsEnum {
   FulfillmentFulfilledItems = 'FULFILLMENT_FULFILLED_ITEMS',
   TrackingUpdated = 'TRACKING_UPDATED',
   NoteAdded = 'NOTE_ADDED',
-  Other = 'OTHER',
+  Other = 'OTHER'
 }
 
 export type OrderFilterInput = {
@@ -6809,6 +7092,7 @@ export type OrderLine = Node & {
   allocations?: Maybe<Array<Allocation>>;
 };
 
+
 /** Represents order line of particular order. */
 export type OrderLineThumbnailArgs = {
   size?: Maybe<Scalars['Int']>;
@@ -6864,7 +7148,7 @@ export enum OrderSortField {
   /** Sort orders by fulfillment status. */
   FulfillmentStatus = 'FULFILLMENT_STATUS',
   /** Sort orders by total. */
-  Total = 'TOTAL',
+  Total = 'TOTAL'
 }
 
 export type OrderSortingInput = {
@@ -6885,7 +7169,7 @@ export enum OrderStatus {
   /** Fulfilled */
   Fulfilled = 'FULFILLED',
   /** Canceled */
-  Canceled = 'CANCELED',
+  Canceled = 'CANCELED'
 }
 
 export enum OrderStatusFilter {
@@ -6894,7 +7178,7 @@ export enum OrderStatusFilter {
   Unfulfilled = 'UNFULFILLED',
   PartiallyFulfilled = 'PARTIALLY_FULFILLED',
   Fulfilled = 'FULFILLED',
-  Canceled = 'CANCELED',
+  Canceled = 'CANCELED'
 }
 
 /** Updates an order. */
@@ -6972,38 +7256,38 @@ export type OrderVoid = {
 };
 
 /** A static page that can be manually added by a shop operator through the dashboard. */
-export type Page = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Page';
-    seoTitle?: Maybe<Scalars['String']>;
-    seoDescription?: Maybe<Scalars['String']>;
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    title: Scalars['String'];
-    content: Scalars['String'];
-    contentJson: Scalars['JSONString'];
-    publicationDate?: Maybe<Scalars['Date']>;
-    slug: Scalars['String'];
-    created: Scalars['DateTime'];
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** Returns translated page fields for the given language code. */
-    translation?: Maybe<PageTranslation>;
-    /** Whether the page is published. */
-    isPublished: Scalars['Boolean'];
-  };
+export type Page = Node & ObjectWithMetadata & {
+  __typename?: 'Page';
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  content: Scalars['String'];
+  contentJson: Scalars['JSONString'];
+  publicationDate?: Maybe<Scalars['Date']>;
+  slug: Scalars['String'];
+  created: Scalars['DateTime'];
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** Returns translated page fields for the given language code. */
+  translation?: Maybe<PageTranslation>;
+  /** Whether the page is published. */
+  isPublished: Scalars['Boolean'];
+};
+
 
 /** A static page that can be manually added by a shop operator through the dashboard. */
 export type PageTranslationArgs = {
@@ -7093,7 +7377,7 @@ export enum PageErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type PageFilterInput = {
@@ -7140,7 +7424,7 @@ export enum PageSortField {
   /** Sort pages by creation date. */
   CreationDate = 'CREATION_DATE',
   /** Sort pages by publication date. */
-  PublicationDate = 'PUBLICATION_DATE',
+  PublicationDate = 'PUBLICATION_DATE'
 }
 
 export type PageSortingInput = {
@@ -7164,6 +7448,7 @@ export type PageTranslatableContent = Node & {
   /** ('A static page that can be manually added by a shop operator ', 'through the dashboard.') */
   page?: Maybe<Page>;
 };
+
 
 export type PageTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -7280,7 +7565,7 @@ export enum PaymentChargeStatusEnum {
   PartiallyRefunded = 'PARTIALLY_REFUNDED',
   FullyRefunded = 'FULLY_REFUNDED',
   Refused = 'REFUSED',
-  Cancelled = 'CANCELLED',
+  Cancelled = 'CANCELLED'
 }
 
 export type PaymentCountableConnection = {
@@ -7323,7 +7608,7 @@ export enum PaymentErrorCode {
   InvalidShippingMethod = 'INVALID_SHIPPING_METHOD',
   ShippingMethodNotSet = 'SHIPPING_METHOD_NOT_SET',
   PaymentError = 'PAYMENT_ERROR',
-  NotSupportedGateway = 'NOT_SUPPORTED_GATEWAY',
+  NotSupportedGateway = 'NOT_SUPPORTED_GATEWAY'
 }
 
 /** Available payment gateway backend with configuration necessary to setup client. */
@@ -7413,7 +7698,7 @@ export enum PermissionEnum {
   ManageShipping = 'MANAGE_SHIPPING',
   ManageSettings = 'MANAGE_SETTINGS',
   ManageTranslations = 'MANAGE_TRANSLATIONS',
-  ManageCheckouts = 'MANAGE_CHECKOUTS',
+  ManageCheckouts = 'MANAGE_CHECKOUTS'
 }
 
 /** Create new permission group. */
@@ -7472,7 +7757,7 @@ export enum PermissionGroupErrorCode {
   OutOfScopePermission = 'OUT_OF_SCOPE_PERMISSION',
   OutOfScopeUser = 'OUT_OF_SCOPE_USER',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type PermissionGroupFilterInput = {
@@ -7481,7 +7766,7 @@ export type PermissionGroupFilterInput = {
 
 export enum PermissionGroupSortField {
   /** Sort permission group accounts by name. */
-  Name = 'NAME',
+  Name = 'NAME'
 }
 
 export type PermissionGroupSortingInput = {
@@ -7560,7 +7845,7 @@ export enum PluginErrorCode {
   PluginMisconfigured = 'PLUGIN_MISCONFIGURED',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type PluginFilterInput = {
@@ -7570,7 +7855,7 @@ export type PluginFilterInput = {
 
 export enum PluginSortField {
   Name = 'NAME',
-  IsActive = 'IS_ACTIVE',
+  IsActive = 'IS_ACTIVE'
 }
 
 export type PluginSortingInput = {
@@ -7599,6 +7884,7 @@ export type PluginUpdateInput = {
   configuration?: Maybe<Array<Maybe<ConfigurationItemInput>>>;
 };
 
+
 export type PriceRangeInput = {
   /** Price greater than or equal to. */
   gte?: Maybe<Scalars['Float']>;
@@ -7607,84 +7893,86 @@ export type PriceRangeInput = {
 };
 
 /** Represents an individual item for sale in the storefront. */
-export type Product = Node &
-  ObjectWithMetadata & {
-    __typename?: 'Product';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    seoTitle?: Maybe<Scalars['String']>;
-    seoDescription?: Maybe<Scalars['String']>;
-    name: Scalars['String'];
-    description: Scalars['String'];
-    descriptionJson: Scalars['JSONString'];
-    publicationDate?: Maybe<Scalars['Date']>;
-    productType: ProductType;
-    slug: Scalars['String'];
-    category?: Maybe<Category>;
-    updatedAt?: Maybe<Scalars['DateTime']>;
-    chargeTaxes: Scalars['Boolean'];
-    weight?: Maybe<Weight>;
-    availableForPurchase?: Maybe<Scalars['Date']>;
-    visibleInListings: Scalars['Boolean'];
-    defaultVariant?: Maybe<ProductVariant>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /**
-     * The storefront URL for the product.
-     * @deprecated This field will be removed after 2020-07-31.
-     */
-    url: Scalars['String'];
-    /** The main thumbnail for a product. */
-    thumbnail?: Maybe<Image>;
-    /** Lists the storefront product's pricing, the current price and discounts, only meant for displaying. */
-    pricing?: Maybe<ProductPricingInfo>;
-    /** Whether the product is in stock and visible or not. */
-    isAvailable?: Maybe<Scalars['Boolean']>;
-    /** The price of the cheapest variant (including discounts). */
-    minimalVariantPrice?: Maybe<Money>;
-    /** A type of tax. Assigned by enabled tax gateway */
-    taxType?: Maybe<TaxType>;
-    /** List of attributes assigned to this product. */
-    attributes: Array<SelectedAttribute>;
-    purchaseCost?: Maybe<MoneyRange>;
-    margin?: Maybe<Margin>;
-    /** Get a single product image by ID. */
-    imageById?: Maybe<ProductImage>;
-    /** List of variants for the product. */
-    variants?: Maybe<Array<Maybe<ProductVariant>>>;
-    /** List of images for the product. */
-    images?: Maybe<Array<Maybe<ProductImage>>>;
-    /** List of collections for the product. */
-    collections?: Maybe<Array<Maybe<Collection>>>;
-    /** Returns translated product fields for the given language code. */
-    translation?: Maybe<ProductTranslation>;
-    /** Whether the product is available for purchase. */
-    isAvailableForPurchase?: Maybe<Scalars['Boolean']>;
-    /** Whether the product is published. */
-    isPublished: Scalars['Boolean'];
-  };
+export type Product = Node & ObjectWithMetadata & {
+  __typename?: 'Product';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  seoTitle?: Maybe<Scalars['String']>;
+  seoDescription?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  description: Scalars['String'];
+  descriptionJson: Scalars['JSONString'];
+  publicationDate?: Maybe<Scalars['Date']>;
+  productType: ProductType;
+  slug: Scalars['String'];
+  category?: Maybe<Category>;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  chargeTaxes: Scalars['Boolean'];
+  weight?: Maybe<Weight>;
+  availableForPurchase?: Maybe<Scalars['Date']>;
+  visibleInListings: Scalars['Boolean'];
+  defaultVariant?: Maybe<ProductVariant>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /**
+   * The storefront URL for the product.
+   * @deprecated This field will be removed after 2020-07-31.
+   */
+  url: Scalars['String'];
+  /** The main thumbnail for a product. */
+  thumbnail?: Maybe<Image>;
+  /** Lists the storefront product's pricing, the current price and discounts, only meant for displaying. */
+  pricing?: Maybe<ProductPricingInfo>;
+  /** Whether the product is in stock and visible or not. */
+  isAvailable?: Maybe<Scalars['Boolean']>;
+  /** The price of the cheapest variant (including discounts). */
+  minimalVariantPrice?: Maybe<Money>;
+  /** A type of tax. Assigned by enabled tax gateway */
+  taxType?: Maybe<TaxType>;
+  /** List of attributes assigned to this product. */
+  attributes: Array<SelectedAttribute>;
+  purchaseCost?: Maybe<MoneyRange>;
+  margin?: Maybe<Margin>;
+  /** Get a single product image by ID. */
+  imageById?: Maybe<ProductImage>;
+  /** List of variants for the product. */
+  variants?: Maybe<Array<Maybe<ProductVariant>>>;
+  /** List of images for the product. */
+  images?: Maybe<Array<Maybe<ProductImage>>>;
+  /** List of collections for the product. */
+  collections?: Maybe<Array<Maybe<Collection>>>;
+  /** Returns translated product fields for the given language code. */
+  translation?: Maybe<ProductTranslation>;
+  /** Whether the product is available for purchase. */
+  isAvailableForPurchase?: Maybe<Scalars['Boolean']>;
+  /** Whether the product is published. */
+  isPublished: Scalars['Boolean'];
+};
+
 
 /** Represents an individual item for sale in the storefront. */
 export type ProductThumbnailArgs = {
   size?: Maybe<Scalars['Int']>;
 };
 
+
 /** Represents an individual item for sale in the storefront. */
 export type ProductImageByIdArgs = {
   id?: Maybe<Scalars['ID']>;
 };
+
 
 /** Represents an individual item for sale in the storefront. */
 export type ProductTranslationArgs = {
@@ -7849,7 +8137,7 @@ export enum ProductErrorCode {
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
   Unique = 'UNIQUE',
-  VariantNoDigitalContent = 'VARIANT_NO_DIGITAL_CONTENT',
+  VariantNoDigitalContent = 'VARIANT_NO_DIGITAL_CONTENT'
 }
 
 export enum ProductFieldEnum {
@@ -7868,7 +8156,7 @@ export enum ProductFieldEnum {
   VariantPrice = 'VARIANT_PRICE',
   CostPrice = 'COST_PRICE',
   VariantWeight = 'VARIANT_WEIGHT',
-  VariantImages = 'VARIANT_IMAGES',
+  VariantImages = 'VARIANT_IMAGES'
 }
 
 export type ProductFilterInput = {
@@ -7897,6 +8185,7 @@ export type ProductImage = Node & {
   /** The URL of the image. */
   url: Scalars['String'];
 };
+
 
 /** Represents a product image. */
 export type ProductImageUrlArgs = {
@@ -8045,7 +8334,7 @@ export enum ProductOrderField {
   /** Sort products by publication status. */
   Published = 'PUBLISHED',
   /** Sort products by publication date. */
-  PublicationDate = 'PUBLICATION_DATE',
+  PublicationDate = 'PUBLICATION_DATE'
 }
 
 /** Represents availability of a product in the storefront. */
@@ -8097,6 +8386,7 @@ export type ProductTranslatableContent = Node & {
   product?: Maybe<Product>;
 };
 
+
 export type ProductTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
@@ -8127,43 +8417,43 @@ export type ProductTranslation = Node & {
 };
 
 /** Represents a type of product. It defines what attributes are available to products of this type. */
-export type ProductType = Node &
-  ObjectWithMetadata & {
-    __typename?: 'ProductType';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    name: Scalars['String'];
-    slug: Scalars['String'];
-    hasVariants: Scalars['Boolean'];
-    isShippingRequired: Scalars['Boolean'];
-    isDigital: Scalars['Boolean'];
-    weight?: Maybe<Weight>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of products of this type. */
-    products?: Maybe<ProductCountableConnection>;
-    /** A type of tax rate. */
-    taxRate?: Maybe<TaxRateType>;
-    /** A type of tax. Assigned by enabled tax gateway */
-    taxType?: Maybe<TaxType>;
-    /** Variant attributes of that product type. */
-    variantAttributes?: Maybe<Array<Maybe<Attribute>>>;
-    /** Product attributes of that product type. */
-    productAttributes?: Maybe<Array<Maybe<Attribute>>>;
-    availableAttributes?: Maybe<AttributeCountableConnection>;
-  };
+export type ProductType = Node & ObjectWithMetadata & {
+  __typename?: 'ProductType';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  hasVariants: Scalars['Boolean'];
+  isShippingRequired: Scalars['Boolean'];
+  isDigital: Scalars['Boolean'];
+  weight?: Maybe<Weight>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of products of this type. */
+  products?: Maybe<ProductCountableConnection>;
+  /** A type of tax rate. */
+  taxRate?: Maybe<TaxRateType>;
+  /** A type of tax. Assigned by enabled tax gateway */
+  taxType?: Maybe<TaxType>;
+  /** Variant attributes of that product type. */
+  variantAttributes?: Maybe<Array<Maybe<Attribute>>>;
+  /** Product attributes of that product type. */
+  productAttributes?: Maybe<Array<Maybe<Attribute>>>;
+  availableAttributes?: Maybe<AttributeCountableConnection>;
+};
+
 
 /** Represents a type of product. It defines what attributes are available to products of this type. */
 export type ProductTypeProductsArgs = {
@@ -8172,6 +8462,7 @@ export type ProductTypeProductsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Represents a type of product. It defines what attributes are available to products of this type. */
 export type ProductTypeAvailableAttributesArgs = {
@@ -8221,7 +8512,7 @@ export type ProductTypeClearPrivateMeta = {
 
 export enum ProductTypeConfigurable {
   Configurable = 'CONFIGURABLE',
-  Simple = 'SIMPLE',
+  Simple = 'SIMPLE'
 }
 
 export type ProductTypeCountableConnection = {
@@ -8267,7 +8558,7 @@ export type ProductTypeDelete = {
 
 export enum ProductTypeEnum {
   Digital = 'DIGITAL',
-  Shippable = 'SHIPPABLE',
+  Shippable = 'SHIPPABLE'
 }
 
 export type ProductTypeFilterInput = {
@@ -8317,7 +8608,7 @@ export enum ProductTypeSortField {
   /** Sort products by type. */
   Digital = 'DIGITAL',
   /** Sort products by shipping. */
-  ShippingRequired = 'SHIPPING_REQUIRED',
+  ShippingRequired = 'SHIPPING_REQUIRED'
 }
 
 export type ProductTypeSortingInput = {
@@ -8400,90 +8691,93 @@ export type ProductUpdatePrivateMeta = {
 };
 
 /** Represents a version of a product such as different size or color. */
-export type ProductVariant = Node &
-  ObjectWithMetadata & {
-    __typename?: 'ProductVariant';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    name: Scalars['String'];
-    sku: Scalars['String'];
-    product: Product;
-    trackInventory: Scalars['Boolean'];
-    weight?: Maybe<Weight>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /**
-     * Quantity of a product available for sale.
-     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
-     */
-    quantity: Scalars['Int'];
-    /**
-     * Quantity allocated for orders.
-     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
-     */
-    quantityAllocated?: Maybe<Scalars['Int']>;
-    /**
-     * Quantity of a product available for sale.
-     * @deprecated Use the quantityAvailable field instead. This field will be removed after 2020-07-31.
-     */
-    stockQuantity: Scalars['Int'];
-    /** Base price of a product variant. This field is restricted for admins. Use the pricing field to get the public price for customers. */
-    price?: Maybe<Money>;
-    /** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
-    pricing?: Maybe<VariantPricingInfo>;
-    /**
-     * Whether the variant is in stock and visible or not.
-     * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
-     */
-    isAvailable?: Maybe<Scalars['Boolean']>;
-    /** List of attributes assigned to this variant. */
-    attributes: Array<SelectedAttribute>;
-    /** Cost price of the variant. */
-    costPrice?: Maybe<Money>;
-    /** Gross margin percentage value. */
-    margin?: Maybe<Scalars['Int']>;
-    /** Total quantity ordered. */
-    quantityOrdered?: Maybe<Scalars['Int']>;
-    /** Total revenue generated by a variant in given period of time. Note: this field should be queried using `reportProductSales` query as it uses optimizations suitable for such calculations. */
-    revenue?: Maybe<TaxedMoney>;
-    /** List of images for the product variant. */
-    images?: Maybe<Array<Maybe<ProductImage>>>;
-    /** Returns translated product variant fields for the given language code. */
-    translation?: Maybe<ProductVariantTranslation>;
-    /** Digital content for the product variant. */
-    digitalContent?: Maybe<DigitalContent>;
-    /** Stocks for the product variant. */
-    stocks?: Maybe<Array<Maybe<Stock>>>;
-    /** Quantity of a product available for sale in one checkout. */
-    quantityAvailable: Scalars['Int'];
-  };
+export type ProductVariant = Node & ObjectWithMetadata & {
+  __typename?: 'ProductVariant';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  sku: Scalars['String'];
+  product: Product;
+  trackInventory: Scalars['Boolean'];
+  weight?: Maybe<Weight>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /**
+   * Quantity of a product available for sale.
+   * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+   */
+  quantity: Scalars['Int'];
+  /**
+   * Quantity allocated for orders.
+   * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+   */
+  quantityAllocated?: Maybe<Scalars['Int']>;
+  /**
+   * Quantity of a product available for sale.
+   * @deprecated Use the quantityAvailable field instead. This field will be removed after 2020-07-31.
+   */
+  stockQuantity: Scalars['Int'];
+  /** Base price of a product variant. This field is restricted for admins. Use the pricing field to get the public price for customers. */
+  price?: Maybe<Money>;
+  /** Lists the storefront variant's pricing, the current price and discounts, only meant for displaying. */
+  pricing?: Maybe<VariantPricingInfo>;
+  /**
+   * Whether the variant is in stock and visible or not.
+   * @deprecated Use the stock field instead. This field will be removed after 2020-07-31.
+   */
+  isAvailable?: Maybe<Scalars['Boolean']>;
+  /** List of attributes assigned to this variant. */
+  attributes: Array<SelectedAttribute>;
+  /** Cost price of the variant. */
+  costPrice?: Maybe<Money>;
+  /** Gross margin percentage value. */
+  margin?: Maybe<Scalars['Int']>;
+  /** Total quantity ordered. */
+  quantityOrdered?: Maybe<Scalars['Int']>;
+  /** Total revenue generated by a variant in given period of time. Note: this field should be queried using `reportProductSales` query as it uses optimizations suitable for such calculations. */
+  revenue?: Maybe<TaxedMoney>;
+  /** List of images for the product variant. */
+  images?: Maybe<Array<Maybe<ProductImage>>>;
+  /** Returns translated product variant fields for the given language code. */
+  translation?: Maybe<ProductVariantTranslation>;
+  /** Digital content for the product variant. */
+  digitalContent?: Maybe<DigitalContent>;
+  /** Stocks for the product variant. */
+  stocks?: Maybe<Array<Maybe<Stock>>>;
+  /** Quantity of a product available for sale in one checkout. */
+  quantityAvailable: Scalars['Int'];
+};
+
 
 /** Represents a version of a product such as different size or color. */
 export type ProductVariantRevenueArgs = {
   period?: Maybe<ReportingPeriod>;
 };
 
+
 /** Represents a version of a product such as different size or color. */
 export type ProductVariantTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
 
+
 /** Represents a version of a product such as different size or color. */
 export type ProductVariantStocksArgs = {
   countryCode?: Maybe<CountryCode>;
 };
+
 
 /** Represents a version of a product such as different size or color. */
 export type ProductVariantQuantityAvailableArgs = {
@@ -8713,6 +9007,7 @@ export type ProductVariantTranslatableContent = Node & {
   productVariant?: Maybe<ProductVariant>;
 };
 
+
 export type ProductVariantTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
 };
@@ -8929,9 +9224,11 @@ export type Query = {
   _service?: Maybe<_Service>;
 };
 
+
 export type QueryWebhookArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryWebhooksArgs = {
   sortBy?: Maybe<WebhookSortingInput>;
@@ -8942,13 +9239,16 @@ export type QueryWebhooksArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryWebhookSamplePayloadArgs = {
   eventType: WebhookSampleEventTypeEnum;
 };
 
+
 export type QueryWarehouseArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryWarehousesArgs = {
   filter?: Maybe<WarehouseFilterInput>;
@@ -8959,6 +9259,7 @@ export type QueryWarehousesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryTranslationsArgs = {
   kind: TranslatableKinds;
   before?: Maybe<Scalars['String']>;
@@ -8967,14 +9268,17 @@ export type QueryTranslationsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryTranslationArgs = {
   id: Scalars['ID'];
   kind: TranslatableKinds;
 };
 
+
 export type QueryStockArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryStocksArgs = {
   filter?: Maybe<StockFilterInput>;
@@ -8984,9 +9288,11 @@ export type QueryStocksArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryShippingZoneArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryShippingZonesArgs = {
   before?: Maybe<Scalars['String']>;
@@ -8995,9 +9301,11 @@ export type QueryShippingZonesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryDigitalContentArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryDigitalContentsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9005,6 +9313,7 @@ export type QueryDigitalContentsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 export type QueryAttributesArgs = {
   filter?: Maybe<AttributeFilterInput>;
@@ -9015,9 +9324,11 @@ export type QueryAttributesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryAttributeArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryCategoriesArgs = {
   filter?: Maybe<CategoryFilterInput>;
@@ -9029,15 +9340,18 @@ export type QueryCategoriesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryCategoryArgs = {
   id?: Maybe<Scalars['ID']>;
   slug?: Maybe<Scalars['String']>;
 };
 
+
 export type QueryCollectionArgs = {
   id?: Maybe<Scalars['ID']>;
   slug?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryCollectionsArgs = {
   filter?: Maybe<CollectionFilterInput>;
@@ -9048,10 +9362,12 @@ export type QueryCollectionsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryProductArgs = {
   id?: Maybe<Scalars['ID']>;
   slug?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryProductsArgs = {
   filter?: Maybe<ProductFilterInput>;
@@ -9063,9 +9379,11 @@ export type QueryProductsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryProductTypeArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryProductTypesArgs = {
   filter?: Maybe<ProductTypeFilterInput>;
@@ -9076,10 +9394,12 @@ export type QueryProductTypesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryProductVariantArgs = {
   id?: Maybe<Scalars['ID']>;
   sku?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryProductVariantsArgs = {
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
@@ -9090,6 +9410,7 @@ export type QueryProductVariantsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryReportProductSalesArgs = {
   period: ReportingPeriod;
   before?: Maybe<Scalars['String']>;
@@ -9098,9 +9419,11 @@ export type QueryReportProductSalesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryPaymentArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryPaymentsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9109,10 +9432,12 @@ export type QueryPaymentsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryPageArgs = {
   id?: Maybe<Scalars['ID']>;
   slug?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryPagesArgs = {
   sortBy?: Maybe<PageSortingInput>;
@@ -9123,6 +9448,7 @@ export type QueryPagesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryHomepageEventsArgs = {
   before?: Maybe<Scalars['String']>;
   after?: Maybe<Scalars['String']>;
@@ -9130,9 +9456,11 @@ export type QueryHomepageEventsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryOrderArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryOrdersArgs = {
   sortBy?: Maybe<OrderSortingInput>;
@@ -9145,6 +9473,7 @@ export type QueryOrdersArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryDraftOrdersArgs = {
   sortBy?: Maybe<OrderSortingInput>;
   filter?: Maybe<OrderDraftFilterInput>;
@@ -9155,19 +9484,23 @@ export type QueryDraftOrdersArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryOrdersTotalArgs = {
   period?: Maybe<ReportingPeriod>;
 };
 
+
 export type QueryOrderByTokenArgs = {
   token: Scalars['UUID'];
 };
+
 
 export type QueryMenuArgs = {
   id?: Maybe<Scalars['ID']>;
   name?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
 };
+
 
 export type QueryMenusArgs = {
   sortBy?: Maybe<MenuSortingInput>;
@@ -9178,9 +9511,11 @@ export type QueryMenusArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryMenuItemArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryMenuItemsArgs = {
   sortBy?: Maybe<MenuItemSortingInput>;
@@ -9191,9 +9526,11 @@ export type QueryMenuItemsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryGiftCardArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryGiftCardsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9202,9 +9539,11 @@ export type QueryGiftCardsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryPluginArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryPluginsArgs = {
   filter?: Maybe<PluginFilterInput>;
@@ -9215,9 +9554,11 @@ export type QueryPluginsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QuerySaleArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QuerySalesArgs = {
   filter?: Maybe<SaleFilterInput>;
@@ -9229,9 +9570,11 @@ export type QuerySalesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryVoucherArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryVouchersArgs = {
   filter?: Maybe<VoucherFilterInput>;
@@ -9243,9 +9586,11 @@ export type QueryVouchersArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryExportFileArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryExportFilesArgs = {
   filter?: Maybe<ExportFileFilterInput>;
@@ -9256,9 +9601,11 @@ export type QueryExportFilesArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryCheckoutArgs = {
   token?: Maybe<Scalars['UUID']>;
 };
+
 
 export type QueryCheckoutsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9267,9 +9614,11 @@ export type QueryCheckoutsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryCheckoutLineArgs = {
   id?: Maybe<Scalars['ID']>;
 };
+
 
 export type QueryCheckoutLinesArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9277,6 +9626,7 @@ export type QueryCheckoutLinesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 export type QueryAppsArgs = {
   filter?: Maybe<AppFilterInput>;
@@ -9287,9 +9637,11 @@ export type QueryAppsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryAppArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryAddressValidationRulesArgs = {
   countryCode: CountryCode;
@@ -9298,9 +9650,11 @@ export type QueryAddressValidationRulesArgs = {
   cityArea?: Maybe<Scalars['String']>;
 };
 
+
 export type QueryAddressArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryCustomersArgs = {
   filter?: Maybe<CustomerFilterInput>;
@@ -9311,6 +9665,7 @@ export type QueryCustomersArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryPermissionGroupsArgs = {
   filter?: Maybe<PermissionGroupFilterInput>;
   sortBy?: Maybe<PermissionGroupSortingInput>;
@@ -9320,9 +9675,11 @@ export type QueryPermissionGroupsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryPermissionGroupArgs = {
   id: Scalars['ID'];
 };
+
 
 export type QueryStaffUsersArgs = {
   filter?: Maybe<StaffUserInput>;
@@ -9333,6 +9690,7 @@ export type QueryStaffUsersArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryServiceAccountsArgs = {
   filter?: Maybe<ServiceAccountFilterInput>;
   sortBy?: Maybe<ServiceAccountSortingInput>;
@@ -9342,13 +9700,16 @@ export type QueryServiceAccountsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 export type QueryServiceAccountArgs = {
   id: Scalars['ID'];
 };
 
+
 export type QueryUserArgs = {
   id: Scalars['ID'];
 };
+
 
 export type Query_EntitiesArgs = {
   representations?: Maybe<Array<Maybe<Scalars['_Any']>>>;
@@ -9387,7 +9748,7 @@ export type ReorderInput = {
 
 export enum ReportingPeriod {
   Today = 'TODAY',
-  ThisMonth = 'THIS_MONTH',
+  ThisMonth = 'THIS_MONTH'
 }
 
 /** Request email change of the logged in user. */
@@ -9434,6 +9795,7 @@ export type Sale = Node & {
   translation?: Maybe<SaleTranslation>;
 };
 
+
 /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 export type SaleCategoriesArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9441,6 +9803,7 @@ export type SaleCategoriesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 export type SaleCollectionsArgs = {
@@ -9450,6 +9813,7 @@ export type SaleCollectionsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 export type SaleProductsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -9457,6 +9821,7 @@ export type SaleProductsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
 export type SaleTranslationArgs = {
@@ -9579,7 +9944,7 @@ export enum SaleSortField {
   /** Sort sales by value. */
   Value = 'VALUE',
   /** Sort sales by type. */
-  Type = 'TYPE',
+  Type = 'TYPE'
 }
 
 export type SaleSortingInput = {
@@ -9599,6 +9964,7 @@ export type SaleTranslatableContent = Node & {
   /** Sales allow creating discounts for categories, collections or products and are visible to all the customers. */
   sale?: Maybe<Sale>;
 };
+
 
 export type SaleTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -9630,7 +9996,7 @@ export enum SaleType {
   /** USD */
   Fixed = 'FIXED',
   /** % */
-  Percentage = 'PERCENTAGE',
+  Percentage = 'PERCENTAGE'
 }
 
 /** Updates a sale. */
@@ -9662,36 +10028,35 @@ export type SeoInput = {
 };
 
 /** Represents service account data. */
-export type ServiceAccount = Node &
-  ObjectWithMetadata & {
-    __typename?: 'ServiceAccount';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    /** Name of the service account. */
-    name?: Maybe<Scalars['String']>;
-    /** The date and time when the service account was created. */
-    created?: Maybe<Scalars['DateTime']>;
-    /** Determine if service account will be set active or not. */
-    isActive?: Maybe<Scalars['Boolean']>;
-    /** List of the service's permissions. */
-    permissions?: Maybe<Array<Maybe<Permission>>>;
-    /** Last 4 characters of the tokens. */
-    tokens?: Maybe<Array<Maybe<ServiceAccountToken>>>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-  };
+export type ServiceAccount = Node & ObjectWithMetadata & {
+  __typename?: 'ServiceAccount';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  /** Name of the service account. */
+  name?: Maybe<Scalars['String']>;
+  /** The date and time when the service account was created. */
+  created?: Maybe<Scalars['DateTime']>;
+  /** Determine if service account will be set active or not. */
+  isActive?: Maybe<Scalars['Boolean']>;
+  /** List of the service's permissions. */
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  /** Last 4 characters of the tokens. */
+  tokens?: Maybe<Array<Maybe<ServiceAccountToken>>>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+};
 
 /** Clear private metadata for a service account. */
 export type ServiceAccountClearPrivateMeta = {
@@ -9766,7 +10131,7 @@ export enum ServiceAccountSortField {
   /** Sort service accounts by name. */
   Name = 'NAME',
   /** Sort service accounts by creation date. */
-  CreationDate = 'CREATION_DATE',
+  CreationDate = 'CREATION_DATE'
 }
 
 export type ServiceAccountSortingInput = {
@@ -9884,7 +10249,7 @@ export enum ShippingErrorCode {
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
   Unique = 'UNIQUE',
-  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM',
+  DuplicatedInputItem = 'DUPLICATED_INPUT_ITEM'
 }
 
 /** Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers. */
@@ -9904,6 +10269,7 @@ export type ShippingMethod = Node & {
   translation?: Maybe<ShippingMethodTranslation>;
 };
 
+
 /** Shipping method are the methods you'll use to get customer's orders to them. They are directly exposed to the customers. */
 export type ShippingMethodTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -9919,6 +10285,7 @@ export type ShippingMethodTranslatableContent = Node & {
   /** Shipping method are the methods you'll use to get customer's orders  to them. They are directly exposed to the customers. */
   shippingMethod?: Maybe<ShippingMethod>;
 };
+
 
 export type ShippingMethodTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -9936,7 +10303,7 @@ export type ShippingMethodTranslation = Node & {
 /** An enumeration. */
 export enum ShippingMethodTypeEnum {
   Price = 'PRICE',
-  Weight = 'WEIGHT',
+  Weight = 'WEIGHT'
 }
 
 /** Deletes shipping prices. */
@@ -10210,15 +10577,18 @@ export type Shop = {
   staffNotificationRecipients?: Maybe<Array<Maybe<StaffNotificationRecipient>>>;
 };
 
+
 /** Represents a shop resource containing general shop data and configuration. */
 export type ShopAvailablePaymentGatewaysArgs = {
   currency?: Maybe<Scalars['String']>;
 };
 
+
 /** Represents a shop resource containing general shop data and configuration. */
 export type ShopCountriesArgs = {
   languageCode?: Maybe<LanguageCodeEnum>;
 };
+
 
 /** Represents a shop resource containing general shop data and configuration. */
 export type ShopTranslationArgs = {
@@ -10269,7 +10639,7 @@ export enum ShopErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 /** Fetch tax rates. */
@@ -10434,7 +10804,7 @@ export type StaffError = {
 
 export enum StaffMemberStatus {
   Active = 'ACTIVE',
-  Deactivated = 'DEACTIVATED',
+  Deactivated = 'DEACTIVATED'
 }
 
 /** Represents a recipient of email notifications send by Saleor, such as notifications about new orders. Notifications can be assigned to staff users or arbitrary email addresses. */
@@ -10544,7 +10914,7 @@ export type Stock = Node & {
 
 export enum StockAvailability {
   InStock = 'IN_STOCK',
-  OutOfStock = 'OUT_OF_STOCK',
+  OutOfStock = 'OUT_OF_STOCK'
 }
 
 export type StockCountableConnection = {
@@ -10581,7 +10951,7 @@ export enum StockErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type StockFilterInput = {
@@ -10622,7 +10992,7 @@ export enum TaxRateType {
   SocialHousing = 'SOCIAL_HOUSING',
   Standard = 'STANDARD',
   Water = 'WATER',
-  Wine = 'WINE',
+  Wine = 'WINE'
 }
 
 /** Representation of tax types fetched from tax gateway. */
@@ -10692,7 +11062,7 @@ export enum TransactionError {
   /** processing_error */
   TransactionerrorProcessingError = 'TRANSACTIONERROR_PROCESSING_ERROR',
   /** declined */
-  TransactionerrorDeclined = 'TRANSACTIONERROR_DECLINED',
+  TransactionerrorDeclined = 'TRANSACTIONERROR_DECLINED'
 }
 
 /** An enumeration. */
@@ -10714,21 +11084,10 @@ export enum TransactionKind {
   /** Confirm */
   Confirm = 'CONFIRM',
   /** Cancel */
-  Cancel = 'CANCEL',
+  Cancel = 'CANCEL'
 }
 
-export type TranslatableItem =
-  | ProductTranslatableContent
-  | CollectionTranslatableContent
-  | CategoryTranslatableContent
-  | AttributeTranslatableContent
-  | AttributeValueTranslatableContent
-  | ProductVariantTranslatableContent
-  | PageTranslatableContent
-  | ShippingMethodTranslatableContent
-  | SaleTranslatableContent
-  | VoucherTranslatableContent
-  | MenuItemTranslatableContent;
+export type TranslatableItem = ProductTranslatableContent | CollectionTranslatableContent | CategoryTranslatableContent | AttributeTranslatableContent | AttributeValueTranslatableContent | ProductVariantTranslatableContent | PageTranslatableContent | ShippingMethodTranslatableContent | SaleTranslatableContent | VoucherTranslatableContent | MenuItemTranslatableContent;
 
 export type TranslatableItemConnection = {
   __typename?: 'TranslatableItemConnection';
@@ -10758,7 +11117,7 @@ export enum TranslatableKinds {
   Sale = 'SALE',
   ShippingMethod = 'SHIPPING_METHOD',
   Variant = 'VARIANT',
-  Voucher = 'VOUCHER',
+  Voucher = 'VOUCHER'
 }
 
 export type TranslationError = {
@@ -10775,7 +11134,7 @@ export type TranslationError = {
 export enum TranslationErrorCode {
   GraphqlError = 'GRAPHQL_ERROR',
   NotFound = 'NOT_FOUND',
-  Required = 'REQUIRED',
+  Required = 'REQUIRED'
 }
 
 export type TranslationInput = {
@@ -10785,6 +11144,7 @@ export type TranslationInput = {
   description?: Maybe<Scalars['String']>;
   descriptionJson?: Maybe<Scalars['JSONString']>;
 };
+
 
 export type UpdateInvoiceInput = {
   /** Invoice number */
@@ -10817,62 +11177,63 @@ export type UpdatePrivateMetadata = {
   item?: Maybe<ObjectWithMetadata>;
 };
 
+
 /** Represents user data. */
-export type User = Node &
-  ObjectWithMetadata & {
-    __typename?: 'User';
-    /** The ID of the object. */
-    id: Scalars['ID'];
-    lastLogin?: Maybe<Scalars['DateTime']>;
-    email: Scalars['String'];
-    firstName: Scalars['String'];
-    lastName: Scalars['String'];
-    isStaff: Scalars['Boolean'];
-    isActive: Scalars['Boolean'];
-    /** A note about the customer. */
-    note?: Maybe<Scalars['String']>;
-    dateJoined: Scalars['DateTime'];
-    defaultShippingAddress?: Maybe<Address>;
-    defaultBillingAddress?: Maybe<Address>;
-    /** List of private metadata items.Requires proper staff permissions to access. */
-    privateMetadata: Array<Maybe<MetadataItem>>;
-    /** List of public metadata items. Can be accessed without permissions. */
-    metadata: Array<Maybe<MetadataItem>>;
-    /**
-     * List of privately stored metadata namespaces.
-     * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
-     */
-    privateMeta: Array<Maybe<MetaStore>>;
-    /**
-     * List of publicly stored metadata namespaces.
-     * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
-     */
-    meta: Array<Maybe<MetaStore>>;
-    /** List of all user's addresses. */
-    addresses?: Maybe<Array<Maybe<Address>>>;
-    /** Returns the last open checkout of this user. */
-    checkout?: Maybe<Checkout>;
-    /** List of the user gift cards. */
-    giftCards?: Maybe<GiftCardCountableConnection>;
-    /** List of user's orders. */
-    orders?: Maybe<OrderCountableConnection>;
-    /**
-     * List of user's permissions.
-     * @deprecated Will be removed in Saleor 2.11.Use the `userPermissions` instead.
-     */
-    permissions?: Maybe<Array<Maybe<Permission>>>;
-    /** List of user's permissions. */
-    userPermissions?: Maybe<Array<Maybe<UserPermission>>>;
-    /** List of user's permission groups. */
-    permissionGroups?: Maybe<Array<Maybe<Group>>>;
-    /** List of user's permission groups which user can manage. */
-    editableGroups?: Maybe<Array<Maybe<Group>>>;
-    avatar?: Maybe<Image>;
-    /** List of events associated with the user. */
-    events?: Maybe<Array<Maybe<CustomerEvent>>>;
-    /** List of stored payment sources. */
-    storedPaymentSources?: Maybe<Array<Maybe<PaymentSource>>>;
-  };
+export type User = Node & ObjectWithMetadata & {
+  __typename?: 'User';
+  /** The ID of the object. */
+  id: Scalars['ID'];
+  lastLogin?: Maybe<Scalars['DateTime']>;
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  isStaff: Scalars['Boolean'];
+  isActive: Scalars['Boolean'];
+  /** A note about the customer. */
+  note?: Maybe<Scalars['String']>;
+  dateJoined: Scalars['DateTime'];
+  defaultShippingAddress?: Maybe<Address>;
+  defaultBillingAddress?: Maybe<Address>;
+  /** List of private metadata items.Requires proper staff permissions to access. */
+  privateMetadata: Array<Maybe<MetadataItem>>;
+  /** List of public metadata items. Can be accessed without permissions. */
+  metadata: Array<Maybe<MetadataItem>>;
+  /**
+   * List of privately stored metadata namespaces.
+   * @deprecated Use the `privetaMetadata` field. This field will be removed after 2020-07-31.
+   */
+  privateMeta: Array<Maybe<MetaStore>>;
+  /**
+   * List of publicly stored metadata namespaces.
+   * @deprecated Use the `metadata` field. This field will be removed after 2020-07-31.
+   */
+  meta: Array<Maybe<MetaStore>>;
+  /** List of all user's addresses. */
+  addresses?: Maybe<Array<Maybe<Address>>>;
+  /** Returns the last open checkout of this user. */
+  checkout?: Maybe<Checkout>;
+  /** List of the user gift cards. */
+  giftCards?: Maybe<GiftCardCountableConnection>;
+  /** List of user's orders. */
+  orders?: Maybe<OrderCountableConnection>;
+  /**
+   * List of user's permissions.
+   * @deprecated Will be removed in Saleor 2.11.Use the `userPermissions` instead.
+   */
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  /** List of user's permissions. */
+  userPermissions?: Maybe<Array<Maybe<UserPermission>>>;
+  /** List of user's permission groups. */
+  permissionGroups?: Maybe<Array<Maybe<Group>>>;
+  /** List of user's permission groups which user can manage. */
+  editableGroups?: Maybe<Array<Maybe<Group>>>;
+  avatar?: Maybe<Image>;
+  /** List of events associated with the user. */
+  events?: Maybe<Array<Maybe<CustomerEvent>>>;
+  /** List of stored payment sources. */
+  storedPaymentSources?: Maybe<Array<Maybe<PaymentSource>>>;
+};
+
 
 /** Represents user data. */
 export type UserGiftCardsArgs = {
@@ -10882,6 +11243,7 @@ export type UserGiftCardsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Represents user data. */
 export type UserOrdersArgs = {
   before?: Maybe<Scalars['String']>;
@@ -10889,6 +11251,7 @@ export type UserOrdersArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Represents user data. */
 export type UserAvatarArgs = {
@@ -11004,6 +11367,7 @@ export type UserPermission = {
   sourcePermissionGroups?: Maybe<Array<Group>>;
 };
 
+
 export type UserPermissionSourcePermissionGroupsArgs = {
   userId: Scalars['ID'];
 };
@@ -11016,7 +11380,7 @@ export enum UserSortField {
   /** Sort users by email. */
   Email = 'EMAIL',
   /** Sort users by order count. */
-  OrderCount = 'ORDER_COUNT',
+  OrderCount = 'ORDER_COUNT'
 }
 
 export type UserSortingInput = {
@@ -11153,6 +11517,7 @@ export type Voucher = Node & {
   translation?: Maybe<VoucherTranslation>;
 };
 
+
 /** Vouchers allow giving discounts to particular customers on categories, collections or specific products. They can be used during checkout by providing valid voucher codes. */
 export type VoucherCategoriesArgs = {
   before?: Maybe<Scalars['String']>;
@@ -11160,6 +11525,7 @@ export type VoucherCategoriesArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Vouchers allow giving discounts to particular customers on categories, collections or specific products. They can be used during checkout by providing valid voucher codes. */
 export type VoucherCollectionsArgs = {
@@ -11169,6 +11535,7 @@ export type VoucherCollectionsArgs = {
   last?: Maybe<Scalars['Int']>;
 };
 
+
 /** Vouchers allow giving discounts to particular customers on categories, collections or specific products. They can be used during checkout by providing valid voucher codes. */
 export type VoucherProductsArgs = {
   before?: Maybe<Scalars['String']>;
@@ -11176,6 +11543,7 @@ export type VoucherProductsArgs = {
   first?: Maybe<Scalars['Int']>;
   last?: Maybe<Scalars['Int']>;
 };
+
 
 /** Vouchers allow giving discounts to particular customers on categories, collections or specific products. They can be used during checkout by providing valid voucher codes. */
 export type VoucherTranslationArgs = {
@@ -11252,7 +11620,7 @@ export type VoucherDelete = {
 export enum VoucherDiscountType {
   Fixed = 'FIXED',
   Percentage = 'PERCENTAGE',
-  Shipping = 'SHIPPING',
+  Shipping = 'SHIPPING'
 }
 
 export type VoucherFilterInput = {
@@ -11325,7 +11693,7 @@ export enum VoucherSortField {
   /** Sort vouchers by usage limit. */
   UsageLimit = 'USAGE_LIMIT',
   /** Sort vouchers by minimum spent amount. */
-  MinimumSpentAmount = 'MINIMUM_SPENT_AMOUNT',
+  MinimumSpentAmount = 'MINIMUM_SPENT_AMOUNT'
 }
 
 export type VoucherSortingInput = {
@@ -11345,6 +11713,7 @@ export type VoucherTranslatableContent = Node & {
   /** Vouchers allow giving discounts to particular customers on categories, collections or specific products. They can be used during checkout by providing valid voucher codes. */
   voucher?: Maybe<Voucher>;
 };
+
 
 export type VoucherTranslatableContentTranslationArgs = {
   languageCode: LanguageCodeEnum;
@@ -11374,7 +11743,7 @@ export type VoucherTranslation = Node & {
 export enum VoucherTypeEnum {
   Shipping = 'SHIPPING',
   EntireOrder = 'ENTIRE_ORDER',
-  SpecificProduct = 'SPECIFIC_PRODUCT',
+  SpecificProduct = 'SPECIFIC_PRODUCT'
 }
 
 /** Updates a voucher. */
@@ -11401,6 +11770,7 @@ export type Warehouse = Node & {
   address: Address;
   email: Scalars['String'];
 };
+
 
 /** Represents warehouse. */
 export type WarehouseShippingZonesArgs = {
@@ -11502,7 +11872,7 @@ export enum WarehouseErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 export type WarehouseFilterInput = {
@@ -11536,7 +11906,7 @@ export type WarehouseShippingZoneUnassign = {
 
 export enum WarehouseSortField {
   /** Sort warehouses by name. */
-  Name = 'NAME',
+  Name = 'NAME'
 }
 
 export type WarehouseSortingInput = {
@@ -11661,7 +12031,7 @@ export enum WebhookErrorCode {
   Invalid = 'INVALID',
   NotFound = 'NOT_FOUND',
   Required = 'REQUIRED',
-  Unique = 'UNIQUE',
+  Unique = 'UNIQUE'
 }
 
 /** Webhook event. */
@@ -11690,7 +12060,7 @@ export enum WebhookEventTypeEnum {
   CheckoutQuantityChanged = 'CHECKOUT_QUANTITY_CHANGED',
   CheckoutCreated = 'CHECKOUT_CREATED',
   CheckoutUpdated = 'CHECKOUT_UPDATED',
-  FulfillmentCreated = 'FULFILLMENT_CREATED',
+  FulfillmentCreated = 'FULFILLMENT_CREATED'
 }
 
 export type WebhookFilterInput = {
@@ -11714,7 +12084,7 @@ export enum WebhookSampleEventTypeEnum {
   CheckoutQuantityChanged = 'CHECKOUT_QUANTITY_CHANGED',
   CheckoutCreated = 'CHECKOUT_CREATED',
   CheckoutUpdated = 'CHECKOUT_UPDATED',
-  FulfillmentCreated = 'FULFILLMENT_CREATED',
+  FulfillmentCreated = 'FULFILLMENT_CREATED'
 }
 
 export enum WebhookSortField {
@@ -11725,7 +12095,7 @@ export enum WebhookSortField {
   /** Sort webhooks by target url. */
   TargetUrl = 'TARGET_URL',
   /** Sort webhooks by service account. */
-  App = 'APP',
+  App = 'APP'
 }
 
 export type WebhookSortingInput = {
@@ -11773,76 +12143,26 @@ export type Weight = {
   value: Scalars['Float'];
 };
 
+
 /** An enumeration. */
 export enum WeightUnitsEnum {
   Kg = 'KG',
   Lb = 'LB',
   Oz = 'OZ',
-  G = 'G',
+  G = 'G'
 }
 
-export type _Entity =
-  | Address
-  | User
-  | Group
-  | ServiceAccount
-  | App
-  | ProductVariant
-  | Product
-  | ProductType
-  | Collection
-  | Category
-  | ProductImage;
+
+export type _Entity = Address | User | Group | ServiceAccount | App | ProductVariant | Product | ProductType | Collection | Category | ProductImage;
 
 export type _Service = {
   __typename?: '_Service';
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type UserAddressesQueryVariables = Exact<{ [key: string]: never }>;
+export type MoneyFragment = { __typename?: 'Money', amount: number, currency: string };
 
-export type UserAddressesQuery = { __typename?: 'Query' } & {
-  me?: Maybe<
-    { __typename?: 'User' } & {
-      addresses?: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'Address' } & Pick<
-              Address,
-              | 'id'
-              | 'isDefaultBillingAddress'
-              | 'isDefaultShippingAddress'
-              | 'firstName'
-              | 'lastName'
-              | 'streetAddress1'
-              | 'streetAddress2'
-              | 'city'
-              | 'countryArea'
-              | 'postalCode'
-              | 'phone'
-              | 'shipToName'
-              | 'customerId'
-              | 'vatId'
-            > & { country: { __typename?: 'CountryDisplay' } & Pick<CountryDisplay, 'code'> }
-          >
-        >
-      >;
-    }
-  >;
-};
-
-export type MoneyFragment = { __typename?: 'Money' } & Pick<Money, 'amount' | 'currency'>;
-
-export type ProductFragment = { __typename?: 'Product' } & Pick<
-  Product,
-  'id' | 'name' | 'slug' | 'description' | 'descriptionJson' | 'isAvailable' | 'isPublished'
-> & {
-    metadata: Array<Maybe<{ __typename?: 'MetadataItem' } & Pick<MetadataItem, 'key' | 'value'>>>;
-    variants?: Maybe<
-      Array<Maybe<{ __typename?: 'ProductVariant' } & Pick<ProductVariant, 'id' | 'sku' | 'quantityAvailable'>>>
-    >;
-    productType: { __typename?: 'ProductType' } & Pick<ProductType, 'id' | 'name' | 'hasVariants'>;
-  };
+export type ProductFragment = { __typename?: 'Product', id: string, name: string, slug: string, description: string, descriptionJson: any, isAvailable?: Maybe<boolean>, isPublished: boolean, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, quantityAvailable: number }>>>, productType: { __typename?: 'ProductType', id: string, name: string, hasVariants: boolean } };
 
 export type ProductListQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
@@ -11853,40 +12173,8 @@ export type ProductListQueryVariables = Exact<{
   sort?: Maybe<ProductOrder>;
 }>;
 
-export type ProductListQuery = { __typename?: 'Query' } & {
-  products?: Maybe<
-    { __typename?: 'ProductCountableConnection' } & Pick<ProductCountableConnection, 'totalCount'> & {
-        edges: Array<
-          { __typename?: 'ProductCountableEdge' } & {
-            node: { __typename?: 'Product' } & {
-              attributes: Array<
-                { __typename?: 'SelectedAttribute' } & {
-                  attribute: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'slug'>;
-                  values: Array<Maybe<{ __typename?: 'AttributeValue' } & Pick<AttributeValue, 'id' | 'name'>>>;
-                }
-              >;
-              pricing?: Maybe<
-                { __typename?: 'ProductPricingInfo' } & {
-                  priceRangeUndiscounted?: Maybe<
-                    { __typename?: 'TaxedMoneyRange' } & {
-                      start?: Maybe<
-                        { __typename?: 'TaxedMoney' } & { gross: { __typename?: 'Money' } & MoneyFragment }
-                      >;
-                      stop?: Maybe<{ __typename?: 'TaxedMoney' } & { gross: { __typename?: 'Money' } & MoneyFragment }>;
-                    }
-                  >;
-                }
-              >;
-            } & ProductFragment;
-          }
-        >;
-        pageInfo: { __typename?: 'PageInfo' } & Pick<
-          PageInfo,
-          'hasPreviousPage' | 'hasNextPage' | 'startCursor' | 'endCursor'
-        >;
-      }
-  >;
-};
+
+export type ProductListQuery = { __typename?: 'Query', products?: Maybe<{ __typename?: 'ProductCountableConnection', totalCount?: Maybe<number>, edges: Array<{ __typename?: 'ProductCountableEdge', node: { __typename?: 'Product', id: string, name: string, slug: string, description: string, descriptionJson: any, isAvailable?: Maybe<boolean>, isPublished: boolean, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string } }> }> }>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, quantityAvailable: number }>>>, productType: { __typename?: 'ProductType', id: string, name: string, hasVariants: boolean } } }>, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: Maybe<string>, endCursor?: Maybe<string> } }> };
 
 export type InitialProductFilterDataQueryVariables = Exact<{
   categories?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
@@ -11894,397 +12182,464 @@ export type InitialProductFilterDataQueryVariables = Exact<{
   inCategory?: Maybe<Scalars['ID']>;
 }>;
 
-export type InitialProductFilterDataQuery = { __typename?: 'Query' } & {
-  attributes?: Maybe<
-    { __typename?: 'AttributeCountableConnection' } & {
-      edges: Array<
-        { __typename?: 'AttributeCountableEdge' } & {
-          node: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'name' | 'slug'> & {
-              values?: Maybe<
-                Array<Maybe<{ __typename?: 'AttributeValue' } & Pick<AttributeValue, 'id' | 'name' | 'slug'>>>
-              >;
-            };
-        }
-      >;
-    }
-  >;
-  categories?: Maybe<
-    { __typename?: 'CategoryCountableConnection' } & {
-      edges: Array<
-        { __typename?: 'CategoryCountableEdge' } & { node: { __typename?: 'Category' } & Pick<Category, 'id' | 'name'> }
-      >;
-    }
-  >;
-  productTypes?: Maybe<
-    { __typename?: 'ProductTypeCountableConnection' } & {
-      edges: Array<
-        { __typename?: 'ProductTypeCountableEdge' } & {
-          node: { __typename?: 'ProductType' } & Pick<ProductType, 'id' | 'name'>;
-        }
-      >;
-    }
-  >;
-};
 
-export type PriceFragment = { __typename?: 'TaxedMoney' } & {
-  gross: { __typename?: 'Money' } & MoneyFragment;
-  net: { __typename?: 'Money' } & MoneyFragment;
-};
+export type InitialProductFilterDataQuery = { __typename?: 'Query', attributes?: Maybe<{ __typename?: 'AttributeCountableConnection', edges: Array<{ __typename?: 'AttributeCountableEdge', node: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string>, values?: Maybe<Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string>, slug?: Maybe<string> }>>> } }> }>, categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string } }> }>, productTypes?: Maybe<{ __typename?: 'ProductTypeCountableConnection', edges: Array<{ __typename?: 'ProductTypeCountableEdge', node: { __typename?: 'ProductType', id: string, name: string } }> }> };
 
-export type BasicProductFieldsFragment = { __typename?: 'Product' } & Pick<Product, 'id' | 'name'>;
+export type ProductPriceFragment = { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } };
 
-export type SelectedAttributeFieldsFragment = { __typename?: 'SelectedAttribute' } & {
-  attribute: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'name'>;
-  values: Array<Maybe<{ __typename?: 'AttributeValue' } & Pick<AttributeValue, 'id' | 'name'>>>;
-};
+export type BasicProductFieldsFragment = { __typename?: 'Product', id: string, name: string };
 
-export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant' } & Pick<
-  ProductVariant,
-  'id' | 'sku' | 'name' | 'isAvailable' | 'quantityAvailable'
-> & {
-    metadata: Array<Maybe<{ __typename?: 'MetadataItem' } & Pick<MetadataItem, 'key' | 'value'>>>;
-    pricing?: Maybe<
-      { __typename?: 'VariantPricingInfo' } & Pick<VariantPricingInfo, 'onSale'> & {
-          priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-          price?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-        }
-    >;
-    attributes: Array<
-      { __typename?: 'SelectedAttribute' } & {
-        attribute: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'name' | 'slug'>;
-        values: Array<Maybe<{ __typename?: 'AttributeValue' } & Pick<AttributeValue, 'id' | 'name'>>>;
-      }
-    >;
-  };
+export type SelectedAttributeFieldsFragment = { __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> };
 
-export type ProductPricingFieldFragment = { __typename?: 'Product' } & {
-  pricing?: Maybe<
-    { __typename?: 'ProductPricingInfo' } & Pick<ProductPricingInfo, 'onSale'> & {
-        priceRangeUndiscounted?: Maybe<
-          { __typename?: 'TaxedMoneyRange' } & {
-            start?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-            stop?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-          }
-        >;
-        priceRange?: Maybe<
-          { __typename?: 'TaxedMoneyRange' } & {
-            start?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-            stop?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-          }
-        >;
-      }
-  >;
-};
+export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> };
+
+export type ProductPricingFieldFragment = { __typename?: 'Product', pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> };
 
 export type ProductDetailsQueryVariables = Exact<{
   slug: Scalars['String'];
   countryCode?: Maybe<CountryCode>;
 }>;
 
-export type ProductDetailsQuery = { __typename?: 'Query' } & {
-  product?: Maybe<
-    { __typename?: 'Product' } & Pick<
-      Product,
-      'descriptionJson' | 'isAvailable' | 'isAvailableForPurchase' | 'availableForPurchase'
-    > & {
-        metadata: Array<Maybe<{ __typename?: 'MetadataItem' } & Pick<MetadataItem, 'key' | 'value'>>>;
-        category?: Maybe<{ __typename?: 'Category' } & Pick<Category, 'id' | 'name'>>;
-        attributes: Array<{ __typename?: 'SelectedAttribute' } & SelectedAttributeFieldsFragment>;
-        variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant' } & ProductVariantFieldsFragment>>>;
-      } & BasicProductFieldsFragment &
-      ProductPricingFieldFragment
-  >;
-};
+
+export type ProductDetailsQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', descriptionJson: any, isAvailable?: Maybe<boolean>, isAvailableForPurchase?: Maybe<boolean>, availableForPurchase?: Maybe<any>, id: string, name: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, category?: Maybe<{ __typename?: 'Category', id: string, name: string }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> }> };
 
 export type CartProductDetailsQueryVariables = Exact<{
   ids?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
   first?: Maybe<Scalars['Int']>;
 }>;
 
-export type CartProductDetailsQuery = { __typename?: 'Query' } & {
-  productVariants?: Maybe<
-    { __typename?: 'ProductVariantCountableConnection' } & {
-      edges: Array<
-        { __typename?: 'ProductVariantCountableEdge' } & {
-          node: { __typename?: 'ProductVariant' } & Pick<
-            ProductVariant,
-            'id' | 'name' | 'sku' | 'quantityAvailable'
-          > & {
-              pricing?: Maybe<
-                { __typename?: 'VariantPricingInfo' } & Pick<VariantPricingInfo, 'onSale'> & {
-                    priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-                    price?: Maybe<{ __typename?: 'TaxedMoney' } & PriceFragment>;
-                  }
-              >;
-              product: { __typename?: 'Product' } & Pick<Product, 'id' | 'name' | 'slug'> & {
-                  attributes: Array<
-                    { __typename?: 'SelectedAttribute' } & {
-                      attribute: { __typename?: 'Attribute' } & Pick<Attribute, 'id' | 'name' | 'slug'>;
-                      values: Array<Maybe<{ __typename?: 'AttributeValue' } & Pick<AttributeValue, 'id' | 'name'>>>;
-                    }
-                  >;
-                };
-            };
-        }
-      >;
-    }
-  >;
-};
+
+export type CartProductDetailsQuery = { __typename?: 'Query', productVariants?: Maybe<{ __typename?: 'ProductVariantCountableConnection', edges: Array<{ __typename?: 'ProductVariantCountableEdge', node: { __typename?: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, product: { __typename?: 'Product', id: string, name: string, slug: string, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> } } }> }> };
 
 export type CategoryListQueryVariables = Exact<{
   first?: Maybe<Scalars['Int']>;
 }>;
 
-export type CategoryListQuery = { __typename?: 'Query' } & {
-  categories?: Maybe<
-    { __typename?: 'CategoryCountableConnection' } & {
-      edges: Array<
-        { __typename?: 'CategoryCountableEdge' } & {
-          node: { __typename?: 'Category' } & Pick<Category, 'id' | 'name' | 'slug'> & {
-              parent?: Maybe<{ __typename?: 'Category' } & Pick<Category, 'id'>>;
-            };
-        }
-      >;
-    }
-  >;
-};
+
+export type CategoryListQuery = { __typename?: 'Query', categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, parent?: Maybe<{ __typename?: 'Category', id: string }> } }> }> };
 
 export type AccountConfirmMutationVariables = Exact<{
   email: Scalars['String'];
   token: Scalars['String'];
 }>;
 
-export type AccountConfirmMutation = { __typename?: 'Mutation' } & {
-  confirmAccount?: Maybe<
-    { __typename?: 'ConfirmAccount' } & { errors: Array<{ __typename?: 'Error' } & Pick<Error, 'field' | 'message'>> }
-  >;
-};
+
+export type AccountConfirmMutation = { __typename?: 'Mutation', confirmAccount?: Maybe<{ __typename?: 'ConfirmAccount', errors: Array<{ __typename?: 'Error', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
+export type UserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserAddressesQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, phone?: Maybe<string>, shipToName?: Maybe<string>, customerId?: Maybe<number>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', code: string } }>>> }> };
+
+export type AddressFieldsFragment = { __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } };
+
+export type EditAddressMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: AddressInput;
+}>;
+
+
+export type EditAddressMutation = { __typename?: 'Mutation', accountAddressUpdate?: Maybe<{ __typename?: 'AccountAddressUpdate', address?: Maybe<{ __typename?: 'Address', id: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type CreateAddressMutationVariables = Exact<{
+  input: AddressInput;
+}>;
+
+
+export type CreateAddressMutation = { __typename?: 'Mutation', accountAddressCreate?: Maybe<{ __typename?: 'AccountAddressCreate', address?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type PriceFragment = { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } };
+
+export type OrdersByUserQueryVariables = Exact<{
+  perPage: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type OrdersByUserQuery = { __typename?: 'Query', me?: Maybe<{ __typename: 'User', id: string, orders?: Maybe<{ __typename: 'OrderCountableConnection', pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<string> }, edges: Array<{ __typename: 'OrderCountableEdge', node: { __typename: 'Order', id: string, token: string, number?: Maybe<string>, statusDisplay?: Maybe<string>, created: any, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', id: string, productName: string, productSku: string, quantity: number, variant?: Maybe<{ __typename: 'ProductVariant', id: string, quantityAvailable: number, product: { __typename: 'Product', name: string, id: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, unitPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }>>, shippingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> } }> }> }> };
+
+export type OrderPriceFragment = { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } };
+
+export type ProductVariantFragment = { __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } };
+
+export type OrderDetailFragment = { __typename: 'Order', userEmail?: Maybe<string>, paymentStatus?: Maybe<PaymentChargeStatusEnum>, paymentStatusDisplay?: Maybe<string>, status: OrderStatus, statusDisplay?: Maybe<string>, id: string, token: string, number?: Maybe<string>, created: any, customerNote: string, shippingAddress?: Maybe<{ __typename: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', productName: string, quantity: number, id: string, productSku: string, variant?: Maybe<{ __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } }>, unitPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, tax: { __typename?: 'Money', amount: number }, gross: { __typename: 'Money', amount: number, currency: string } }> }>>, subtotal?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, payments?: Maybe<Array<Maybe<{ __typename?: 'Payment', creditCard?: Maybe<{ __typename?: 'CreditCard', brand: string, expMonth?: Maybe<number>, expYear?: Maybe<number>, firstDigits?: Maybe<string>, lastDigits: string }> }>>>, billingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, fulfillments: Array<Maybe<{ __typename?: 'Fulfillment', created: any, fulfillmentOrder: number, trackingNumber: string, statusDisplay?: Maybe<string> }>> };
+
+export type InvoiceFragmentFragment = { __typename: 'Invoice', id: string, number?: Maybe<string>, createdAt: any, url?: Maybe<string>, status: JobStatusEnum };
+
+export type UserOrderByTokenQueryVariables = Exact<{
+  token: Scalars['UUID'];
+}>;
+
+
+export type UserOrderByTokenQuery = { __typename?: 'Query', orderByToken?: Maybe<{ __typename: 'Order', userEmail?: Maybe<string>, paymentStatus?: Maybe<PaymentChargeStatusEnum>, paymentStatusDisplay?: Maybe<string>, status: OrderStatus, statusDisplay?: Maybe<string>, id: string, token: string, number?: Maybe<string>, created: any, customerNote: string, invoices?: Maybe<Array<Maybe<{ __typename: 'Invoice', id: string, number?: Maybe<string>, createdAt: any, url?: Maybe<string>, status: JobStatusEnum }>>>, shippingAddress?: Maybe<{ __typename: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', productName: string, quantity: number, id: string, productSku: string, variant?: Maybe<{ __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } }>, unitPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, tax: { __typename?: 'Money', amount: number }, gross: { __typename: 'Money', amount: number, currency: string } }> }>>, subtotal?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, payments?: Maybe<Array<Maybe<{ __typename?: 'Payment', creditCard?: Maybe<{ __typename?: 'CreditCard', brand: string, expMonth?: Maybe<number>, expYear?: Maybe<number>, firstDigits?: Maybe<string>, lastDigits: string }> }>>>, billingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, fulfillments: Array<Maybe<{ __typename?: 'Fulfillment', created: any, fulfillmentOrder: number, trackingNumber: string, statusDisplay?: Maybe<string> }>> }> };
+
+export type RegisterUserMutationVariables = Exact<{
+  input: AccountRegisterInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', accountRegister?: Maybe<{ __typename?: 'AccountRegister', accountErrors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }>, user?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>> }> }> };
+
+export type ShopQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ShopQueryQuery = { __typename?: 'Query', shop: { __typename?: 'Shop', displayGrossPrices: boolean, defaultCountry?: Maybe<{ __typename?: 'CountryDisplay', code: string, country: string }>, countries: Array<{ __typename?: 'CountryDisplay', country: string, code: string }>, geolocalization?: Maybe<{ __typename?: 'Geolocalization', country?: Maybe<{ __typename?: 'CountryDisplay', code: string, country: string }> }> } };
 
 export const ProductFragmentDoc = gql`
-  fragment Product on Product {
+    fragment Product on Product {
+  id
+  name
+  slug
+  description
+  descriptionJson
+  metadata {
+    key
+    value
+  }
+  variants {
+    id
+    sku
+    quantityAvailable
+  }
+  isAvailable
+  isPublished
+  productType {
     id
     name
-    slug
-    description
-    descriptionJson
-    metadata {
-      key
-      value
-    }
-    variants {
-      id
-      sku
-      quantityAvailable
-    }
-    isAvailable
-    isPublished
-    productType {
-      id
-      name
-      hasVariants
-    }
+    hasVariants
   }
-`;
+}
+    `;
 export const BasicProductFieldsFragmentDoc = gql`
-  fragment BasicProductFields on Product {
+    fragment BasicProductFields on Product {
+  id
+  name
+}
+    `;
+export const SelectedAttributeFieldsFragmentDoc = gql`
+    fragment SelectedAttributeFields on SelectedAttribute {
+  attribute {
     id
     name
   }
-`;
-export const SelectedAttributeFieldsFragmentDoc = gql`
-  fragment SelectedAttributeFields on SelectedAttribute {
+  values {
+    id
+    name
+  }
+}
+    `;
+export const MoneyFragmentDoc = gql`
+    fragment Money on Money {
+  amount
+  currency
+}
+    `;
+export const ProductPriceFragmentDoc = gql`
+    fragment ProductPrice on TaxedMoney {
+  gross {
+    ...Money
+  }
+  net {
+    ...Money
+  }
+}
+    ${MoneyFragmentDoc}`;
+export const ProductVariantFieldsFragmentDoc = gql`
+    fragment ProductVariantFields on ProductVariant {
+  id
+  sku
+  name
+  metadata {
+    key
+    value
+  }
+  isAvailable
+  quantityAvailable(countryCode: $countryCode)
+  pricing {
+    onSale
+    priceUndiscounted {
+      ...ProductPrice
+    }
+    price {
+      ...ProductPrice
+    }
+  }
+  attributes {
     attribute {
       id
       name
+      slug
     }
     values {
       id
       name
     }
   }
-`;
-export const MoneyFragmentDoc = gql`
-  fragment Money on Money {
+}
+    ${ProductPriceFragmentDoc}`;
+export const ProductPricingFieldFragmentDoc = gql`
+    fragment ProductPricingField on Product {
+  pricing {
+    onSale
+    priceRangeUndiscounted {
+      start {
+        ...ProductPrice
+      }
+      stop {
+        ...ProductPrice
+      }
+    }
+    priceRange {
+      start {
+        ...ProductPrice
+      }
+      stop {
+        ...ProductPrice
+      }
+    }
+  }
+}
+    ${ProductPriceFragmentDoc}`;
+export const AddressFieldsFragmentDoc = gql`
+    fragment AddressFields on Address {
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  city
+  country {
+    country
+    code
+  }
+  countryArea
+  postalCode
+  customerId
+  shipToName
+  shipVia
+  vatId
+}
+    `;
+export const PriceFragmentDoc = gql`
+    fragment Price on TaxedMoney {
+  gross {
     amount
     currency
+    __typename
   }
-`;
-export const PriceFragmentDoc = gql`
-  fragment Price on TaxedMoney {
-    gross {
-      ...Money
-    }
-    net {
-      ...Money
-    }
+  net {
+    amount
+    currency
+    __typename
   }
-  ${MoneyFragmentDoc}
-`;
-export const ProductVariantFieldsFragmentDoc = gql`
-  fragment ProductVariantFields on ProductVariant {
+  __typename
+}
+    `;
+export const ProductVariantFragmentDoc = gql`
+    fragment ProductVariant on ProductVariant {
+  id
+  name
+  sku
+  metadata {
+    key
+    value
+  }
+  quantityAvailable
+  isAvailable
+  pricing {
+    onSale
+    priceUndiscounted {
+      ...Price
+      __typename
+    }
+    price {
+      ...Price
+      __typename
+    }
+    __typename
+  }
+  attributes {
+    attribute {
+      id
+      __typename
+      slug
+    }
+    values {
+      id
+      name
+      value: name
+      __typename
+    }
+    __typename
+  }
+  product {
     id
-    sku
     name
-    metadata {
-      key
-      value
-    }
-    isAvailable
-    quantityAvailable(countryCode: $countryCode)
-    pricing {
-      onSale
-      priceUndiscounted {
-        ...Price
-      }
-      price {
-        ...Price
-      }
+    productType {
+      id
+      isShippingRequired
+      __typename
     }
     attributes {
       attribute {
-        id
-        name
         slug
       }
       values {
-        id
         name
       }
     }
+    __typename
   }
-  ${PriceFragmentDoc}
-`;
-export const ProductPricingFieldFragmentDoc = gql`
-  fragment ProductPricingField on Product {
-    pricing {
-      onSale
-      priceRangeUndiscounted {
-        start {
-          ...Price
-        }
-        stop {
-          ...Price
-        }
-      }
-      priceRange {
-        start {
-          ...Price
-        }
-        stop {
-          ...Price
-        }
+  __typename
+}
+    ${PriceFragmentDoc}`;
+export const OrderPriceFragmentDoc = gql`
+    fragment OrderPrice on TaxedMoney {
+  gross {
+    amount
+    currency
+    __typename
+  }
+  __typename
+  tax {
+    amount
+  }
+}
+    `;
+export const OrderDetailFragmentDoc = gql`
+    fragment OrderDetail on Order {
+  userEmail
+  paymentStatus
+  paymentStatusDisplay
+  status
+  statusDisplay
+  id
+  token
+  number
+  shippingAddress {
+    ...AddressFields
+    __typename
+  }
+  lines {
+    productName
+    quantity
+    variant {
+      ...ProductVariant
+      __typename
+    }
+    unitPrice {
+      currency
+      ...OrderPrice
+      __typename
+    }
+    totalPrice {
+      currency
+      ...OrderPrice
+      __typename
+      tax {
+        amount
       }
     }
+    __typename
+    id
+    productSku
   }
-  ${PriceFragmentDoc}
-`;
-export const UserAddressesDocument = gql`
-  query userAddresses {
-    me {
-      addresses {
-        id
-        isDefaultBillingAddress
-        isDefaultShippingAddress
-        firstName
-        lastName
-        streetAddress1
-        streetAddress2
-        city
-        countryArea
-        postalCode
-        country {
-          code
-        }
-        phone
-        shipToName
-        customerId
-        vatId
-      }
+  subtotal {
+    ...OrderPrice
+    __typename
+  }
+  total {
+    ...OrderPrice
+    __typename
+  }
+  shippingPrice {
+    ...OrderPrice
+    __typename
+  }
+  __typename
+  created
+  customerNote
+  payments {
+    creditCard {
+      brand
+      expMonth
+      expYear
+      firstDigits
+      lastDigits
     }
   }
-`;
-
-/**
- * __useUserAddressesQuery__
- *
- * To run a query within a React component, call `useUserAddressesQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserAddressesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserAddressesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUserAddressesQuery(
-  baseOptions?: Apollo.QueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+  billingAddress {
+    ...AddressFields
+  }
+  fulfillments {
+    created
+    fulfillmentOrder
+    trackingNumber
+    statusDisplay
+  }
 }
-export function useUserAddressesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+    ${AddressFieldsFragmentDoc}
+${ProductVariantFragmentDoc}
+${OrderPriceFragmentDoc}`;
+export const InvoiceFragmentFragmentDoc = gql`
+    fragment InvoiceFragment on Invoice {
+  id
+  number
+  createdAt
+  url
+  status
+  __typename
 }
-export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
-export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
-export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
+    `;
 export const ProductListDocument = gql`
-  query ProductList(
-    $first: Int
-    $after: String
-    $last: Int
-    $before: String
-    $filter: ProductFilterInput
-    $sort: ProductOrder
+    query ProductList($first: Int, $after: String, $last: Int, $before: String, $filter: ProductFilterInput, $sort: ProductOrder) {
+  products(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    filter: $filter
+    sortBy: $sort
   ) {
-    products(before: $before, after: $after, first: $first, last: $last, filter: $filter, sortBy: $sort) {
-      edges {
-        node {
-          ...Product
-          attributes {
-            attribute {
-              id
-              slug
-            }
-            values {
-              id
-              name
-            }
+    edges {
+      node {
+        ...Product
+        attributes {
+          attribute {
+            id
+            slug
           }
-          pricing {
-            priceRangeUndiscounted {
-              start {
-                gross {
-                  ...Money
-                }
+          values {
+            id
+            name
+          }
+        }
+        pricing {
+          priceRangeUndiscounted {
+            start {
+              gross {
+                ...Money
               }
-              stop {
-                gross {
-                  ...Money
-                }
+            }
+            stop {
+              gross {
+                ...Money
               }
             }
           }
         }
       }
-      pageInfo {
-        hasPreviousPage
-        hasNextPage
-        startCursor
-        endCursor
-      }
-      totalCount
     }
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+    }
+    totalCount
   }
-  ${ProductFragmentDoc}
-  ${MoneyFragmentDoc}
-`;
+}
+    ${ProductFragmentDoc}
+${MoneyFragmentDoc}`;
 
 /**
  * __useProductListQuery__
@@ -12307,55 +12662,54 @@ export const ProductListDocument = gql`
  *   },
  * });
  */
-export function useProductListQuery(
-  baseOptions?: Apollo.QueryHookOptions<ProductListQuery, ProductListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ProductListQuery, ProductListQueryVariables>(ProductListDocument, options);
-}
-export function useProductListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<ProductListQuery, ProductListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ProductListQuery, ProductListQueryVariables>(ProductListDocument, options);
-}
+export function useProductListQuery(baseOptions?: Apollo.QueryHookOptions<ProductListQuery, ProductListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductListQuery, ProductListQueryVariables>(ProductListDocument, options);
+      }
+export function useProductListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductListQuery, ProductListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductListQuery, ProductListQueryVariables>(ProductListDocument, options);
+        }
 export type ProductListQueryHookResult = ReturnType<typeof useProductListQuery>;
 export type ProductListLazyQueryHookResult = ReturnType<typeof useProductListLazyQuery>;
 export type ProductListQueryResult = Apollo.QueryResult<ProductListQuery, ProductListQueryVariables>;
 export const InitialProductFilterDataDocument = gql`
-  query InitialProductFilterData($categories: [ID!], $productTypes: [ID!], $inCategory: ID) {
-    attributes(first: 100, filter: { filterableInStorefront: true, inCategory: $inCategory }) {
-      edges {
-        node {
+    query InitialProductFilterData($categories: [ID!], $productTypes: [ID!], $inCategory: ID) {
+  attributes(
+    first: 100
+    filter: {filterableInStorefront: true, inCategory: $inCategory}
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        values {
           id
           name
           slug
-          values {
-            id
-            name
-            slug
-          }
-        }
-      }
-    }
-    categories(first: 100, filter: { ids: $categories }) {
-      edges {
-        node {
-          id
-          name
-        }
-      }
-    }
-    productTypes(first: 100, filter: { ids: $productTypes }) {
-      edges {
-        node {
-          id
-          name
         }
       }
     }
   }
-`;
+  categories(first: 100, filter: {ids: $categories}) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+  productTypes(first: 100, filter: {ids: $productTypes}) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
 
 /**
  * __useInitialProductFilterDataQuery__
@@ -12375,60 +12729,46 @@ export const InitialProductFilterDataDocument = gql`
  *   },
  * });
  */
-export function useInitialProductFilterDataQuery(
-  baseOptions?: Apollo.QueryHookOptions<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>(
-    InitialProductFilterDataDocument,
-    options
-  );
-}
-export function useInitialProductFilterDataLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>(
-    InitialProductFilterDataDocument,
-    options
-  );
-}
+export function useInitialProductFilterDataQuery(baseOptions?: Apollo.QueryHookOptions<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>(InitialProductFilterDataDocument, options);
+      }
+export function useInitialProductFilterDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>(InitialProductFilterDataDocument, options);
+        }
 export type InitialProductFilterDataQueryHookResult = ReturnType<typeof useInitialProductFilterDataQuery>;
 export type InitialProductFilterDataLazyQueryHookResult = ReturnType<typeof useInitialProductFilterDataLazyQuery>;
-export type InitialProductFilterDataQueryResult = Apollo.QueryResult<
-  InitialProductFilterDataQuery,
-  InitialProductFilterDataQueryVariables
->;
+export type InitialProductFilterDataQueryResult = Apollo.QueryResult<InitialProductFilterDataQuery, InitialProductFilterDataQueryVariables>;
 export const ProductDetailsDocument = gql`
-  query ProductDetails($slug: String!, $countryCode: CountryCode) {
-    product(slug: $slug) {
-      ...BasicProductFields
-      ...ProductPricingField
-      descriptionJson
-      metadata {
-        key
-        value
-      }
-      category {
-        id
-        name
-      }
-      attributes {
-        ...SelectedAttributeFields
-      }
-      variants {
-        ...ProductVariantFields
-      }
-      isAvailable
-      isAvailableForPurchase
-      availableForPurchase
+    query ProductDetails($slug: String!, $countryCode: CountryCode) {
+  product(slug: $slug) {
+    ...BasicProductFields
+    ...ProductPricingField
+    descriptionJson
+    metadata {
+      key
+      value
     }
+    category {
+      id
+      name
+    }
+    attributes {
+      ...SelectedAttributeFields
+    }
+    variants {
+      ...ProductVariantFields
+    }
+    isAvailable
+    isAvailableForPurchase
+    availableForPurchase
   }
-  ${BasicProductFieldsFragmentDoc}
-  ${ProductPricingFieldFragmentDoc}
-  ${SelectedAttributeFieldsFragmentDoc}
-  ${ProductVariantFieldsFragmentDoc}
-`;
+}
+    ${BasicProductFieldsFragmentDoc}
+${ProductPricingFieldFragmentDoc}
+${SelectedAttributeFieldsFragmentDoc}
+${ProductVariantFieldsFragmentDoc}`;
 
 /**
  * __useProductDetailsQuery__
@@ -12447,61 +12787,56 @@ export const ProductDetailsDocument = gql`
  *   },
  * });
  */
-export function useProductDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<ProductDetailsQuery, ProductDetailsQueryVariables>(ProductDetailsDocument, options);
-}
-export function useProductDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<ProductDetailsQuery, ProductDetailsQueryVariables>(ProductDetailsDocument, options);
-}
+export function useProductDetailsQuery(baseOptions: Apollo.QueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProductDetailsQuery, ProductDetailsQueryVariables>(ProductDetailsDocument, options);
+      }
+export function useProductDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductDetailsQuery, ProductDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProductDetailsQuery, ProductDetailsQueryVariables>(ProductDetailsDocument, options);
+        }
 export type ProductDetailsQueryHookResult = ReturnType<typeof useProductDetailsQuery>;
 export type ProductDetailsLazyQueryHookResult = ReturnType<typeof useProductDetailsLazyQuery>;
 export type ProductDetailsQueryResult = Apollo.QueryResult<ProductDetailsQuery, ProductDetailsQueryVariables>;
 export const CartProductDetailsDocument = gql`
-  query CartProductDetails($ids: [ID!], $first: Int) {
-    productVariants(ids: $ids, first: $first) {
-      edges {
-        node {
+    query CartProductDetails($ids: [ID!], $first: Int) {
+  productVariants(ids: $ids, first: $first) {
+    edges {
+      node {
+        id
+        name
+        sku
+        quantityAvailable
+        pricing {
+          onSale
+          priceUndiscounted {
+            ...ProductPrice
+          }
+          price {
+            ...ProductPrice
+          }
+        }
+        product {
           id
           name
-          sku
-          quantityAvailable
-          pricing {
-            onSale
-            priceUndiscounted {
-              ...Price
+          slug
+          attributes {
+            attribute {
+              id
+              name
+              slug
             }
-            price {
-              ...Price
-            }
-          }
-          product {
-            id
-            name
-            slug
-            attributes {
-              attribute {
-                id
-                name
-                slug
-              }
-              values {
-                id
-                name
-              }
+            values {
+              id
+              name
             }
           }
         }
       }
     }
   }
-  ${PriceFragmentDoc}
-`;
+}
+    ${ProductPriceFragmentDoc}`;
 
 /**
  * __useCartProductDetailsQuery__
@@ -12520,46 +12855,33 @@ export const CartProductDetailsDocument = gql`
  *   },
  * });
  */
-export function useCartProductDetailsQuery(
-  baseOptions?: Apollo.QueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<CartProductDetailsQuery, CartProductDetailsQueryVariables>(
-    CartProductDetailsDocument,
-    options
-  );
-}
-export function useCartProductDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<CartProductDetailsQuery, CartProductDetailsQueryVariables>(
-    CartProductDetailsDocument,
-    options
-  );
-}
+export function useCartProductDetailsQuery(baseOptions?: Apollo.QueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CartProductDetailsQuery, CartProductDetailsQueryVariables>(CartProductDetailsDocument, options);
+      }
+export function useCartProductDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CartProductDetailsQuery, CartProductDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CartProductDetailsQuery, CartProductDetailsQueryVariables>(CartProductDetailsDocument, options);
+        }
 export type CartProductDetailsQueryHookResult = ReturnType<typeof useCartProductDetailsQuery>;
 export type CartProductDetailsLazyQueryHookResult = ReturnType<typeof useCartProductDetailsLazyQuery>;
-export type CartProductDetailsQueryResult = Apollo.QueryResult<
-  CartProductDetailsQuery,
-  CartProductDetailsQueryVariables
->;
+export type CartProductDetailsQueryResult = Apollo.QueryResult<CartProductDetailsQuery, CartProductDetailsQueryVariables>;
 export const CategoryListDocument = gql`
-  query CategoryList($first: Int) {
-    categories(first: $first) {
-      edges {
-        node {
+    query CategoryList($first: Int) {
+  categories(first: $first) {
+    edges {
+      node {
+        id
+        name
+        slug
+        parent {
           id
-          name
-          slug
-          parent {
-            id
-          }
         }
       }
     }
   }
-`;
+}
+    `;
 
 /**
  * __useCategoryListQuery__
@@ -12577,31 +12899,27 @@ export const CategoryListDocument = gql`
  *   },
  * });
  */
-export function useCategoryListQuery(
-  baseOptions?: Apollo.QueryHookOptions<CategoryListQuery, CategoryListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<CategoryListQuery, CategoryListQueryVariables>(CategoryListDocument, options);
-}
-export function useCategoryListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<CategoryListQuery, CategoryListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<CategoryListQuery, CategoryListQueryVariables>(CategoryListDocument, options);
-}
+export function useCategoryListQuery(baseOptions?: Apollo.QueryHookOptions<CategoryListQuery, CategoryListQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoryListQuery, CategoryListQueryVariables>(CategoryListDocument, options);
+      }
+export function useCategoryListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoryListQuery, CategoryListQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoryListQuery, CategoryListQueryVariables>(CategoryListDocument, options);
+        }
 export type CategoryListQueryHookResult = ReturnType<typeof useCategoryListQuery>;
 export type CategoryListLazyQueryHookResult = ReturnType<typeof useCategoryListLazyQuery>;
 export type CategoryListQueryResult = Apollo.QueryResult<CategoryListQuery, CategoryListQueryVariables>;
 export const AccountConfirmDocument = gql`
-  mutation AccountConfirm($email: String!, $token: String!) {
-    confirmAccount(email: $email, token: $token) {
-      errors {
-        field
-        message
-      }
+    mutation AccountConfirm($email: String!, $token: String!) {
+  confirmAccount(email: $email, token: $token) {
+    errors {
+      field
+      message
     }
   }
-`;
+}
+    `;
 export type AccountConfirmMutationFn = Apollo.MutationFunction<AccountConfirmMutation, AccountConfirmMutationVariables>;
 
 /**
@@ -12622,15 +12940,374 @@ export type AccountConfirmMutationFn = Apollo.MutationFunction<AccountConfirmMut
  *   },
  * });
  */
-export function useAccountConfirmMutation(
-  baseOptions?: Apollo.MutationHookOptions<AccountConfirmMutation, AccountConfirmMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<AccountConfirmMutation, AccountConfirmMutationVariables>(AccountConfirmDocument, options);
-}
+export function useAccountConfirmMutation(baseOptions?: Apollo.MutationHookOptions<AccountConfirmMutation, AccountConfirmMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AccountConfirmMutation, AccountConfirmMutationVariables>(AccountConfirmDocument, options);
+      }
 export type AccountConfirmMutationHookResult = ReturnType<typeof useAccountConfirmMutation>;
 export type AccountConfirmMutationResult = Apollo.MutationResult<AccountConfirmMutation>;
-export type AccountConfirmMutationOptions = Apollo.BaseMutationOptions<
-  AccountConfirmMutation,
-  AccountConfirmMutationVariables
->;
+export type AccountConfirmMutationOptions = Apollo.BaseMutationOptions<AccountConfirmMutation, AccountConfirmMutationVariables>;
+export const UserAddressesDocument = gql`
+    query userAddresses {
+  me {
+    addresses {
+      id
+      isDefaultBillingAddress
+      isDefaultShippingAddress
+      firstName
+      lastName
+      streetAddress1
+      streetAddress2
+      city
+      countryArea
+      postalCode
+      country {
+        code
+      }
+      phone
+      shipToName
+      customerId
+      vatId
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserAddressesQuery__
+ *
+ * To run a query within a React component, call `useUserAddressesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserAddressesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserAddressesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserAddressesQuery(baseOptions?: Apollo.QueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+      }
+export function useUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+        }
+export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
+export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
+export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
+export const EditAddressDocument = gql`
+    mutation editAddress($id: ID!, $input: AddressInput!) {
+  accountAddressUpdate(id: $id, input: $input) {
+    address {
+      id
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type EditAddressMutationFn = Apollo.MutationFunction<EditAddressMutation, EditAddressMutationVariables>;
+
+/**
+ * __useEditAddressMutation__
+ *
+ * To run a mutation, you first call `useEditAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editAddressMutation, { data, loading, error }] = useEditAddressMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEditAddressMutation(baseOptions?: Apollo.MutationHookOptions<EditAddressMutation, EditAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditAddressMutation, EditAddressMutationVariables>(EditAddressDocument, options);
+      }
+export type EditAddressMutationHookResult = ReturnType<typeof useEditAddressMutation>;
+export type EditAddressMutationResult = Apollo.MutationResult<EditAddressMutation>;
+export type EditAddressMutationOptions = Apollo.BaseMutationOptions<EditAddressMutation, EditAddressMutationVariables>;
+export const CreateAddressDocument = gql`
+    mutation createAddress($input: AddressInput!) {
+  accountAddressCreate(input: $input) {
+    address {
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type CreateAddressMutationFn = Apollo.MutationFunction<CreateAddressMutation, CreateAddressMutationVariables>;
+
+/**
+ * __useCreateAddressMutation__
+ *
+ * To run a mutation, you first call `useCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAddressMutation, { data, loading, error }] = useCreateAddressMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<CreateAddressMutation, CreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAddressMutation, CreateAddressMutationVariables>(CreateAddressDocument, options);
+      }
+export type CreateAddressMutationHookResult = ReturnType<typeof useCreateAddressMutation>;
+export type CreateAddressMutationResult = Apollo.MutationResult<CreateAddressMutation>;
+export type CreateAddressMutationOptions = Apollo.BaseMutationOptions<CreateAddressMutation, CreateAddressMutationVariables>;
+export const OrdersByUserDocument = gql`
+    query OrdersByUser($perPage: Int!, $after: String) {
+  me {
+    id
+    orders(first: $perPage, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+        __typename
+      }
+      edges {
+        node {
+          id
+          token
+          number
+          statusDisplay
+          created
+          total {
+            ...Price
+          }
+          lines {
+            id
+            variant {
+              id
+              __typename
+              quantityAvailable
+              product {
+                name
+                id
+                __typename
+                metadata {
+                  key
+                  value
+                }
+                attributes {
+                  attribute {
+                    id
+                    name
+                  }
+                  values {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            __typename
+            productName
+            productSku
+            quantity
+            totalPrice {
+              gross {
+                amount
+              }
+            }
+            unitPrice {
+              gross {
+                amount
+              }
+            }
+          }
+          __typename
+          shippingAddress {
+            ...AddressFields
+          }
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+    ${PriceFragmentDoc}
+${AddressFieldsFragmentDoc}`;
+
+/**
+ * __useOrdersByUserQuery__
+ *
+ * To run a query within a React component, call `useOrdersByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersByUserQuery({
+ *   variables: {
+ *      perPage: // value for 'perPage'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useOrdersByUserQuery(baseOptions: Apollo.QueryHookOptions<OrdersByUserQuery, OrdersByUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrdersByUserQuery, OrdersByUserQueryVariables>(OrdersByUserDocument, options);
+      }
+export function useOrdersByUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrdersByUserQuery, OrdersByUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrdersByUserQuery, OrdersByUserQueryVariables>(OrdersByUserDocument, options);
+        }
+export type OrdersByUserQueryHookResult = ReturnType<typeof useOrdersByUserQuery>;
+export type OrdersByUserLazyQueryHookResult = ReturnType<typeof useOrdersByUserLazyQuery>;
+export type OrdersByUserQueryResult = Apollo.QueryResult<OrdersByUserQuery, OrdersByUserQueryVariables>;
+export const UserOrderByTokenDocument = gql`
+    query UserOrderByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    ...OrderDetail
+    invoices {
+      ...InvoiceFragment
+      __typename
+    }
+    __typename
+  }
+}
+    ${OrderDetailFragmentDoc}
+${InvoiceFragmentFragmentDoc}`;
+
+/**
+ * __useUserOrderByTokenQuery__
+ *
+ * To run a query within a React component, call `useUserOrderByTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserOrderByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserOrderByTokenQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useUserOrderByTokenQuery(baseOptions: Apollo.QueryHookOptions<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>(UserOrderByTokenDocument, options);
+      }
+export function useUserOrderByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>(UserOrderByTokenDocument, options);
+        }
+export type UserOrderByTokenQueryHookResult = ReturnType<typeof useUserOrderByTokenQuery>;
+export type UserOrderByTokenLazyQueryHookResult = ReturnType<typeof useUserOrderByTokenLazyQuery>;
+export type UserOrderByTokenQueryResult = Apollo.QueryResult<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>;
+export const RegisterUserDocument = gql`
+    mutation registerUser($input: AccountRegisterInput!) {
+  accountRegister(input: $input) {
+    accountErrors {
+      field
+      message
+      code
+    }
+    user {
+      id
+      firstName
+      lastName
+      email
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}
+    `;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
+
+/**
+ * __useRegisterUserMutation__
+ *
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const ShopQueryDocument = gql`
+    query shopQuery {
+  shop {
+    displayGrossPrices
+    defaultCountry {
+      code
+      country
+    }
+    countries {
+      country
+      code
+    }
+    geolocalization {
+      country {
+        code
+        country
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useShopQueryQuery__
+ *
+ * To run a query within a React component, call `useShopQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useShopQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useShopQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useShopQueryQuery(baseOptions?: Apollo.QueryHookOptions<ShopQueryQuery, ShopQueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ShopQueryQuery, ShopQueryQueryVariables>(ShopQueryDocument, options);
+      }
+export function useShopQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ShopQueryQuery, ShopQueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ShopQueryQuery, ShopQueryQueryVariables>(ShopQueryDocument, options);
+        }
+export type ShopQueryQueryHookResult = ReturnType<typeof useShopQueryQuery>;
+export type ShopQueryLazyQueryHookResult = ReturnType<typeof useShopQueryLazyQuery>;
+export type ShopQueryQueryResult = Apollo.QueryResult<ShopQueryQuery, ShopQueryQueryVariables>;

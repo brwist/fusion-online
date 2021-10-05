@@ -1,5 +1,9 @@
 RocketChips API Changelog
 ==========================
+
+### 2021-10-05 (version 0.0.8):
+  - Added zip_code property to the Ship-To address schema.
+
 ### 2021-09-30 (version 0.0.7):
   - Made the max length (50 characters) consistent across  mpn, cipn and mcode attributes for all schemas.
   - Indicated max length (20 characters) for the Decimal schema.

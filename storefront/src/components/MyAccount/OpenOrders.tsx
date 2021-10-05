@@ -1,117 +1,85 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { Card, Table, Button } from 'react-bootstrap';
+import { Card, Table, Button, Container } from 'react-bootstrap';
+import moment from 'moment';
 
 import './myaccount.scss';
+import { OrderCountableEdge } from '../../generated/graphql';
 
-export interface OpenOrdersProps {}
+
+export interface OpenOrdersProps {
+  orders: OrderCountableEdge[] | []
+}
 
 export const OpenOrders: React.FC<OpenOrdersProps> = ({
-  ...props
+  orders
 }) => {
+  if (orders.length > 0) {
   return (
-    <Card className="open-orders">
-      <Table borderless striped responsive>
+    <>
+    {orders.map(({node: {created, lines, id, statusDisplay, token, number, shippingAddress, total}}: OrderCountableEdge)=> {
+      return (
+        <Card key={id} className="open-orders">
+        <Table borderless striped responsive>
         <thead className="bg-dark text-white">
           <tr>
             <th>RFQ Number <Link to="/">123456789</Link></th>
-            <th>Monday 00, 0000</th>
-            <th>$0000.00</th>
+            <th>{moment(created).format('MMM DD, YYYY')}</th>
+            <th>${total?.gross.amount}</th>
             <th className="text-center">
-              <Link to="/account/orders/open-orders/1">See Details</Link>
+              <Link to={`/account/orders/open-orders/${token}`}>See Details</Link>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <div>
-                <strong>INTEL</strong> 123456789
-              </div>
-              <div>
-                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-              </div>
-              <div className="small mb-2">
-                CIPN: AB1234567
-              </div>
-              <div className="small">
-                <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>Qty: 100</strong>
-              </div>
-            </td>
-            <td colSpan={2}>
-                <div className="font-weight-bold small">Shipping Address</div>
-                Full Name<br />
-                123 Main St.<br />
-                City, State 01234, US
-            </td>
-            <td className="text-center" style={{'verticalAlign': 'middle'}}>
-              <Button variant="primary">
-                Track Package
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div>
-                <strong>INTEL</strong> 123456789
-              </div>
-              <div>
-                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-              </div>
-              <div className="small mb-2">
-                CIPN: AB1234567
-              </div>
-              <div className="small">
-                <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>Qty: 100</strong>
-              </div>
-            </td>
-            <td colSpan={2}>
-                <div className="font-weight-bold small">Shipping Address</div>
-                Full Name<br />
-                123 Main St.<br />
-                City, State 01234, US
-            </td>
-            <td className="text-center" style={{'verticalAlign': 'middle'}}>
-              <Button variant="primary">
-                Track Package
-              </Button>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div>
-                <strong>INTEL</strong> 123456789
-              </div>
-              <div>
-                <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
-              </div>
-              <div className="small mb-2">
-                CIPN: AB1234567
-              </div>
-              <div className="small">
-                <strong className="text-primary">$9,985</strong><span className="text-muted">/unit</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <strong>Qty: 100</strong>
-              </div>
-            </td>
-            <td colSpan={2}>
-                <div className="font-weight-bold small">Shipping Address</div>
-                Full Name<br />
-                123 Main St.<br />
-                City, State 01234, US
-            </td>
-            <td className="text-center" style={{'verticalAlign': 'middle'}}>
-              <Button variant="primary">
-                Track Package
-              </Button>
-            </td>
-          </tr>
+          {lines?.map((line) => {
+            return (
+              <tr key={line?.id}>
+              <td>
+                <div>
+                  <strong>{line?.variant?.product.attributes
+                    .find(({attribute}) => attribute.name === 'Manufacturer')
+                    ?.values[0]?.name
+                  }</strong> {line?.productSku}
+                </div>
+                <div>
+                  <Link to={`/products/${line?.variant?.product.id}`}>{line?.variant?.product.name}</Link>
+                </div>
+                <div className="small mb-2">
+                  CIPN: AB1234567
+                </div>
+                <div className="small">
+                  <strong className="text-primary">${line?.unitPrice?.gross.amount}</strong><span className="text-muted">/unit</span>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <strong>Qty: {line?.quantity}</strong>
+                </div>
+              </td>
+              <td colSpan={2}>
+                  <div className="font-weight-bold small">Shipping Address</div>
+                  {shippingAddress?.firstName} {shippingAddress?.lastName}<br />
+                  {shippingAddress?.streetAddress1} {shippingAddress?.streetAddress2}<br />
+                  {shippingAddress?.city}, {shippingAddress?.countryArea} {shippingAddress?.postalCode}, {shippingAddress?.country.code}
+              </td>
+              <td className="text-center" style={{'verticalAlign': 'middle'}}>
+                <Button variant="primary">
+                  Track Package
+                </Button>
+              </td>
+            </tr>
+            )
+          })}
         </tbody>
       </Table>
-    </Card>
+      </Card>
+      )
+    })}
+    </>
   );
+  } else {
+    return (
+      <Container>
+        <h5>No Open Orders</h5>
+      </Container>
+    )
+  }
 };

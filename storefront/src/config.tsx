@@ -121,7 +121,7 @@ export const GET_INITIAL_PRODUCT_FILTER_DATA = gql`
 `;
 
 export const PriceFragmentDoc = gql`
-  fragment Price on TaxedMoney {
+  fragment ProductPrice on TaxedMoney {
     gross {
       ...Money
     }
@@ -162,10 +162,10 @@ export const GET_PRODUCT_DETAILS = gql`
     pricing {
       onSale
       priceUndiscounted {
-        ...Price
+        ...ProductPrice
       }
       price {
-        ...Price
+        ...ProductPrice
       }
     }
     attributes {
@@ -186,18 +186,18 @@ export const GET_PRODUCT_DETAILS = gql`
       onSale
       priceRangeUndiscounted {
         start {
-          ...Price
+          ...ProductPrice
         }
         stop {
-          ...Price
+          ...ProductPrice
         }
       }
       priceRange {
         start {
-          ...Price
+          ...ProductPrice
         }
         stop {
-          ...Price
+          ...ProductPrice
         }
       }
     }
@@ -242,10 +242,10 @@ export const GET_CART_PRODUCT_DETAILS = gql`
           pricing {
             onSale
             priceUndiscounted {
-              ...Price
+              ...ProductPrice
             }
             price {
-              ...Price
+              ...ProductPrice
             }
           }
           product {
@@ -283,17 +283,6 @@ export const GET_CATEGORY_LIST = gql`
             id
           }
         }
-      }
-    }
-  }
-`;
-
-export const CONFIRM_ACCOUNT = gql`
-  mutation AccountConfirm($email: String!, $token: String!) {
-    confirmAccount(email: $email, token: $token) {
-      errors {
-        field
-        message
       }
     }
   }
