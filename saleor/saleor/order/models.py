@@ -455,8 +455,8 @@ class OrderLine(models.Model):
         return is_digital and has_digital
 
     @property
-    def item_num_id(self):
-        return self.variant.product.metadata.get('item_num_id')
+    def item_master_id(self):
+        return self.variant.product.metadata.get('item_master_id')
     
     @property
     def mpn(self):

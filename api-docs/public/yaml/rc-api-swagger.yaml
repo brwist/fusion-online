@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.6
+  version: 0.0.8
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -131,6 +131,7 @@ components:
       description: A decimal value encoded as a string. Precision is 14 digits and scale is 5 digits.
       pattern: /^\d+\.\d{0,5}$/
       example: "12.00125"
+      maxLength: 20
     LeadTimeDays:
       type: string 
       example: "0"
@@ -177,14 +178,18 @@ components:
           type: string
           maxLength: 50
           description: Vendor name
-        item_num_id:
+        item_master_id:
           type: integer
+        item_type_id:
+          description: The RMS ID of the item type.
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         mpn:
           type: string
           maxLength: 50
         mcode:
           type: string
-          maxLength: 10 
+          maxLength: 50 
         quantity:
           type: integer
           minimum: 1
@@ -218,7 +223,7 @@ components:
         - date_added
         - vendor_number
         - vendor_name
-        - item_num_id
+        - item_master_id
         - mpn
         - mcode
         - quantity
@@ -226,18 +231,20 @@ components:
         - lead_time_days
         - vendor_type
         - vendor_region
+        - offer_id
+        - item_type_id
     Product:
       title: Product
       type: object
       properties:
-        item_num_id:
+        item_master_id:
           type: integer
         mpn:
           type: string
           maxLength: 50
         mcode:
           type: string
-          maxLength: 10
+          maxLength: 50
         vendors:
           type: array
           items:
@@ -314,7 +321,7 @@ components:
           type: string
           maxLength: 100
       required:
-        - item_num_id
+        - item_master_id
         - mpn
         - mcode
         - vendors
@@ -354,7 +361,7 @@ components:
           maxLength: 50
         mcode:
           type: string
-          maxLength: 10 
+          maxLength: 50
         quantity:
           type: integer
           minimum: 1
@@ -449,6 +456,8 @@ components:
           items:
             type: object
             properties:
+              item_master_id:
+                type: integer
               item_num_id:
                 type: integer
               cipn:
@@ -456,15 +465,17 @@ components:
                 maxLength: 50
               mpn:
                 type: string
+                maxLength: 50
               mcode:
                 type: string
+                maxLength: 50
               quantity:
                 type: integer
                 minimum: 1
               unit_sell_price:
                 $ref: '#/components/schemas/Decimal'
             required:
-              - item_num_id
+              - item_master_id
               - quantity
               - unit_sell_price
         fo_order_ref_id:
@@ -510,6 +521,11 @@ components:
           type: string
           maxLength: 50
           description: May be an empty string
+        zip_code:
+          type: string
+          maxLength: 20
+          description: The Zip/postal code
+          example: "03801"
     Timestamp:
       type: integer
       description: Milliseconds since the Unix epoch (00:00:00 UTC on 1 January 1970)

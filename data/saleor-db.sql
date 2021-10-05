@@ -4846,13 +4846,13 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 25	f	marg@example.com	f	f	pbkdf2_sha256$216000$QBnP79Qo3CvY$LBGH8cqGJI4aMWBVYPahbqbVpMvTBz3SiIfj8V4mBto=	2021-09-09 14:43:30.979392+00	\N	\N	\N	\N	Margaret	Mac		{}	{"region": "Region 1", "company": "ACME"}	bb8nUsxnoqJm
 29	f	hgwells@example.com	f	f	pbkdf2_sha256$216000$h9LSica7oG8H$UvePYq3dA4puOQHIzfSpIlsgkZxgl53jL7yONPdv3jo=	2021-09-09 15:32:50.282923+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6sexxyyWl1kZ
 30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
-5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-20 18:43:08.623923+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 35	f	mprovenc@wellesley.edu	f	f	pbkdf2_sha256$216000$Ynd4yVShm7rm$IIne8IVm3Jv7l7K94lnpCs+1SExaaGbkrnW0cZLP7p8=	2021-09-16 17:53:54.687918+00	\N	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "Test"}	r9vE8wLDNWyJ
 32	f	ziggy@example.com	f	t	pbkdf2_sha256$216000$IZ3VmjuHO78N$DGYRcL8BMekoVApZhyYRmSryo+e+O8Seou6tGeepr3g=	2021-09-16 17:30:41.030409+00	2021-09-16 17:33:49.39617+00	\N	\N	\N				{}	{}	DWJ1hxf9b5Ov
 33	f	test123@example.com	f	f	pbkdf2_sha256$216000$K1SBq227yMAW$k8IYHRAQmfalq+Hmv1uPD2PS8dyqu9mKQnmSEqmwozo=	2021-09-16 17:47:13.770693+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	0gykgHOyc9sx
 21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
 36	f	1234test@example.com	f	f	pbkdf2_sha256$216000$IkYyi21OkCML$AkpT/BZFdlAYAyPbHWatCEnaoZVFKWmUL4WiPWJIYps=	2021-09-16 17:55:07.331893+00	\N	\N	\N	\N	Test	TESt		{}	{"region": "Americas", "company": "TESt"}	FfYGcf8n47iS
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-27 17:02:58.961359+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-09-28 16:35:25.130444+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
+5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-27 17:46:43.651617+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 \.
 
 
@@ -5304,7 +5304,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.checkout_checkout (created, last_change, email, token, quantity, user_id, billing_address_id, discount_amount, discount_name, note, shipping_address_id, shipping_method_id, voucher_code, translated_discount_name, metadata, private_metadata, currency, country, redirect_url, tracking_code) FROM stdin;
-2021-08-13 18:39:45.17068+00	2021-08-13 18:43:04.155203+00	customer@example.com	5f124ec1-5932-4fec-bc2d-1797e5defc42	12	5	31	0.000	\N		30	1	\N	\N	{}	{}	USD	US	\N	\N
+2021-08-13 18:39:45.17068+00	2021-08-13 18:43:04.155203+00	customer@example.com	5f124ec1-5932-4fec-bc2d-1797e5defc42	1	5	31	0.000	\N		30	1	\N	\N	{}	{}	USD	US	\N	\N
 \.
 
 
@@ -5321,6 +5321,7 @@ COPY public.checkout_checkout_gift_cards (id, checkout_id, giftcard_id) FROM std
 --
 
 COPY public.checkout_checkoutline (id, quantity, checkout_id, variant_id, data) FROM stdin;
+11	1	5f124ec1-5932-4fec-bc2d-1797e5defc42	66	{}
 \.
 
 
@@ -6604,12 +6605,10 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 339	120	77
 340	120	76
 341	120	85
-342	120	81
 343	121	75
 344	121	77
 345	121	76
 346	121	85
-347	121	81
 348	122	75
 349	122	77
 350	122	76
@@ -6630,28 +6629,22 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 183	89	60
 184	88	59
 185	88	60
-352	122	81
 353	124	75
 354	124	77
 355	124	76
 356	124	85
 318	116	75
-357	124	81
 358	125	75
 359	125	77
 360	125	76
 361	125	85
-362	125	81
-393	88	82
 394	88	86
 396	120	79
 397	120	80
-398	89	82
 399	89	86
 319	116	77
 320	116	76
 322	116	85
-323	116	81
 335	118	79
 336	118	80
 337	118	85
@@ -6659,21 +6652,17 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 364	126	77
 365	126	76
 366	126	85
-367	126	81
 388	132	75
 389	132	77
 390	132	76
 391	132	85
-392	132	81
 324	117	75
 325	117	77
 326	117	76
 328	117	85
-329	117	81
 330	118	75
 331	118	77
 332	118	76
-333	118	81
 400	133	52
 401	133	53
 402	133	54
@@ -6681,7 +6670,6 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 404	133	56
 405	133	57
 407	133	59
-408	133	82
 409	133	60
 410	133	86
 412	134	62
@@ -6690,11 +6678,9 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 415	134	65
 416	134	66
 417	134	67
-418	134	83
 419	134	68
 420	134	88
 422	135	70
-423	135	84
 424	135	71
 425	135	87
 426	135	72
@@ -6706,21 +6692,18 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 433	136	65
 434	136	66
 435	136	67
-436	136	83
 437	136	68
 438	136	88
 439	137	75
 440	137	76
 441	137	77
 443	137	79
-444	137	81
 445	137	80
 446	137	85
 447	138	75
 448	138	76
 449	138	77
 451	138	79
-452	138	81
 453	138	80
 454	138	85
 455	117	79
@@ -6751,8 +6734,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 461	339	13
 462	340	142
 463	341	140
-464	342	130
-465	342	131
 171	168	72
 172	169	73
 173	170	74
@@ -6769,65 +6750,26 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 186	183	18
 187	184	21
 188	185	18
-466	342	132
-467	342	133
-468	342	134
-469	342	135
-470	342	136
-471	342	137
-472	342	138
-473	342	139
 474	343	6
 475	344	13
 476	345	142
 477	346	140
-478	347	130
-479	347	131
-480	347	132
-481	347	133
-482	347	134
-483	347	135
-484	347	136
-485	347	137
-486	347	138
-487	347	139
 488	348	6
 489	349	13
 490	350	142
 491	351	140
-492	352	130
 411	318	6
 412	319	13
 413	320	142
 415	322	140
-416	323	129
 501	353	6
 502	354	13
 503	355	142
 504	356	140
-505	357	130
-506	357	131
-507	357	132
-508	357	133
-509	357	134
-510	357	135
-511	357	136
-512	357	137
-513	357	138
 514	358	6
 515	359	13
 516	360	142
 517	361	140
-518	362	130
-519	362	131
-520	362	132
-521	362	133
-522	362	134
-523	362	135
-524	362	136
-525	362	137
-526	362	138
-573	352	129
 576	394	140
 578	396	21
 579	397	18
@@ -6836,65 +6778,19 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 528	364	13
 529	365	142
 530	366	140
-531	367	130
-532	367	131
-533	367	132
-534	367	133
-535	367	134
-536	367	135
-537	367	136
-538	367	137
-539	367	138
 560	388	6
 561	389	13
 562	390	142
 563	391	140
-564	392	130
-565	392	131
-574	392	129
-417	323	130
-418	323	131
-419	323	132
-420	323	133
-421	323	134
-422	323	135
-423	323	136
-424	323	137
-425	323	138
-426	323	139
 427	324	6
 428	325	13
 429	326	142
-432	329	129
-433	329	130
-434	329	131
-435	329	132
-436	329	133
-437	329	134
-438	329	135
-439	329	136
-440	329	137
-441	329	138
-442	329	139
 443	330	6
 444	331	13
 445	332	142
-446	333	130
-447	333	131
-448	333	132
-449	333	133
-450	333	134
-451	333	135
-452	333	136
-453	333	137
-454	333	138
-455	333	139
 457	335	21
 458	336	18
 459	337	140
-582	398	130
-583	398	137
-584	393	132
 585	400	30
 586	401	75
 587	402	72
@@ -6902,7 +6798,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 589	404	73
 590	405	76
 592	407	22
-593	408	139
 594	409	19
 595	410	140
 597	412	150
@@ -6911,11 +6806,9 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 600	415	39
 601	416	56
 602	417	23
-603	418	131
 604	419	18
 605	420	140
 607	422	22
-608	423	131
 609	424	19
 610	425	140
 611	426	42
@@ -6927,22 +6820,18 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 618	433	39
 619	434	56
 620	435	21
-621	436	130
-622	436	132
 623	437	19
 624	438	140
 625	439	7
 626	440	16
 627	441	13
 629	443	21
-630	444	133
 631	445	19
 632	446	140
 633	447	8
 634	448	17
 635	449	14
 637	451	24
-638	452	139
 639	453	20
 640	454	140
 641	455	21
@@ -6970,17 +6859,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 --
 
 COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FROM stdin;
-16	21	9
-17	23	9
-18	24	9
-40	46	9
-47	54	12
-48	55	12
-53	62	12
-54	63	12
-55	64	12
-56	65	12
-57	66	12
 \.
 
 
@@ -6989,17 +6867,6 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 --
 
 COPY public.product_assignedvariantattribute_values (id, assignedvariantattribute_id, attributevalue_id) FROM stdin;
-53	53	79
-54	54	79
-55	55	79
-56	56	79
-57	17	80
-58	18	87
-59	40	83
-60	16	82
-61	57	80
-62	48	86
-63	47	89
 \.
 
 
@@ -7064,10 +6931,6 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 77	5	12	2
 79	8	12	4
 80	7	12	5
-81	29	12	6
-82	29	9	9
-83	29	10	8
-84	29	11	6
 85	30	12	7
 86	30	9	10
 87	30	11	7
@@ -7179,10 +7042,6 @@ COPY public.product_attributevaluetranslation (id, language_code, name, attribut
 --
 
 COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_order) FROM stdin;
-9	10	9	0
-10	10	10	0
-11	10	11	0
-12	10	12	0
 \.
 
 
@@ -7268,7 +7127,6 @@ COPY public.product_product (id, name, description, publication_date, updated_at
 89	GIGAB ASP2F		2021-08-04	2021-09-27 15:12:51.339341+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	24
 88	GIGAB DF7BH		2021-08-04	2021-09-27 15:16:31.071525+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "DF7BH", "mcode": "GIGAB", "item_num_id": "31"}	{}	999.990	USD	gigabyte-dddd	2021-08-04	t	21
 134	HYNIX HMA82GR7CJR4N-WM		2021-09-27	2021-09-27 15:30:39.633345+00	10	t	12			f	\N	{}	{"mpn": "HMA82GR7CJR4N-WM", "mcode": "HYNIX", "item_num_id": "33"}	{}	\N	USD	hynix-hma82gr7cjr4n-wm	2021-09-27	t	\N
-136	SAM M386A8K40CM2-CVF		2021-09-27	2021-09-27 15:43:48.05269+00	10	t	15			f	\N	{}	{"mpn": "M386A8K40CM2-CVF", "mcode": "SAM", "item_num_id": "35"}	{}	\N	USD	sam-m386a8k40cm2-cvf	2021-09-27	t	\N
 138	Intel® Celeron® Processor N3010		2021-09-27	2021-09-27 15:52:03.892056+00	12	t	11			f	\N	{}	{"mpn": "SR2KM", "mcode": "INTEL", "item_num_id": "4"}	{}	\N	USD	intel-celeron-processor-n3010	2021-09-27	t	\N
 137	Intel® Core™ i3-8100 Processor		2021-09-27	2021-09-27 15:47:40.355372+00	12	t	9			f	\N	{}	{"mpn": "HGB67T", "mcode": "INTEL", "item_num_id": "3"}	{}	\N	USD	intel-coretm-i3-8100-processor	2021-09-27	t	66
 122	INTEL A12CZ		2021-09-27	2021-09-27 17:08:45.992571+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
@@ -7282,6 +7140,7 @@ COPY public.product_product (id, name, description, publication_date, updated_at
 116	INTEL HFGLMN		2021-09-27	2021-09-27 17:11:40.794535+00	12	t	8	\N	\N	t	\N	{}	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	59.990	USD	intel-hfglmn	\N	t	54
 118	INTEL HGFS		2021-08-12	2021-09-27 17:12:19.826936+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "HGFS", "mcode": "INTEL", "item_num_id": "6"}	{}	\N	USD	intel-hgfs	2021-09-02	t	\N
 117	INTEL YNFP		\N	2021-09-27 17:12:38.532891+00	12	f	11	\N	\N	t	\N	{}	{"mpn": "YNFP", "mcode": "INTEL", "item_num_id": "36"}	{}	\N	USD	intel-ynfp	\N	f	\N
+136	SAM M386A8K40CM2-CVF		2021-09-27	2021-09-27 18:34:15.492183+00	10	t	15			f	\N	{}	{"mpn": "M386A8K40CM2-CVF", "mcode": "SAM", "item_num_id": "35"}	{}	\N	USD	sam-m386a8k40cm2-cvf	2021-09-27	t	67
 \.
 
 
@@ -7325,6 +7184,7 @@ COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount
 55	654329	Digital China (HK) Ltd	116	\N	t	\N	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	USD	79.990	1
 54	654327	HONG KONG SUPERPHI TECHNOLOGY LIMITED	116	\N	t	\N	{"mpn": "HFGLMN", "mcode": "INTEL", "item_num_id": "5"}	{}	USD	59.990	0
 23	777765	TCH INTERNATIONAL CO., LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	999.990	0
+67	879678863	Digital China (HK) Ltd	136	\N	t	\N	{}	{}	USD	32.990	0
 24	777766	HONGKONG YOUCHENG TECHNOLOGY LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	49.990	1
 46	654321	STARTECH PACIFIC LIMITED	89	\N	t	\N	{"mpn": "ASP2F", "mcode": "GIGAB", "item_num_id": "30"}	{}	USD	59.990	2
 21	777789	EX-CHANNEL GROUP LTD	88	\N	t	\N	{"mpn": "DF7BH", "mcode": "GIGAB", "item_num_id": "31"}	{}	USD	999.990	0
@@ -7433,6 +7293,7 @@ COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FRO
 35	25	66	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+36	44	67	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -7575,7 +7436,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 327, true);
 -- Name: cart_cartline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.cart_cartline_id_seq', 10, true);
+SELECT pg_catalog.setval('public.cart_cartline_id_seq', 11, true);
 
 
 --
@@ -7897,14 +7758,14 @@ SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq'
 -- Name: product_assignedvariantattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 57, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 58, true);
 
 
 --
 -- Name: product_assignedvariantattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 63, true);
+SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq', 64, true);
 
 
 --
@@ -8030,7 +7891,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 66, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 67, true);
 
 
 --
@@ -8135,7 +7996,7 @@ SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 2, true);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 35, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 36, true);
 
 
 --

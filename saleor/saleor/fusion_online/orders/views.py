@@ -24,7 +24,7 @@ def sales_order_response_payload(order):
         unit_price = line.unit_price_gross_amount.to_eng_string()
         product_metadata = line.variant.product.metadata
         item = {
-            'item_num_id': product_metadata.get('item_num_id'),
+            'item_master_id': product_metadata.get('item_master_id'),
             'cipn': 'test',
             'mpn': product_metadata.get('mpn'),
             'mcode': product_metadata.get('mcode'),
