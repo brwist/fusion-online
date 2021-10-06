@@ -67,6 +67,8 @@ from ..sorters import ProductOrder
 from .attributes import Attribute, SelectedAttribute
 from .digital_contents import DigitalContent
 
+from saleor.account.validators import customer_is_approved
+
 
 def resolve_attribute_list(
     instance: Union[models.Product, models.ProductVariant], *, user
@@ -336,6 +338,8 @@ class ProductVariant(CountableDjangoObjectType):
 
     @staticmethod
     def resolve_pricing(root: models.ProductVariant, info):
+        if not info.context.user or not customer_is_approved(info.context.user):
+            return None
         context = info.context
         product = ProductByIdLoader(context).load(root.product_id)
         collections = CollectionsByProductIdLoader(context).load(root.product_id)
@@ -560,6 +564,8 @@ class Product(CountableDjangoObjectType):
 
     @staticmethod
     def resolve_pricing(root: models.Product, info):
+        if not info.context.user or not customer_is_approved(info.context.user):
+            return None
         context = info.context
         variants = ProductVariantsByProductIdLoader(context).load(root.id)
         collections = CollectionsByProductIdLoader(context).load(root.id)

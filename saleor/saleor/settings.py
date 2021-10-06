@@ -525,7 +525,8 @@ PLUGINS = [
     "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
     "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
-    "saleor.plugins.orders.plugin.OrderCreatedPlugin"
+    "saleor.plugins.orders.plugin.OrderCreatedPlugin",
+    "saleor.plugins.fusion_online.plugin.FusionOnlinePlugin"
 ]
 
 # Plugin discovery
@@ -618,3 +619,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Local settings override
 if DEBUG:
     from .settings_local import *
+
+
+HUBSPOT_API_KEY = os.environ.get("HUBSPOT_API_KEY")
+HUBSPOT_CLIENT_SECRET = os.environ.get("HUBSPOT_CLIENT_SECRET")
+HUBSPOT_CLIENT_ID = os.environ.get("HUBSPOT_CLIENT_ID")
+HUBSPOT_APP_ID = os.environ.get("HUBSPOT_APP_ID")
+HUBSPOT_OAUTH_REDIRECT_URL = os.environ.get("HUBSPOT_OAUTH_REDIRECT_URL")
+HUBSPOT_API_CONTACT_OWNER_ID = os.environ.get("HUBSPOT_API_CONTACT_OWNER_ID")

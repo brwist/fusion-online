@@ -34,6 +34,7 @@ export const Login: React.FC<LoginProps> = ({
       <Form
         className="floating-labels"
         onSubmit={handleSubmit}
+        autoComplete="off"
       >
         {errors?.map((error: any) => {
           return <p className="text-danger">{error.message}</p>
