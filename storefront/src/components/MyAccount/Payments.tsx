@@ -150,7 +150,9 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       </div>
 
       <Modal show={!!editMode} onHide={handleCloseEdit}>
-        <Modal.Header closeButton>{editHeader()}</Modal.Header>
+        <Modal.Header closeButton>
+          <Modal.Title className="mb-0">{editHeader()}</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <Elements stripe={stripePromise}>
             <EditPaymentMethod user={userQuery.data || undefined} handleCloseEdit={handleCloseEdit} />
