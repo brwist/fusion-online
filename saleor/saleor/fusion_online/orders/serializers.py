@@ -1,13 +1,8 @@
-from django.db.models import fields
-from rest_framework.fields import ChoiceField
-from rest_framework.serializers import CharField, DecimalField, RelatedField, IntegerField, ModelSerializer, SerializerMethodField, Field, PrimaryKeyRelatedField
+from rest_framework.serializers import CharField, RelatedField, IntegerField, ModelSerializer, SerializerMethodField
 from django.conf import settings
 from saleor.order.models import Order, OrderLine
 from saleor.product.models import Product
 from saleor.account.models import Address
-from saleor.checkout.models import Checkout
-from saleor.fusion_online.shipping_address.serializers import ShippingAddressSerializer
-from saleor.fusion_online.shipping_address.models import ShippingAddress
 
 # {
 #   "hubspot_vid": 0,
@@ -44,7 +39,7 @@ class SalesOrderItemSerializer(ModelSerializer):
 class ShipToFieldSerializer(ModelSerializer):
     fo_ship_to_address_ref_id = IntegerField(source="pk")
     address = SerializerMethodField('get_street_address')
-    state = CharField(source='country_area', max_lenth=50)
+    state = CharField(source='country_area', max_length=50)
     hubspot_company_id = IntegerField(source='customer_id', read_only=True)
     customer_id = IntegerField(write_only=True)
     zip_code = CharField(source='postal_code', max_length=20)
