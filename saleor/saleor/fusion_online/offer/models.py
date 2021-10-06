@@ -42,7 +42,7 @@ ITEM_TYPE_IT_CHOICES = [
 
 
 class Vendor(models.Model):
-    vendor_name = models.CharField(max_length=50)
+    vendor_name = models.CharField(max_length=100)
     vendor_number = models.BigIntegerField(unique=True)
     vendor_type = models.CharField(
         max_length=50,
