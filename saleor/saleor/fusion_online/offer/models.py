@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.deletion import SET_NULL
-from ...product.models import ProductVariant
+from ...product.models import ProductVariant, Product
 
 TYPE_CHOICES = [
     ("Excess List", "Excess List"),
@@ -54,7 +54,9 @@ class Vendor(models.Model):
         choices=VENDOR_REGION_CHOICES,
         null=True
     )
-    
+
+    products = models.ManyToManyField(Product, null=True)
+
     class Meta:
         app_label = "fusion_online"
 
