@@ -60,6 +60,8 @@ COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching
 
 SET default_tablespace = '';
 
+SET default_table_access_method = heap;
+
 --
 -- Name: account_address; Type: TABLE; Schema: public; Owner: saleor
 --
@@ -11780,6 +11782,13 @@ ALTER TABLE ONLY public.wishlist_wishlistitem_variants
 
 ALTER TABLE ONLY public.wishlist_wishlistitem
     ADD CONSTRAINT wishlist_wishlistitem_product_id_8309716a_fk_product_product_id FOREIGN KEY (product_id) REFERENCES public.product_product(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: saleor
+--
+
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

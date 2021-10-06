@@ -48,6 +48,45 @@ export const useRootCategoriesQuery = makeQuery<RootCategories, {}>(
   rootCategories
 );
 
+export const subCategories = gql`
+  ${pageInfoFragment}
+  query SubCategories(
+    $first: Int
+    $after: String
+    $last: Int
+    $before: String
+    $filter: CategoryFilterInput
+    $sort: CategorySortingInput
+  ) {
+    categories(
+      level: 1
+      first: $first
+      after: $after
+      last: $last
+      before: $before
+      filter: $filter
+      sortBy: $sort
+    ) {
+      edges {
+        node {
+          id
+          name
+          slug
+          parent {
+            id
+            name
+          }
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+`;
+export const useSubCategoriesQuery = makeQuery<any, {}>(
+  subCategories
+);
 export const categoryDetails = gql`
   ${fragmentMoney}
   ${categoryFragment}

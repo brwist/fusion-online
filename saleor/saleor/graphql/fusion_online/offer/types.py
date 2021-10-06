@@ -5,11 +5,12 @@ from ...core.connection import CountableDjangoObjectType
 
 
 class Offer(CountableDjangoObjectType):
-
+    date_added = graphene.String()
+    item_master_id = graphene.String()
     class Meta:
         model = models.Offer
-        fields = ("id", "date_added", "lead_time_days", "offer_price", "quantity", "coo", "date_code",
-                  "product_variant", "tariff_rate", "type", "item_num_id", "vendor")
+        fields = ("id", "type", "item_type_id", "offer_id", "lead_time_days", "date_added", "item_master_id", "mpn", "mcode",
+            "quantity", "offer_price", "date_code", "comment", "coo", "vendor", "product_variant", "tariff_rate")
 
 
 class Vendor(CountableDjangoObjectType):
