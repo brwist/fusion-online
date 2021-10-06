@@ -3,6 +3,7 @@ import { CardNumberElement, CardElement, useElements, useStripe } from '@stripe/
 import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { Button, Form, FormGroup } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
+import { gql, useQuery } from '@apollo/client';
 
 import { User, AddressInput, CountryCode } from '../../../generated/graphql';
 import { useMutation } from '@apollo/client';
