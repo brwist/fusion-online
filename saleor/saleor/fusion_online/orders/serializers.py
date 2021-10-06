@@ -47,10 +47,11 @@ class ShipToFieldSerializer(ModelSerializer):
     state = CharField(source='country_area')
     hubspot_company_id = IntegerField(source='customer_id', read_only=True)
     customer_id = IntegerField(write_only=True)
+    zip_code = CharField(source='postal_code')
 
     class Meta:
         model = Address
-        fields = ["fo_ship_to_address_ref_id", "customer_id", "ship_to_name", "address", "city", "state", "country", "ship_via", "vat_id", "hubspot_company_id"]
+        fields = ["fo_ship_to_address_ref_id", "customer_id", "ship_to_name", "address", "city", "zip_code", "state", "country", "ship_via", "vat_id", "hubspot_company_id"]
     
     def get_street_address(self, obj):
         addr1 = obj.street_address_1

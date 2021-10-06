@@ -1,12 +1,14 @@
 import React from 'react';
 import { Switch, Route, NavLink } from 'react-router-dom'
 import { Nav } from 'react-bootstrap';
+
 import { OpenOrders } from './OpenOrders';
 import { OrderDetails } from './OrderDetails';
 import { ScheduledOrders } from './ScheduledOrders';
 import { PastOrders } from './PastOrders';
 import { OpenRFQs } from './OpenRFQs';
 import { PastRFQs } from './PastRFQs';
+import {useOrdersByUserQuery} from '../../graphql/account'
 
 import './myaccount.scss';
 
@@ -15,6 +17,9 @@ export interface OrdersProps {
 }
 
 export const Orders: React.FC<OrdersProps> = (props) => {
+  const {data} = useOrdersByUserQuery( {variables: {perPage: 10}});
+  
+  console.log("ordersCustom", data)
   return (
     <>
     <Nav as="ul" className="nav-tabs mb-3">
@@ -65,7 +70,9 @@ export const Orders: React.FC<OrdersProps> = (props) => {
       </Nav.Item>
     </Nav>
     <Switch>
-      <Route exact path="/account/orders/open-orders" component={OpenOrders} />
+      <Route exact path="/account/orders/open-orders">
+        <OpenOrders orders={data?.me?.orders?.edges || []}/>
+      </Route>
       <Route exact path="/account/orders/open-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/scheduled-orders" component={ScheduledOrders} />
       <Route exact path="/account/orders/scheduled-orders/:id" component={OrderDetails} />
@@ -73,7 +80,9 @@ export const Orders: React.FC<OrdersProps> = (props) => {
       <Route exact path="/account/orders/past-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/open-rfqs" component={OpenRFQs} />
       <Route exact path="/account/orders/past-rfqs" component={PastRFQs} />
-      <Route exact path="/account/orders" component={OpenOrders} />
+      <Route exact path="/account/orders">
+        <OpenOrders orders={data?.me?.orders?.edges || []}/>
+      </Route>
     </Switch>
     </>
 

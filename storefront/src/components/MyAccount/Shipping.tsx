@@ -111,8 +111,10 @@ export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
       <Button variant="primary" onClick={() => setEditMode({ edit: false })}>
         Add Shipping Address
       </Button>
-      <Modal show={!!editMode}>
-        <Modal.Header>{editHeader()}</Modal.Header>
+      <Modal show={!!editMode} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title className="mb-0">{editHeader()}</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <EditShippingAddress user={data?.me} handleCloseEdit={handleCloseEdit} />
         </Modal.Body>
