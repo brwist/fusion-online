@@ -78,9 +78,9 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
     </td>
     <td className="text-center">{status}</td>
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
-    <td className="text-center">${unitPrice}</td>
+    <td className="text-center">{unitPrice !== "0.00" ? `${unitPrice}` : `--`}</td>
     <td className="text-center">
-      <Button variant="primary" onClick={() => setShow(true)}>
+      <Button variant="primary" onClick={() => setShow(true)} disabled={unitPrice === "0.00"}>
         Select Quantity
       </Button>
 

@@ -4,6 +4,7 @@ from .offer import views as offer_views
 from .rfq import views as rfq_views
 from .shipping_address import views as shipping_address_views
 from .orders import views as order_views
+from .hubspot import views as hubspot_views
 
 urlpatterns = [
     path("products", product_views.post_handler),
@@ -17,6 +18,13 @@ urlpatterns = [
     path("rfqs/<int:rfq_submission_pk>/responses/<int:rfq_line_item_pk>",
          rfq_views.post_rfq_response_handler),
     path("orders", order_views.get_orders),
+    path("hubspot-contacts/<int:contact_id>", hubspot_views.get_contact),
+    path("hubspot-contacts", hubspot_views.create_contact),
+    path("hubspot-companies", hubspot_views.create_company),
     path("sales-orders/<int:pk>", order_views.OrderDetail.as_view()),
     path("orders-create", order_views.create_order),
+
+    # webhook
+    path("install-webhook", hubspot_views.install_webhook),
+    path("contact/changed", hubspot_views.update_contact_approval_status)
 ]

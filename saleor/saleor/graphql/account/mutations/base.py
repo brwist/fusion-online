@@ -26,6 +26,8 @@ from ...core.types.common import AccountError
 from ...meta.deprecated.mutations import ClearMetaBaseMutation, UpdateMetaBaseMutation
 from .jwt import CreateToken
 
+from saleor.fusion_online.hubspot.registration import HubspotRegistration
+
 BILLING_ADDRESS_FIELD = "default_billing_address"
 SHIPPING_ADDRESS_FIELD = "default_shipping_address"
 INVALID_TOKEN = "Invalid or expired token."
@@ -185,6 +187,11 @@ class ConfirmAccount(BaseMutation):
         user.is_active = True
         user.save(update_fields=["is_active"])
         match_orders_with_new_user(user)
+
+        # hubspot verification
+        hubspot_reg = HubspotRegistration()
+        hubspot_user = hubspot_reg.validate_email(data["email"])
+
         return ConfirmAccount(user=user)
 
 

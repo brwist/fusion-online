@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/saleor/manage.py",
             "args": [
-                "runserver", "127.0.0.1:7000"
+                "runserver", "127.0.0.1:8000"
             ],
             "django": true
         },
@@ -21,6 +21,26 @@
             "program": "${workspaceFolder}/saleor/manage.py",
             "args": [
                 "orders"
+            ],
+            "django": true
+        },
+        {
+            "name": "Hubspot",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/saleor/manage.py",
+            "args": [
+                "hubspot"
+            ],
+            "django": true
+        },
+        {
+            "name": "Reset Hubspot",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/saleor/manage.py",
+            "args": [
+                "reset_registrations"
             ],
             "django": true
         }

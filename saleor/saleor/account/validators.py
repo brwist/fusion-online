@@ -16,3 +16,11 @@ def validate_possible_number(phone, country=None):
             "The phone number entered is not valid.", code=AccountErrorCode.INVALID
         )
     return phone_number
+
+
+def customer_is_approved(user):
+    if not user or not hasattr(user, 'private_metadata'):
+        return False
+    if 'customer_approval_status' in user.private_metadata and user.private_metadata['customer_approval_status'] == 'Approved':
+        return True
+    return False
