@@ -121,6 +121,7 @@ query OfferList ($itemMasterId: String) {
       id
       sku
       margin
+      quantityAvailable
       price {
         ...Money
       }

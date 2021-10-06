@@ -12,6 +12,7 @@ import {
   Select
 } from "@material-ui/core";
 import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/styles";
+import Hidden from "@material-ui/core/Hidden"
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 // import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
@@ -171,6 +172,12 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     productItemMasterId
   }) => {
   const classes = useStyles();
+  const [hideDropdown, setHideDropdown] = useState(true)
+
+  const handleDrawerClose = () => {
+    setHideDropdown(true)
+    closeDrawer()
+  }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
   console.log(data)
   const offersWithVariants = productItemMasterId && data?.offers?.filter((offer) => offer.productVariant) || []
@@ -196,7 +203,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       id: offer?.id,
       origin: offer?.coo || "-",
       leadTime: formatLeadTime(offer?.leadTimeDays),
-      qty: offer?.quantity,
+      qty: offer?.productVariant.quantityAvailable,
       cost: `$${offer?.offerPrice?.toFixed(2)}`, 
       margin: offer?.productVariant.margin || "-",
       sellPrice: `$${offer?.productVariant.price.amount}` || "-"
@@ -208,17 +215,14 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     setVariantTableRows(defaultVariantTableRows)
   }, [productItemMasterId])
   
-  const handleCellEditCommit = useCallback(({id, field, value}) => {
-    return variantTableRows.map(row => {
+  const handleCellEditCommit = useCallback(({id, field, value}) => variantTableRows.map(row => {
       if (row.id === id) {
         return {...row, [field]: value}
       }
       return row
-    })
-  }, [variantTableRows])
+    }), [variantTableRows])
 
-  const offerTableRows = productItemMasterId && data?.offers?.map(offer => {
-    return (
+  const offerTableRows = productItemMasterId && data?.offers?.map(offer => (
       <StyledTableRow key={offer?.id}>
         <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
         <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
@@ -227,8 +231,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
         <StyledTableCell align="right">{offer?.quantity}</StyledTableCell>
         <StyledTableCell align="right">${offer?.offerPrice}</StyledTableCell>
       </StyledTableRow>
-    )
-  })
+    ))
 
   return (
     <Drawer
@@ -237,7 +240,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       }}
       anchor="right"
       open={open}
-      onClose={closeDrawer}
+      onClose={handleDrawerClose}
     >
       <div className={classes.padding}>
         <PageHeader
@@ -296,6 +299,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             }}
           >
             <option aria-label="None" value="" />
+
             <option value={1}>1</option>
             <option value={2}>2</option>
             <option value={3}>3</option>
@@ -319,6 +323,32 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               // rowsPerPageOptions={[5]}
               // disableSelectionOnClick
             />
+            <div className={classes.padding}>
+              <Button 
+                onClick={() => setHideDropdown(false)}
+                color="primary"
+              >Add Variant</Button>
+              <Hidden xsUp={hideDropdown}>
+                <FormControl
+                  className={`${classes.formControl} ${hideDropdown && 'd-none'}`}
+                    variant="outlined"
+                >
+                  <InputLabel htmlFor="select-offer">Select Offer</InputLabel>
+                  <Select
+                    native
+                    inputProps={{
+                      name: 'select-offer',
+                      id: 'select-offer',
+                    }}
+                  >
+                    <option aria-label="None" value="" />
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                  </Select>
+                </FormControl>
+              </Hidden>
+            </div>
           </div>
         </div>
       </div>
