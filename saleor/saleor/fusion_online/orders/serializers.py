@@ -1,13 +1,8 @@
-from django.db.models import fields
-from rest_framework.fields import ChoiceField
-from rest_framework.serializers import CharField, DecimalField, RelatedField, IntegerField, ModelSerializer, SerializerMethodField, Field, PrimaryKeyRelatedField
+from rest_framework.serializers import CharField, RelatedField, IntegerField, ModelSerializer, SerializerMethodField
 from django.conf import settings
 from saleor.order.models import Order, OrderLine
 from saleor.product.models import Product
 from saleor.account.models import Address
-from saleor.checkout.models import Checkout
-from saleor.fusion_online.shipping_address.serializers import ShippingAddressSerializer
-from saleor.fusion_online.shipping_address.models import ShippingAddress
 
 # {
 #   "hubspot_vid": 0,
@@ -32,7 +27,6 @@ from saleor.fusion_online.shipping_address.models import ShippingAddress
 class SalesOrderItemSerializer(ModelSerializer):
     unit_sell_price = CharField(source='unit_price_net_amount', read_only=True)
     cipn = IntegerField(read_only=True, default=123)
-    item_num_id = IntegerField(default=99999)
     item_master_id = IntegerField()
     mpn = CharField(read_only=True)
     mcode = CharField(read_only=True)
@@ -44,10 +38,12 @@ class SalesOrderItemSerializer(ModelSerializer):
 class ShipToFieldSerializer(ModelSerializer):
     fo_ship_to_address_ref_id = IntegerField(source="pk")
     address = SerializerMethodField('get_street_address')
-    state = CharField(source='country_area')
+    state = CharField(source='country_area', max_length=50)
     hubspot_company_id = IntegerField(source='customer_id', read_only=True)
     customer_id = IntegerField(write_only=True)
-    zip_code = CharField(source='postal_code')
+    zip_code = CharField(source='postal_code', max_length=20)
+    ship_to_name = CharField(max_length=50)
+    city = CharField(max_length=50)
 
     class Meta:
         model = Address
@@ -74,7 +70,7 @@ class SalesOrderSerializer(ModelSerializer):
     entered_by_hubspot_owner_id = IntegerField(read_only=True, default=7964957)
     ship_to = ShipToField(queryset=Address.objects.all())
     items = SalesOrderItemSerializer(many=True)
-    customer_purchase_order_num = CharField(source='private_metadata.customer_purchase_order_num')
+    customer_purchase_order_num = CharField(source='private_metadata.customer_purchase_order_num', max_length=50)
     due_date = IntegerField(source='private_metadata.due_date')
     fo_order_ref_id = IntegerField(source='pk', read_only=True)
     fo_payment_status = CharField(source='private_metadata.fo_payment_status')
