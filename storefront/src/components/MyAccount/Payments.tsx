@@ -59,6 +59,44 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
     'pk_test_51JeloZGwGY8wmB3De8nkDq2Eex3bllEFKymSMsRiqwXUtxShtr4JVAKjLOi9WxHblgppNkcKTFhe69AFFHCMtesP00O09X3PHO'
   );
 
+  const renderStripeCardRow = (card, index) => {
+    return (
+      <Row>
+        <Col>
+          <div className="mb-2">
+            <strong className="transform-uppercase">
+              {card.card.brand} ****{card.card.last4}
+            </strong>
+            <br />
+            <small>
+              Expires {card.card.expMonth}/{card.card.expYear}
+            </small>
+          </div>
+          <div>
+            <Button variant="link" className="small px-0">
+              EDIT CARD
+            </Button>{' '}
+            |{' '}
+            <Button variant="link" className="small px-0">
+              REMOVE CARD
+            </Button>
+          </div>
+        </Col>
+        <Col>
+          Full Name
+          <br />
+          {`${card.billingDetails.address.line1} ${card.billingDetails.address.line2}`}
+          <br />
+          {`${card.billingDetails.address.city}, ${card.billingDetails.address.state} ${card.billingDetails.address.postalCode} ${card.billingDetails.address.country}`}
+          ,
+        </Col>
+        <Col className="text-right">
+          <Tag size="sm" label="Default" />
+        </Col>
+      </Row>
+    );
+  };
+
   const editHeader = () => {
     if (!editMode) {
       return;
@@ -80,36 +118,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       </header>
 
       <Card>
-        <Card.Body>
-          <Row>
-            <Col>
-              <div className="mb-2">
-                <strong className="transform-uppercase">American Express ****1234</strong>
-                <br />
-                <small>Expires 00/0000</small>
-              </div>
-              <div>
-                <Button variant="link" className="small px-0">
-                  EDIT CARD
-                </Button>{' '}
-                |{' '}
-                <Button variant="link" className="small px-0">
-                  REMOVE CARD
-                </Button>
-              </div>
-            </Col>
-            <Col>
-              Full Name
-              <br />
-              123 Main St.
-              <br />
-              City, State 01234, US
-            </Col>
-            <Col className="text-right">
-              <Tag size="sm" label="Default" />
-            </Col>
-          </Row>
-        </Card.Body>
+        <Card.Body>{userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}</Card.Body>
       </Card>
 
       <Button variant="primary" onClick={() => setEditMode({ edit: false })}>
