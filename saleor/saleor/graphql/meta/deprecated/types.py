@@ -21,6 +21,15 @@ class MetaInput(MetaPath):
     value = graphene.String(required=True, description="Stored metadata value.")
 
 
+class PrivateKey(graphene.Enum):
+    """
+    Private metadata keys that allow customers to save private metadata, 
+    e.g. Stripe token, Default billing token
+    """
+    STRIPE_TOKENS = 'stripe_tokens'
+    DEFAULT_STRIPE_TOKEN = 'default_stripe_token'
+
+
 class MetaClientStore(graphene.ObjectType):
     name = graphene.String(required=True, description="Metadata client's name.")
     metadata = graphene.List(

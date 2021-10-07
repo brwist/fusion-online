@@ -19,19 +19,39 @@ interface EditMode {
 }
 
 const GET_USER = gql`
-  query {
+  query GetUser {
     me {
       id
       firstName
       lastName
       email
+      stripeCards {
+        id
+        object
+        billingDetails {
+          address {
+            city
+            country
+            line1
+            line2
+            postalCode
+            state
+          }
+          name
+        }
+        card {
+          brand
+          last4
+          expMonth
+          expYear
+        }
+      }
     }
   }
 `;
 
 export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
   const [editMode, setEditMode] = useState<EditMode | null>();
-  const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
   const userQuery = useQuery(GET_USER);
 
   const apiKey = process.env.STRIPE_PUBLISHABLE_KEY;

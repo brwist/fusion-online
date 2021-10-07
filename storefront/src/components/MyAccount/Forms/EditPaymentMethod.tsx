@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { CardElement, CardNumberElement, CardExpiryElement, CardCvcElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import {
+  CardElement,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
 import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
@@ -12,8 +19,6 @@ import { PaymentForm } from '../../CheckoutPage/PaymentForm';
 import usStates from '../../../utils/us-states.json';
 import caStates from '../../../utils/ca-states.json';
 import countries from '../../../utils/countries.json';
-
-import { GET_USER_ADDRESSES, CREATE_USER_ADDRESS } from '../../../graphql/account';
 
 interface Props {
   user: User | undefined;
@@ -48,16 +53,14 @@ type LocationOption = {
   abbreviation: string;
 };
 
-interface PaymentFormProps {
-  onSubmit: any;
-}
-
-export const EDIT_USER_PRIVATE_METADATA = gql`
-  mutation updatePrivateMetadata($id: ID!, $input: MetadataInput!) {
-    updatePrivateMetadata(id: $id, input: $input) {
-      address {
+export const ADD_STRIPE_TOKEN = gql`
+  mutation addStripeToken($paymentMethodId: String!) {
+    addStripePaymentMethod(paymentMethodId: $paymentMethodId) {
+      user {
         id
-        ...AddressFields
+        stripeCards {
+          id
+        }
       }
     }
   }
@@ -66,7 +69,13 @@ export const EDIT_USER_PRIVATE_METADATA = gql`
 export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [submitErrors, setSubmitErrors] = useState<errorsType>([]);
+  const [submitError, setSubmitError] = useState<String | null>(null);
+  const [addStripeToken, stripeTokenResponse] = useMutation(ADD_STRIPE_TOKEN);
+  console.log('stripeTokenResponse: ', stripeTokenResponse);
+
+  if (user) {
+    console.log('user: ', user);
+  }
 
   const {
     register,
@@ -95,19 +104,32 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
       const stripeResponse = await stripe?.createPaymentMethod({
         type: 'card',
         card: cardElement,
+        billing_details: {
+          address: {
+            city: data.city,
+            country: data.country,
+            line1: data.streetAddress1,
+            line2: data.streetAddress2,
+            postal_code: data.postalCode,
+          },
+        },
       });
 
+      console.log('stripeResponse: ', stripeResponse);
+
       if (stripeResponse?.error) {
-        const errors = [
-          {
-            ...stripeResponse.error,
-            message: stripeResponse.error.message || '',
-          },
-        ];
-        setSubmitErrors(errors);
+        console.log('stripeResponse?.error: ', stripeResponse?.error);
+        // const errors = [
+        //   {
+        //     ...stripeResponse.error,
+        //     message: stripeResponse.error.message || '',
+        //   },
+        // ];
+        // setSubmitErrors(errors);
       } else if (stripeResponse?.paymentMethod) {
         const { card, id } = stripeResponse.paymentMethod;
         if (card?.brand && card?.last4) {
+          addStripeToken({ variables: { paymentMethodId: id } });
           // processPayment('mirumee.payments.stripe', id, {
           //   brand: card?.brand,
           //   expMonth: card?.exp_month || null,
@@ -117,20 +139,10 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
           // });
         }
       } else {
-        const stripePayloadErrors = [
-          {
-            message: 'Payment submission error. Stripe gateway returned no payment method in payload.',
-          },
-        ];
-        setSubmitErrors(stripePayloadErrors);
+        setSubmitError('Payment submission error. Stripe gateway returned no payment method in payload.');
       }
     } else {
-      const stripeElementsErrors = [
-        {
-          message: 'Stripe gateway improperly rendered. Stripe elements were not provided.',
-        },
-      ];
-      setSubmitErrors(stripeElementsErrors);
+      setSubmitError('Stripe gateway improperly rendered. Stripe elements were not provided.');
     }
   };
 
@@ -258,26 +270,20 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
       {textInput('streetAddress1', 'Street Address 1', true)}
       {textInput('streetAddress2', 'Street Address 2')}
       <Form.Row>
-        <Col lg={6}>
-          {textInput('city', 'City', true)}
-        </Col>
+        <Col lg={6}>{textInput('city', 'City', true)}</Col>
         <Col>
           <RenderStateSelect />
         </Col>
-        <Col>
-          {zipInput()}
-        </Col>
+        <Col>{zipInput()}</Col>
       </Form.Row>
       {locationSelect('country', 'Country', countries)}
       <Form.Group>
-        <Form.Check
-          custom
-          type="checkbox"
-          label="Save as default payment method"
-        />
+        <Form.Check custom type="checkbox" label="Save as default payment method" />
       </Form.Group>
 
-      <Button variant="primary" type="submit">Save Payment Method</Button>
+      <Button variant="primary" type="submit">
+        Save Payment Method
+      </Button>
       <Button variant="link">Cancel</Button>
     </Form>
   );
