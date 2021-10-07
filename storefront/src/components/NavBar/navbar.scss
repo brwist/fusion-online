@@ -23,8 +23,13 @@
         position: absolute;
 
         .navbar-collapse {
+            padding: 24px;
+            background: $white;
+            z-index: 1;
+
             @include media-breakpoint-up(lg) {
                 flex-direction: column-reverse;
+                background: transparent;
             }
 
             .navbar-nav {
@@ -53,11 +58,16 @@
                         }
 
                         &::after {
-                            width: 12px;
-                            height: 10px;
+                            width: 16px;
+                            height: 14px;
                             margin-left: 5px;
                             border: 0;
                             background: $custom-select-indicator no-repeat;
+
+                            @include media-breakpoint-up(lg) {
+                                width: 12px;
+                                height: 10px;
+                            }
                         }
                     }
 
@@ -69,16 +79,52 @@
                         @include media-breakpoint-down(md) {
                             padding: 0;
                             background: transparent;
+                            box-shadow: none;
+                        }
+                    }
+                }
+
+                .dropdown-item {
+                    padding: 0.5rem 1rem;
+                    font-size: 12px;
+                    text-transform: uppercase;
+
+                    a {
+                        text-decoration: none;
+                    }
+                }
+
+                .mega-menu {
+                    position: static;
+
+                    .dropdown-menu {
+                        width: 100%;
+                        margin-top: 0;
+                        padding: 24px 0;
+                        box-shadow: none;
+                        border-bottom: 1px solid $border-color;
+
+                        @include media-breakpoint-down(md) {
+                            padding: 0;
+                            background: transparent;
+                            box-shadow: none;
                             border: 0;
                         }
 
-                        > .dropdown-item {
+                        .dropdown-header {
                             padding: 0.5rem 1rem;
-                            font-size: 12px;
-                            text-transform: uppercase;
+                            font-size: 16px;
+                            font-weight: $font-weight-bold;
+                            color: $body-color;
+                        }
 
-                            a {
-                                text-decoration: none;
+                        .row {
+                            width: 100%;
+                        }
+
+                        @include media-breakpoint-up(lg) {
+                            .col-lg:not(:first-child) {
+                                border-left: 1px solid $border-color;
                             }
                         }
                     }

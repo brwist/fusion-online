@@ -1,6 +1,11 @@
 RocketChips API Changelog
 ==========================
 
+### 2021-10-06 (version 0.0.9):
+  - Removed item_num_id from the Sales Order schema.
+  - Provided max lengths for various Ship-To, Sales Order and Product schema properties.
+  - Removed item_price_id from the Product schema.
+
 ### 2021-10-05 (version 0.0.8):
   - Added zip_code property to the Ship-To address schema.
 
