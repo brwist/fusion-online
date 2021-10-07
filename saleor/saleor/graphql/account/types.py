@@ -240,6 +240,11 @@ class User(CountableDjangoObjectType):
         description="List of stored payment sources.",
     )
 
+    stripe_cards = graphene.List(
+        "saleor.graphql.payment.stripe_types.StripePaymentMethod",
+        description="List of stripe stored payment methods.",
+    )
+
     class Meta:
         description = "Represents user data."
         interfaces = [relay.Node, ObjectWithMetadata]
@@ -329,6 +334,14 @@ class User(CountableDjangoObjectType):
 
         if root == info.context.user:
             return resolve_payment_sources(root)
+        raise PermissionDenied()
+
+    @staticmethod
+    def resolve_stripe_cards(root: models.User, info):
+        from .resolvers import resolve_stripe_cards
+
+        if root == info.context.user:
+            return resolve_stripe_cards(root)
         raise PermissionDenied()
 
     @staticmethod

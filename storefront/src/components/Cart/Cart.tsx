@@ -195,7 +195,11 @@ export const Cart: React.FC<CartProps> = ({
                   </Card.Header>
 
                   <Accordion.Collapse eventKey="0">
-                    <Table borderless striped responsive>
+                    <Table
+                      borderless
+                      striped
+                      responsive
+                    >
                       <thead className="border-bottom">
                         <tr>
                           <th className="text-center">Save</th>

@@ -18,6 +18,7 @@ from .utils import (
     get_required_fields_camel_case,
     get_user_permissions,
 )
+from saleor.plugins.manager import get_plugins_manager
 
 USER_SEARCH_FIELDS = (
     "email",
@@ -122,6 +123,18 @@ def resolve_payment_sources(user: models.User):
             ]
         )
     )
+
+
+def resolve_stripe_cards(user: models.User):
+    cards = []
+    if 'stripe_payment_method_ids' in user.private_metadata and isinstance(user.private_metadata['stripe_payment_method_ids'], list):
+        for stripe_id in user.private_metadata['stripe_payment_method_ids']:
+            plugin_manager = get_plugins_manager(
+                plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
+            card = plugin_manager.plugins[0].get_payment_method(stripe_id)
+            if card:
+                cards.append(card)
+    return cards
 
 
 def prepare_graphql_payment_sources_type(payment_sources):

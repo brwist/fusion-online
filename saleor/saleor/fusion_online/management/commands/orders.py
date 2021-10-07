@@ -13,12 +13,12 @@ from saleor.order.models import Order
 from saleor.checkout.models import Checkout, CheckoutLine
 from saleor.product.models import ProductVariant
 
-from saleor.fusion_online.orders.serializers import CheckoutSerializer
-from saleor.fusion_online.shipping_address.models import ShippingAddress
+# from saleor.fusion_online.orders.serializers import CheckoutSerializer
+# from saleor.fusion_online.shipping_address.models import ShippingAddress
 
 from saleor.graphql.order.resolvers import resolve_order_by_token
 
-from saleor.fusion_online.notifications.utils import send_shipping_address_notification
+# from saleor.fusion_online.notifications.utils import send_shipping_address_notification
 
 
 class Command(BaseCommand):
