@@ -97,7 +97,7 @@ const columns: GridColDef[] = [
   {
     field: 'id',
     headerName: 'ID',
-    width: 80,
+    width: 100,
     sortable: false,
   },
   {
@@ -108,6 +108,7 @@ const columns: GridColDef[] = [
     width: 120,
     editable: true,
     sortable: false,
+    valueFormatter: ({value}) => value || "-"
   },
   {
     field: 'leadTime',
@@ -117,6 +118,17 @@ const columns: GridColDef[] = [
     width: 120,
     editable: true,
     sortable: false,
+    valueFormatter: ({value}) => {
+      if ( value == -1) {
+        return "Unknown"
+      } else if (value == 0) {
+        return "In Stock"
+      } else if (value == 1) {
+        return "1 Month"
+      } else {
+        return `${value} days`
+      }
+    }
   },
   {
     field: 'qty',
@@ -135,6 +147,7 @@ const columns: GridColDef[] = [
     align: 'right',
     editable: true,
     sortable: false,
+    valueFormatter: ({value}) => value ? `$${Number(value)?.toFixed(2)}` : "-"
   },
   {
     field: 'margin',
@@ -143,6 +156,7 @@ const columns: GridColDef[] = [
     align: 'right',
     editable: true,
     sortable: false,
+    valueFormatter:({value}) => value ? `${value}%` : "-"
   },
   {
     field: 'sellPrice',
@@ -152,13 +166,30 @@ const columns: GridColDef[] = [
     width: 110,
     editable: true,
     sortable: false,
+    valueFormatter: ({value}) =>  value ? `$${Number(value)?.toFixed(2)}` : "-"
   },
 ];
 
 export interface PricingDetailDrawerProps {
   open: boolean;
   closeDrawer: () => void;
-  productId: string;
+  variants: Array<{
+    id: string,
+    sku: string,
+    costPrice: {
+      amount: number
+    },
+    margin: number,
+    price: {
+      amount: number
+    },
+    quantityAvailable: number,
+    offer: {
+      offerId: string,
+      leadTimeDays: number,
+      coo: string
+    }
+  }>;
   productMPN: string;
   productItemMasterId: string;
 }
@@ -167,7 +198,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   {
     open,
     closeDrawer,
-    productId,
+    variants,
     productMPN,
     productItemMasterId
   }) => {
@@ -180,8 +211,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
   console.log(data)
-  const offersWithVariants = productItemMasterId && data?.offers?.filter((offer) => offer.productVariant) || []
-  console.log("offers with variants:", offersWithVariants)
   
   const offers = data?.offers || []
   const priceSortedOffers = productItemMasterId && offers.length > 0 ? [...offers].sort(
@@ -199,14 +228,14 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     }
   }
 
-  const defaultVariantTableRows = offersWithVariants.map(offer => ({
-      id: offer?.id,
-      origin: offer?.coo || "-",
-      leadTime: formatLeadTime(offer?.leadTimeDays),
-      qty: offer?.productVariant.quantityAvailable,
-      cost: `$${offer?.offerPrice?.toFixed(2)}`, 
-      margin: offer?.productVariant.margin || "-",
-      sellPrice: `$${offer?.productVariant.price.amount}` || "-"
+  const defaultVariantTableRows = variants.map(variant => ({
+      id: variant?.offer.offerId,
+      origin: variant?.offer.coo,
+      leadTime: variant?.offer.leadTimeDays,
+      qty: variant?.quantityAvailable,
+      cost: variant?.costPrice.amount,
+      margin: variant?.margin,
+      sellPrice: variant?.price.amount
     }));
   
   const [variantTableRows, setVariantTableRows] = useState([])
@@ -221,9 +250,29 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       }
       return row
     }), [variantTableRows])
+  
+  const handleOfferSelect = (event) => {
+    const offerId = event.target.value
+    console.log("selected offer id:", offerId)
+    const offerData = data?.offers.find(offer => offer.id === offerId)
+    console.log("selected offer data:", offerData)
+    setVariantTableRows([
+      ...variantTableRows,
+      {
+        id: offerData.offerId,
+        origin: offerData.coo,
+        leadTime: offerData.leadTimeDays,
+        qty: offerData.quantity,
+        cost: offerData.offerPrice,
+        margin: null,
+        sellPrice: null
+      }
+    ])
+    setHideDropdown(true);
+  }
 
   const offerTableRows = productItemMasterId && data?.offers?.map(offer => (
-      <StyledTableRow key={offer?.id}>
+      <StyledTableRow key={offer?.offerId}>
         <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
         <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
         <StyledTableCell align="right">{offer?.coo || "-"}</StyledTableCell>
@@ -299,10 +348,9 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             }}
           >
             <option aria-label="None" value="" />
-
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
+            {variantTableRows.map(row => (
+              <option key={row.id} value={row.id}>{row.id}</option>
+            ))}
           </Select>
         </FormControl>
       </div>
@@ -340,11 +388,12 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
                       name: 'select-offer',
                       id: 'select-offer',
                     }}
+                    onChange={handleOfferSelect}
                   >
                     <option aria-label="None" value="" />
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
+                    {productItemMasterId && data?.offers?.map(offer => (
+                      <option key={offer.id} value={offer.id}>{offer.vendor.vendorNumber}</option>
+                    ))}
                   </Select>
                 </FormControl>
               </Hidden>

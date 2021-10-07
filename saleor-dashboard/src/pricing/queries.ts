@@ -61,6 +61,23 @@ const pricingProductListQuery = gql`
               name
             }
           }
+          variants {
+            id
+            sku
+            costPrice {
+              amount
+            }
+            margin
+            price {
+              amount
+            }
+            quantityAvailable
+            offer {
+              offerId
+              leadTimeDays
+              coo
+            }
+          }
           pricing {
             priceRangeUndiscounted {
               start {
