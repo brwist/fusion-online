@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
@@ -64,16 +64,18 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit, onSu
   const [submitError, setSubmitError] = useState<String | null>(null);
   const [addStripeToken, stripeTokenResponse] = useMutation(ADD_STRIPE_TOKEN);
 
-  if (stripeTokenResponse.data) {
-    onSuccess();
-  }
-
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<FormValues>();
+
+  useEffect(() => {
+    if (stripeTokenResponse.data) {
+      onSuccess();
+    }
+  }, [stripeTokenResponse, onSuccess]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     // First check CC

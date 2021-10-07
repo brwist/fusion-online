@@ -23,6 +23,26 @@
                 "orders"
             ],
             "django": true
+        },
+        {
+            "name": "Hubspot",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/saleor/manage.py",
+            "args": [
+                "hubspot"
+            ],
+            "django": true
+        },
+        {
+            "name": "Reset Hubspot",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/saleor/manage.py",
+            "args": [
+                "reset_registrations"
+            ],
+            "django": true
         }
     ]
 }

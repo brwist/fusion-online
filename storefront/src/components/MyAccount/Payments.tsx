@@ -121,6 +121,9 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
       <Card>
         <Card.Body>{userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}</Card.Body>
+        {(!userQuery?.data?.me?.stripeCards || userQuery?.data?.me?.stripeCards?.length === 0) && (
+          <p>Please add a payment method.</p>
+        )}
       </Card>
 
       <Button variant="primary" onClick={() => setEditMode({ edit: false })}>

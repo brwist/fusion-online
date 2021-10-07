@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, FormGroup } from 'react-bootstrap';
+import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 
 import { User, AddressInput, CountryCode } from '../../../generated/graphql';
@@ -17,6 +17,7 @@ interface Props {
 }
 
 type FormValues = {
+  addressName: string;
   firstName: string;
   lastName: string;
   companyName: string;
@@ -27,9 +28,6 @@ type FormValues = {
   postalCode: string;
   streetAddress1: string;
   streetAddress2: string;
-  customerId: string;
-  shipToName: string;
-  shipVia: string;
   vatId: string;
 };
 
@@ -77,33 +75,33 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
-      <FormGroup>
+      <Form.Group>
         <Form.Label>{label}</Form.Label>
         {required ? (
-          <input type="text" {...register(name, { required: true })} />
+          <Form.Control type="text" {...register(name, { required: true })} />
         ) : (
-          <input type="text" {...register(name)} />
+          <Form.Control type="text" {...register(name)} />
         )}
         {errors[name] ? <span>This field is required</span> : null}
-      </FormGroup>
+      </Form.Group>
     );
   };
 
   const numInput = (name: keyof FormValues, label: string) => {
     return (
-      <FormGroup>
+      <Form.Group>
         <Form.Label>{label}</Form.Label>
-        <input type="number" {...register(name)} />
+        <Form.Control type="number" {...register(name)} />
         {errors[name] ? <span>This field is required</span> : null}
-      </FormGroup>
+      </Form.Group>
     );
   };
 
   const locationSelect = (name: keyof FormValues, label: string, options: Array<LocationOption>) => {
     return (
-      <FormGroup>
+      <Form.Group>
         <Form.Label>{label}</Form.Label>
-        <select {...register(name, { required: true })}>
+        <Form.Control as="select" custom {...register(name, { required: true })}>
           {options.map((c, i) => {
             return (
               <option key={i} value={c.abbreviation}>
@@ -111,9 +109,9 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
               </option>
             );
           })}
-        </select>
+        </Form.Control>
         {errors[name] ? <span>This field is required</span> : null}
-      </FormGroup>
+      </Form.Group>
     );
   };
 
@@ -134,22 +132,22 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
 
   const zipInput = () => {
     return (
-      <FormGroup>
-        <Form.Label>Zipcode</Form.Label>
-        <input
+      <Form.Group>
+        <Form.Label>Postal Code</Form.Label>
+        <Form.Control
           type="text"
           {...register('postalCode', {
             required: {
               value: true,
-              message: 'Zipcode is required',
+              message: 'Postal code is required.',
             },
             minLength: {
               value: 5,
-              message: 'Zipcode must be 5 digits',
+              message: 'Postal code must be 5 digits.',
             },
             maxLength: {
               value: 5,
-              message: 'Zipcode must be 5 digits',
+              message: 'Postal code must be 5 digits.',
             },
             pattern: {
               value: /[0-9]{5}/,
@@ -158,27 +156,46 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
           })}
         />
         {errors['postalCode'] ? <span>{errors.postalCode.message}</span> : null}
-      </FormGroup>
+      </Form.Group>
     );
   };
 
   return (
-    <div>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        {textInput('firstName', 'First Name', true)}
-        {textInput('lastName', 'Last Name', true)}
-        {textInput('streetAddress1', 'Street Address 1', true)}
-        {textInput('streetAddress2', 'Street Address 2')}
-        {textInput('city', 'City', true)}
-        {locationSelect('country', 'Country', countries)}
-        <RenderStateSelect />
-        {zipInput()}
-        {numInput('customerId', 'Customer ID')}
-        {textInput('shipToName', 'Ship to Name')}
-        {textInput('shipVia', 'Ship via')}
-        {textInput('vatId', 'VAT ID')}
-        <Button type="submit">Submit</Button>
-      </Form>
-    </div>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      {textInput('addressName', 'Address Name', true)}
+      {textInput('firstName', 'First Name', true)}
+      {textInput('lastName', 'Last Name', true)}
+      {textInput('streetAddress1', 'Street Address 1', true)}
+      {textInput('streetAddress2', 'Street Address 2')}
+      <Form.Row>
+        <Col lg={6}>
+          {textInput('city', 'City', true)}
+        </Col>
+        <Col>
+          {textInput('countryArea', 'State / Country Code', true)}
+        </Col>
+        <Col>
+          {zipInput()}
+        </Col>
+      </Form.Row>
+      <Form.Row>
+        <Col>
+          {locationSelect('country', 'Country', countries)}
+        </Col>
+        <Col>
+          {textInput('vatId', 'VAT ID')}
+        </Col>
+      </Form.Row>
+      <Form.Group>
+        <Form.Check
+          custom
+          type="checkbox"
+          label="Save as default address"
+        />
+      </Form.Group>
+
+      <Button variant="primary" type="submit">Save</Button>
+      <Button variant="link">Cancel</Button>
+    </Form>
   );
 };

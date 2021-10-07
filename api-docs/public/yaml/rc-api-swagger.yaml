@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.8
+  version: 0.0.9
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -176,7 +176,7 @@ components:
           description: Vendor number
         vendor_name:
           type: string
-          maxLength: 50
+          maxLength: 100 
           description: Vendor name
         item_master_id:
           type: integer
@@ -252,6 +252,7 @@ components:
             properties:
               vendor_name:
                 type: string
+                maxLength: 100
               vendor_number:
                 type: integer
             required:
@@ -259,8 +260,6 @@ components:
               - vendor_number
         status:
           $ref: '#/components/schemas/ProductStatus'
-        price_item_id:
-          type: integer
         category_id:
           type: integer
         all_description:
@@ -442,6 +441,7 @@ components:
           description: The HubSpot contact ID (vid) of the customer that placed the sales order.
         customer_purchase_order_num:
           type: string
+          maxLength: 50
         entered_by_hubspot_owner_id:
           type: integer
           description: A HubSpot owner ID.
@@ -457,8 +457,6 @@ components:
             type: object
             properties:
               item_master_id:
-                type: integer
-              item_num_id:
                 type: integer
               cipn:
                 type: string
@@ -497,15 +495,19 @@ components:
         ship_to_name:
           type: string
           description: A unique name that identifies the ship-to address.
+          maxLength: 50
         address:
           type: string
           description: Multi-line string that describes the address.
           example: "1 Marina Park Drive\nSuite 7"
+          maxLength: 200
         city:
           type: string
+          maxLength: 50
         state:
           type: string
           description: May be an empty string
+          maxLength: 50
         country:
           type: string
           maxLength: 2

@@ -27,6 +27,9 @@ from ...core.mutations import BaseMutation
 from ...core.types.common import AccountError
 from ..types import User
 
+from saleor.fusion_online.hubspot.registration import HubspotRegistration
+hubspot_reg = HubspotRegistration()
+
 
 def get_payload(token):
     try:
@@ -101,6 +104,15 @@ class CreateToken(BaseMutation):
                     )
                 }
             )
+        # Update hubspot approval status
+        if 'hubspot_user_id' in user.private_metadata:
+            hubspot_user = hubspot_reg.get_hubspot_user_by_id(
+                user.private_metadata['hubspot_user_id'])
+            if hubspot_user and 'customer_approval_status_rc' in hubspot_user['properties']:
+                user.private_metadata['customer_approval_status'] = hubspot_user['properties'][
+                    'customer_approval_status_rc']
+                user.save()
+
         return user
 
     @classmethod

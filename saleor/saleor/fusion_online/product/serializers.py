@@ -29,7 +29,6 @@ class ProductSerializer(serializers.Serializer):
     mcode = serializers.CharField(max_length=10)
     status = serializers.ChoiceField(choices=[("ACTIVE", "Active"), ("INACTIVE", "Inactive")])
     vendors = VendorSerializer(many=True)
-    price_item_id = serializers.IntegerField(max_value=None, min_value=None, required=False)
     category_id = serializers.ChoiceField(choices=CATEGORY_ID_CHOICES)
     all_description = serializers.CharField(max_length=250, required=False)
     cpu_family = serializers.CharField(max_length=100, required=False, allow_blank=True)
@@ -66,7 +65,6 @@ class ProductSerializer(serializers.Serializer):
         category_name = CATEGORY_ID_DICT[validated_data["category_id"]]
 
         # map request data to product model fields and create new product
-        print(True if validated_data["status"] == "ACTIVE" else False)
         product_data = {
             "name": validated_data["all_description"] if validated_data.get('all_description') 
                 else f'{validated_data["mcode"]} {validated_data["mpn"]}',
@@ -87,9 +85,7 @@ class ProductSerializer(serializers.Serializer):
             if validated_data[attr_slug]:
                 attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
                 associate_attribute_values_to_instance(product, attribute, attribute_value[0])
-        
         print("--ATTRIBUTE VALUES STORED--")
-
 
         # save mcode, mpn, item_master_id as public metadata
         product_queryset = Product.objects.filter(pk=product.pk)
@@ -114,88 +110,32 @@ class ProductSerializer(serializers.Serializer):
             product_queryset.update(is_published=True)
             print("--PRODUCT PUBLISHED--")
 
-        # create new vendor attribute values for each vendor in request body 
-        attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
-        attribute_vendor = Attribute.objects.get(slug="vendor")
-        attribute_primary_vendors_values = []
-
+        # Updates name of existing vendors or creates new vendor, and associates the product with the vendor
         for vendor in validated_data["vendors"]:
-            try:
-                attribute_primary_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
-                attribute=attribute_primary_vendors)
-                attribute_primary_value.name = vendor["vendor_name"]
-                attribute_primary_value.save()
-                attribute_primary_vendors_values.append(attribute_primary_value)
-            except AttributeValue.DoesNotExist:
-                attribute_primary_value = AttributeValue.objects.create(
-                    name=vendor["vendor_name"],
-                    slug=vendor["vendor_number"],
-                    attribute=attribute_primary_vendors)
-                attribute_primary_vendors_values.append(attribute_primary_value)
-
-            try:
-                attribute_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
-                attribute=attribute_vendor)
-                attribute_value.name = vendor["vendor_name"]
-                attribute_value.save()
-            except AttributeValue.DoesNotExist:
-                AttributeValue.objects.create(
-                    name=vendor["vendor_name"],
-                    slug=vendor["vendor_number"],
-                    attribute=attribute_vendor
-                )
-            
             try:
                 vendor_instance = Vendor.objects.get(vendor_number=vendor["vendor_number"])
                 vendor_instance.vendor_name = vendor["vendor_name"]
                 vendor_instance.save()
+                vendor_instance.products.add(product)
             except Vendor.DoesNotExist:
-                Vendor.objects.create(**vendor)
-
-        associate_attribute_values_to_instance(product, attribute_primary_vendors, *attribute_primary_vendors_values)
-        print("--VENDORS STORED--")
+                new_vendor = Vendor.objects.create(**vendor)
+                new_vendor.products.add(product)
+        print("--VENDOR INFO SAVED--")
 
         return product
 
     def update(self, instance, validated_data):
-        attribute_primary_vendors = Attribute.objects.get(slug="primary-vendors")
-        attribute_vendor = Attribute.objects.get(slug="vendor")
-        attribute_primary_vendors_values = []
-
+        # Updates name of existing vendors or creates new vendor, and associates the product with the vendor
         for vendor in validated_data["vendors"]:
-            try:
-                attribute_primary_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
-                attribute=attribute_primary_vendors)
-                attribute_primary_value.name = vendor["vendor_name"]
-                attribute_primary_value.save()
-                attribute_primary_vendors_values.append(attribute_primary_value)
-            except AttributeValue.DoesNotExist:
-                attribute_primary_value = AttributeValue.objects.create(
-                    name=vendor["vendor_name"],
-                    slug=vendor["vendor_number"],
-                    attribute=attribute_primary_vendors)
-                attribute_primary_vendors_values.append(attribute_primary_value)
-
-            try:
-                attribute_value = AttributeValue.objects.get(slug=vendor["vendor_number"],
-                attribute=attribute_vendor)
-                attribute_value.name = vendor["vendor_name"]
-                attribute_value.save()
-            except AttributeValue.DoesNotExist:
-                AttributeValue.objects.create(
-                    name=vendor["vendor_name"],
-                    slug=vendor["vendor_number"],
-                    attribute=attribute_vendor
-                )
-            
             try:
                 vendor_instance = Vendor.objects.get(vendor_number=vendor["vendor_number"])
                 vendor_instance.vendor_name = vendor["vendor_name"]
                 vendor_instance.save()
+                vendor_instance.products.add(instance)
             except Vendor.DoesNotExist:
-                Vendor.objects.create(**vendor)
-        associate_attribute_values_to_instance(instance, attribute_primary_vendors, *attribute_primary_vendors_values)
-        print("--VENDORS UPDATED --")
+                new_vendor = Vendor.objects.create(**vendor)
+                new_vendor.products.add(instance)
+        print("--VENDOR INFO SAVED--")
 
         # assign status attribute value
         attribute_status = Attribute.objects.get(slug="status")

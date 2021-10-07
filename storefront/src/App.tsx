@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, useCart } from '@saleor/sdk';
-import { Switch, Route, useLocation } from 'react-router-dom';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 
 import { SearchContainer } from './components/SearchContainer/SearchContainer';
 import { ProductDetail } from './components/ProductDetail/ProductDetail';
@@ -19,6 +19,8 @@ import './App.scss';
 import { useMutation } from '@apollo/client';
 import { CONFIRM_ACCOUNT } from './graphql/account';
 
+import { Alert, Container } from 'react-bootstrap';
+
 type AccountConfirmMutation = {
   confirmAccount: {
     errors: Array<{
@@ -26,6 +28,12 @@ type AccountConfirmMutation = {
       message: string | null;
     }>;
   } | null;
+};
+
+type AlertState = {
+  show: boolean;
+  message?: string;
+  variant?: string;
 };
 
 function App() {
@@ -42,6 +50,14 @@ function App() {
     updateItem,
     subtractItem,
   } = useCart();
+  const [showAlert, setShowAlert] = useState<AlertState>({
+    show: false,
+    message: 'Your email has been confirmed! Please log in.',
+    variant: 'primary',
+  });
+  const [confirming, setConfirming] = useState<Boolean>(false);
+  const location = useLocation();
+  const history = useHistory();
   const handleSignIn = async (email: string, password: string) => {
     const { data, dataError } = await signIn(email, password);
 
@@ -56,6 +72,7 @@ function App() {
        * User signed in successfully.
        **/
       console.log('Sign In Successful:', data);
+      handleCloseConfirmation();
     }
   };
 
@@ -66,18 +83,36 @@ function App() {
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
-  const [confirmAccount, { data }] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
+  const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (email && token) {
+  if (email && token && !confirming) {
+    setConfirming(true);
     confirmAccount({
       variables: { email, token },
     });
-    if (data?.confirmAccount?.errors.length === 0) {
+  }
+
+  if (confirming) {
+    if (confirmAccountData?.data?.confirmAccount?.errors.length === 0) {
       console.log('Account confirmed');
+      if (!showAlert.show) {
+        setShowAlert({ show: true, message: 'Your email has been confirmed! Please log in.', variant: 'primary' });
+      }
     } else {
-      console.error(data?.confirmAccount?.errors);
+      console.error('confirm errors', confirmAccountData?.data?.confirmAccount?.errors);
     }
   }
+
+  const handleCloseConfirmation = () => {
+    setConfirming(false);
+    let queryParams = new URLSearchParams(location.search);
+    queryParams.delete('email');
+    queryParams.delete('token');
+    history.replace({
+      search: queryParams.toString(),
+    });
+    setShowAlert({ show: false });
+  };
 
   return authenticated && user ? (
     <>
@@ -125,7 +160,28 @@ function App() {
       <Footer />
     </>
   ) : (
-    <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+    <>
+      <Alert
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+        }}
+        show={showAlert.show}
+        variant={showAlert.variant}
+        dismissible
+        onClose={handleCloseConfirmation}
+      >
+        <Container>
+          <Alert.Heading>
+            <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
+            <strong className="me-auto">RocketChips</strong>
+          </Alert.Heading>
+          <p>{showAlert.message}</p>
+        </Container>
+      </Alert>
+      <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+    </>
   );
 }
 

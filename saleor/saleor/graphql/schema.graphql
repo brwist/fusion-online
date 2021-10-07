@@ -134,6 +134,11 @@ type Address implements Node {
   country: CountryDisplay!
   countryArea: String!
   phone: String
+  customerId: Int
+  shipToName: String
+  shipVia: String
+  vatId: String
+  validationMessage: String
   isDefaultShippingAddress: Boolean
   isDefaultBillingAddress: Boolean
 }
@@ -166,6 +171,11 @@ input AddressInput {
   country: CountryCode
   countryArea: String
   phone: String
+  customerId: String
+  shipToName: String
+  shipVia: String
+  vatId: String
+  validationMessage: String
 }
 
 type AddressSetDefault {
@@ -2705,7 +2715,7 @@ enum MetadataErrorCode {
 
 input MetadataInput {
   key: String!
-  value: String!
+  value: String
 }
 
 type MetadataItem {
@@ -3134,6 +3144,29 @@ interface ObjectWithMetadata {
   privateMeta: [MetaStore]!
     @deprecated(reason: "Use the `privetaMetadata` field. This field will be removed after 2020-07-31.")
   meta: [MetaStore]! @deprecated(reason: "Use the `metadata` field. This field will be removed after 2020-07-31.")
+}
+
+type Offer {
+  id: ID!
+  type: OfferType!
+  leadTimeDays: Int!
+  dateAdded: Int!
+  itemNumId: Int!
+  quantity: Int!
+  offerPrice: Float!
+  dateCode: String
+  coo: String
+  vendor: Vendor
+  tariffRate: Float
+  productVariant: ProductVariant
+}
+
+enum OfferType {
+  EXCESS_LIST
+  STOCK_LIST
+  VENDOR_OFFER
+  RMS_OFFER
+  RMS_PO
 }
 
 type Order implements Node & ObjectWithMetadata {
@@ -4106,6 +4139,7 @@ input ProductFilterInput {
   productType: ID
   stocks: ProductStockFilterInput
   search: String
+  metadata: MetadataInput
   price: PriceRangeInput
   minimalPrice: PriceRangeInput
   productTypes: [ID]
@@ -4505,7 +4539,7 @@ type ProductVariantCreate {
 }
 
 input ProductVariantCreateInput {
-  attributes: [AttributeValueInput]!
+  attributes: [AttributeValueInput]
   costPrice: PositiveDecimal
   price: PositiveDecimal
   sku: String
@@ -4513,6 +4547,7 @@ input ProductVariantCreateInput {
   weight: WeightScalar
   product: ID!
   stocks: [StockInput!]
+  offer: Int
 }
 
 type ProductVariantDelete {
@@ -4613,6 +4648,7 @@ type ProductVariantUpdatePrivateMeta {
 }
 
 type Query {
+  offers(itemNumId: String): [Offer]
   webhook(id: ID!): Webhook
   webhooks(
     sortBy: WebhookSortingInput
@@ -5895,6 +5931,31 @@ type VariantPricingInfo {
   price: TaxedMoney
   priceUndiscounted: TaxedMoney
   priceLocalCurrency: TaxedMoney
+}
+
+type Vendor {
+  id: ID!
+  vendorName: String!
+  vendorNumber: Int!
+  vendorType: VendorVendorType
+  vendorRegion: VendorVendorRegion
+}
+
+enum VendorVendorRegion {
+  AMERICAS
+  ASIA_PACIFIC
+  EMEA
+  OTHER
+}
+
+enum VendorVendorType {
+  UNCLASSIFIED
+  BROKER
+  MFG_DIRECT
+  OEM_CM_EXCESS
+  AUTHORIZED_FRANCHISE
+  EXPENSE_NON_PRODUCT_
+  SERVICE
 }
 
 type VerifyToken {

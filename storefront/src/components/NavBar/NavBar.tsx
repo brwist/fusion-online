@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Navbar, Nav, NavDropdown, Button, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faSearch} from '@fortawesome/pro-regular-svg-icons';
 import LogoImg from '../../img/rocketChips.png';
@@ -12,7 +12,7 @@ import './navbar.scss';
 import { useQuery } from '@apollo/client';
 import { GET_CATEGORY_LIST } from '../../config';
 
-type CategoryListQuery = { 
+type CategoryListQuery = {
   categories?: Maybe<(
     & { edges: Array<(
       & { node: Maybe<Category>
@@ -33,7 +33,7 @@ export const NavBar: React.FC<NavBarProps> = ({
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+
   const parentCategories = data?.categories?.edges?.filter(
     ({node}) => !node?.parent
   )
@@ -65,6 +65,40 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               <Nav as="ul" id="main-nav">
+                <NavDropdown as="li" title="Mega Menu" className="mega-menu" id="basic-nav-dropdown">
+                  <Container>
+                    <Row>
+                      <Col lg className="d-none d-lg-block">
+                        <h4 className="mt-2 font-weight-bold">CPUs</h4>
+                      </Col>
+                      <Col lg>
+                        <NavDropdown.Header>Trending</NavDropdown.Header>
+                        <NavDropdown.Item as="div"><Link to="/">Intel® Celeron® Processor N3010</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Intel® Celeron® Processor N3010</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Intel® Celeron® Processor N3010</Link></NavDropdown.Item>
+                      </Col>
+                      <Col lg>
+                        <NavDropdown.Header>Manufacturer</NavDropdown.Header>
+                        <NavDropdown.Item as="div"><Link to="/">AMD</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">INTEL</Link></NavDropdown.Item>
+                      </Col>
+                      <Col lg>
+                        <NavDropdown.Header>Commodity Group</NavDropdown.Header>
+                        <NavDropdown.Item as="div"><Link to="/">Desktop</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Server</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Mobile</Link></NavDropdown.Item>
+                      </Col>
+                      <Col lg>
+                        <NavDropdown.Header>Brand</NavDropdown.Header>
+                        <NavDropdown.Item as="div"><Link to="/">Xeon</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Core</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Celeron</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">Ryzen</Link></NavDropdown.Item>
+                        <NavDropdown.Item as="div"><Link to="/">EPYC</Link></NavDropdown.Item>
+                      </Col>
+                    </Row>
+                  </Container>
+                </NavDropdown>
                 {parentCategories?.map(({node}) => {
                   return (
                     <Nav.Item key={node?.id} as="li">
@@ -80,6 +114,12 @@ export const NavBar: React.FC<NavBarProps> = ({
               </Nav>
 
               <Nav as="ul" id="utility-nav">
+                <Nav.Item as="li">
+                  <a className="nav-link" href="tel:+1 617 502 4100">+1 617 502 4100</a>
+                </Nav.Item>
+                <Nav.Item as="li">
+                  <a className="nav-link" href="mailto:info@fusionww.com">info@fusionww.com</a>
+                </Nav.Item>
                 <Nav.Item as="li">
                   <Button variant="link" className="nav-link" onClick={handleShow}>
                     Part Search
@@ -103,22 +143,6 @@ export const NavBar: React.FC<NavBarProps> = ({
                   <NavDropdown.Item as="div">List 1</NavDropdown.Item>
                   <NavDropdown.Item as="div">List 2</NavDropdown.Item>
                 </NavDropdown>
-                <Nav.Item as="li">
-                  <Link
-                    to="/"
-                    className="nav-link px-2 text-muted"
-                  >
-                    DE
-                  </Link>
-                </Nav.Item>
-                <Nav.Item as="li">
-                  <Link
-                    to="/"
-                    className="nav-link px-2 text-muted"
-                  >
-                    KO
-                  </Link>
-                </Nav.Item>
               </Nav>
             </Navbar.Collapse>
           </Container>
