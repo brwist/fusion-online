@@ -9,6 +9,7 @@ import { Shipping } from './Shipping';
 import { ManageProfile } from './ManageProfile';
 import { SavedParts } from './SavedParts';
 import { Orders } from './Orders';
+import { CompleteRegistration } from './CompleteRegistration'
 
 import './myaccount.scss'
 
@@ -43,6 +44,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
             <Route exact path="/account/manage-profile" component={ManageProfile} />
             <Route path="/account/orders" component={Orders} />
             <Route exact path="/account/saved-parts" component={SavedParts} />
+            <Route exact path="/account/complete-registration" component={CompleteRegistration}/>
           </Switch>
         </Col>
       </Row>
