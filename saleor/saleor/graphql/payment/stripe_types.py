@@ -1,10 +1,4 @@
 import graphene
-from graphene import relay
-
-from ...payment import models
-from ..core.connection import CountableDjangoObjectType
-from ..core.types import Money
-from .enums import OrderAction, PaymentChargeStatusEnum
 
 
 class StripeBillingAddress(graphene.ObjectType):

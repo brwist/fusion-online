@@ -25,6 +25,8 @@ from .base import (
     BaseCustomerCreate,
 )
 
+import json
+
 
 class AccountRegisterInput(graphene.InputObjectType):
     first_name = graphene.String(description="User first name", required=True)

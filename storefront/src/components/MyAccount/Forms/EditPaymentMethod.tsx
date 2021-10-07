@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
-import {
-  CardElement,
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  useElements,
-  useStripe,
-} from '@stripe/react-stripe-js';
-import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 
-import { User, AddressInput, CountryCode } from '../../../generated/graphql';
+import { User, CountryCode } from '../../../generated/graphql';
 import { useMutation } from '@apollo/client';
-import { PaymentForm } from '../../CheckoutPage/PaymentForm';
 
 import usStates from '../../../utils/us-states.json';
 import caStates from '../../../utils/ca-states.json';
@@ -23,6 +14,7 @@ import countries from '../../../utils/countries.json';
 interface Props {
   user: User | undefined;
   handleCloseEdit: Function;
+  onSuccess: Function;
 }
 
 type errorsType =
@@ -66,15 +58,14 @@ export const ADD_STRIPE_TOKEN = gql`
   }
 `;
 
-export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Props) => {
+export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit, onSuccess }: Props) => {
   const stripe = useStripe();
   const elements = useElements();
   const [submitError, setSubmitError] = useState<String | null>(null);
   const [addStripeToken, stripeTokenResponse] = useMutation(ADD_STRIPE_TOKEN);
-  console.log('stripeTokenResponse: ', stripeTokenResponse);
 
-  if (user) {
-    console.log('user: ', user);
+  if (stripeTokenResponse.data) {
+    onSuccess();
   }
 
   const {
@@ -86,8 +77,7 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     // First check CC
-    const cardElement = elements?.getElement(CardElement);
-    console.log('cardElement: ', cardElement);
+    const cardElement = elements?.getElement(CardNumberElement);
 
     if (cardElement) {
       let match = Object.entries(CountryCode).find(([key, val]) => val === data.country);
@@ -97,8 +87,6 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
         // eslint-disable-next-line
         [val, country] = match;
       }
-      const payload = { ...data, country };
-      console.log('payload: ', payload);
 
       // Use your card Element with other Stripe.js APIs
       const stripeResponse = await stripe?.createPaymentMethod({
@@ -107,36 +95,22 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
         billing_details: {
           address: {
             city: data.city,
+            state: data.countryArea,
             country: data.country,
             line1: data.streetAddress1,
             line2: data.streetAddress2,
             postal_code: data.postalCode,
           },
+          name: `${data.firstName} ${data.lastName}`,
         },
       });
 
-      console.log('stripeResponse: ', stripeResponse);
-
       if (stripeResponse?.error) {
         console.log('stripeResponse?.error: ', stripeResponse?.error);
-        // const errors = [
-        //   {
-        //     ...stripeResponse.error,
-        //     message: stripeResponse.error.message || '',
-        //   },
-        // ];
-        // setSubmitErrors(errors);
       } else if (stripeResponse?.paymentMethod) {
         const { card, id } = stripeResponse.paymentMethod;
         if (card?.brand && card?.last4) {
           addStripeToken({ variables: { paymentMethodId: id } });
-          // processPayment('mirumee.payments.stripe', id, {
-          //   brand: card?.brand,
-          //   expMonth: card?.exp_month || null,
-          //   expYear: card?.exp_year || null,
-          //   firstDigits: null,
-          //   lastDigits: card?.last4,
-          // });
         }
       } else {
         setSubmitError('Payment submission error. Stripe gateway returned no payment method in payload.');
@@ -145,11 +119,6 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
       setSubmitError('Stripe gateway improperly rendered. Stripe elements were not provided.');
     }
   };
-
-  //   if (data) {
-  //     // Close the modal on success
-  //     handleCloseEdit();
-  //   }
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
@@ -238,16 +207,6 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
     );
   };
 
-  //   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
-  //     event.preventDefault();
-
-  //     if (!stripe || !elements) {
-  //       return;
-  //     }
-  //     // await onSubmit(stripe, elements);
-
-  //   };
-
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group>
@@ -284,7 +243,9 @@ export const EditPaymentMethod: React.FC<Props> = ({ user, handleCloseEdit }: Pr
       <Button variant="primary" type="submit">
         Save Payment Method
       </Button>
-      <Button variant="link">Cancel</Button>
+      <Button variant="link" onClick={() => handleCloseEdit()}>
+        Cancel
+      </Button>
     </Form>
   );
 };

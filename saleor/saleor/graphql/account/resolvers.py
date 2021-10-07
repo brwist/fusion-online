@@ -131,7 +131,6 @@ def resolve_stripe_cards(user: models.User):
         for stripe_id in user.private_metadata['stripe_payment_method_ids']:
             plugin_manager = get_plugins_manager(
                 plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
-            # plugin_manager = get_plugins_manager()
             card = plugin_manager.plugins[0].get_payment_method(stripe_id)
             if card:
                 cards.append(card)

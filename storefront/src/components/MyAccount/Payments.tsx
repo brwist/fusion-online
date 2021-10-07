@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import { Tag } from '../Tag/Tag';
 import { gql, useQuery } from '@apollo/client';
-import { CardNumberElement, Elements } from '@stripe/react-stripe-js';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { loadStripe, Stripe, StripeElements } from '@stripe/stripe-js';
-
-import { useAuth } from '@saleor/sdk';
-import { EditPaymentMethod } from './Forms/EditPaymentMethod';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 import './myaccount.scss';
+import { EditPaymentMethod } from './Forms/EditPaymentMethod';
 
 export interface PaymentsProps {}
 
@@ -61,7 +58,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
   const renderStripeCardRow = (card, index) => {
     return (
-      <Row>
+      <Row key={index}>
         <Col>
           <div className="mb-2">
             <strong className="transform-uppercase">
@@ -83,7 +80,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
           </div>
         </Col>
         <Col>
-          Full Name
+          {card.billingDetails.name}
           <br />
           {`${card.billingDetails.address.line1} ${card.billingDetails.address.line2}`}
           <br />
@@ -109,6 +106,11 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
   const handleCloseEdit = () => {
     setEditMode(null);
+  };
+
+  const handleNewCardAdded = () => {
+    handleCloseEdit();
+    userQuery.refetch();
   };
 
   return (
@@ -184,7 +186,11 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
         </Modal.Header>
         <Modal.Body>
           <Elements stripe={stripePromise}>
-            <EditPaymentMethod user={userQuery.data || undefined} handleCloseEdit={handleCloseEdit} />
+            <EditPaymentMethod
+              user={userQuery.data || undefined}
+              handleCloseEdit={handleCloseEdit}
+              onSuccess={handleNewCardAdded}
+            />
           </Elements>
         </Modal.Body>
       </Modal>
