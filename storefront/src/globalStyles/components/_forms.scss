@@ -14,7 +14,7 @@ textarea {
     // @extend .form-control;
 }
 
-label {
+label:not(.custom-control-label) {
     text-transform: uppercase;
 }
 
