@@ -17,7 +17,7 @@ import { DataGrid, GridColDef, GridValueGetterParams} from "@mui/x-data-grid";
 // import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
 import { useOfferListQuery } from "../../queries";
-import { useVariantUpdateMutation } from "../../../products/mutations";
+import { useVariantUpdateMutation, useVariantCreateMutation, useVariantDeleteMutation } from "../../../products/mutations";
 import moment from "moment-timezone";
 const WAREHOUSE_ID = "V2FyZWhvdXNlOmY0YTc2YmNkLWM2MjgtNDhkNS1hMjRkLWM1YjM3YzFlNjA3OA=="
 
@@ -192,6 +192,7 @@ export interface PricingDetailDrawerProps {
       coo: string
     }
   }>;
+  productId: string;
   productMPN: string;
   productItemMasterId: string;
 }
@@ -201,6 +202,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     open,
     closeDrawer,
     variants,
+    productId,
     productMPN,
     productItemMasterId
   }) => {
@@ -287,27 +289,48 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   
   const [variantUpdate, variantUpdateMutationData] = useVariantUpdateMutation({
     onCompleted: (data) => console.log(data),
-    onError: (error) => console.log("Update Errors:", error)
+    onError: (error) => console.log("VariantUpdate Errors:", error)
+  })
+
+  const [variantCreate, variantCreateMutationData] = useVariantCreateMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("VariantCreate Error:", error)
   })
 
   const handleUpdate = () => {
-    const variantOfferIds = variants?.map(variant => variant?.offer.offerId)
-    const variantsToUpdate = variantTableRows.filter(row => variantOfferIds.includes(row.id))
+    const variantOfferIds = variants?.map(variant => variant?.offer.offerId);
 
-    variantsToUpdate.forEach( ({id, qty, cost, sellPrice}) => {
-      const variantData = variants?.find(variant => variant?.offer.offerId == id)
-      console.log("sellPrice type:", typeof sellPrice, parseFloat(sellPrice))
-      variantUpdate({variables: {
-        id: variantData.id,
-        sku: variantData.sku,
-        addStocks: [],
-        removeStocks: [],
-        trackInventory: true,
-        stocks: [{warehouse: WAREHOUSE_ID, quantity: qty }],
-        costPrice: cost,
-        price: sellPrice
-      }})
-    });
+    variantTableRows.forEach(({id, qty, cost, sellPrice}) => {
+      if (variantOfferIds.includes(id)) {
+        // run update mutation
+        const variantData = variants?.find(variant => variant?.offer.offerId == id)
+        variantUpdate({variables: {
+          id: variantData.id,
+          sku: variantData.sku,
+          addStocks: [],
+          removeStocks: [],
+          trackInventory: true,
+          stocks: [{warehouse: WAREHOUSE_ID, quantity: qty }],
+          costPrice: cost,
+          price: sellPrice
+        }});
+      } else {
+        // run create mutation
+        const offerData = offers?.find(offer => offer?.offerId == id)
+        variantCreate({variables: {
+          input: {
+            sku: id,
+            trackInventory: true,
+            product: productId,
+            stocks: [{warehouse: WAREHOUSE_ID, quantity: qty}],
+            costPrice: cost,
+            price: sellPrice,
+            offer: offerData?.id
+          }
+        }});
+      }
+    })
+
     handleDrawerClose()
   }
 

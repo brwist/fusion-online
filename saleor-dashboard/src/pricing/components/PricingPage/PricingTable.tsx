@@ -85,7 +85,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
 }) => {
   const classes = useStyles()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [activeProduct, setActiveProduct] = useState({variants: [], mpn: "", itemMasterId: ""})
+  const [activeProduct, setActiveProduct] = useState({id: "", variants: [], mpn: "", itemMasterId: ""})
 
 
   const {data, loading} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 50} })
@@ -161,6 +161,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
             setIsDrawerOpen(!isDrawerOpen);
             setActiveProduct({
               variants: node.variants,
+              id: node.id,
               mpn,
               itemMasterId
             })
@@ -188,6 +189,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         open={isDrawerOpen}
         closeDrawer={() => setIsDrawerOpen(false)}
         variants={activeProduct.variants}
+        productId={activeProduct.id}
         productMPN={activeProduct.mpn}
         productItemMasterId={activeProduct.itemMasterId?.toString()}
       />

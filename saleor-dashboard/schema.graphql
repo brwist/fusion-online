@@ -4163,7 +4163,7 @@ type ProductVariantCreate {
 }
 
 input ProductVariantCreateInput {
-  attributes: [AttributeValueInput]!
+  attributes: [AttributeValueInput]
   costPrice: PositiveDecimal
   price: PositiveDecimal
   sku: String
@@ -4171,6 +4171,7 @@ input ProductVariantCreateInput {
   weight: WeightScalar
   product: ID!
   stocks: [StockInput!]
+  offer: Int
 }
 
 type ProductVariantDelete {
