@@ -13,11 +13,13 @@ import {
 } from "@material-ui/core";
 import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden"
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridValueGetterParams} from "@mui/x-data-grid";
 // import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
 import { useOfferListQuery } from "../../queries";
-import moment from "moment-timezone"
+import { useVariantUpdateMutation } from "../../../products/mutations";
+import moment from "moment-timezone";
+const WAREHOUSE_ID = "V2FyZWhvdXNlOmY0YTc2YmNkLWM2MjgtNDhkNS1hMjRkLWM1YjM3YzFlNjA3OA=="
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -207,10 +209,10 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
 
   const handleDrawerClose = () => {
     setHideDropdown(true)
+    setVariantTableRows(defaultVariantTableRows)
     closeDrawer()
   }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
-  console.log(data)
   
   const offers = data?.offers || []
   const priceSortedOffers = productItemMasterId && offers.length > 0 ? [...offers].sort(
@@ -244,18 +246,19 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     setVariantTableRows(defaultVariantTableRows)
   }, [productItemMasterId])
   
-  const handleCellEditCommit = useCallback(({id, field, value}) => variantTableRows.map(row => {
-      if (row.id === id) {
-        return {...row, [field]: value}
-      }
-      return row
-    }), [variantTableRows])
+  const handleCellEditCommit = useCallback(({id, field, value}) => {
+      const updatedRows = variantTableRows.map(row => {
+        if (row.id === id) {
+            return {...row, [field]: value}
+          }
+          return row
+      });
+      setVariantTableRows(updatedRows)
+  }, [variantTableRows])
   
   const handleOfferSelect = (event) => {
     const offerId = event.target.value
-    console.log("selected offer id:", offerId)
     const offerData = data?.offers.find(offer => offer.id === offerId)
-    console.log("selected offer data:", offerData)
     setVariantTableRows([
       ...variantTableRows,
       {
@@ -281,6 +284,32 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
         <StyledTableCell align="right">${offer?.offerPrice}</StyledTableCell>
       </StyledTableRow>
     ))
+  
+  const [variantUpdate, variantUpdateMutationData] = useVariantUpdateMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("Update Errors:", error)
+  })
+
+  const handleUpdate = () => {
+    const variantOfferIds = variants?.map(variant => variant?.offer.offerId)
+    const variantsToUpdate = variantTableRows.filter(row => variantOfferIds.includes(row.id))
+
+    variantsToUpdate.forEach( ({id, qty, cost, sellPrice}) => {
+      const variantData = variants?.find(variant => variant?.offer.offerId == id)
+      console.log("sellPrice type:", typeof sellPrice, parseFloat(sellPrice))
+      variantUpdate({variables: {
+        id: variantData.id,
+        sku: variantData.sku,
+        addStocks: [],
+        removeStocks: [],
+        trackInventory: true,
+        stocks: [{warehouse: WAREHOUSE_ID, quantity: qty }],
+        costPrice: cost,
+        price: sellPrice
+      }})
+    });
+    handleDrawerClose()
+  }
 
   return (
     <Drawer
@@ -297,7 +326,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           title={productMPN}
         >
           <Button
-            onClick={() => console.log("click")}
+            onClick={handleUpdate}
             color="primary"
             variant="contained"
           >
@@ -367,9 +396,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               columns={columns}
               disableColumnMenu
               onCellEditCommit={handleCellEditCommit}
-              // pageSize={5}
-              // rowsPerPageOptions={[5]}
-              // disableSelectionOnClick
             />
             <div className={classes.padding}>
               <Button 

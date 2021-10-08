@@ -71,6 +71,11 @@ const pricingProductListQuery = gql`
             price {
               amount
             }
+            stocks {
+              warehouse {
+                id
+              }
+            }
             quantityAvailable
             offer {
               offerId
