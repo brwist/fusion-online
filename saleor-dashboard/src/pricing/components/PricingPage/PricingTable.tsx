@@ -88,7 +88,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
   const [activeProduct, setActiveProduct] = useState({id: "", variants: [], mpn: "", itemMasterId: ""})
 
 
-  const {data, loading} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 50} })
+  const {data, loading, refetch} = usePricingProductListQuery({variables: {filter: {categories: categoryId ? [categoryId] : []}, first: 50} })
   const categoryDetails = useCategoryDetailsQuery({variables: {id: categoryId || "a", first: 10}})
   const categorySlug = categoryDetails.data?.category?.slug
   const attributeFilter = categorySlug?.split("-")[0]
@@ -186,6 +186,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
   return (
     <>
       <PricingDetailDrawer 
+        refetchProducts={refetch}
         open={isDrawerOpen}
         closeDrawer={() => setIsDrawerOpen(false)}
         variants={activeProduct.variants}
