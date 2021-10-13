@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from "react";
 import {
   Button,
+  Container,
   Drawer,
   Table,
   TableHead,
@@ -14,10 +15,12 @@ import {
 import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden"
 import { DataGrid, GridColDef, GridValueGetterParams} from "@mui/x-data-grid";
-// import Container from "@saleor/components/Container";
 import PageHeader from "../../../components/PageHeader";
 import { useOfferListQuery } from "../../queries";
-import { useVariantUpdateMutation, useVariantCreateMutation, useVariantDeleteMutation } from "../../../products/mutations";
+import { 
+  useVariantUpdateMutation, useVariantCreateMutation, useVariantDeleteMutation,
+  useProductVariantSetDefaultMutation
+} from "../../../products/mutations";
 import moment from "moment-timezone";
 
 const WAREHOUSE_ID = "V2FyZWhvdXNlOmY0YTc2YmNkLWM2MjgtNDhkNS1hMjRkLWM1YjM3YzFlNjA3OA=="
@@ -34,18 +37,26 @@ const useStyles = makeStyles(theme => ({
     '& .MuiDataGrid-columnHeaderTitle': {
       fontSize: 12,
       fontWeight: 600,
+      marginRight: 0,
     },
     '& .MuiDataGrid-row': {
-      marginTop: 1,
       border: '1px solid #fff',
       borderBottomColor: '#eaeaea',
       '&:hover': {
-        backgroundColor: 'rgba(102, 204, 102, 0.12)',
-        borderColor: '#66cc66',
+        backgroundColor: 'transparent',
       },
+    },
+    '& .MuiDataGrid-row.Mui-selected': {
+      marginTop: 0.4,
+      width: "102%",
+      border: '1px solid #66cc66',
+      backgroundColor: 'rgba(102, 204, 102, 0.12)',
     },
     '& .MuiDataGrid-cell': {
       fontSize: 12,
+      '&:hover': {
+        backgroundColor: 'rgba(102, 204, 102, 0.08)',
+      },
       '&:nth-of-type(1)': {
         color: '#66cc66',
         fontWeight: 600,
@@ -308,10 +319,15 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     onError: (error) => console.log("VariantCreate Error:", error)
   })
 
-  const handleUpdate = () => {
+  const [setDefaultVariant, setDefaultVariantData] = useProductVariantSetDefaultMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("Error setting variant default:", error)
+  })
+
+  const handleUpdate = async () => {
     const variantOfferIds = variants?.map(variant => variant?.offer?.offerId);
 
-    variantTableRows.forEach(({id, qty, cost, sellPrice}) => {
+    variantTableRows.forEach(async ({id, qty, cost, sellPrice}) => {
       if (variantOfferIds.includes(id)) {
         // run update mutation
         const variantData = variants?.find(variant => variant?.offer?.offerId == id )
@@ -325,10 +341,17 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           costPrice: cost,
           price: sellPrice
         }});
+        // set default variant if id matches selected row
+        if (id == selectionModel[0]) {
+          setDefaultVariant({variables: {
+            productId,
+            variantId: variantData.id
+          }})
+        }
       } else {
         // run create mutation
         const offerData = offers?.find(offer => offer?.offerId == id)
-        variantCreate({variables: {
+        const {data: {productVariantCreate}} = await variantCreate({variables: {
           input: {
             sku: id,
             trackInventory: true,
@@ -339,6 +362,14 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             offer: offerData?.id
           }
         }});
+        // set default variant if id matches selected row
+        if (id == selectionModel[0]) {
+          const variantId = productVariantCreate?.productVariant?.id
+          setDefaultVariant({variables: {
+            productId,
+            variantId
+          }})
+        }
       }
     })
     handleDrawerClose()
@@ -425,22 +456,25 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           <div style={{ flexGrow: 1 }}>
             <DataGrid
               autoHeight
-              autoPageSize
-              pagination
+              // pageSize={5}
+              // pagination
               rowHeight={40}
               rows={variantTableRows}
               columns={columns}
               disableColumnMenu
+              hideFooter
               disableSelectionOnClick
               onCellEditCommit={handleCellEditCommit}
               selectionModel={selectionModel}
+              style={{paddingLeft: 24, paddingRight: 24}}
             />
-            <div className={classes.padding}>
+            <div style={{paddingLeft: 24, paddingRight: 24, paddingTop: 24}}>
               <Button 
-                onClick={() => setHideDropdown(false)}
+                onClick={() => setHideDropdown(!hideDropdown)}
                 color="primary"
               >Add Variant</Button>
               <Hidden xsUp={hideDropdown}>
+                <Container disableGutters>
                 <FormControl
                   className={`${classes.formControl} ${hideDropdown && 'd-none'}`}
                     variant="outlined"
@@ -460,6 +494,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
                     ))}
                   </Select>
                 </FormControl>
+                </Container>
               </Hidden>
             </div>
           </div>
