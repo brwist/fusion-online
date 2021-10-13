@@ -259,11 +259,9 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   const [variantTableRows, setVariantTableRows] = useState([])
 
   useEffect(() => {
-    if( productItemMasterId) {
-      setVariantTableRows(defaultVariantTableRows)
-      if (defaultVariant) {
-        setSelectionModel([defaultVariant])
-      }
+    setVariantTableRows(defaultVariantTableRows)
+    if (defaultVariant) {
+      setSelectionModel([defaultVariant])
     }
   }, [variants])
 
