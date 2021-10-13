@@ -22,6 +22,11 @@ const ProductFragmentDoc = gql`
       key
       value
     }
+    defaultVariant {
+      offer {
+        offerId
+      }
+    }
     variants {
       id
       sku
@@ -46,7 +51,14 @@ const pricingProductListQuery = gql`
     $filter: ProductFilterInput
     $sort: ProductOrder
   ) {
-    products(before: $before, after: $after, first: $first, last: $last, filter: $filter, sortBy: $sort) {
+    products(
+      before: $before
+      after: $after
+      first: $first
+      last: $last
+      filter: $filter
+      sortBy: $sort
+    ) {
       edges {
         node {
           ...Product
@@ -112,43 +124,49 @@ const pricingProductListQuery = gql`
   ${MoneyFragmentDoc}
 `;
 
-export const usePricingProductListQuery = makeQuery<any, ProductListVariables>(pricingProductListQuery);
+export const usePricingProductListQuery = makeQuery<any, ProductListVariables>(
+  pricingProductListQuery
+);
 
-const offerListQuery = gql `
-query OfferList ($itemMasterId: String) {
-  offers (itemMasterId: $itemMasterId) {
-    id
-    type
-    itemTypeId
-    offerId
-    leadTimeDays
-    dateAdded
-    itemMasterId
-    mpn
-    mcode
-    quantity
-    offerPrice
-    dateCode
-    comment
-    coo
-    vendor {
+const offerListQuery = gql`
+  query OfferList($itemMasterId: String) {
+    offers(itemMasterId: $itemMasterId) {
       id
-      vendorName
-      vendorType
-      vendorNumber
-      vendorRegion
-    }
-    tariffRate
-    productVariant {
-      id
-      sku
-      margin
-      quantityAvailable
-      price {
-        ...Money
+      type
+      itemTypeId
+      offerId
+      leadTimeDays
+      dateAdded
+      itemMasterId
+      mpn
+      mcode
+      quantity
+      offerPrice
+      dateCode
+      comment
+      coo
+      vendor {
+        id
+        vendorName
+        vendorType
+        vendorNumber
+        vendorRegion
+      }
+      tariffRate
+      productVariant {
+        id
+        sku
+        margin
+        quantityAvailable
+        price {
+          ...Money
+        }
       }
     }
   }
-  }${MoneyFragmentDoc}`
+  ${MoneyFragmentDoc}
+`;
 
-  export const useOfferListQuery = makeQuery<any, {itemMasterId: string}>(offerListQuery);
+export const useOfferListQuery = makeQuery<any, { itemMasterId: string }>(
+  offerListQuery
+);
