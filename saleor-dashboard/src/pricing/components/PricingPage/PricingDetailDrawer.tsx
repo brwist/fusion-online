@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
       color: '#66cc66',
       fontWeight: 600,
     },
+    '& .MuiDataGrid-columnHeader:focus': {
+      outline: 'none',
+    },
     '& .MuiDataGrid-columnsContainer': {
       borderBottom: '1px solid #eaeaea',
     },
