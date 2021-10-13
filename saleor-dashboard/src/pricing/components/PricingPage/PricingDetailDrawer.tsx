@@ -194,6 +194,7 @@ export interface PricingDetailDrawerProps {
       coo: string
     }
   }>;
+  defaultVariant: string | null;
   productId: string;
   productMPN: string;
   productItemMasterId: string;
@@ -205,6 +206,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     refetchProducts,
     closeDrawer,
     variants,
+    defaultVariant,
     productId,
     productMPN,
     productItemMasterId
@@ -234,7 +236,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     }
   }
   const defaultVariantTableRows = variants.map(variant => ({
-    id: variant?.offer?.offerId,
+    id: variant?.offer?.offerId || variant.id,
     origin: variant?.offer?.coo,
     leadTime: variant?.offer?.leadTimeDays,
     qty: variant?.quantityAvailable,
@@ -248,8 +250,13 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   useEffect(() => {
     if( productItemMasterId) {
       setVariantTableRows(defaultVariantTableRows)
+      if (defaultVariant) {
+        setSelectionModel([defaultVariant])
+      }
     }
   }, [variants])
+
+  const [selectionModel, setSelectionModel] = useState([])
   
   const handleCellEditCommit = useCallback(({id, field, value}) => {
       const updatedRows = variantTableRows.map(row => {
@@ -281,6 +288,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
 
   const offerTableRows = productItemMasterId && offers?.map(offer => (
       <StyledTableRow key={offer?.offerId}>
+        <StyledTableCell>{offer?.offerId}</StyledTableCell>
         <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
         <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
         <StyledTableCell align="right">{offer?.coo || "-"}</StyledTableCell>
@@ -306,7 +314,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     variantTableRows.forEach(({id, qty, cost, sellPrice}) => {
       if (variantOfferIds.includes(id)) {
         // run update mutation
-        const variantData = variants?.find(variant => variant?.offer?.offerId == id)
+        const variantData = variants?.find(variant => variant?.offer?.offerId == id )
         variantUpdate({variables: {
           id: variantData.id,
           sku: variantData.sku,
@@ -401,6 +409,8 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               name: 'default-variant',
               id: 'default-variant',
             }}
+            onChange={(event) => setSelectionModel([event.target.value])}
+            value={selectionModel[0] || ""}
           >
             <option aria-label="None" value="" />
             {variantTableRows.map(row => (
@@ -421,7 +431,9 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               rows={variantTableRows}
               columns={columns}
               disableColumnMenu
+              disableSelectionOnClick
               onCellEditCommit={handleCellEditCommit}
+              selectionModel={selectionModel}
             />
             <div className={classes.padding}>
               <Button 
@@ -459,6 +471,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
         <Table size="small">
           <TableHead>
             <StyledTableRow>
+              <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Vendor</StyledTableCell>
               <StyledTableCell align="right">Date</StyledTableCell>
               <StyledTableCell align="right">Country of Origin</StyledTableCell>
