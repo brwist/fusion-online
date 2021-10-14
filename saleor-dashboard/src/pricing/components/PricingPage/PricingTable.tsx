@@ -186,7 +186,7 @@ export const PricingTable: React.FC<PricingTableProps> = ({
   }
   return (
     <>
-      <PricingDetailDrawer 
+      {activeProduct.itemMasterId && <PricingDetailDrawer 
         refetchProducts={refetch}
         open={isDrawerOpen}
         closeDrawer={() => setIsDrawerOpen(false)}
@@ -194,8 +194,8 @@ export const PricingTable: React.FC<PricingTableProps> = ({
         productId={activeProduct.id}
         defaultVariant={activeProduct.defaultVariant}
         productMPN={activeProduct.mpn}
-        productItemMasterId={activeProduct.itemMasterId?.toString()}
-      />
+        productItemMasterId={activeProduct.itemMasterId.toString()}
+      />}
         <div className={classes.tableContainer}>
         <ResponsiveTable className={classes.table}>
           <TableHead>

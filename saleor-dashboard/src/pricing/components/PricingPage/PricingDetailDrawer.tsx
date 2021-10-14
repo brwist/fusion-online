@@ -173,7 +173,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     margin: variant?.margin,
     sellPrice: variant?.price?.amount
   }));
-  console.log(variants)
+
   useEffect(() => {
     setVariantTableRows(defaultVariantTableRows)
     if (defaultVariant) {
@@ -268,7 +268,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             fontSize="small" 
             color="error"
             onClick={() => {
-              console.log("delete click cell values:", cellValues)
               setDeletedVariantTableRows([
                 ...deletedVariantTableRows,
                 cellValues.row
@@ -290,6 +289,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     closeDrawer()
   }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
+
   const offers = data?.offers?.filter((offer) => !offer?.productVariant) || []
   const priceSortedOffers = productItemMasterId && offers?.length > 0 ? [...offers].sort(
     (a,b) => (a.offerPrice > b.offerPrice) ? 1 : ((b.offerPrice > a.offerPrice) ? -1 : 0)) : []
@@ -390,7 +390,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       } else {
         // run create mutation
         const offerData = offers?.find(offer => offer?.offerId == id)
-        console.log(qty)
         const {data: {productVariantCreate}} = await variantCreate({variables: {
           input: {
             sku: id,
