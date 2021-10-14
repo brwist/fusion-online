@@ -31,6 +31,7 @@ export const GET_USER_ADDRESSES = gql`
           code
         }
         phone
+        companyName
         shipToName
         customerId
         vatId

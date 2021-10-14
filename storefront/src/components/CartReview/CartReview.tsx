@@ -74,6 +74,7 @@ export const CartReview: React.FC<CartProps> = ({
   }
 
   const [quantityField, setQuantityField]: any = useState();
+  const [activeTab, setActiveTab] = useState('shipping');
 
   useEffect(() => {
     if (items) {
@@ -121,45 +122,54 @@ export const CartReview: React.FC<CartProps> = ({
         <div className="cart-review">
           <Row>
             <Col lg={9}>
-              <Accordion defaultActiveKey="0">
+              {/* <Accordion defaultActiveKey="0"> */}
+              <Accordion activeKey={activeTab}>
                 <Card>
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Shipping <small className="text-muted">Step 1</small></h5>
-                      <ContextAwareToggle eventKey="0" />
+                      <h5 className="m-0 text-capitalize">
+                        Shipping <small className="text-muted">Step 1</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="shipping" callback={() => setActiveTab('shipping')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <ShippingInventory items={items} />
+                  <Accordion.Collapse eventKey="shipping">
+                    <ShippingInventory items={items} setActiveTab={setActiveTab} />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Payment <small className="text-muted">Step 2</small></h5>
-                      <ContextAwareToggle eventKey="1" />
+                      <h5 className="m-0 text-capitalize">
+                        Payment <small className="text-muted">Step 2</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="payment" callback={() => setActiveTab('payment')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="1">
+                  <Accordion.Collapse eventKey="payment">
                     <Payment />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Agreement <small className="text-muted">Step 3</small></h5>
-                      <ContextAwareToggle eventKey="2" />
+                      <h5 className="m-0 text-capitalize">
+                        Agreement <small className="text-muted">Step 3</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="agreement" callback={() => setActiveTab('agreement')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="2">
+                  <Accordion.Collapse eventKey="agreement">
                     <Agreement />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Notes <small className="text-muted">Step 4</small></h5>
-                      <ContextAwareToggle eventKey="3" />
+                      <h5 className="m-0 text-capitalize">
+                        Notes <small className="text-muted">Step 4</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="notes" callback={() => setActiveTab('notes')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="3">
+                  <Accordion.Collapse eventKey="notes">
                     <Notes />
                   </Accordion.Collapse>
                 </Card>

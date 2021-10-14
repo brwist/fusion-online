@@ -49,9 +49,10 @@ type userAddressesQuery = {
 
 export interface ShippingInventoryProps {
   items: any;
+  setActiveTab: any;
 }
 
-export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) => {
+export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, setActiveTab }) => {
   const [quantityField, setQuantityField]: any = useState();
   const addressQuery = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
@@ -121,12 +122,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           </Col>
         </Row>
         <h5>Shipment Inventory</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th>Product Details</th>
@@ -161,7 +157,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
                         </div>
                       </td>
                     ) : (
-                      <td className="text-right font-weight-bold">${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}</td>
+                      <td className="text-right font-weight-bold">
+                        ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
+                      </td>
                     )}
                     <td className="text-right font-weight-bold">
                       ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
@@ -173,12 +171,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           </tbody>
         </Table>
         <h5>Shipping Address</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th></th>
@@ -190,6 +183,17 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           <tbody>
             {addressQuery?.data?.me.addresses.map((address, index: number) => {
               console.log('address: ', address);
+              const {
+                firstName,
+                lastName,
+                streetAddress1,
+                streetAddress2,
+                city,
+                countryArea,
+                country,
+                postalCode,
+                companyName,
+              } = address;
               return (
                 <tr key={index}>
                   <td>
@@ -202,16 +206,16 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
                     />
                   </td>
                   <td>
-                    Johnny Howell
+                    {`${firstName} ${lastName}`}
                     <br />
-                    36 Creative
+                    {companyName}
                   </td>
                   <td>
-                    123 Turkey Street
+                    {`${streetAddress1} ${streetAddress2}`}
                     <br />
-                    Haverhill, MA 01835
+                    {`${city}, ${countryArea} ${postalCode}`}
                     <br />
-                    USA
+                    {country.code}
                   </td>
                   <td>{index === 0 && `Default`}</td>
                 </tr>
@@ -223,12 +227,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           Deliver By <Button variant="link">Set a delivery date</Button>
         </div>
         <h5>Domestic Shipping Method</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th></th>
@@ -260,7 +259,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
             })}
           </tbody>
         </Table>
-        <Button>Continue to Payment</Button>
+        <Button onClick={() => setActiveTab('payment')}>Continue to Payment</Button>
       </Card.Body>
     );
   } else {
