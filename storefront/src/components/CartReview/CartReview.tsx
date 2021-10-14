@@ -123,7 +123,6 @@ export const CartReview: React.FC<CartProps> = ({
         <div className="cart-review">
           <Row>
             <Col lg={9}>
-              {/* <Accordion defaultActiveKey="0"> */}
               <Accordion activeKey={activeTab}>
                 <Card>
                   <Card.Header>
@@ -147,7 +146,11 @@ export const CartReview: React.FC<CartProps> = ({
                     </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="payment">
-                    <Payment setSelectedPaymentMethod={setSelectedPaymentMethod} setActiveTab={setActiveTab} />
+                    <Payment
+                      setSelectedPaymentMethod={setSelectedPaymentMethod}
+                      selectedPaymentMethod={selectedPaymentMethod}
+                      setActiveTab={setActiveTab}
+                    />
                   </Accordion.Collapse>
 
                   <Card.Header>

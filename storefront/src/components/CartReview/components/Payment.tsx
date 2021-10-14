@@ -36,32 +36,33 @@ const GET_USER_PAYMENTS = gql`
   }
 `;
 
-const mockPaymentMethods = [
-  {
-    method: 'Account Credit',
-    billingName: 'Johnny Howell',
-    billingStreet1: '123 Turkey Ave',
-    billingStreet2: 'Apt 12',
-    billingCity: 'Haverhill',
-    billingState: 'MA',
-    billingZip: '01943',
-    billingCountryCode: 'US',
-  },
-];
-
-export const Payment = ({ setSelectedPaymentMethod, setActiveTab }) => {
+export const Payment = ({ setSelectedPaymentMethod, selectedPaymentMethod, setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
-  // const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
+  const handlePaymentSelect = (e, card) => {
+    setSelectedPaymentMethod(card);
+  };
+
+  useEffect(() => {
+    if (paymentMethodsQuery.data) {
+      const cards = paymentMethodsQuery.data.me.stripeCards;
+      setSelectedPaymentMethod(cards[0]);
+    }
+  }, [paymentMethodsQuery, setSelectedPaymentMethod]);
 
   const renderStripeCardRow = (card, index) => {
+    const checked = card.id === selectedPaymentMethod?.id;
     return (
       <tr key={index}>
         <td>
           <Form.Check
             custom
             type="radio"
+            id={`paymentMethod-${card.id}`}
+            value={card.id}
             defaultChecked={index === 0}
-            onChange={() => setSelectedPaymentMethod(card)}
+            checked={checked}
+            onChange={(e) => handlePaymentSelect(e, card)}
           />
         </td>
         <td>
