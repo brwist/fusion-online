@@ -245,8 +245,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       width: 40,
       align: 'center',
       sortable: false,
-      renderCell: (cellValues) => {
-        return(
+      renderCell: (cellValues) => (
           <HighlightOffIcon
             fontSize="small" 
             color="error"
@@ -265,7 +264,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
             }}
           />
         )
-      }
     }
   ];
 
