@@ -127,6 +127,14 @@ export interface PricingDetailDrawerProps {
     price: {
       amount: number
     },
+    stocks: [
+      {
+        warehouse: {
+          id: string
+        },
+        quantity: number
+      }
+    ]
     quantityAvailable: number,
     offer: {
       offerId: string,
@@ -156,6 +164,16 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   const [variantTableRows, setVariantTableRows] = useState([])
   const [deletedVariantTableRows, setDeletedVariantTableRows] = useState([])
 
+  const defaultVariantTableRows = variants.map(variant => ({
+    id: variant?.offer?.offerId || variant.id,
+    origin: variant?.offer?.coo,
+    leadTime: variant?.offer?.leadTimeDays,
+    qty: variant?.stocks[0].quantity,
+    cost: variant?.costPrice?.amount,
+    margin: variant?.margin,
+    sellPrice: variant?.price?.amount
+  }));
+  console.log(variants)
   useEffect(() => {
     setVariantTableRows(defaultVariantTableRows)
     if (defaultVariant) {
@@ -273,7 +291,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
   const offers = data?.offers?.filter((offer) => !offer?.productVariant) || []
-
   const priceSortedOffers = productItemMasterId && offers?.length > 0 ? [...offers].sort(
     (a,b) => (a.offerPrice > b.offerPrice) ? 1 : ((b.offerPrice > a.offerPrice) ? -1 : 0)) : []
 
@@ -288,15 +305,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       return `${leadTime} days`
     }
   }
-  const defaultVariantTableRows = variants.map(variant => ({
-    id: variant?.offer?.offerId || variant.id,
-    origin: variant?.offer?.coo,
-    leadTime: variant?.offer?.leadTimeDays,
-    qty: variant?.quantityAvailable,
-    cost: variant?.costPrice?.amount,
-    margin: variant?.margin,
-    sellPrice: variant?.price?.amount
-  }));
   
   const [selectionModel, setSelectionModel] = useState([])
   
@@ -382,6 +390,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       } else {
         // run create mutation
         const offerData = offers?.find(offer => offer?.offerId == id)
+        console.log(qty)
         const {data: {productVariantCreate}} = await variantCreate({variables: {
           input: {
             sku: id,
