@@ -75,6 +75,7 @@ export const CartReview: React.FC<CartProps> = ({
 
   const [quantityField, setQuantityField]: any = useState();
   const [activeTab, setActiveTab] = useState('shipping');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
   useEffect(() => {
     if (items) {
@@ -146,7 +147,7 @@ export const CartReview: React.FC<CartProps> = ({
                     </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="payment">
-                    <Payment />
+                    <Payment setSelectedPaymentMethod={setSelectedPaymentMethod} setActiveTab={setActiveTab} />
                   </Accordion.Collapse>
 
                   <Card.Header>
