@@ -12,9 +12,10 @@ import {
   InputLabel,
   Select
 } from "@material-ui/core";
+import HighlightOffIcon  from '@material-ui/icons/HighlightOff';
 import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden"
-import { DataGrid, GridColDef, GridValueGetterParams} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridColumnHeaderParams, GridValueGetterParams} from "@mui/x-data-grid";
 import PageHeader from "../../../components/PageHeader";
 import { useOfferListQuery } from "../../queries";
 import { 
@@ -51,7 +52,7 @@ const useStyles = makeStyles(theme => ({
     },
     '& .MuiDataGrid-row.Mui-selected': {
       marginTop: 0.4,
-      width: "102%",
+      width: "100%",
       border: '1px solid #66cc66',
       backgroundColor: 'rgba(102, 204, 102, 0.12)',
     },
@@ -110,82 +111,7 @@ const StyledTableRow = withStyles((theme: Theme) =>
   }),{ name: "PricingDetailDrawer" },
 )(TableRow);
 
-const columns: GridColDef[] = [
-  {
-    field: 'id',
-    headerName: 'ID',
-    width: 100,
-    sortable: false,
-  },
-  {
-    field: 'origin',
-    headerName: 'Origin',
-    headerAlign: 'right',
-    align: 'right',
-    width: 120,
-    editable: true,
-    sortable: false,
-    valueFormatter: ({value}) => value || "-"
-  },
-  {
-    field: 'leadTime',
-    headerName: 'Lead Time',
-    headerAlign: 'right',
-    align: 'right',
-    width: 120,
-    editable: true,
-    sortable: false,
-    valueFormatter: ({value}) => {
-      if ( value == -1) {
-        return "Unknown"
-      } else if (value == 0) {
-        return "In Stock"
-      } else if (value == 1) {
-        return "1 Month"
-      } else {
-        return `${value} days`
-      }
-    }
-  },
-  {
-    field: 'qty',
-    headerName: 'Qty',
-    type: 'number',
-    headerAlign: 'right',
-    align: 'right',
-    width: 80,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'cost',
-    headerName: 'Cost',
-    headerAlign: 'right',
-    align: 'right',
-    editable: true,
-    sortable: false,
-    valueFormatter: ({value}) => value ? `$${Number(value)?.toFixed(2)}` : "-"
-  },
-  {
-    field: 'margin',
-    headerName: 'Margin',
-    headerAlign: 'right',
-    align: 'right',
-    editable: true,
-    sortable: false,
-    valueFormatter:({value}) => value ? `${value}%` : "-"
-  },
-  {
-    field: 'sellPrice',
-    headerName: 'Sell Price',
-    headerAlign: 'right',
-    align: 'right',
-    width: 110,
-    editable: true,
-    sortable: false,
-    valueFormatter: ({value}) =>  value ? `$${Number(value)?.toFixed(2)}` : "-"
-  },
-];
+
 
 export interface PricingDetailDrawerProps {
   open: boolean;
@@ -227,6 +153,121 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   }) => {
   const classes = useStyles();
   const [hideDropdown, setHideDropdown] = useState(true)
+  const [variantTableRows, setVariantTableRows] = useState([])
+  const [deletedVariantTableRows, setDeletedVariantTableRows] = useState([])
+
+  useEffect(() => {
+    setVariantTableRows(defaultVariantTableRows)
+    if (defaultVariant) {
+      setSelectionModel([defaultVariant])
+    }
+  }, [variants])
+
+  const columns: GridColDef[] = [
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 90,
+      sortable: false,
+    },
+    {
+      field: 'origin',
+      headerName: 'Country of Origin',
+      headerAlign: 'right',
+      align: 'right',
+      width: 140,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => value || "-"
+    },
+    {
+      field: 'leadTime',
+      headerName: 'Lead Time',
+      headerAlign: 'right',
+      align: 'right',
+      width: 120,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => {
+        if ( value == -1) {
+          return "Unknown"
+        } else if (value == 0) {
+          return "In Stock"
+        } else if (value == 1) {
+          return "1 Month"
+        } else {
+          return `${value} days`
+        }
+      }
+    },
+    {
+      field: 'qty',
+      headerName: 'Qty',
+      type: 'number',
+      headerAlign: 'right',
+      align: 'right',
+      width: 60,
+      editable: true,
+      sortable: false,
+    },
+    {
+      field: 'cost',
+      headerName: 'Cost',
+      headerAlign: 'right',
+      align: 'right',
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => `$${ value ? Number(value)?.toFixed(2) : 0}`
+    },
+    {
+      field: 'margin',
+      headerName: 'Margin',
+      headerAlign: 'right',
+      width: 80,
+      align: 'right',
+      editable: true,
+      sortable: false,
+      valueFormatter:({value}) => `${value || 0}%`
+    },
+    {
+      field: 'sellPrice',
+      headerName: 'Sell Price',
+      headerAlign: 'right',
+      align: 'right',
+      width: 110,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => `$${ value ? Number(value)?.toFixed(2) : 0}`
+    },
+    {
+      field: 'Delete',
+      type: 'actions',
+      width: 40,
+      align: 'center',
+      sortable: false,
+      renderCell: (cellValues) => {
+        return(
+          <HighlightOffIcon
+            fontSize="small" 
+            color="error"
+            onClick={() => {
+              console.log("delete click cell values:", cellValues)
+              setDeletedVariantTableRows([
+                ...deletedVariantTableRows,
+                cellValues.row
+              ])
+              // setTimeout is needed to resolve error created by a race condition https://github.com/mui-org/material-ui-x/issues/2714#issuecomment-928223613
+              setTimeout(() => {
+                setVariantTableRows(
+                  variantTableRows.filter(row => row.id !== cellValues.id)
+                )
+              })
+            }}
+          />
+        )
+      }
+    }
+  ];
 
   const handleDrawerClose = () => {
     setHideDropdown(true)
@@ -259,15 +300,6 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
     sellPrice: variant?.price?.amount
   }));
   
-  const [variantTableRows, setVariantTableRows] = useState([])
-
-  useEffect(() => {
-    setVariantTableRows(defaultVariantTableRows)
-    if (defaultVariant) {
-      setSelectionModel([defaultVariant])
-    }
-  }, [variants])
-
   const [selectionModel, setSelectionModel] = useState([])
   
   const handleCellEditCommit = useCallback(({id, field, value}) => {
