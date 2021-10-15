@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useCheckout, useCart } from '@saleor/sdk';
 import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
 
-import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../../config';
 import { GET_USER_ADDRESSES } from '../../../graphql/account';
 import { User, Address } from '../../../generated/graphql';
+
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 const mockShippingMethods = [
   {
@@ -52,12 +54,40 @@ export interface ShippingInventoryProps {
   setActiveTab: any;
 }
 
+export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
+  mutation checkoutShippingAddressUpdate($checkoutId: String!, $shippingAddress: AddressInput!) {
+    checkoutShippingAddressUpdate(checkoutId: $checkoutId, shippingAddress: $shippingAddress) {
+      errors {
+        field
+        message
+      }
+      checkout {
+        id
+        shippingAddress
+      }
+      checkoutErrors {
+        field
+        message
+        code
+        variants
+      }
+    }
+  }
+`;
+
 export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, setActiveTab }) => {
   const [quantityField, setQuantityField]: any = useState();
   const addressQuery = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
+  const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
+  console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
+  console.log('updateShippingAddress: ', updateShippingAddress);
   console.log('addressQuery: ', addressQuery);
+
+  const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
+  console.log('availableShippingMethods: ', availableShippingMethods);
+  console.log('checkout: ', checkout);
 
   useEffect(() => {
     if (items) {
@@ -68,6 +98,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       setQuantityField(fields);
     }
   }, [items]);
+
+  // Set default
 
   const { data } = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {
     variables: {
@@ -85,6 +117,36 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       }, 0)
       ?.toFixed(2);
   };
+
+  const disableContinue = !selectedAddress || !selectedShippingMethod;
+
+  const handleContinue = () => {
+    if (disableContinue) {
+      return;
+    }
+
+    // Update checkout.
+    setShippingAddress(selectedAddress, checkout.email);
+    setShippingMethod(selectedShippingMethod);
+
+    // navigate to next tab
+    setActiveTab('payment');
+  };
+
+  // Set default shipping method
+  useEffect(() => {
+    if (availableShippingMethods[0]) {
+      setSelectedShippingMethod(availableShippingMethods[0]);
+    }
+  }, [availableShippingMethods]);
+
+  // Set default shipping address
+  useEffect(() => {
+    if (addressQuery.data) {
+      const defaultAddress = addressQuery.data.me.addresses[0];
+      setSelectedAddress(defaultAddress);
+    }
+  }, [addressQuery]);
 
   if (!items || items?.length === 0) {
     return (
@@ -184,6 +246,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
             {addressQuery?.data?.me.addresses.map((address, index: number) => {
               console.log('address: ', address);
               const {
+                id,
                 firstName,
                 lastName,
                 streetAddress1,
@@ -194,6 +257,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
                 postalCode,
                 companyName,
               } = address;
+              const checked = id === selectedAddress?.id;
               return (
                 <tr key={index}>
                   <td>
@@ -201,7 +265,10 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
                       custom
                       type="radio"
                       name="shippingAddress"
+                      id={`shippingAddress-${id}`}
+                      value={id}
                       defaultChecked={index === 0}
+                      checked={checked}
                       onChange={() => setSelectedAddress(address)}
                     />
                   </td>
@@ -259,7 +326,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
             })}
           </tbody>
         </Table>
-        <Button onClick={() => setActiveTab('payment')}>Continue to Payment</Button>
+        <Button onClick={handleContinue} disabled={disableContinue}>
+          Continue to Payment
+        </Button>
       </Card.Body>
     );
   } else {
