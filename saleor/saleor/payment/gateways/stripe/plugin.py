@@ -11,6 +11,7 @@ from . import (
     process_payment,
     refund,
     void,
+    retrieve_payment_method
 )
 
 GATEWAY_NAME = "Stripe"
@@ -139,3 +140,8 @@ class StripeGatewayPlugin(BasePlugin):
             {"field": "api_key", "value": config.connection_params["public_key"]},
             {"field": "store_customer_card", "value": config.store_customer},
         ]
+
+    @require_active_plugin
+    def get_payment_method(self, payment_method_id):
+        config = self._get_gateway_config()
+        return retrieve_payment_method(payment_method_id, config)

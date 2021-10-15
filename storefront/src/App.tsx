@@ -11,6 +11,8 @@ import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from './components/Footer/Footer';
 import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
+import { CheckoutPage } from './components/CheckoutPage/CheckoutPage';
+import { CartReview } from './components/CartReview/CartReview';
 
 import './App.scss';
 
@@ -138,9 +140,22 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+        <Route exact path="/cart/review">
+          <CartReview
+            discount={discount}
+            items={items}
+            removeItem={removeItem}
+            shippingPrice={shippingPrice}
+            subtotalPrice={subtotalPrice}
+            totalPrice={totalPrice}
+            updateItem={updateItem}
+            subtractItem={subtractItem}
+          />
+        </Route>
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
+        <Route exact path="/checkout" component={CheckoutPage} />
       </Switch>
       <Footer />
     </>

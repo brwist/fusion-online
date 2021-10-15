@@ -239,6 +239,19 @@ export type AccountUpdateMeta = {
   user?: Maybe<User>;
 };
 
+/** Updates privatemetadata of the logged-in user. */
+export type AddStripePaymentMethod = {
+  __typename?: 'AddStripePaymentMethod';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
 /** Represents user address data. */
 export type Address = Node & {
   __typename?: 'Address';
@@ -4989,6 +5002,8 @@ export type Mutation = {
    * @deprecated Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.
    */
   accountUpdateMeta?: Maybe<AccountUpdateMeta>;
+  /** Allows customer to add stripe payment method id to private metadata for CC retrieval. */
+  addStripePaymentMethod?: Maybe<AddStripePaymentMethod>;
   /** Creates user address. */
   addressCreate?: Maybe<AddressCreate>;
   /** Updates an address. */
@@ -6437,6 +6452,11 @@ export type MutationAccountDeleteArgs = {
 
 export type MutationAccountUpdateMetaArgs = {
   input: MetaInput;
+};
+
+
+export type MutationAddStripePaymentMethodArgs = {
+  paymentMethodId: Scalars['String'];
 };
 
 
@@ -10966,6 +10986,71 @@ export type StockInput = {
   quantity?: Maybe<Scalars['Int']>;
 };
 
+export type Stripe3DSecureUsage = {
+  __typename?: 'Stripe3DSecureUsage';
+  supported?: Maybe<Scalars['Boolean']>;
+};
+
+export type StripeBillingAddress = {
+  __typename?: 'StripeBillingAddress';
+  city?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
+  line1?: Maybe<Scalars['String']>;
+  line2?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+};
+
+export type StripeBillingDetails = {
+  __typename?: 'StripeBillingDetails';
+  address?: Maybe<StripeBillingAddress>;
+  email?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type StripeCard = {
+  __typename?: 'StripeCard';
+  brand?: Maybe<Scalars['String']>;
+  checks?: Maybe<StripeCardCheck>;
+  country?: Maybe<Scalars['String']>;
+  expMonth?: Maybe<Scalars['String']>;
+  expYear?: Maybe<Scalars['String']>;
+  fingerprint?: Maybe<Scalars['String']>;
+  funding?: Maybe<Scalars['String']>;
+  generatedFrom?: Maybe<Scalars['String']>;
+  last4?: Maybe<Scalars['String']>;
+  networks?: Maybe<StripeNetwork>;
+  threeDSecureUsage?: Maybe<Stripe3DSecureUsage>;
+  wallet?: Maybe<Scalars['String']>;
+};
+
+export type StripeCardCheck = {
+  __typename?: 'StripeCardCheck';
+  addressLine1Check?: Maybe<Scalars['String']>;
+  addressPostalCodeCheck?: Maybe<Scalars['String']>;
+  cvcCheck?: Maybe<Scalars['String']>;
+};
+
+export type StripeNetwork = {
+  __typename?: 'StripeNetwork';
+  available?: Maybe<Array<Maybe<Scalars['String']>>>;
+  preferred?: Maybe<Scalars['String']>;
+};
+
+/** Represents a payment method stored in Stripe for user, such as credit card. */
+export type StripePaymentMethod = {
+  __typename?: 'StripePaymentMethod';
+  id?: Maybe<Scalars['String']>;
+  object?: Maybe<Scalars['String']>;
+  billingDetails?: Maybe<StripeBillingDetails>;
+  card?: Maybe<StripeCard>;
+  created?: Maybe<Scalars['Int']>;
+  customer?: Maybe<Scalars['String']>;
+  livemode?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<Scalars['String']>;
+};
+
 /** An enumeration. */
 export enum TaxRateType {
   Accommodation = 'ACCOMMODATION',
@@ -11232,6 +11317,8 @@ export type User = Node & ObjectWithMetadata & {
   events?: Maybe<Array<Maybe<CustomerEvent>>>;
   /** List of stored payment sources. */
   storedPaymentSources?: Maybe<Array<Maybe<PaymentSource>>>;
+  /** List of stripe stored payment methods. */
+  stripeCards?: Maybe<Array<Maybe<StripePaymentMethod>>>;
 };
 
 
@@ -12160,6 +12247,18 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type AddStripeTokenMutationVariables = Exact<{
+  paymentMethodId: Scalars['String'];
+}>;
+
+
+export type AddStripeTokenMutation = { __typename?: 'Mutation', addStripePaymentMethod?: Maybe<{ __typename?: 'AddStripePaymentMethod', user?: Maybe<{ __typename?: 'User', id: string }> }> };
+
+export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string }> };
+
 export type MoneyFragment = { __typename?: 'Money', amount: number, currency: string };
 
 export type ProductFragment = { __typename?: 'Product', id: string, name: string, slug: string, description: string, descriptionJson: any, isAvailable?: Maybe<boolean>, isPublished: boolean, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, quantityAvailable: number }>>>, productType: { __typename?: 'ProductType', id: string, name: string, hasVariants: boolean } };
@@ -12590,6 +12689,78 @@ export const InvoiceFragmentFragmentDoc = gql`
   __typename
 }
     `;
+export const AddStripeTokenDocument = gql`
+    mutation addStripeToken($paymentMethodId: String!) {
+  addStripePaymentMethod(paymentMethodId: $paymentMethodId) {
+    user {
+      id
+    }
+  }
+}
+    `;
+export type AddStripeTokenMutationFn = Apollo.MutationFunction<AddStripeTokenMutation, AddStripeTokenMutationVariables>;
+
+/**
+ * __useAddStripeTokenMutation__
+ *
+ * To run a mutation, you first call `useAddStripeTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddStripeTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addStripeTokenMutation, { data, loading, error }] = useAddStripeTokenMutation({
+ *   variables: {
+ *      paymentMethodId: // value for 'paymentMethodId'
+ *   },
+ * });
+ */
+export function useAddStripeTokenMutation(baseOptions?: Apollo.MutationHookOptions<AddStripeTokenMutation, AddStripeTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddStripeTokenMutation, AddStripeTokenMutationVariables>(AddStripeTokenDocument, options);
+      }
+export type AddStripeTokenMutationHookResult = ReturnType<typeof useAddStripeTokenMutation>;
+export type AddStripeTokenMutationResult = Apollo.MutationResult<AddStripeTokenMutation>;
+export type AddStripeTokenMutationOptions = Apollo.BaseMutationOptions<AddStripeTokenMutation, AddStripeTokenMutationVariables>;
+export const GetUserDocument = gql`
+    query GetUser {
+  me {
+    id
+    firstName
+    lastName
+    email
+  }
+}
+    `;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+      }
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+        }
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
 export const ProductListDocument = gql`
     query ProductList($first: Int, $after: String, $last: Int, $before: String, $filter: ProductFilterInput, $sort: ProductOrder) {
   products(

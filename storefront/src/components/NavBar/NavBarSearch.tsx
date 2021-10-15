@@ -29,10 +29,10 @@ export const NavBarSearch: React.FC<NavBarSearchProps> = ({
 
   if (searchQuery !== "" && data) {
     searchSuggestions = (
-      <div className="search-suggestions my-4">
+      <div className="search-suggestions">
         {data?.products?.edges.map(({node}) => {
           return (
-            <div key={node.id} className="mb-4">
+            <div key={node.id}>
               <Link to={`/products/${node.slug}`} onClick={closeSearchModal}>
                 {node.name}
               </Link>
@@ -45,12 +45,12 @@ export const NavBarSearch: React.FC<NavBarSearchProps> = ({
     )
   } else if (loading) {
     searchSuggestions = (
-      <div className="search-suggestions my-4">
+      <div className="search-suggestions">
         <p>Loading...</p>
       </div>
     )
   }
-  
+
   return (
     <div className="search-box">
       <SearchBar closeSearchModal={closeSearchModal} initialSearchQuery={searchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}}/>
