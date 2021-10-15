@@ -65,7 +65,7 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               <Nav as="ul" id="main-nav">
-                <NavDropdown as="li" title="Mega Menu" className="mega-menu" id="basic-nav-dropdown">
+                {/* <NavDropdown as="li" title="Mega Menu" className="mega-menu" id="basic-nav-dropdown">
                   <Container>
                     <Row>
                       <Col lg className="d-none d-lg-block">
@@ -98,7 +98,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                       </Col>
                     </Row>
                   </Container>
-                </NavDropdown>
+                </NavDropdown> */}
                 {parentCategories?.map(({node}) => {
                   return (
                     <Nav.Item key={node?.id} as="li">
