@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom'
 import { AddToCart } from '../AddToCart/AddToCart';
 import { Container, Row, Col, Button, Tabs, Tab } from 'react-bootstrap';
@@ -10,7 +10,7 @@ import { Maybe, Product } from '../../generated/graphql';
 import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
 import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount';
 import { Carousel } from 'react-responsive-carousel';
-
+import manufacturers from '../../utils/manufacturers.json'
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCT_DETAILS } from '../../config';
 
@@ -35,7 +35,31 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const { data } = useQuery<ProductDetailsQuery>(GET_PRODUCT_DETAILS, {variables: {slug: slug}});
   const [ showAlert, setShowAlert ] = useState(false);
   const [ selectedQuantity, setSelectedQuantity ] = useState(1);
+  const [ selectedOffer, setSelectedOffer ] = useState("")
+  console.log(data?.product)
 
+  useEffect(() => {
+    if (!selectedOffer) {
+      setSelectedOffer(data?.product?.variants[0]?.id)
+    }
+  })
+  const getMetadataValue = (key) => data?.product?.metadata.find(pair => pair.key === key)?.value
+  const mcode = getMetadataValue("mcode")
+  const manufacturer = manufacturers.find(m => m.mcode === mcode)?.manufacturer
+
+  const formatLeadTime = (leadTime) => {
+    if (leadTime === -1) {
+      return "Unknown"
+    } else if (leadTime === 0) {
+      return "In Stock"
+    } else if (leadTime === 1) {
+      return "1 Month"
+    } else if (!leadTime) {
+      return "-"
+    } else {
+      return `${leadTime} days`
+    }
+  }
   return (
     <>
     <ScrollToTopOnMount />
@@ -119,127 +143,81 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
           <div className="border-bottom mb-4">
             <Row>
-              {data?.product?.attributes.map(({attribute, values}) => {
+              <Col lg={5}>
+                <Row className="mb-4" >
+                  <Col className="text-right font-weight-bold">
+                    Manufacturer
+                  </Col>
+                  <Col>
+                    {manufacturer}
+                  </Col>
+                </Row>
+                <Row className="mb-4" >
+                  <Col className="text-right font-weight-bold">
+                    MPN
+                  </Col>
+                  <Col>
+                    {getMetadataValue("mpn")}
+                  </Col>
+                </Row>
+              </Col>
+              <Col lg={5}>
+                <Row className="mb-4" >
+                  <Col className="text-right font-weight-bold">
+                    Commodity
+                  </Col>
+                  <Col>
+                    {data?.product?.category.name.split("_")[0]}
+                  </Col>
+                </Row>
+                <Row className="mb-4" >
+                  <Col className="text-right font-weight-bold">
+                    Group
+                  </Col>
+                  <Col>
+                  {data?.product?.category.name.split("_")[1]}
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </div>
+
+          <div className="mb-5">
+            <span className="font-weight-bold">Offers:</span>
+            <Row className="offer-options mt-2 mx-n1">
+              {data?.product?.variants?.map((variant, index) => {
                 return (
-                  <Col lg={5}>
-                    <Row className="mb-4" key={attribute.id}>
-                      <Col className="text-right font-weight-bold">
-                        {attribute.name}
-                      </Col>
-                      <Col>
-                          {values[0]?.name}
-                      </Col>
-                    </Row>
+                  <Col lg={3} className="p-1">
+                    <Button onClick={() => setSelectedOffer(variant?.id)} variant={ selectedOffer === variant?.id ? "primary" : "secondary"} block>
+                      <div className="d-flex justify-content-between mb-2">
+                        <span className="font-weight-bold">Offer {index + 1}</span>
+                        <span>${variant?.pricing?.price?.gross.amount || "--"}</span>
+                      </div>
+                      <div className="small d-flex justify-content-between">
+                        <span>COO</span>
+                        <span className="font-weight-bold">{variant?.offer?.coo || "-"}</span>
+                      </div>
+                      <div className="small d-flex justify-content-between">
+                        <span>Ships From</span>
+                        <span className="font-weight-bold">United States</span>
+                      </div>
+                      <div className="small d-flex justify-content-between">
+                        <span>Lead Time</span>
+                        <span className="font-weight-bold">{formatLeadTime(variant?.offer?.leadTimeDays)}</span>
+                      </div>
+                      <div className="small d-flex justify-content-between">
+                        <span>Units Available</span>
+                        <span className="font-weight-bold">{variant?.quantityAvailable}</span>
+                      </div>
+                    </Button>
                   </Col>
                 )
               })}
             </Row>
           </div>
 
-          <div className="mb-5">
-            <span className="font-weight-bold">Offers:</span> Offer 1
-            <Row className="offer-options mt-2 mx-n1">
-              <Col lg={3} className="p-1">
-                <Button variant="primary" block>
-                  <div className="d-flex justify-content-between mb-2">
-                    <span className="font-weight-bold">Offer 1</span>
-                    <span>$00.00</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>COO</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Ships From</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Lead Time</span>
-                    <span className="font-weight-bold">2 days</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Units Available</span>
-                    <span className="font-weight-bold">3</span>
-                  </div>
-                </Button>
-              </Col>
-              <Col lg={3} className="p-1">
-                <Button variant="outline-dark" block>
-                  <div className="d-flex justify-content-between mb-2">
-                    <span className="font-weight-bold">Offer 2</span>
-                    <span>$00.00</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>COO</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Ships From</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Lead Time</span>
-                    <span className="font-weight-bold">2 days</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Units Available</span>
-                    <span className="font-weight-bold">3</span>
-                  </div>
-                </Button>
-              </Col>
-              <Col lg={3} className="p-1">
-                <Button variant="outline-dark" block>
-                  <div className="d-flex justify-content-between mb-2">
-                    <span className="font-weight-bold">Offer 3</span>
-                    <span>$00.00</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>COO</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Ships From</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Lead Time</span>
-                    <span className="font-weight-bold">2 days</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Units Available</span>
-                    <span className="font-weight-bold">3</span>
-                  </div>
-                </Button>
-              </Col>
-              <Col lg={3} className="p-1">
-                <Button variant="outline-dark" block>
-                  <div className="d-flex justify-content-between mb-2">
-                    <span className="font-weight-bold">Offer 4</span>
-                    <span>$00.00</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>COO</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Ships From</span>
-                    <span className="font-weight-bold">United States</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Lead Time</span>
-                    <span className="font-weight-bold">2 days</span>
-                  </div>
-                  <div className="small d-flex justify-content-between">
-                    <span>Units Available</span>
-                    <span className="font-weight-bold">3</span>
-                  </div>
-                </Button>
-              </Col>
-            </Row>
-          </div>
-
           <AddToCart
-            variant={data?.product?.variants && data?.product?.variants[0]}
+            variant={data?.product?.variants && data?.product?.variants.find(variant => variant.id === selectedOffer)}
             addItem={addItem}
             updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
             showItemAddedAlert={() => setShowAlert(true)}
@@ -268,7 +246,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         </Tab>
         <Tab eventKey="insight" title="Market Insight">
           <div className="font-weight-bold">Market Insight</div>
-          {(data?.product?.metadata.find(item => item?.key === "market_insight"))?.value}
+          {getMetadataValue("market_insight")}
         </Tab>
       </Tabs>
     </Container>
