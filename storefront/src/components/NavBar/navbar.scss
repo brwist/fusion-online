@@ -179,20 +179,35 @@
         background: $dark;
         border: 0;
 
-        .modal-body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        // .modal-body {
+        //     display: flex;
+        //     justify-content: center;
+        //     align-items: center;
+        // }
     }
 
     .search-box {
         width: 60%;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     .search-bar {
         padding: 0;
         margin-bottom: 0;
+
+        #search-products {
+            padding-left: 16px;
+            padding-right: 48px;
+        }
+
+        .search-submit {
+            left: unset;
+            right: 10px;
+            color: $green;
+        }
     }
 
     .default-text {
@@ -200,17 +215,21 @@
     }
 
     .search-suggestions {
-        max-height: 150px;
+        max-height: calc(50vh - 70px);
         overflow-y: auto;
+        background: #585e6e;
 
         a {
+            display: block;
+            padding: 16px;
             color: $white;
             text-decoration: none;
 
             &:hover {
-                color: $link-hover-color;
+                background: $green;
             }
         }
+
         p {
             color: $white;
             text-transform: uppercase;
