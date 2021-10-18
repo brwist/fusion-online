@@ -86,7 +86,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   // console.log('addressQuery: ', addressQuery);
 
   const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  // console.log('availableShippingMethods: ', availableShippingMethods);
+  console.log('availableShippingMethods: ', availableShippingMethods);
   console.log('checkout: ', checkout);
 
   useEffect(() => {
@@ -118,7 +118,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       ?.toFixed(2);
   };
 
-  const disableContinue = !selectedAddress || !selectedShippingMethod;
+  // const disableContinue = !selectedAddress || !selectedShippingMethod;
+  const disableContinue = !selectedAddress;
 
   const handleContinue = () => {
     if (disableContinue) {
@@ -135,7 +136,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
 
   // Set default shipping method
   useEffect(() => {
-    if (availableShippingMethods[0]) {
+    if (availableShippingMethods && availableShippingMethods[0]) {
       setSelectedShippingMethod(availableShippingMethods[0]);
     }
   }, [availableShippingMethods]);

@@ -18,6 +18,11 @@ export const ProductFragmentDoc = gql`
       key
       value
     }
+    defaultVariant {
+      id
+      sku
+      quantityAvailable
+    }
     variants {
       id
       sku
