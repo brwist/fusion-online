@@ -3,6 +3,7 @@ import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { gql, useQuery } from '@apollo/client';
 import { Tag } from '../../Tag/Tag';
 import { User, StripePaymentMethod } from '../../../generated/graphql';
+import { useCheckout } from '@saleor/sdk';
 
 type userPaymentMethodsQuery = {
   me: User & { stripeCards: Array<StripePaymentMethod> };
@@ -36,12 +37,11 @@ const GET_USER_PAYMENTS = gql`
   }
 `;
 
-export const Payment = ({ setSelectedPaymentMethod, selectedPaymentMethod, setActiveTab }) => {
+export const Payment = ({ setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
-
-  const handlePaymentSelect = (e, card) => {
-    setSelectedPaymentMethod(card);
-  };
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const { createPayment, payment } = useCheckout();
+  console.log('payment: ', payment);
 
   useEffect(() => {
     if (paymentMethodsQuery.data) {
@@ -62,7 +62,7 @@ export const Payment = ({ setSelectedPaymentMethod, selectedPaymentMethod, setAc
             value={card.id}
             defaultChecked={index === 0}
             checked={checked}
-            onChange={(e) => handlePaymentSelect(e, card)}
+            onChange={() => setSelectedPaymentMethod(card)}
           />
         </td>
         <td>
@@ -89,6 +89,35 @@ export const Payment = ({ setSelectedPaymentMethod, selectedPaymentMethod, setAc
     );
   };
 
+  const disableContinue = !selectedPaymentMethod;
+
+  const handleContinue = async () => {
+    if (!selectedPaymentMethod) {
+      return;
+    }
+
+    console.log('selectedPaymentMethod: ', selectedPaymentMethod);
+
+    const cardData = {
+      brand: selectedPaymentMethod?.brand,
+      expMonth: selectedPaymentMethod?.exp_month || null,
+      expYear: selectedPaymentMethod?.exp_year || null,
+      firstDigits: null,
+      lastDigits: selectedPaymentMethod?.last4,
+    };
+
+    const paymentInput = {
+      gateway: 'mirumee.payments.stripe',
+      token: selectedPaymentMethod.id,
+      creditCard: cardData,
+    };
+
+    const paymentResponse = await createPayment(paymentInput);
+    console.log('paymentResponse: ', paymentResponse);
+
+    setActiveTab('agreement');
+  };
+
   return (
     <Card.Body>
       <h5>Payment Methods</h5>
@@ -107,7 +136,9 @@ export const Payment = ({ setSelectedPaymentMethod, selectedPaymentMethod, setAc
           })}
         </tbody>
       </Table>
-      <Button onClick={() => setActiveTab('agreement')}>Continue to Agreement</Button>
+      <Button onClick={handleContinue} disabled={disableContinue}>
+        Continue to Agreement
+      </Button>
     </Card.Body>
   );
 };

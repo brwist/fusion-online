@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useCheckout, useCart } from '@saleor/sdk';
+import { useCheckout } from '@saleor/sdk';
 import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
@@ -81,12 +81,12 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
   const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
-  console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
-  console.log('updateShippingAddress: ', updateShippingAddress);
-  console.log('addressQuery: ', addressQuery);
+  // console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
+  // console.log('updateShippingAddress: ', updateShippingAddress);
+  // console.log('addressQuery: ', addressQuery);
 
   const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  console.log('availableShippingMethods: ', availableShippingMethods);
+  // console.log('availableShippingMethods: ', availableShippingMethods);
   console.log('checkout: ', checkout);
 
   useEffect(() => {

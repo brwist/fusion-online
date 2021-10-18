@@ -5,8 +5,6 @@ import {
   Accordion,
   Card,
   Button,
-  Table,
-  Form,
   useAccordionToggle,
   AccordionContext,
   Container,
@@ -19,6 +17,7 @@ import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
 import { Maybe, Product, ProductVariant } from '../../generated/graphql';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
+import { useCheckout } from '@saleor/sdk';
 
 import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
@@ -49,6 +48,12 @@ export interface CartProps {
   subtractItem: any;
 }
 
+type errorsType =
+  | {
+      message: string;
+    }[]
+  | [];
+
 export const CartReview: React.FC<CartProps> = ({
   discount,
   items,
@@ -75,7 +80,15 @@ export const CartReview: React.FC<CartProps> = ({
 
   const [quantityField, setQuantityField]: any = useState();
   const [activeTab, setActiveTab] = useState('shipping');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [agreed, setAgreed] = useState(false);
+
+  const [submitErrors, setSubmitErrors] = useState<errorsType>([]);
+  const { completeCheckout } = useCheckout();
+
+  const handleSubmitOrder = async () => {
+    const response = await completeCheckout();
+    console.log('response: ', response);
+  };
 
   useEffect(() => {
     if (items) {
@@ -104,10 +117,7 @@ export const CartReview: React.FC<CartProps> = ({
       ?.toFixed(2);
   };
 
-  const getAttributeValue = (slugName: string, attributes: any): any => {
-    const matchingAttribute = attributes.filter(({ attribute }: any) => attribute.slug === slugName);
-    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name;
-  };
+  const disableSubmit = !agreed;
 
   if (!items || items?.length === 0) {
     return (
@@ -146,11 +156,7 @@ export const CartReview: React.FC<CartProps> = ({
                     </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="payment">
-                    <Payment
-                      setSelectedPaymentMethod={setSelectedPaymentMethod}
-                      selectedPaymentMethod={selectedPaymentMethod}
-                      setActiveTab={setActiveTab}
-                    />
+                    <Payment setActiveTab={setActiveTab} />
                   </Accordion.Collapse>
 
                   <Card.Header>
@@ -162,7 +168,7 @@ export const CartReview: React.FC<CartProps> = ({
                     </div>
                   </Card.Header>
                   <Accordion.Collapse eventKey="agreement">
-                    <Agreement />
+                    <Agreement setActiveTab={setActiveTab} agreed={agreed} setAgreed={setAgreed} />
                   </Accordion.Collapse>
 
                   <Card.Header>
@@ -178,11 +184,17 @@ export const CartReview: React.FC<CartProps> = ({
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
-              <Button>Place Your Order</Button>
+              <Button onClick={handleSubmitOrder} disabled={disableSubmit}>
+                Place Your Order
+              </Button>
             </Col>
 
             <Col lg={3}>
-              <OrderSummary subtotal={calculateSubtotal() || 0} />
+              <OrderSummary
+                subtotal={calculateSubtotal() || 0}
+                disableSubmit={disableSubmit}
+                handleSubmit={handleSubmitOrder}
+              />
             </Col>
           </Row>
         </div>
