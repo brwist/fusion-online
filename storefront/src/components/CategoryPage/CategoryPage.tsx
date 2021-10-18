@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useCategoryDetails } from '@saleor/sdk';
@@ -84,51 +84,44 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const {data, loading} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
     variables: {filter: {categories: category.data?.id ? [category.data?.id] : [], isPublished: true, attributes: attributes}, first: 100}
   })
+  const [products, setProducts] = useState([])
 
-  if (data) {
-    const productList = data.products?.edges || []
-    const productData = productList.map(({node}) => {
-      return {
-        otherData: {
-          saved: false,
-          status: "Incoming Stock"
-        },
-        product: node
-      }
-    })
+  useEffect(() => {
+    if (data?.products) {
+      setProducts(data.products.edges)
+    }
+  })
 
-    return (
-      <>
-      <ItemAddedAlert 
-        productName={selectedProduct || "Item"}
-        quantity={selectedQuantity}
-        show={showAlert}
-        hideAlert={() => setShowAlert(false)}
-      />
-      <Container onClick={() => showAlert && setShowAlert(false)}>
-        <ScrollToTopOnMount />
-          <SectionHeader subheading="Shop" heading={category.data?.name || ""}/>
-        <Row>
-          <Col lg={2}>
-            <ProductFilters
-              setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}
-              categoryId={category.data?.id}
-            />
-          </Col>
-          <Col>
-            <ProductTable 
-              loading={loading}
-              productData={productData}
-              addItem={addItem}
-              updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
-              updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}
-              showItemAddedAlert={ () => setShowAlert(true)}
-            />
-          </Col>
-        </Row>
-      </Container>
-      </>
-    )
-  }
-  return null
+  return (
+    <>
+    <ItemAddedAlert 
+      productName={selectedProduct || "Item"}
+      quantity={selectedQuantity}
+      show={showAlert}
+      hideAlert={() => setShowAlert(false)}
+    />
+    <Container onClick={() => showAlert && setShowAlert(false)}>
+      <ScrollToTopOnMount />
+        <SectionHeader subheading="Shop" heading={category.data?.name || ""}/>
+      <Row>
+        <Col lg={2}>
+          <ProductFilters
+            setFilters={(filters: AttributeInput[]) => {setAttributes(filters)}}
+            categoryId={category.data?.id}
+          />
+        </Col>
+        <Col>
+          <ProductTable 
+            loading={loading}
+            productData={products}
+            addItem={addItem}
+            updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
+            updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}
+            showItemAddedAlert={ () => setShowAlert(true)}
+          />
+        </Col>
+      </Row>
+    </Container>
+    </>
+  )
 }

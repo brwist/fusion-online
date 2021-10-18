@@ -25854,13 +25854,9 @@
             "name": "value",
             "description": "Value of a metadata item.",
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -37494,6 +37490,34 @@
             "deprecationReason": null
           },
           {
+            "name": "itemTypeId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "OfferItemTypeId",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "offerId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "leadTimeDays",
             "description": null,
             "args": [],
@@ -37514,6 +37538,62 @@
             "description": null,
             "args": [],
             "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "itemMasterId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mpn",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mcode",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "quantity",
+            "description": null,
+            "args": [],
+            "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
@@ -37521,6 +37601,70 @@
                 "name": "Int",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "offerPrice",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dateCode",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "comment",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "coo",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vendor",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Vendor",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -37553,6 +37697,77 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "OfferItemTypeId",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "A_0",
+            "description": "Excess List",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_1",
+            "description": "Opportunity List",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_2",
+            "description": "Buyer Offer",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_3",
+            "description": "Vendor Offer",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_4",
+            "description": "Stock List",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_5",
+            "description": "RMS Offer",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_6",
+            "description": "RMS Req",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_7",
+            "description": "RMS SO",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_8",
+            "description": "RMS PO",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "A_9",
+            "description": "RMQ Quote",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -46780,6 +46995,18 @@
             "deprecationReason": null
           },
           {
+            "name": "metadata",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "MetadataInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "price",
             "description": null,
             "type": {
@@ -50407,6 +50634,18 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "offer",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Offer",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -51043,16 +51282,12 @@
             "name": "attributes",
             "description": "List of attributes specific to this variant.",
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "AttributeValueInput",
-                  "ofType": null
-                }
+                "kind": "INPUT_OBJECT",
+                "name": "AttributeValueInput",
+                "ofType": null
               }
             },
             "defaultValue": null,
@@ -51150,6 +51385,18 @@
                   "ofType": null
                 }
               }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "offer",
+            "description": "Offer ID associated with this variant.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -52159,7 +52406,20 @@
           {
             "name": "offers",
             "description": null,
-            "args": [],
+            "args": [
+              {
+                "name": "itemMasterId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
             "type": {
               "kind": "LIST",
               "name": null,
@@ -66634,6 +66894,177 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "Vendor",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vendorName",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vendorNumber",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vendorType",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "VendorVendorType",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "vendorRegion",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "VendorVendorRegion",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "VendorVendorRegion",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "AMERICAS",
+            "description": "Americas",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ASIA_PACIFIC",
+            "description": "Asia/Pacific",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "EMEA",
+            "description": "EMEA",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "OTHER",
+            "description": "Other",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "VendorVendorType",
+        "description": "An enumeration.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "UNCLASSIFIED",
+            "description": "Unclassified",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "BROKER",
+            "description": "Broker",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MFG_DIRECT",
+            "description": "Mfg. Direct",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "OEM_CM_EXCESS",
+            "description": "OEM/CM Excess",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "AUTHORIZED_FRANCHISE",
+            "description": "Authorized/Franchise",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "EXPENSE_NON_PRODUCT_",
+            "description": "Expense (non-product)",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SERVICE",
+            "description": "Service",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {

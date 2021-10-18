@@ -1451,7 +1451,7 @@ export interface ProductVariantBulkCreateInput {
 }
 
 export interface ProductVariantCreateInput {
-  attributes: (AttributeValueInput | null)[];
+  attributes?: (AttributeValueInput | null)[];
   costPrice?: any | null;
   price?: any | null;
   sku?: string | null;
@@ -1459,6 +1459,7 @@ export interface ProductVariantCreateInput {
   weight?: any | null;
   product: string;
   stocks?: StockInput[] | null;
+  offer?: number | null;
 }
 
 export interface ProductVariantInput {

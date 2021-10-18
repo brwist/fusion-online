@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useCallback} from "react";
 import {
   Button,
+  Container,
   Drawer,
   Table,
   TableHead,
@@ -11,12 +12,19 @@ import {
   InputLabel,
   Select
 } from "@material-ui/core";
+import HighlightOffIcon  from '@material-ui/icons/HighlightOff';
 import { withStyles, Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
-// import Container from "@saleor/components/Container";
+import Hidden from "@material-ui/core/Hidden"
+import { DataGrid, GridColDef, GridColumnHeaderParams, GridValueGetterParams} from "@mui/x-data-grid";
 import PageHeader from "../../../components/PageHeader";
 import { useOfferListQuery } from "../../queries";
-import moment from "moment-timezone"
+import { 
+  useVariantUpdateMutation, useVariantCreateMutation, useVariantDeleteMutation,
+  useProductVariantSetDefaultMutation
+} from "../../../products/mutations";
+import moment from "moment-timezone";
+
+const WAREHOUSE_ID = "V2FyZWhvdXNlOmY0YTc2YmNkLWM2MjgtNDhkNS1hMjRkLWM1YjM3YzFlNjA3OA=="
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,24 +32,35 @@ const useStyles = makeStyles(theme => ({
       color: '#66cc66',
       fontWeight: 600,
     },
+    '& .MuiDataGrid-columnHeader:focus': {
+      outline: 'none',
+    },
     '& .MuiDataGrid-columnsContainer': {
       borderBottom: '1px solid #eaeaea',
     },
     '& .MuiDataGrid-columnHeaderTitle': {
       fontSize: 12,
       fontWeight: 600,
+      marginRight: 0,
     },
     '& .MuiDataGrid-row': {
-      marginTop: 1,
       border: '1px solid #fff',
       borderBottomColor: '#eaeaea',
       '&:hover': {
-        backgroundColor: 'rgba(102, 204, 102, 0.12)',
-        borderColor: '#66cc66',
+        backgroundColor: 'transparent',
       },
+    },
+    '& .MuiDataGrid-row.Mui-selected': {
+      marginTop: 0.4,
+      width: "100%",
+      border: '1px solid #66cc66',
+      backgroundColor: 'rgba(102, 204, 102, 0.12)',
     },
     '& .MuiDataGrid-cell': {
       fontSize: 12,
+      '&:hover': {
+        backgroundColor: 'rgba(102, 204, 102, 0.08)',
+      },
       '&:nth-of-type(1)': {
         color: '#66cc66',
         fontWeight: 600,
@@ -92,71 +111,38 @@ const StyledTableRow = withStyles((theme: Theme) =>
   }),{ name: "PricingDetailDrawer" },
 )(TableRow);
 
-const columns: GridColDef[] = [
-  {
-    field: 'id',
-    headerName: 'ID',
-    width: 80,
-    sortable: false,
-  },
-  {
-    field: 'origin',
-    headerName: 'Origin',
-    headerAlign: 'right',
-    align: 'right',
-    width: 120,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'leadTime',
-    headerName: 'Lead Time',
-    headerAlign: 'right',
-    align: 'right',
-    width: 120,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'qty',
-    headerName: 'Qty',
-    type: 'number',
-    headerAlign: 'right',
-    align: 'right',
-    width: 80,
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'cost',
-    headerName: 'Cost',
-    headerAlign: 'right',
-    align: 'right',
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'margin',
-    headerName: 'Margin',
-    headerAlign: 'right',
-    align: 'right',
-    editable: true,
-    sortable: false,
-  },
-  {
-    field: 'sellPrice',
-    headerName: 'Sell Price',
-    headerAlign: 'right',
-    align: 'right',
-    width: 110,
-    editable: true,
-    sortable: false,
-  },
-];
+
 
 export interface PricingDetailDrawerProps {
   open: boolean;
+  refetchProducts: any;
   closeDrawer: () => void;
+  variants: Array<{
+    id: string,
+    sku: string,
+    costPrice: {
+      amount: number
+    },
+    margin: number,
+    price: {
+      amount: number
+    },
+    stocks: [
+      {
+        warehouse: {
+          id: string
+        },
+        quantity: number
+      }
+    ]
+    quantityAvailable: number,
+    offer: {
+      offerId: string,
+      leadTimeDays: number,
+      coo: string
+    }
+  }>;
+  defaultVariant: string | null;
   productId: string;
   productMPN: string;
   productItemMasterId: string;
@@ -165,19 +151,147 @@ export interface PricingDetailDrawerProps {
 export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   {
     open,
+    refetchProducts,
     closeDrawer,
+    variants,
+    defaultVariant,
     productId,
     productMPN,
     productItemMasterId
   }) => {
   const classes = useStyles();
+  const [hideDropdown, setHideDropdown] = useState(true)
+  const [variantTableRows, setVariantTableRows] = useState([])
+  const [deletedVariantTableRows, setDeletedVariantTableRows] = useState([])
+
+  const defaultVariantTableRows = variants.map(variant => ({
+    id: variant?.offer?.offerId || variant.id,
+    origin: variant?.offer?.coo,
+    leadTime: variant?.offer?.leadTimeDays,
+    qty: variant?.stocks[0].quantity,
+    cost: variant?.costPrice?.amount,
+    margin: variant?.margin,
+    sellPrice: variant?.price?.amount
+  }));
+
+  useEffect(() => {
+    setVariantTableRows(defaultVariantTableRows)
+    if (defaultVariant) {
+      setSelectionModel([defaultVariant])
+    }
+  }, [variants])
+
+  const columns: GridColDef[] = [
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 90,
+      sortable: false,
+    },
+    {
+      field: 'origin',
+      headerName: 'Country of Origin',
+      headerAlign: 'right',
+      align: 'right',
+      width: 140,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => value || "-"
+    },
+    {
+      field: 'leadTime',
+      headerName: 'Lead Time',
+      headerAlign: 'right',
+      align: 'right',
+      width: 120,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => {
+        if ( value == -1) {
+          return "Unknown"
+        } else if (value == 0) {
+          return "In Stock"
+        } else if (value == 1) {
+          return "1 Month"
+        } else {
+          return `${value} days`
+        }
+      }
+    },
+    {
+      field: 'qty',
+      headerName: 'Qty',
+      type: 'number',
+      headerAlign: 'right',
+      align: 'right',
+      width: 60,
+      editable: true,
+      sortable: false,
+    },
+    {
+      field: 'cost',
+      headerName: 'Cost',
+      headerAlign: 'right',
+      align: 'right',
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => `$${ value ? Number(value)?.toFixed(2) : 0}`
+    },
+    {
+      field: 'margin',
+      headerName: 'Margin',
+      headerAlign: 'right',
+      width: 80,
+      align: 'right',
+      editable: true,
+      sortable: false,
+      valueFormatter:({value}) => `${value || 0}%`
+    },
+    {
+      field: 'sellPrice',
+      headerName: 'Sell Price',
+      headerAlign: 'right',
+      align: 'right',
+      width: 110,
+      editable: true,
+      sortable: false,
+      valueFormatter: ({value}) => `$${ value ? Number(value)?.toFixed(2) : 0}`
+    },
+    {
+      field: 'Delete',
+      type: 'actions',
+      width: 40,
+      align: 'center',
+      sortable: false,
+      renderCell: (cellValues) => (
+          <HighlightOffIcon
+            fontSize="small" 
+            color="error"
+            onClick={() => {
+              setDeletedVariantTableRows([
+                ...deletedVariantTableRows,
+                cellValues.row
+              ])
+              // setTimeout is needed to resolve error created by a race condition https://github.com/mui-org/material-ui-x/issues/2714#issuecomment-928223613
+              setTimeout(() => {
+                setVariantTableRows(
+                  variantTableRows.filter(row => row.id !== cellValues.id)
+                )
+              })
+            }}
+          />
+        )
+    }
+  ];
+
+  const handleDrawerClose = () => {
+    setHideDropdown(true)
+    closeDrawer()
+  }
   const {data} = useOfferListQuery({variables: {itemMasterId: productItemMasterId }})
-  console.log(data)
-  const offersWithVariants = productItemMasterId && data?.offers?.filter((offer) => offer.productVariant) || []
-  console.log("offers with variants:", offersWithVariants)
-  
-  const offers = data?.offers || []
-  const priceSortedOffers = productItemMasterId && offers.length > 0 ? [...offers].sort(
+
+  const offers = data?.offers?.filter((offer) => !offer?.productVariant) || []
+  const priceSortedOffers = productItemMasterId && offers?.length > 0 ? [...offers].sort(
     (a,b) => (a.offerPrice > b.offerPrice) ? 1 : ((b.offerPrice > a.offerPrice) ? -1 : 0)) : []
 
   const formatLeadTime = (leadTime) => {
@@ -191,35 +305,40 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       return `${leadTime} days`
     }
   }
-
-  const defaultVariantTableRows = offersWithVariants.map(offer => ({
-      id: offer?.id,
-      origin: offer?.coo || "-",
-      leadTime: formatLeadTime(offer?.leadTimeDays),
-      qty: offer?.quantity,
-      cost: `$${offer?.offerPrice?.toFixed(2)}`, 
-      margin: offer?.productVariant.margin || "-",
-      sellPrice: `$${offer?.productVariant.price.amount}` || "-"
-    }));
   
-  const [variantTableRows, setVariantTableRows] = useState([])
-
-  useEffect(() => {
-    setVariantTableRows(defaultVariantTableRows)
-  }, [productItemMasterId])
+  const [selectionModel, setSelectionModel] = useState([])
   
   const handleCellEditCommit = useCallback(({id, field, value}) => {
-    return variantTableRows.map(row => {
-      if (row.id === id) {
-        return {...row, [field]: value}
-      }
-      return row
-    })
+      const updatedRows = variantTableRows.map(row => {
+        if (row.id === id) {
+            return {...row, [field]: value}
+          }
+          return row
+      });
+      setVariantTableRows(updatedRows)
   }, [variantTableRows])
+  
+  const handleOfferSelect = (event) => {
+    const offerId = event.target.value
+    const offerData = offers?.find(offer => offer?.id === offerId)
+    setVariantTableRows([
+      ...variantTableRows,
+      {
+        id: offerData?.offerId,
+        origin: offerData?.coo,
+        leadTime: offerData?.leadTimeDays,
+        qty: offerData?.quantity,
+        cost: offerData?.offerPrice,
+        margin: null,
+        sellPrice: null
+      }
+    ])
+    setHideDropdown(true);
+  }
 
-  const offerTableRows = productItemMasterId && data?.offers?.map(offer => {
-    return (
-      <StyledTableRow key={offer?.id}>
+  const offerTableRows = productItemMasterId && offers?.map(offer => (
+      <StyledTableRow key={offer?.offerId}>
+        <StyledTableCell>{offer?.offerId}</StyledTableCell>
         <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
         <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
         <StyledTableCell align="right">{offer?.coo || "-"}</StyledTableCell>
@@ -227,8 +346,74 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
         <StyledTableCell align="right">{offer?.quantity}</StyledTableCell>
         <StyledTableCell align="right">${offer?.offerPrice}</StyledTableCell>
       </StyledTableRow>
-    )
+    ))
+  
+  const [variantUpdate, variantUpdateMutationData] = useVariantUpdateMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("VariantUpdate Errors:", error)
   })
+
+  const [variantCreate, variantCreateMutationData] = useVariantCreateMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("VariantCreate Error:", error)
+  })
+
+  const [setDefaultVariant, setDefaultVariantData] = useProductVariantSetDefaultMutation({
+    onCompleted: (data) => console.log(data),
+    onError: (error) => console.log("Error setting variant default:", error)
+  })
+
+  const handleUpdate = async () => {
+    const variantOfferIds = variants?.map(variant => variant?.offer?.offerId);
+
+    variantTableRows.forEach(async ({id, qty, cost, sellPrice}) => {
+      if (variantOfferIds.includes(id)) {
+        // run update mutation
+        const variantData = variants?.find(variant => variant?.offer?.offerId == id )
+        variantUpdate({variables: {
+          id: variantData.id,
+          sku: variantData.sku,
+          addStocks: [],
+          removeStocks: [],
+          trackInventory: true,
+          stocks: [{warehouse: WAREHOUSE_ID, quantity: qty }],
+          costPrice: cost,
+          price: sellPrice
+        }});
+        // set default variant if id matches selected row
+        if (id == selectionModel[0]) {
+          setDefaultVariant({variables: {
+            productId,
+            variantId: variantData.id
+          }})
+        }
+      } else {
+        // run create mutation
+        const offerData = offers?.find(offer => offer?.offerId == id)
+        const {data: {productVariantCreate}} = await variantCreate({variables: {
+          input: {
+            sku: id,
+            trackInventory: true,
+            product: productId,
+            stocks: [{warehouse: WAREHOUSE_ID, quantity: qty}],
+            costPrice: cost,
+            price: sellPrice,
+            offer: offerData?.id
+          }
+        }});
+        // set default variant if id matches selected row
+        if (id == selectionModel[0]) {
+          const variantId = productVariantCreate?.productVariant?.id
+          setDefaultVariant({variables: {
+            productId,
+            variantId
+          }})
+        }
+      }
+    })
+    handleDrawerClose()
+    refetchProducts()
+  }
 
   return (
     <Drawer
@@ -237,7 +422,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
       }}
       anchor="right"
       open={open}
-      onClose={closeDrawer}
+      onClose={handleDrawerClose}
     >
       <div className={classes.padding}>
         <PageHeader
@@ -245,7 +430,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           title={productMPN}
         >
           <Button
-            onClick={() => console.log("click")}
+            onClick={handleUpdate}
             color="primary"
             variant="contained"
           >
@@ -294,11 +479,13 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
               name: 'default-variant',
               id: 'default-variant',
             }}
+            onChange={(event) => setSelectionModel([event.target.value])}
+            value={selectionModel[0] || ""}
           >
             <option aria-label="None" value="" />
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
+            {variantTableRows.map(row => (
+              <option key={row.id} value={row.id}>{row.id}</option>
+            ))}
           </Select>
         </FormControl>
       </div>
@@ -308,17 +495,47 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           <div style={{ flexGrow: 1 }}>
             <DataGrid
               autoHeight
-              autoPageSize
-              pagination
+              // pageSize={5}
+              // pagination
               rowHeight={40}
               rows={variantTableRows}
               columns={columns}
               disableColumnMenu
+              hideFooter
+              disableSelectionOnClick
               onCellEditCommit={handleCellEditCommit}
-              // pageSize={5}
-              // rowsPerPageOptions={[5]}
-              // disableSelectionOnClick
+              selectionModel={selectionModel}
+              style={{paddingLeft: 24, paddingRight: 24}}
             />
+            <div style={{paddingLeft: 24, paddingRight: 24, paddingTop: 24}}>
+              <Button 
+                onClick={() => setHideDropdown(!hideDropdown)}
+                color="primary"
+              >Add Variant</Button>
+              <Hidden xsUp={hideDropdown}>
+                <Container disableGutters>
+                <FormControl
+                  className={`${classes.formControl} ${hideDropdown && 'd-none'}`}
+                    variant="outlined"
+                >
+                  <InputLabel htmlFor="select-offer">Select Offer</InputLabel>
+                  <Select
+                    native
+                    inputProps={{
+                      name: 'select-offer',
+                      id: 'select-offer',
+                    }}
+                    onChange={handleOfferSelect}
+                  >
+                    <option aria-label="None" value="" />
+                    {productItemMasterId && offers?.map(offer => (
+                      <option key={offer.id} value={offer.id}>{offer.vendor.vendorNumber}</option>
+                    ))}
+                  </Select>
+                </FormControl>
+                </Container>
+              </Hidden>
+            </div>
           </div>
         </div>
       </div>
@@ -328,6 +545,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
         <Table size="small">
           <TableHead>
             <StyledTableRow>
+              <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Vendor</StyledTableCell>
               <StyledTableCell align="right">Date</StyledTableCell>
               <StyledTableCell align="right">Country of Origin</StyledTableCell>
