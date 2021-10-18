@@ -7,6 +7,7 @@ import { Tag } from '../Tag/Tag';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { NewsCard } from '../NewsCard/NewsCard';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
+import { HelpBlock } from '../HelpBlock/HelpBlock';
 
 import "./homepage.scss";
 
@@ -79,6 +80,9 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           />
         </Col>
       </Row>
+
+      <HelpBlock />
+
       <Row>
       <Col className="my-auto">
           <h6 className="my-auto">Latest News:</h6>
@@ -89,15 +93,6 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           </Button>
         </Col>
       </Row>
-
-      <section className="help-block">
-        <Row>
-          <Col>
-
-          </Col>
-        </Row>
-      </section>
-
       <Row className="my-3">
       <Col>
           <NewsCard
