@@ -10,19 +10,13 @@ import { Product } from '../../generated/graphql';
 import './producttable.scss';
 
 export interface ProductTableRowProps {
-  otherData: {
-    saved: boolean,
-    status?: string | undefined,
-  },
   product: Product,
   addItem?: any,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
   showItemAddedAlert: () => void
 }
-export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
-  saved,
-  status},
+export const ProductTableRow: React.FC<ProductTableRowProps> = ({
   product: {
     name,
     id,
@@ -64,8 +58,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
 
   return (<tr>
     <td className="pr-0">
-      {saved ? <FontAwesomeIcon icon={fasFaBookmark} className="text-primary" />
-        : <FontAwesomeIcon icon={farFaBookmark} />}
+      <FontAwesomeIcon icon={farFaBookmark} />
     </td>
     <td>
       <div className="small">
@@ -76,7 +69,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({ otherData: {
         Spec Code: {getAttributeValue("spec-code")} | Ordering Code: {getAttributeValue("ordering-code")}
       </div>
     </td>
-    <td className="text-center">{status}</td>
+    <td className="text-center">Incoming Stock</td>
     <td className="text-center">{variants && variants[0]?.quantityAvailable}</td>
     <td className="text-center">{unitPrice !== "0.00" ? `${unitPrice}` : `--`}</td>
     <td className="text-center">
