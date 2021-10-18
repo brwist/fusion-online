@@ -89,6 +89,15 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           </Button>
         </Col>
       </Row>
+
+      <section className="help-block">
+        <Row>
+          <Col>
+
+          </Col>
+        </Row>
+      </section>
+
       <Row className="my-3">
       <Col>
           <NewsCard

@@ -66,7 +66,10 @@ export const Login: React.FC<LoginProps> = ({
         </Form.Group>
 
         <Form.Text className="mb-3">
-          <Button variant="link">
+          <Button
+            variant="link"
+            className="pl-0"
+          >
             Forgot your password?
           </Button>
         </Form.Text>
