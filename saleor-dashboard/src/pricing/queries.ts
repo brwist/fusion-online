@@ -22,10 +22,14 @@ const ProductFragmentDoc = gql`
       key
       value
     }
+    defaultVariant {
+      offer {
+        offerId
+      }
+    }
     variants {
       id
       sku
-      quantityAvailable
     }
     isAvailable
     isPublished
@@ -59,6 +63,29 @@ const pricingProductListQuery = gql`
             values {
               id
               name
+            }
+          }
+          variants {
+            id
+            sku
+            costPrice {
+              amount
+            }
+            margin
+            price {
+              amount
+            }
+            stocks {
+              warehouse {
+                id
+              }
+              quantity
+            }
+            quantityAvailable
+            offer {
+              offerId
+              leadTimeDays
+              coo
             }
           }
           pricing {
@@ -121,6 +148,7 @@ query OfferList ($itemMasterId: String) {
       id
       sku
       margin
+      quantityAvailable
       price {
         ...Money
       }

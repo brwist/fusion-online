@@ -16,6 +16,11 @@
     &.btn-link {
         text-transform: none;
         text-decoration: none;
+        color: $primary;
+
+        &:hover {
+            color: $link-hover-color;
+        }
 
         &:focus {
             box-shadow: none;

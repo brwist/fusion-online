@@ -22,5 +22,24 @@
     .btn-go-back {
         padding: 0;
     }
+
+    .offer-options {
+        button {
+            font-size: 16px;
+
+            &,
+            .font-weight-bold {
+                text-transform: none;
+            }
+        }
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid $border-color;
+    }
+
+    .tab-pane {
+        padding: 48px 24px;
+    }
 }
 

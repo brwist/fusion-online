@@ -4366,7 +4366,7 @@ export type MetadataInput = {
   /** Key of a metadata item. */
   key: Scalars['String'];
   /** Value of a metadata item. */
-  value: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type MetadataItem = {
@@ -6661,11 +6661,46 @@ export type Offer = {
   __typename?: 'Offer';
   id: Scalars['ID'];
   type: OfferType;
+  itemTypeId: OfferItemTypeId;
+  offerId?: Maybe<Scalars['Int']>;
   leadTimeDays: Scalars['Int'];
-  dateAdded: Scalars['Int'];
+  dateAdded?: Maybe<Scalars['String']>;
+  itemMasterId?: Maybe<Scalars['String']>;
+  mpn: Scalars['String'];
+  mcode: Scalars['String'];
+  quantity: Scalars['Int'];
+  offerPrice: Scalars['Float'];
+  dateCode?: Maybe<Scalars['String']>;
+  comment?: Maybe<Scalars['String']>;
+  coo?: Maybe<Scalars['String']>;
+  vendor?: Maybe<Vendor>;
   tariffRate?: Maybe<Scalars['Float']>;
   productVariant?: Maybe<ProductVariant>;
 };
+
+/** An enumeration. */
+export enum OfferItemTypeId {
+  /** Excess List */
+  A_0 = 'A_0',
+  /** Opportunity List */
+  A_1 = 'A_1',
+  /** Buyer Offer */
+  A_2 = 'A_2',
+  /** Vendor Offer */
+  A_3 = 'A_3',
+  /** Stock List */
+  A_4 = 'A_4',
+  /** RMS Offer */
+  A_5 = 'A_5',
+  /** RMS Req */
+  A_6 = 'A_6',
+  /** RMS SO */
+  A_7 = 'A_7',
+  /** RMS PO */
+  A_8 = 'A_8',
+  /** RMQ Quote */
+  A_9 = 'A_9'
+}
 
 /** An enumeration. */
 export enum OfferType {
@@ -8189,6 +8224,7 @@ export type ProductFilterInput = {
   productType?: Maybe<Scalars['ID']>;
   stocks?: Maybe<ProductStockFilterInput>;
   search?: Maybe<Scalars['String']>;
+  metadata?: Maybe<MetadataInput>;
   price?: Maybe<PriceRangeInput>;
   minimalPrice?: Maybe<PriceRangeInput>;
   productTypes?: Maybe<Array<Maybe<Scalars['ID']>>>;
@@ -8778,6 +8814,7 @@ export type ProductVariant = Node & ObjectWithMetadata & {
   stocks?: Maybe<Array<Maybe<Stock>>>;
   /** Quantity of a product available for sale in one checkout. */
   quantityAvailable: Scalars['Int'];
+  offer?: Maybe<Offer>;
 };
 
 
@@ -8904,7 +8941,7 @@ export type ProductVariantCreate = {
 
 export type ProductVariantCreateInput = {
   /** List of attributes specific to this variant. */
-  attributes: Array<Maybe<AttributeValueInput>>;
+  attributes?: Maybe<Array<Maybe<AttributeValueInput>>>;
   /** Cost price of the variant. */
   costPrice?: Maybe<Scalars['PositiveDecimal']>;
   /** Price of the particular variant. */
@@ -8919,6 +8956,8 @@ export type ProductVariantCreateInput = {
   product: Scalars['ID'];
   /** Stocks of a product available for sale. */
   stocks?: Maybe<Array<StockInput>>;
+  /** Offer ID associated with this variant. */
+  offer?: Maybe<Scalars['Int']>;
 };
 
 /** Deletes a product variant. */
@@ -9242,6 +9281,11 @@ export type Query = {
   user?: Maybe<User>;
   _entities?: Maybe<Array<Maybe<_Entity>>>;
   _service?: Maybe<_Service>;
+};
+
+
+export type QueryOffersArgs = {
+  itemMasterId?: Maybe<Scalars['String']>;
 };
 
 
@@ -11555,6 +11599,45 @@ export type VariantPricingInfo = {
   priceLocalCurrency?: Maybe<TaxedMoney>;
 };
 
+export type Vendor = {
+  __typename?: 'Vendor';
+  id: Scalars['ID'];
+  vendorName: Scalars['String'];
+  vendorNumber: Scalars['Int'];
+  vendorType?: Maybe<VendorVendorType>;
+  vendorRegion?: Maybe<VendorVendorRegion>;
+};
+
+/** An enumeration. */
+export enum VendorVendorRegion {
+  /** Americas */
+  Americas = 'AMERICAS',
+  /** Asia/Pacific */
+  AsiaPacific = 'ASIA_PACIFIC',
+  /** EMEA */
+  Emea = 'EMEA',
+  /** Other */
+  Other = 'OTHER'
+}
+
+/** An enumeration. */
+export enum VendorVendorType {
+  /** Unclassified */
+  Unclassified = 'UNCLASSIFIED',
+  /** Broker */
+  Broker = 'BROKER',
+  /** Mfg. Direct */
+  MfgDirect = 'MFG_DIRECT',
+  /** OEM/CM Excess */
+  OemCmExcess = 'OEM_CM_EXCESS',
+  /** Authorized/Franchise */
+  AuthorizedFranchise = 'AUTHORIZED_FRANCHISE',
+  /** Expense (non-product) */
+  ExpenseNonProduct = 'EXPENSE_NON_PRODUCT_',
+  /** Service */
+  Service = 'SERVICE'
+}
+
 /** Verify JWT token. */
 export type VerifyToken = {
   __typename?: 'VerifyToken';
@@ -12252,12 +12335,12 @@ export type AddStripeTokenMutationVariables = Exact<{
 }>;
 
 
-export type AddStripeTokenMutation = { __typename?: 'Mutation', addStripePaymentMethod?: Maybe<{ __typename?: 'AddStripePaymentMethod', user?: Maybe<{ __typename?: 'User', id: string }> }> };
+export type AddStripeTokenMutation = { __typename?: 'Mutation', addStripePaymentMethod?: Maybe<{ __typename?: 'AddStripePaymentMethod', user?: Maybe<{ __typename?: 'User', id: string, stripeCards?: Maybe<Array<Maybe<{ __typename?: 'StripePaymentMethod', id?: Maybe<string> }>>> }> }> };
 
 export type GetUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string }> };
+export type GetUserQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string, stripeCards?: Maybe<Array<Maybe<{ __typename?: 'StripePaymentMethod', id?: Maybe<string>, object?: Maybe<string>, billingDetails?: Maybe<{ __typename?: 'StripeBillingDetails', name?: Maybe<string>, address?: Maybe<{ __typename?: 'StripeBillingAddress', city?: Maybe<string>, country?: Maybe<string>, line1?: Maybe<string>, line2?: Maybe<string>, postalCode?: Maybe<string>, state?: Maybe<string> }> }>, card?: Maybe<{ __typename?: 'StripeCard', brand?: Maybe<string>, last4?: Maybe<string>, expMonth?: Maybe<string>, expYear?: Maybe<string> }> }>>> }> };
 
 export type MoneyFragment = { __typename?: 'Money', amount: number, currency: string };
 
@@ -12290,7 +12373,7 @@ export type BasicProductFieldsFragment = { __typename?: 'Product', id: string, n
 
 export type SelectedAttributeFieldsFragment = { __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> };
 
-export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> };
+export type ProductVariantFieldsFragment = { __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, offer?: Maybe<{ __typename?: 'Offer', id: string, leadTimeDays: number, coo?: Maybe<string> }>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> };
 
 export type ProductPricingFieldFragment = { __typename?: 'Product', pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> };
 
@@ -12300,7 +12383,7 @@ export type ProductDetailsQueryVariables = Exact<{
 }>;
 
 
-export type ProductDetailsQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', descriptionJson: any, isAvailable?: Maybe<boolean>, isAvailableForPurchase?: Maybe<boolean>, availableForPurchase?: Maybe<any>, id: string, name: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, category?: Maybe<{ __typename?: 'Category', id: string, name: string }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> }> };
+export type ProductDetailsQuery = { __typename?: 'Query', product?: Maybe<{ __typename?: 'Product', descriptionJson: any, isAvailable?: Maybe<boolean>, isAvailableForPurchase?: Maybe<boolean>, availableForPurchase?: Maybe<any>, id: string, name: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, category?: Maybe<{ __typename?: 'Category', id: string, name: string }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }>, variants?: Maybe<Array<Maybe<{ __typename?: 'ProductVariant', id: string, sku: string, name: string, isAvailable?: Maybe<boolean>, quantityAvailable: number, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, offer?: Maybe<{ __typename?: 'Offer', id: string, leadTimeDays: number, coo?: Maybe<string> }>, pricing?: Maybe<{ __typename?: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string>, slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> }>>>, pricing?: Maybe<{ __typename?: 'ProductPricingInfo', onSale?: Maybe<boolean>, priceRangeUndiscounted?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }>, priceRange?: Maybe<{ __typename?: 'TaxedMoneyRange', start?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }>, stop?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number, currency: string }, net: { __typename?: 'Money', amount: number, currency: string } }> }> }> }> };
 
 export type CartProductDetailsQueryVariables = Exact<{
   ids?: Maybe<Array<Scalars['ID']> | Scalars['ID']>;
@@ -12454,6 +12537,11 @@ export const ProductVariantFieldsFragmentDoc = gql`
   }
   isAvailable
   quantityAvailable(countryCode: $countryCode)
+  offer {
+    id
+    leadTimeDays
+    coo
+  }
   pricing {
     onSale
     priceUndiscounted {
@@ -12694,6 +12782,9 @@ export const AddStripeTokenDocument = gql`
   addStripePaymentMethod(paymentMethodId: $paymentMethodId) {
     user {
       id
+      stripeCards {
+        id
+      }
     }
   }
 }
@@ -12731,6 +12822,27 @@ export const GetUserDocument = gql`
     firstName
     lastName
     email
+    stripeCards {
+      id
+      object
+      billingDetails {
+        address {
+          city
+          country
+          line1
+          line2
+          postalCode
+          state
+        }
+        name
+      }
+      card {
+        brand
+        last4
+        expMonth
+        expYear
+      }
+    }
   }
 }
     `;

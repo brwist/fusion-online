@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { Login } from '../Forms/Login';
 import { Register } from '../Forms/Register';
 import { Footer } from '../Footer/Footer';
@@ -18,12 +19,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ handleSignIn, handleRegist
       <div className="hero">
         <Container>
           <Row>
-            <Col md={6}>
-              <div className="content">
-                <h4 className="tagged">Lorem Ipsum Dolor</h4>
-                <h1>Fusion Product Portal</h1>
-              </div>
-            </Col>
+            <SectionHeader subheading="Welcome" heading="RocketChips Product Portal" borderClass="" />
           </Row>
         </Container>
       </div>

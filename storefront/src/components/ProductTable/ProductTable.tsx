@@ -15,7 +15,7 @@ type ProductData = {
 
 export interface ProductTableProps {
   loading: boolean,
-  productData: Array<ProductData>,
+  productData: Array<{node: Product}>,
   addItem?: any,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
@@ -48,6 +48,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </>
     )
   }
+  console.log(productData)
   return (
     <Card className="search-results">
       <ScrollToTopOnMount />
@@ -63,12 +64,11 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {productData?.map(({otherData, product}) => {
+          {productData?.map(({node}) => {
             return (
               <ProductTableRow
-                key={product.id}
-                otherData={otherData}
-                product={product}
+                key={node.id}
+                product={node}
                 addItem={addItem}
                 showItemAddedAlert={showItemAddedAlert}
                 updateSelectedProduct={updateSelectedProduct}

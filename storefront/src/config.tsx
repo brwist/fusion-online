@@ -159,6 +159,11 @@ export const GET_PRODUCT_DETAILS = gql`
     }
     isAvailable
     quantityAvailable(countryCode: $countryCode)
+    offer {
+      id
+      leadTimeDays
+      coo
+    }
     pricing {
       onSale
       priceUndiscounted {

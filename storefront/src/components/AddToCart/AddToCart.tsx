@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Button, Form} from 'react-bootstrap';
 import { ProductVariant } from '../../generated/graphql';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart as farFaCart } from '@fortawesome/pro-regular-svg-icons';
 
 import './addtocart.scss';
 
@@ -25,25 +27,6 @@ export const AddToCart: React.FC<AddToCartProps> = ({
   return (
     <Card className="add-to-cart-card">
       <Card.Body>
-        <Card.Subtitle className="mb-4">
-          <div className="font-weight-bold mb-2">Availability/Lead Time</div>
-          {variant?.quantityAvailable} units in stock. Ready to ship.
-        </Card.Subtitle>
-        <Card.Text>
-          <div className="d-flex justify-content-between">
-            <strong>Pricing History</strong>
-            [Dates of Last Quarter]
-          </div>
-          <div className="my-3" style={{width: '100%', height: '180px', background: 'lightgray'}}></div>
-          <div className="small">
-            Pricing History is based on minimum order amount of 50 units
-          </div>
-        </Card.Text>
-      </Card.Body>
-
-      <div className="border-top"></div>
-
-      <Card.Body>
         <Card.Text>
           <div className="mb-3">
             <Form.Check
@@ -56,11 +39,16 @@ export const AddToCart: React.FC<AddToCartProps> = ({
               checked
             />
           </div>
-          <Form.Group as={Row} className="mb-3 align-items-center">
-            <Col sm={8}>
-              <Form.Label className="font-weight-bold">Quantity</Form.Label>
+          <Row className="align-items-center">
+            <Col sm="auto" lg={4} xl={5} className="d-flex align-items-center">
+              <span className="h2 m-0 font-weight-bold">${variant?.pricing?.price?.gross.amount.toFixed(2)}</span>
+              &nbsp;
+              <span className="text-muted text-lowercase">(unit price)</span>
             </Col>
-            <Col sm={4} className="text-right">
+            <Col sm="auto">
+              <Form.Label className="font-weight-bold m-0">Quantity</Form.Label>
+            </Col>
+            <Col sm="auto">
               <Form.Control
                 type="number"
                 id="quantity"
@@ -70,15 +58,10 @@ export const AddToCart: React.FC<AddToCartProps> = ({
                 onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
               />
             </Col>
-          </Form.Group>
-          <Row>
-            <Col sm={6} className="font-weight-bold">
-              Unit Price
-            </Col>
-            <Col sm={6} className="text-right">
-              <span className="font-weight-bold">${variant?.pricing?.price?.gross.amount.toFixed(2)}</span>
-              /
-              <span className="text-muted text-lowercase">unit</span>
+            <Col className="text-right">
+              <Button onClick={addToCart} variant="primary">
+                Add To Order <FontAwesomeIcon icon={farFaCart} className="ml-1" />
+              </Button>
             </Col>
           </Row>
         </Card.Text>
@@ -98,68 +81,98 @@ export const AddToCart: React.FC<AddToCartProps> = ({
               label="Schedule Multiple Orders"
             />
           </div>
-          <Row className="mb-3 align-items-center">
-            <Col sm={6}>
-              Shipment 1
+          <Row className="align-items-center mb-5">
+            <Col sm="auto" lg={4} xl={5} className="d-flex align-items-center">
+              <span className="h2 m-0 font-weight-bold">${variant?.pricing?.price?.gross.amount.toFixed(2)}</span>
+              &nbsp;
+              <span className="text-muted text-lowercase">(unit price)</span>
             </Col>
-            <Col sm={6} className="text-right font-weight-bold">
-              <Button variant="link" className="text-danger pr-0">Remove</Button>
+            <Col sm="auto">
+              Total Quantity
+            </Col>
+            <Col sm="auto">
+              <div className="font-weight-bold">200</div>
+            </Col>
+            <Col className="text-right">
+              <Button onClick={addToCart} variant="primary">
+                Add To Order <FontAwesomeIcon icon={farFaCart} className="ml-1" />
+              </Button>
             </Col>
           </Row>
-          <Form.Group as={Row} className="mb-3 align-items-center">
-            <Col sm={6}>
-              <Form.Label className="font-weight-bold">Deliver By</Form.Label>
-            </Col>
-            <Col sm={6} className="text-right">
-              <Form.Control
-                type="text"
-                id="shipment-1-date"
-                value="April 15, 2022"
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row} className="mb-3 align-items-center">
-            <Col sm={8}>
-              <Form.Label className="font-weight-bold">Quantity</Form.Label>
-            </Col>
-            <Col sm={4} className="text-right">
-              <Form.Control
-                type="number"
-                id="shipment-1-quantity"
-                min={0}
-                max={variant?.quantityAvailable}
-                value={quantitySelected}
-                onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
-              />
-            </Col>
-          </Form.Group>
+          <div className="border-bottom">
+            <Row className="py-3 align-items-center">
+              <Col sm="3" className="font-weight-bold">
+                Shipment 1
+              </Col>
+              <Col sm="auto">
+                <Form.Label className="font-weight-bold m-0">Deliver By</Form.Label>
+              </Col>
+              <Col sm="auto">
+                <Form.Control
+                  type="text"
+                  id="shipment-1-date"
+                  value="April 15, 2022"
+                />
+              </Col>
+              <Col sm="auto">
+                <Form.Label className="font-weight-bold m-0">Quantity</Form.Label>
+              </Col>
+              <Col sm="auto">
+                <Form.Control
+                  type="number"
+                  id="shipment-1-quantity"
+                  min={0}
+                  max={variant?.quantityAvailable}
+                  value={quantitySelected}
+                  onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
+                />
+              </Col>
+              <Col sm="auto" className="font-weight-bold">
+                <Button variant="link" className="text-danger">Remove</Button>
+              </Col>
+            </Row>
+          </div>
+          <div className="border-bottom">
+            <Row className="py-3 align-items-center">
+              <Col sm="3" className="font-weight-bold">
+                Shipment 1
+              </Col>
+              <Col sm="auto">
+                <Form.Label className="font-weight-bold m-0">Deliver By</Form.Label>
+              </Col>
+              <Col sm="auto">
+                <Form.Control
+                  type="text"
+                  id="shipment-1-date"
+                  value="April 15, 2022"
+                />
+              </Col>
+              <Col sm="auto">
+                <Form.Label className="font-weight-bold m-0">Quantity</Form.Label>
+              </Col>
+              <Col sm="auto">
+                <Form.Control
+                  type="number"
+                  id="shipment-1-quantity"
+                  min={0}
+                  max={variant?.quantityAvailable}
+                  value={quantitySelected}
+                  onChange={(e) => setQuantitySelected(parseInt(e.currentTarget.value))}
+                />
+              </Col>
+              <Col sm="auto" className="font-weight-bold">
+                <Button variant="link" className="text-danger">Remove</Button>
+              </Col>
+            </Row>
+          </div>
 
           <Button
             variant="link"
-            className="border-top border-bottom my-4 font-weight-bold"
-            block
+            className="px-0 font-weight-bold"
           >
             Add Shipment +
           </Button>
 
-          <Row className="mb-3 align-items-center">
-            <Col sm={8}>
-              <Form.Label className="font-weight-bold">Total Quantity</Form.Label>
-            </Col>
-            <Col sm={4} className="text-right font-weight-bold">
-              250
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={6} className="font-weight-bold">
-              Unit Price
-            </Col>
-            <Col sm={6} className="text-right">
-              <span className="font-weight-bold">${variant?.pricing?.price?.gross.amount.toFixed(2)}</span>
-              /
-              <span className="text-muted text-lowercase">unit</span>
-            </Col>
-          </Row>
         </Card.Text>
       </Card.Body>
       <Card.Footer className="flex-column">
@@ -169,9 +182,6 @@ export const AddToCart: React.FC<AddToCartProps> = ({
             ${variant?.pricing?.price?.gross.amount? (quantitySelected * variant?.pricing?.price?.gross.amount).toFixed(2) : 0}
           </div>
         </div>
-        <Button onClick={addToCart} variant="primary" size="lg" block>
-          Add To Cart
-        </Button>
       </Card.Footer>
     </Card>
   );

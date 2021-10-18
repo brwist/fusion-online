@@ -4,14 +4,16 @@
     .text-larger {
         font-size: 22px;
     }
+
+    input[type="text"] {
+        max-width: 120px;
+    }
 }
 
 .item-added-alert {
     .row {
         padding-left: 20px;
     }
-
-    
 }
 
 .item-added-alert.container {
