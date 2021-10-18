@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useCheckout } from '@saleor/sdk';
 import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
 
-import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../../config';
 import { GET_USER_ADDRESSES } from '../../../graphql/account';
 import { User, Address } from '../../../generated/graphql';
+
+import { gql, useQuery, useMutation } from '@apollo/client';
 
 const mockShippingMethods = [
   {
@@ -49,14 +51,43 @@ type userAddressesQuery = {
 
 export interface ShippingInventoryProps {
   items: any;
+  setActiveTab: any;
 }
 
-export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) => {
+export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
+  mutation checkoutShippingAddressUpdate($checkoutId: String!, $shippingAddress: AddressInput!) {
+    checkoutShippingAddressUpdate(checkoutId: $checkoutId, shippingAddress: $shippingAddress) {
+      errors {
+        field
+        message
+      }
+      checkout {
+        id
+        shippingAddress
+      }
+      checkoutErrors {
+        field
+        message
+        code
+        variants
+      }
+    }
+  }
+`;
+
+export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, setActiveTab }) => {
   const [quantityField, setQuantityField]: any = useState();
   const addressQuery = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
-  console.log('addressQuery: ', addressQuery);
+  const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
+  // console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
+  // console.log('updateShippingAddress: ', updateShippingAddress);
+  // console.log('addressQuery: ', addressQuery);
+
+  const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
+  // console.log('availableShippingMethods: ', availableShippingMethods);
+  console.log('checkout: ', checkout);
 
   useEffect(() => {
     if (items) {
@@ -67,6 +98,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
       setQuantityField(fields);
     }
   }, [items]);
+
+  // Set default
 
   const { data } = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {
     variables: {
@@ -84,6 +117,36 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
       }, 0)
       ?.toFixed(2);
   };
+
+  const disableContinue = !selectedAddress || !selectedShippingMethod;
+
+  const handleContinue = () => {
+    if (disableContinue) {
+      return;
+    }
+
+    // Update checkout.
+    setShippingAddress(selectedAddress, checkout.email);
+    setShippingMethod(selectedShippingMethod);
+
+    // navigate to next tab
+    setActiveTab('payment');
+  };
+
+  // Set default shipping method
+  useEffect(() => {
+    if (availableShippingMethods[0]) {
+      setSelectedShippingMethod(availableShippingMethods[0]);
+    }
+  }, [availableShippingMethods]);
+
+  // Set default shipping address
+  useEffect(() => {
+    if (addressQuery.data) {
+      const defaultAddress = addressQuery.data.me.addresses[0];
+      setSelectedAddress(defaultAddress);
+    }
+  }, [addressQuery]);
 
   if (!items || items?.length === 0) {
     return (
@@ -121,12 +184,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           </Col>
         </Row>
         <h5>Shipment Inventory</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th>Product Details</th>
@@ -161,7 +219,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
                         </div>
                       </td>
                     ) : (
-                      <td className="text-right font-weight-bold">${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}</td>
+                      <td className="text-right font-weight-bold">
+                        ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
+                      </td>
                     )}
                     <td className="text-right font-weight-bold">
                       ${(variant.pricing?.price?.gross.amount || 0).toFixed(2)}
@@ -173,12 +233,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           </tbody>
         </Table>
         <h5>Shipping Address</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th></th>
@@ -190,6 +245,19 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           <tbody>
             {addressQuery?.data?.me.addresses.map((address, index: number) => {
               console.log('address: ', address);
+              const {
+                id,
+                firstName,
+                lastName,
+                streetAddress1,
+                streetAddress2,
+                city,
+                countryArea,
+                country,
+                postalCode,
+                companyName,
+              } = address;
+              const checked = id === selectedAddress?.id;
               return (
                 <tr key={index}>
                   <td>
@@ -197,21 +265,24 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
                       custom
                       type="radio"
                       name="shippingAddress"
+                      id={`shippingAddress-${id}`}
+                      value={id}
                       defaultChecked={index === 0}
+                      checked={checked}
                       onChange={() => setSelectedAddress(address)}
                     />
                   </td>
                   <td>
-                    Johnny Howell
+                    {`${firstName} ${lastName}`}
                     <br />
-                    36 Creative
+                    {companyName}
                   </td>
                   <td>
-                    123 Turkey Street
+                    {`${streetAddress1} ${streetAddress2}`}
                     <br />
-                    Haverhill, MA 01835
+                    {`${city}, ${countryArea} ${postalCode}`}
                     <br />
-                    USA
+                    {country.code}
                   </td>
                   <td>{index === 0 && `Default`}</td>
                 </tr>
@@ -223,12 +294,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
           Deliver By <Button variant="link">Set a delivery date</Button>
         </div>
         <h5>Domestic Shipping Method</h5>
-        <Table
-          className="mb-4"
-          borderless
-          striped
-          responsive
-        >
+        <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
             <tr>
               <th></th>
@@ -260,7 +326,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items }) =
             })}
           </tbody>
         </Table>
-        <Button>Continue to Payment</Button>
+        <Button onClick={handleContinue} disabled={disableContinue}>
+          Continue to Payment
+        </Button>
       </Card.Body>
     );
   } else {

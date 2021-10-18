@@ -5,8 +5,6 @@ import {
   Accordion,
   Card,
   Button,
-  Table,
-  Form,
   useAccordionToggle,
   AccordionContext,
   Container,
@@ -19,6 +17,7 @@ import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
 import { Maybe, Product, ProductVariant } from '../../generated/graphql';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
+import { useCheckout } from '@saleor/sdk';
 
 import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
@@ -49,6 +48,12 @@ export interface CartProps {
   subtractItem: any;
 }
 
+type errorsType =
+  | {
+      message: string;
+    }[]
+  | [];
+
 export const CartReview: React.FC<CartProps> = ({
   discount,
   items,
@@ -74,6 +79,16 @@ export const CartReview: React.FC<CartProps> = ({
   }
 
   const [quantityField, setQuantityField]: any = useState();
+  const [activeTab, setActiveTab] = useState('shipping');
+  const [agreed, setAgreed] = useState(false);
+
+  const [submitErrors, setSubmitErrors] = useState<errorsType>([]);
+  const { completeCheckout } = useCheckout();
+
+  const handleSubmitOrder = async () => {
+    const response = await completeCheckout();
+    console.log('response: ', response);
+  };
 
   useEffect(() => {
     if (items) {
@@ -102,10 +117,7 @@ export const CartReview: React.FC<CartProps> = ({
       ?.toFixed(2);
   };
 
-  const getAttributeValue = (slugName: string, attributes: any): any => {
-    const matchingAttribute = attributes.filter(({ attribute }: any) => attribute.slug === slugName);
-    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name;
-  };
+  const disableSubmit = !agreed;
 
   if (!items || items?.length === 0) {
     return (
@@ -121,54 +133,68 @@ export const CartReview: React.FC<CartProps> = ({
         <div className="cart-review">
           <Row>
             <Col lg={9}>
-              <Accordion defaultActiveKey="0">
+              <Accordion activeKey={activeTab}>
                 <Card>
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Shipping <small className="text-muted">Step 1</small></h5>
-                      <ContextAwareToggle eventKey="0" />
+                      <h5 className="m-0 text-capitalize">
+                        Shipping <small className="text-muted">Step 1</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="shipping" callback={() => setActiveTab('shipping')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <ShippingInventory items={items} />
+                  <Accordion.Collapse eventKey="shipping">
+                    <ShippingInventory items={items} setActiveTab={setActiveTab} />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Payment <small className="text-muted">Step 2</small></h5>
-                      <ContextAwareToggle eventKey="1" />
+                      <h5 className="m-0 text-capitalize">
+                        Payment <small className="text-muted">Step 2</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="payment" callback={() => setActiveTab('payment')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="1">
-                    <Payment />
+                  <Accordion.Collapse eventKey="payment">
+                    <Payment setActiveTab={setActiveTab} />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Agreement <small className="text-muted">Step 3</small></h5>
-                      <ContextAwareToggle eventKey="2" />
+                      <h5 className="m-0 text-capitalize">
+                        Agreement <small className="text-muted">Step 3</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="agreement" callback={() => setActiveTab('agreement')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="2">
-                    <Agreement />
+                  <Accordion.Collapse eventKey="agreement">
+                    <Agreement setActiveTab={setActiveTab} agreed={agreed} setAgreed={setAgreed} />
                   </Accordion.Collapse>
 
                   <Card.Header>
                     <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">Notes <small className="text-muted">Step 4</small></h5>
-                      <ContextAwareToggle eventKey="3" />
+                      <h5 className="m-0 text-capitalize">
+                        Notes <small className="text-muted">Step 4</small>
+                      </h5>
+                      <ContextAwareToggle eventKey="notes" callback={() => setActiveTab('notes')} />
                     </div>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="3">
+                  <Accordion.Collapse eventKey="notes">
                     <Notes />
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
-              <Button>Place Your Order</Button>
+              <Button onClick={handleSubmitOrder} disabled={disableSubmit}>
+                Place Your Order
+              </Button>
             </Col>
 
             <Col lg={3}>
-              <OrderSummary subtotal={calculateSubtotal() || 0} />
+              <OrderSummary
+                subtotal={calculateSubtotal() || 0}
+                disableSubmit={disableSubmit}
+                handleSubmit={handleSubmitOrder}
+              />
             </Col>
           </Row>
         </div>

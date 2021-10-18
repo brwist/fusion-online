@@ -3,9 +3,11 @@ import { Card, Table, Button } from 'react-bootstrap';
 
 export interface OrderSummaryProps {
   subtotal: string | 0;
+  disableSubmit: any;
+  handleSubmit: any;
 }
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal }) => {
+export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSubmit, handleSubmit }) => {
   return (
     <Card className="order-summary">
       <Card.Body>
@@ -40,7 +42,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal }) => {
             </tfoot>
           </Table>
 
-          <Button variant="primary" size="lg" block>
+          <Button variant="primary" size="lg" block disabled={disableSubmit} onClick={handleSubmit}>
             Place Order
           </Button>
 
