@@ -135,7 +135,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
 
   // Set default shipping method
   useEffect(() => {
-    if (availableShippingMethods[0]) {
+    if (availableShippingMethods && availableShippingMethods[0]) {
       setSelectedShippingMethod(availableShippingMethods[0]);
     }
   }, [availableShippingMethods]);
