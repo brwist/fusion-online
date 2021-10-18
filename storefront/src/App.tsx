@@ -140,7 +140,7 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
-        <Route exact path="/cart/review">
+        <Route exact path="/checkout">
           <CartReview
             discount={discount}
             items={items}
@@ -155,7 +155,7 @@ function App() {
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
-        <Route exact path="/checkout" component={CheckoutPage} />
+        {/* <Route exact path="/checkout" component={CheckoutPage} /> */}
       </Switch>
       <Footer />
     </>
