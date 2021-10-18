@@ -9,7 +9,7 @@ export const HelpBlock: React.FC<HelpBlockProps> = ({}) => {
   return (
     <section className="help-block">
       <Row>
-        <Col lg={7}>
+        <Col lg={6} xl={7}>
           <div className="small section-header pb-3">
             <svg width="35px" height="15px" viewBox="0 0 35 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
               <g id="Member" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -27,9 +27,9 @@ export const HelpBlock: React.FC<HelpBlockProps> = ({}) => {
           </div>
           <h3>If you have questions, we've got you covered.</h3>
         </Col>
-        <Col lg={5} className="text-lg-right">
-          <Button variant="primary" size="lg" className="mx-3" type="button">Chat Now</Button>
-          <Button variant="primary" size="lg" className="mx-3" type="button">Email Us</Button>
+        <Col lg={6} xl={5} className="text-lg-right">
+          <Button variant="primary" size="lg" className="mt-4" type="button">Chat Now</Button>
+          <Button variant="primary" size="lg" className="mt-4 ml-4" type="button">Email Us</Button>
         </Col>
       </Row>
     </section>
