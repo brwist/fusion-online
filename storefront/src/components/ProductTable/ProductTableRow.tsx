@@ -47,7 +47,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
 
   const productMcode = (product?.metadata.find((item) => item?.key === 'mcode'))?.value
   const manufacturer = manufacturers.find(({mcode, manufacturer}) => mcode === productMcode)?.manufacturer || productMcode
-
+  console.log(product)
   return (<tr>
     <td className="pr-0">
       <FontAwesomeIcon icon={farFaBookmark} />
