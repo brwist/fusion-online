@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { ProductTable } from '../ProductTable/ProductTable';
@@ -30,19 +30,14 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
     variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
   })
 
+  const [products, setProducts] = useState([])
 
-  let results: any = [];
-  if (data) {
-    results = data.products?.edges.map(({node}) => {
-      return {
-        otherData: {
-          saved: false,
-          status: "Incoming Stock",
-        },
-        product: node
-      }
-    }) || []
-  }
+  useEffect(() => {
+    if (data?.products) {
+      setProducts(data.products.edges)
+    }
+  })
+
   return (
     <>
     <ItemAddedAlert 
@@ -60,7 +55,7 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
           <SearchBar initialSearchQuery={initialSearchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}} />
           <ProductTable 
             loading={loading}
-            productData={results}
+            productData={products}
             addItem={addItem}
             updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
             updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}
