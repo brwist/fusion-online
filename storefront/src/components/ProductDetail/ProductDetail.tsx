@@ -36,7 +36,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const [ showAlert, setShowAlert ] = useState(false);
   const [ selectedQuantity, setSelectedQuantity ] = useState(1);
   const [ selectedOffer, setSelectedOffer ] = useState("")
-  console.log(data?.product)
 
   useEffect(() => {
     if (!selectedOffer) {
@@ -187,7 +186,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <Row className="offer-options mt-2 mx-n1">
               {data?.product?.variants?.map((variant, index) => {
                 return (
-                  <Col lg={3} className="p-1">
+                  <Col lg={3} className="p-1" key={variant?.id}>
                     <Button onClick={() => setSelectedOffer(variant?.id)} variant={ selectedOffer === variant?.id ? "primary" : "secondary"} block>
                       <div className="d-flex justify-content-between mb-2">
                         <span className="font-weight-bold">Offer {index + 1}</span>
@@ -230,8 +229,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <Row>
             {data?.product?.attributes.map(({attribute, values}) => {
               return (
-                <Col lg={6}>
-                  <Row className="mb-4" key={attribute.id}>
+                <Col lg={6} key={attribute.id}>
+                  <Row className="mb-4">
                     <Col className="font-weight-bold">
                       {attribute.name}
                     </Col>

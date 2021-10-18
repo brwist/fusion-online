@@ -5,14 +5,6 @@ import {Product} from '../../generated/graphql'
 import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 import './producttable.scss';
 
-type ProductData = {
-  otherData: {
-    saved: boolean,
-    status: string
-  },
-  product: Product
-}
-
 export interface ProductTableProps {
   loading: boolean,
   productData: Array<{node: Product}>,
@@ -48,7 +40,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </>
     )
   }
-  console.log(productData)
+
   return (
     <Card className="search-results">
       <ScrollToTopOnMount />
@@ -67,7 +59,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           {productData?.map(({node}) => {
             return (
               <ProductTableRow
-                key={node.id}
+                key={node?.id}
                 product={node}
                 addItem={addItem}
                 showItemAddedAlert={showItemAddedAlert}

@@ -32,10 +32,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             </tfoot>
           </Table>
 
-          <p className="my-3">
-            <em>Some text some text some text some text some text some text</em>
-          </p>
-
           <Button onClick={() => history.push('/checkout')} variant="primary" size="lg" block>
             Place Order
           </Button>
