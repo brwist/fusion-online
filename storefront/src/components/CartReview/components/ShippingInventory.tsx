@@ -118,7 +118,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       ?.toFixed(2);
   };
 
-  const disableContinue = !selectedAddress || !selectedShippingMethod;
+  // const disableContinue = !selectedAddress || !selectedShippingMethod;
+  const disableContinue = !selectedAddress;
 
   const handleContinue = () => {
     if (disableContinue) {
