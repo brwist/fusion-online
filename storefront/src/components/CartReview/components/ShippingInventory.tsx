@@ -86,7 +86,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   // console.log('addressQuery: ', addressQuery);
 
   const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  // console.log('availableShippingMethods: ', availableShippingMethods);
+  console.log('availableShippingMethods: ', availableShippingMethods);
   console.log('checkout: ', checkout);
 
   useEffect(() => {
