@@ -75,12 +75,14 @@ const useStyles = makeStyles(
       colInventory: {
         width: 200
       },
-      colName: {},
+      colName: {
+        width: 100
+      },
       colPrice: {
         width: 135
       },
       colSku: {
-        width: 200
+        width: 100
       }
     },
     colGrab: {
