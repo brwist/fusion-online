@@ -172,7 +172,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
           {textInput('city', 'City', true)}
         </Col>
         <Col>
-          {textInput('countryArea', 'State / Country Code', true)}
+          {textInput('countryArea', 'State / Country Area', true)}
         </Col>
         <Col>
           {zipInput()}
@@ -195,7 +195,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
       </Form.Group>
 
       <Button variant="primary" type="submit">Save</Button>
-      <Button variant="link">Cancel</Button>
+      <Button variant="link" onClick={() => handleCloseEdit()}>Cancel</Button>
     </Form>
   );
 };
