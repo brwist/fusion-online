@@ -2,17 +2,23 @@ import React from 'react';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 
-import { User, AddressInput, CountryCode } from '../../../generated/graphql';
+import { AddressInput, CountryCode} from '../../../generated/graphql';
 import { useMutation } from '@apollo/client';
-
+import { AddressTypeEnum } from "@saleor/sdk/lib/gqlTypes/globalTypes";
 import usStates from '../../../utils/us-states.json';
 import caStates from '../../../utils/ca-states.json';
 import countries from '../../../utils/countries.json';
 
-import { GET_USER_ADDRESSES, CREATE_USER_ADDRESS } from '../../../graphql/account';
+import { GET_USER_ADDRESSES, CREATE_USER_ADDRESS} from '../../../graphql/account';
+import { useDefaultUserAddress, useDeleteUserAddresss } from "@saleor/sdk";
 
 interface Props {
-  user: User | undefined;
+  user: {
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+  }
   handleCloseEdit: Function;
 }
 
@@ -49,8 +55,10 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
     control,
   } = useForm<FormValues>();
   const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS, {
-    refetchQueries: [{ query: GET_USER_ADDRESSES }],
+    refetchQueries: [{ query: GET_USER_ADDRESSES }]
   });
+
+  const [setDefaultUserAddress] = useDefaultUserAddress()
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     let match = Object.entries(CountryCode).find(([key, val]) => val === data.country);
@@ -67,7 +75,11 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
     const payload = { ...data, country};
     console.log('payload: ', payload);
     try {
-      createAddress({ variables: { input: payload } });
+      const newAddress = await createAddress({ variables: { input: payload } });
+      if (isDefaultShippingAddress) {
+        const id = newAddress?.data?.accountAddressCreate.address.id
+        setDefaultUserAddress({id, type: AddressTypeEnum.SHIPPING})
+      }
     } catch (err) {
       console.log('err: ', err);
     }
