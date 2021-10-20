@@ -166,7 +166,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     Commodity
                   </Col>
                   <Col>
-                    {data?.product?.category.name.split("_")[0]}
+                    {data?.product?.category.name.split("-")[0]}
                   </Col>
                 </Row>
                 <Row className="mb-4" >
@@ -174,7 +174,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     Group
                   </Col>
                   <Col>
-                  {data?.product?.category.name.split("_")[1]}
+                  {data?.product?.category.name.split("-")[1]}
                   </Col>
                 </Row>
               </Col>
