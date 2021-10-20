@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 
@@ -20,6 +20,7 @@ interface Props {
     lastName: string,
   }
   handleCloseEdit: Function;
+  refetchUserAddresses: Function;
 }
 
 type FormValues = {
@@ -47,16 +48,16 @@ type AddressMutationInput = {
   input: AddressInput;
 };
 
-export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: Props) => {
+export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit, refetchUserAddresses }: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<FormValues>();
-  const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS, {
-    refetchQueries: [{ query: GET_USER_ADDRESSES }]
-  });
+  const [isDefaultShippingAddress, setIsDefaultShippingAddress] = useState(false)
+
+  const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS);
 
   const [setDefaultUserAddress] = useDefaultUserAddress()
 
@@ -69,26 +70,22 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
       [val, country] = match;
     }
 
-    const isDefaultShippingAddress = data.isDefaultShippingAddress
-    // remove to make create mutation work correctly for now
-    delete data.isDefaultShippingAddress
     const payload = { ...data, country};
     console.log('payload: ', payload);
     try {
       const newAddress = await createAddress({ variables: { input: payload } });
       if (isDefaultShippingAddress) {
         const id = newAddress?.data?.accountAddressCreate.address.id
-        setDefaultUserAddress({id, type: AddressTypeEnum.SHIPPING})
+        const defaultResponse = await setDefaultUserAddress({id, type: AddressTypeEnum.SHIPPING})
+        console.log(defaultResponse)
+
       }
+      handleCloseEdit()
+      refetchUserAddresses()
     } catch (err) {
       console.log('err: ', err);
     }
   };
-
-  if (data) {
-    // Close the modal on success
-    handleCloseEdit();
-  }
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
@@ -210,7 +207,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
           custom
           type="checkbox"
           label="Save as default address"
-          {...register('isDefaultShippingAddress')}
+          onChange={() => setIsDefaultShippingAddress(!isDefaultShippingAddress)}
         />
       </Form.Group>
 
