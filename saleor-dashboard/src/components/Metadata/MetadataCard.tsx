@@ -159,6 +159,12 @@ const MetadataCard: React.FC<MetadataCardProps> = ({
                                 input: classes.nameInput
                               }
                             }}
+                            disabled={[
+                              "item_master_id",
+                              "market_insight",
+                              "mpn",
+                              "mcode"
+                            ].includes(field.key)}
                             name={`${nameInputPrefix}${nameSeparator}${fieldIndex}`}
                             fullWidth
                             onChange={onChange}
@@ -182,6 +188,12 @@ const MetadataCard: React.FC<MetadataCardProps> = ({
                         <TableCell className={classes.colAction}>
                           <IconButton
                             color="primary"
+                            disabled={[
+                              "item_master_id",
+                              "market_insight",
+                              "mpn",
+                              "mcode"
+                            ].includes(field.key)}
                             data-test="deleteField"
                             data-test-id={fieldIndex}
                             onClick={() =>
