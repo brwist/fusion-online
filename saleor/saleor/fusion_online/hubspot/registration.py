@@ -126,6 +126,7 @@ class HubspotRegistration:
     def add_user(self, user, role):
         data = {
             "company": user.private_metadata['company'],
+            "contact_job_title__rc": user.private_metadata['job_title'],
             "email": user.email,
             "firstname": user.first_name,
             "lastname": user.last_name,
