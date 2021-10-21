@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useCheckout } from '@saleor/sdk';
+import { useCheckout, useAuth } from '@saleor/sdk';
 import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
@@ -36,6 +36,20 @@ const mockShippingMethods = [
     account: '0123456789',
   },
 ];
+
+const CREATE_CHECKOUT = gql`
+  mutation CreateCheckout($checkoutInput: CheckoutCreateInput!) {
+    checkoutCreate(input: $checkoutInput) {
+      errors: checkoutErrors {
+        field
+        message
+      }
+      checkout {
+        id
+      }
+    }
+  }
+`;
 
 type CartProductDetailsQuery = {
   productVariants?: Maybe<{
@@ -76,11 +90,14 @@ export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
 `;
 
 export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, setActiveTab }) => {
+  console.log('items: ', items);
   const [quantityField, setQuantityField]: any = useState();
   const addressQuery = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
+  console.log('selectedAddress: ', selectedAddress);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
   const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
+  const { user } = useAuth();
   // console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
   // console.log('updateShippingAddress: ', updateShippingAddress);
   // console.log('addressQuery: ', addressQuery);
@@ -88,6 +105,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
   console.log('availableShippingMethods: ', availableShippingMethods);
   console.log('checkout: ', checkout);
+
+  const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
   useEffect(() => {
     if (items) {
@@ -121,23 +140,70 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   // const disableContinue = !selectedAddress || !selectedShippingMethod;
   const disableContinue = !selectedAddress;
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (disableContinue) {
       return;
     }
 
-    // Update checkout.
-    setShippingAddress(selectedAddress, checkout.email);
-    setShippingMethod(selectedShippingMethod);
+    try {
+      if (!checkout.id) {
+        // First create checkout
+        const {
+          firstName,
+          lastName,
+          companyName,
+          streetAddress1,
+          streetAddress2,
+          city,
+          postalCode,
+          country,
+          countryArea,
+          phone,
+        } = selectedAddress;
+        const checkoutInput = {
+          email: user?.email,
+          lines: items.map((item) => {
+            return { quantity: item.quantity, variantId: item.variant.id };
+          }),
+          shippingAddress: {
+            firstName,
+            lastName,
+            companyName,
+            streetAddress1,
+            streetAddress2,
+            city,
+            postalCode,
+            country: country.code,
+            countryArea,
+            phone,
+          },
+        };
 
-    // navigate to next tab
-    setActiveTab('payment');
+        const checkoutResponse = await createCheckout({ variables: { checkoutInput } });
+        console.log('checkoutResponse: ', checkoutResponse);
+      }
+
+      console.log('checkout', checkout);
+
+      // Update checkout.
+      setShippingAddress(selectedAddress, checkout.email);
+      const setShippingMethodResponse = await setShippingMethod(selectedShippingMethod?.id);
+      console.log('setShippingMethodResponse: ', setShippingMethodResponse);
+
+      // navigate to next tab
+      setActiveTab('payment');
+    } catch (error) {
+      console.log('error: ', error);
+    }
   };
 
   // Set default shipping method
   useEffect(() => {
     if (availableShippingMethods && availableShippingMethods[0]) {
+      console.log('setting shipping method');
       setSelectedShippingMethod(availableShippingMethods[0]);
+    } else {
+      console.log('no shipping methods');
     }
   }, [availableShippingMethods]);
 
@@ -245,7 +311,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
           </thead>
           <tbody>
             {addressQuery?.data?.me.addresses.map((address, index: number) => {
-              console.log('address: ', address);
               const {
                 id,
                 firstName,

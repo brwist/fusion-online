@@ -430,6 +430,45 @@ class AddStripePaymentMethod(BaseMutation):
         return AddStripePaymentMethod(user=user)
 
 
+class RemoveStripePaymentMethod(BaseMutation):
+    user = graphene.Field(User, description="An updated user instance.")
+
+    """
+    For the credit card forms, we want to store
+    Stripe payment method ids as private metadata so that we can 
+    surface CC info.
+    """
+    class Meta:
+        description = "Updates privatemetadata of the logged-in user."
+        model = models.User
+        public = False
+        error_type_class = AccountError
+        error_type_field = "account_errors"
+
+    class Arguments:
+        payment_method_id = graphene.String(
+            description="The stripe payment method id to remove from this user's private metadata.",
+            required=True,
+        )
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def get_instance(cls, info, **data):
+        return info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+        if 'stripe_payment_method_ids' in user.private_metadata:
+            user.private_metadata['stripe_payment_method_ids'].remove(
+                data['payment_method_id'])
+            user.save()
+        return RemoveStripePaymentMethod(user=user)
+
+
 class RequestEmailChange(BaseMutation):
     user = graphene.Field(User, description="A user instance.")
 
