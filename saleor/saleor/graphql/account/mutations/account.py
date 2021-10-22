@@ -35,6 +35,7 @@ class AccountRegisterInput(graphene.InputObjectType):
     company_name = graphene.String(
         description="User company or organization", required=True)
     job_title = JobTitleEnum(description="User job title", required=True)
+    domain = graphene.String(description="User domain")
     region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
@@ -108,7 +109,8 @@ class AccountRegister(ModelMutation):
         user.private_metadata = {
             "company": cleaned_input["company_name"],
             "region": cleaned_input["region"],
-            "job_title": cleaned_input["job_title"]
+            "job_title": cleaned_input["job_title"],
+            "domain": cleaned_input["domain"]
         }
         hubspot_reg = HubspotRegistration()
         if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
