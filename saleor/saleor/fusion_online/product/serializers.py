@@ -92,7 +92,8 @@ class ProductSerializer(serializers.Serializer):
         product_queryset.update(metadata={
             "mpn": validated_data["mpn"],
             "mcode": validated_data["mcode"],
-            "item_master_id": validated_data["item_master_id"]
+            "item_master_id": validated_data["item_master_id"],
+            "market_insight": ""
         })
         print("--METADATA STORED--")
 

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useHistory } from 'react-router-dom';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm, SubmitHandler, useFormState} from 'react-hook-form';
 import { useMutation } from '@apollo/client';
@@ -26,12 +27,15 @@ type FormValues = {
   email: string;
   password: string;
   companyName: string;
+  jobTitle: string;
+  domain: string;
   region: string;
 };
 
 export const Register: React.FC<RegisterProps> = ({
   handleRegistration
 }) => {
+  const history = useHistory()
   const { register, reset, handleSubmit, formState: {errors, isSubmitted, isSubmitSuccessful, isValidating, isValid, touchedFields}} = useForm<FormValues>();
 
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
@@ -47,7 +51,7 @@ export const Register: React.FC<RegisterProps> = ({
       } else {
         reset({region: ""})
         setMutationErrors([])
-        // alert('Email confirmation link sent. Please check your inbox.')
+        history.push("/registration-confirmation")
       }
     }
   }
@@ -89,6 +93,23 @@ export const Register: React.FC<RegisterProps> = ({
               {errors['password'] ? <div className="invalid-feedback">This field is required</div> : null}
             </Form.Group>
             {textInput('companyName', 'Company Name', true)}
+            <Form.Group controlId="jobTitle">
+              <Form.Control as="select" className={errors["jobTitle"] ? "is-invalid" : ""} required custom {...register('jobTitle', {required: true})}>
+                <option disabled selected hidden></option>
+                <option value="0">Buyer</option>
+                <option value="1">Commodity/Product Manager</option>
+                <option value="2">Materials Planning</option>
+                <option value="3">IT Manager</option>
+                <option value="4">Engineer</option>
+                <option value="5">Accounts Payable</option>
+                <option value="6">Service Technician</option>
+                <option value="7">Sales</option>
+                <option value="8">Other</option>
+              </Form.Control>
+              <Form.Label>Select Job Title</Form.Label>
+              {errors['jobTitle'] ? <div className="invalid-feedback">This field is required</div> : null}
+            </Form.Group>
+            {textInput('domain', 'Domain', false)}
             <Form.Group controlId="region">
               <Form.Control as="select" className={errors["region"] ? "is-invalid" : ""} required custom {...register('region', {required: true})}>
                 <option disabled selected hidden></option>

@@ -11,7 +11,7 @@ from ....checkout import AddressType
 from ....core.jwt import create_token, jwt_decode
 from ....core.utils.url import validate_storefront_url
 from ....settings import JWT_TTL_REQUEST_EMAIL_CHANGE
-from ...account.enums import AddressTypeEnum
+from ...account.enums import AddressTypeEnum, JobTitleEnum
 from ...account.types import Address, AddressInput, User
 from ...core.mutations import BaseMutation, ModelDeleteMutation, ModelMutation
 from ...core.types.common import AccountError
@@ -29,12 +29,13 @@ import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
 from saleor.fusion_online.hubspot.email import HubspotEmails
 
-
 class AccountRegisterInput(graphene.InputObjectType):
     first_name = graphene.String(description="User first name", required=True)
     last_name = graphene.String(description="User last name", required=True)
     company_name = graphene.String(
         description="User company or organization", required=True)
+    job_title = JobTitleEnum(description="User job title", required=True)
+    domain = graphene.String(description="User domain")
     region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
@@ -107,7 +108,9 @@ class AccountRegister(ModelMutation):
         user.set_password(password)
         user.private_metadata = {
             "company": cleaned_input["company_name"],
-            "region": cleaned_input["region"]
+            "region": cleaned_input["region"],
+            "job_title": cleaned_input["job_title"],
+            "domain": cleaned_input["domain"]
         }
         hubspot_reg = HubspotRegistration()
         if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
