@@ -44,7 +44,7 @@ export const Register: React.FC<RegisterProps> = ({
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
     console.log('payload:', payload)
-    const {data} = await accountRegister({variables: {input: {...payload, redirectUrl: 'http://localhost:3000/'}}})
+    const {data} = await accountRegister({variables: {input: {...payload }}})
     if (data?.accountRegister) {
       if (data.accountRegister.accountErrors.length > 0) {
         setMutationErrors(data.accountRegister.accountErrors)
