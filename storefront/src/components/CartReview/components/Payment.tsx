@@ -41,12 +41,12 @@ export const Payment = ({ setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const { createPayment, payment } = useCheckout();
-  console.log('payment: ', payment);
 
   useEffect(() => {
     if (paymentMethodsQuery.data) {
       const cards = paymentMethodsQuery.data.me.stripeCards;
       setSelectedPaymentMethod(cards[0]);
+      console.log('setSelectedPaymentMethod: ', cards[0]);
     }
   }, [paymentMethodsQuery, setSelectedPaymentMethod]);
 

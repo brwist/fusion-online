@@ -186,7 +186,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       console.log('checkout', checkout);
 
       // Update checkout.
-      setShippingAddress(selectedAddress, checkout.email);
+      const setShippingAddressResponse = await setShippingAddress(selectedAddress, checkout.email);
       const setShippingMethodResponse = await setShippingMethod(selectedShippingMethod?.id);
       console.log('setShippingMethodResponse: ', setShippingMethodResponse);
 
@@ -223,8 +223,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       </>
     );
   } else if (items && data) {
-    console.log('items: ', items);
-    console.log('data: ', data);
     return (
       <Card.Body>
         <Row className="mx-n1 mb-4 small">

@@ -19,6 +19,7 @@ from ..core.scalars import PositiveDecimal
 from ..core.types import common as common_types
 from ..core.utils import from_global_id_strict_type
 from .types import Payment
+from saleor.plugins.manager import get_plugins_manager
 
 
 class PaymentInput(graphene.InputObjectType):
@@ -170,6 +171,9 @@ class CheckoutPaymentCreate(BaseMutation, I18nMixin):
 
         cancel_active_payments(checkout)
 
+        # First check if stripe customer id exists
+        customer_id = info.context.user.private_metadata['stripe_customer_id']
+
         payment = create_payment(
             gateway=gateway,
             payment_token=data.get("token", ""),
@@ -177,6 +181,8 @@ class CheckoutPaymentCreate(BaseMutation, I18nMixin):
             currency=settings.DEFAULT_CURRENCY,
             email=checkout.email,
             extra_data=extra_data,
+            # this is used for Stripe payment processing
+            customer_id=customer_id if customer_id else None,
             # FIXME this is not a customer IP address. It is a client storefront ip
             customer_ip_address=get_client_ip(info.context),
             checkout=checkout,
