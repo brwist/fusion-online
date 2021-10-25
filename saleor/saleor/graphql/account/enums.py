@@ -15,15 +15,15 @@ CountryCodeEnum = graphene.Enum(
 )
 
 JobTitleEnum = graphene.Enum("JobTitle", [
-        ('BUYER', 0),
-        ('COMMODITY_PRODUCT_MANAGER', 1),
-        ('MATERIALS_PLANNING', 2),
-        ('IT_MANAGER', 3),
-        ('ENGINEER', 4),
-        ('ACCOUNTS_PAYABLE', 5),
-        ('SERVICE_TECHNICIAN', 6),
-        ('SALES', 7),
-        ('OTHER', 8)
+        ('BUYER', 'Buyer'),
+        ('COMMODITY_PRODUCT_MANAGER', 'Community/Product Manager'),
+        ('MATERIALS_PLANNING', 'Materials Planning'),
+        ('IT_MANAGER', 'IT Manager'),
+        ('ENGINEER', 'Engineer'),
+        ('ACCOUNTS_PAYABLE', 'Accounts Payable'),
+        ('SERVICE_TECHNICIAN', 'Service Technician'),
+        ('SALES', 'Sales'),
+        ('OTHER', 'Other')
     ]
 )
 

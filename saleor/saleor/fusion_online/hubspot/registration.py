@@ -126,7 +126,8 @@ class HubspotRegistration:
     def add_user(self, user, role):
         data = {
             "company": user.private_metadata['company'],
-            "contact_job_title__rc": user.private_metadata['job_title'],
+            "contact_job_title__rc_": user.private_metadata['job_title'],
+            "contact_company_domain__rc_": user.private_metadata['domain'] or self.get_email_domain(user.email),
             "email": user.email,
             "firstname": user.first_name,
             "lastname": user.last_name,
@@ -134,7 +135,6 @@ class HubspotRegistration:
             "role_rc": role,
             "hubspot_owner_id": settings.HUBSPOT_API_CONTACT_OWNER_ID,
             "phone": "603-555-5555",
-            "jobtitle": "Software Developer",
             "hs_language": "en-us"
         }
         payload = {
@@ -145,6 +145,7 @@ class HubspotRegistration:
                 'Content-Type': 'application/json'
             }))
         if r.status_code != 201:
+            print(r.text)
             return None
         else:
             hubspot_user = r.json()

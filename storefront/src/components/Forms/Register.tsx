@@ -96,15 +96,15 @@ export const Register: React.FC<RegisterProps> = ({
             <Form.Group controlId="jobTitle">
               <Form.Control as="select" className={errors["jobTitle"] ? "is-invalid" : ""} required custom {...register('jobTitle', {required: true})}>
                 <option disabled selected hidden></option>
-                <option value="BUYER">Buyer</option>
-                <option value="COMMODITY_PRODUCT_MANAGER">Commodity/Product Manager</option>
-                <option value="MATERIALS_PLANNING">Materials Planning</option>
-                <option value="IT_MANAGER">IT Manager</option>
-                <option value="ENGINEER">Engineer</option>
-                <option value="ACCOUNTS_PAYABLE">Accounts Payable</option>
-                <option value="SERVICE_TECHNICIAN">Service Technician</option>
-                <option value="SALES">Sales</option>
-                <option value="OTHER">Other</option>
+                <option value="0">Buyer</option>
+                <option value="1">Commodity/Product Manager</option>
+                <option value="2">Materials Planning</option>
+                <option value="3">IT Manager</option>
+                <option value="4">Engineer</option>
+                <option value="5">Accounts Payable</option>
+                <option value="6">Service Technician</option>
+                <option value="7">Sales</option>
+                <option value="8">Other</option>
               </Form.Control>
               <Form.Label>Select Job Title</Form.Label>
               {errors['jobTitle'] ? <div className="invalid-feedback">This field is required</div> : null}
