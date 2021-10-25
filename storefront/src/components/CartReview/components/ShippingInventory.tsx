@@ -90,21 +90,14 @@ export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
 `;
 
 export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, setActiveTab }) => {
-  console.log('items: ', items);
   const [quantityField, setQuantityField]: any = useState();
   const addressQuery = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
-  console.log('selectedAddress: ', selectedAddress);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
   const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
   const { user } = useAuth();
-  // console.log('updateShippingAddressResponse: ', updateShippingAddressResponse);
-  // console.log('updateShippingAddress: ', updateShippingAddress);
-  // console.log('addressQuery: ', addressQuery);
 
   const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  console.log('availableShippingMethods: ', availableShippingMethods);
-  console.log('checkout: ', checkout);
 
   const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
@@ -117,8 +110,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       setQuantityField(fields);
     }
   }, [items]);
-
-  // Set default
 
   const { data } = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {
     variables: {
@@ -137,58 +128,17 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       ?.toFixed(2);
   };
 
-  // const disableContinue = !selectedAddress || !selectedShippingMethod;
-  const disableContinue = !selectedAddress;
+  const disableContinue = !selectedAddress || !selectedShippingMethod;
 
   const handleContinue = async () => {
-    if (disableContinue) {
+    if (disableContinue || !selectedAddress || !selectedShippingMethod) {
       return;
     }
 
     try {
-      if (!checkout.id) {
-        // First create checkout
-        const {
-          firstName,
-          lastName,
-          companyName,
-          streetAddress1,
-          streetAddress2,
-          city,
-          postalCode,
-          country,
-          countryArea,
-          phone,
-        } = selectedAddress;
-        const checkoutInput = {
-          email: user?.email,
-          lines: items.map((item) => {
-            return { quantity: item.quantity, variantId: item.variant.id };
-          }),
-          shippingAddress: {
-            firstName,
-            lastName,
-            companyName,
-            streetAddress1,
-            streetAddress2,
-            city,
-            postalCode,
-            country: country.code,
-            countryArea,
-            phone,
-          },
-        };
-
-        const checkoutResponse = await createCheckout({ variables: { checkoutInput } });
-        console.log('checkoutResponse: ', checkoutResponse);
-      }
-
-      console.log('checkout', checkout);
-
       // Update checkout.
       const setShippingAddressResponse = await setShippingAddress(selectedAddress, checkout.email);
-      const setShippingMethodResponse = await setShippingMethod(selectedShippingMethod?.id);
-      console.log('setShippingMethodResponse: ', setShippingMethodResponse);
+      const setShippingMethodResponse = await setShippingMethod(selectedShippingMethod.id);
 
       // navigate to next tab
       setActiveTab('payment');
@@ -197,13 +147,48 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
     }
   };
 
+  const _createCheckout = async () => {
+    // First create checkout
+    const {
+      firstName,
+      lastName,
+      companyName,
+      streetAddress1,
+      streetAddress2,
+      city,
+      postalCode,
+      country,
+      countryArea,
+      phone,
+    } = selectedAddress;
+    const checkoutInput = {
+      email: user?.email,
+      lines: items.map((item) => {
+        return { quantity: item.quantity, variantId: item.variant.id };
+      }),
+      shippingAddress: {
+        firstName,
+        lastName,
+        companyName,
+        streetAddress1,
+        streetAddress2,
+        city,
+        postalCode,
+        country: country.code,
+        countryArea,
+        phone,
+      },
+    };
+
+    const checkoutResponse = await createCheckout({ variables: { checkoutInput } });
+    console.log('checkoutResponse: ', checkoutResponse);
+  };
+
   // Set default shipping method
   useEffect(() => {
-    if (availableShippingMethods && availableShippingMethods[0]) {
-      console.log('setting shipping method');
+    if (availableShippingMethods && !selectedShippingMethod) {
+      console.log('setting shipping method to', availableShippingMethods[0]);
       setSelectedShippingMethod(availableShippingMethods[0]);
-    } else {
-      console.log('no shipping methods');
     }
   }, [availableShippingMethods]);
 
@@ -214,6 +199,12 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       setSelectedAddress(defaultAddress);
     }
   }, [addressQuery]);
+
+  useEffect(() => {
+    if (checkout && !checkout.id) {
+      _createCheckout();
+    }
+  }, []);
 
   if (!items || items?.length === 0) {
     return (
