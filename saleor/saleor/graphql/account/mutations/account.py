@@ -24,6 +24,7 @@ from .base import (
     BaseAddressUpdate,
     BaseCustomerCreate,
 )
+from saleor.plugins.manager import get_plugins_manager
 
 import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
@@ -426,6 +427,12 @@ class AddStripePaymentMethod(BaseMutation):
         else:
             user.private_metadata['stripe_payment_method_ids'] = [
                 data['payment_method_id']]
+        # If a stripe customer id is not set, we need to create and store one
+        if 'stripe_customer_id' not in user.private_metadata:
+            plugin_manager = get_plugins_manager(
+                plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
+            customer = plugin_manager.plugins[0].create_customer()
+            user.private_metadata['stripe_customer_id'] = customer['id']
         user.save()
         return AddStripePaymentMethod(user=user)
 

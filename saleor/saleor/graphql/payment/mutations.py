@@ -172,7 +172,8 @@ class CheckoutPaymentCreate(BaseMutation, I18nMixin):
         cancel_active_payments(checkout)
 
         # First check if stripe customer id exists
-        customer_id = info.context.user.private_metadata['stripe_customer_id']
+        customer_id = info.context.user.private_metadata[
+            'stripe_customer_id'] if 'stripe_customer_id' in info.context.user.private_metadata else None
 
         payment = create_payment(
             gateway=gateway,
