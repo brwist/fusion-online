@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useMutation } from '@apollo/client'
+import { REQUEST_PASSWORD_RESET } from '../../graphql/account';
+import { AccountError } from '../../generated/graphql';
 
 import './forgotpasswordmodal.scss'
 
@@ -12,15 +15,26 @@ export interface ForgotPasswordModalProps {
 type FormValues = {
   email: string
 }
+const redirectUrl = 'http://localhost:3000/password-reset' 
 
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   show,
   handleClose
 }) => {
   const { register, reset, handleSubmit, formState: {errors}} = useForm<FormValues>();
+  const [requestPasswordReset, {data}] = useMutation<any, {email: string, redirectUrl: string}>(REQUEST_PASSWORD_RESET)
+  const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
-    console.log(payload)
+    await requestPasswordReset({variables: {...payload, redirectUrl: redirectUrl}})
+    console.log(data)
+    if (data.requestPasswordReset.accountErrors.length > 0) {
+      setMutationErrors(data.requestPasswordReset.accountErrors)
+    } else {
+      handleClose()
+      reset()
+      setMutationErrors([])
+    }
   }
   return (
     <Modal 
@@ -37,6 +51,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     </Modal.Header>
     <Modal.Body>
       <div className="form-password-reset-request">
+      {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
+          return <p className="text-danger">{error.field}: {error.message}</p>
+        })}
       <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <Form.Group>
             <Form.Control type='email' className={errors["email"] ? "is-invalid" : ""} {...register('email', {

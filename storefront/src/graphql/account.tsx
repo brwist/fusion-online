@@ -388,3 +388,15 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+
+export const REQUEST_PASSWORD_RESET = gql `
+mutation passwordResetRequest ($email: String!, $redirectUrl: String!) {
+  requestPasswordReset (email: $email, redirectUrl: $redirectUrl) {
+		accountErrors {
+      field
+      message
+    }
+  }
+}
+`
