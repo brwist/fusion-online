@@ -47,9 +47,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       centered
     >
     <Modal.Header closeButton>
-      <Modal.Title className="mb-0">Password Reset Request</Modal.Title>
+      <Modal.Title className="mx-5 mt-5 mb-0">Password Reset Request</Modal.Title>
     </Modal.Header>
-    <Modal.Body>
+    <Modal.Body className="mx-5 mb-5">
       <div className="form-password-reset-request">
       {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
           return <p className="text-danger">{error.field}: {error.message}</p>

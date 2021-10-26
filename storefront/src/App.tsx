@@ -14,6 +14,7 @@ import { Cart } from './components/Cart/Cart';
 import { CheckoutPage } from './components/CheckoutPage/CheckoutPage';
 import { CartReview } from './components/CartReview/CartReview';
 import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
+import { ResetPasswordForm } from './components/Forms/ResetPasswordForm';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
@@ -183,6 +184,9 @@ function App() {
       <Switch>
         <Route exact path="/registration-confirmation">
           <RegistrationConfirmationPage />
+        </Route>
+        <Route exact path="/password-reset">
+          <ResetPasswordForm />
         </Route>
         <Route path="/">
           <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
