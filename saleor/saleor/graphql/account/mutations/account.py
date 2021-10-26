@@ -74,7 +74,7 @@ class AccountRegister(ModelMutation):
     def clean_input(cls, info, instance, data, input_cls=None):
         if not settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
             return super().clean_input(info, instance, data, input_cls=None)
-        elif not data.get("redirect_url"):
+        elif not settings.STOREFRONT_ROOT_URL:
             raise ValidationError(
                 {
                     "redirect_url": ValidationError(
@@ -84,7 +84,7 @@ class AccountRegister(ModelMutation):
             )
 
         try:
-            validate_storefront_url(data["redirect_url"])
+            validate_storefront_url(settings.STOREFRONT_ROOT_URL)
         except ValidationError as error:
             raise ValidationError(
                 {
@@ -122,10 +122,10 @@ class AccountRegister(ModelMutation):
             user.save()
 
             # Send confirmation email
-
+            redirect_url = settings.STOREFRONT_ROOT_URL + '/'
             hubspot_email = HubspotEmails()
             hubspot_email.send_registration_confirmation(
-                user, hubspot_user, cleaned_input["redirect_url"])
+                user, hubspot_user, redirect_url)
 
             # emails.send_account_confirmation_email(
             #     user, cleaned_input["redirect_url"])

@@ -16,19 +16,18 @@ class HubspotEmails:
 
     def __init__(self):
         self.api_key = settings.HUBSPOT_API_KEY
-        self.redirect_url = settings.STOREFRONT_ROOT_URL + '/'
 
         self.single_send_endpoint = 'https://api.hubapi.com/marketing/v3/transactional/single-email/send?hapikey=' + self.api_key
 
-    def prepare_registration_confirmation_url(self, user):
+    def prepare_registration_confirmation_url(self, user, redirect_url):
         token = default_token_generator.make_token(user)
         params = urlencode({"email": user.email, "token": token})
-        confirm_url = prepare_url(params, self.redirect_url)
+        confirm_url = prepare_url(params, redirect_url)
         return confirm_url
 
-    def send_registration_confirmation(self, user, hubspot_user):
+    def send_registration_confirmation(self, user, hubspot_user, redirect_url):
 
-        verifyurl = self.prepare_registration_confirmation_url(user, self.redirect_url)
+        verifyurl = self.prepare_registration_confirmation_url(user, redirect_url)
 
         print(verifyurl)
 
