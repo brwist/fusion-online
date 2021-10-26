@@ -23,7 +23,7 @@ interface EditMode {
 }
 
 export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
-  const { data, loading, error } = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
+  const { data, loading, error, refetch } = useQuery<userAddressesQuery>(GET_USER_ADDRESSES);
   const [editMode, setEditMode] = useState<EditMode | null>();
 
   const formatPhoneNumber = (phoneNumberString: String) => {
@@ -111,12 +111,12 @@ export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
       <Button variant="primary" onClick={() => setEditMode({ edit: false })}>
         Add Shipping Address
       </Button>
-      <Modal show={!!editMode} size="lg">
+      <Modal show={!!editMode} size="lg" onHide={handleCloseEdit}>
         <Modal.Header closeButton>
           <Modal.Title className="mb-0">{editHeader()}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <EditShippingAddress user={data?.me} handleCloseEdit={handleCloseEdit} />
+          <EditShippingAddress refetchUserAddresses={refetch} user={data?.me} handleCloseEdit={handleCloseEdit} />
         </Modal.Body>
       </Modal>
     </div>
