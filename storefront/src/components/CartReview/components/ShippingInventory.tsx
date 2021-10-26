@@ -6,7 +6,8 @@ import { SectionHeader } from '../../SectionHeader/SectionHeader';
 
 import { GET_CART_PRODUCT_DETAILS } from '../../../config';
 import { GET_USER_ADDRESSES } from '../../../graphql/account';
-import { User, Address } from '../../../generated/graphql';
+import { USER_CHECKOUT_DETAILS } from '../../../graphql/user_checkout_details';
+import { User, Address, Checkout } from '../../../generated/graphql';
 
 import { gql, useQuery, useMutation } from '@apollo/client';
 
@@ -46,6 +47,13 @@ const CREATE_CHECKOUT = gql`
       }
       checkout {
         id
+        email
+        shippingAddress {
+          id
+        }
+        billingAddress {
+          id
+        }
       }
     }
   }
@@ -61,6 +69,10 @@ type CartProductDetailsQuery = {
 
 type userAddressesQuery = {
   me: User & { addresses: Array<Address> };
+};
+
+type userCheckoutDetailsQuery = {
+  me: User & { checkout: Checkout };
 };
 
 export interface ShippingInventoryProps {
@@ -95,9 +107,11 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const [selectedAddress, setSelectedAddress] = useState<Address>(null);
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
   const [updateShippingAddress, updateShippingAddressResponse] = useMutation(CHECKOUT_SHIPPING_ADDRESS_UPDATE);
+  const userCheckoutDetailsQuery = useQuery(USER_CHECKOUT_DETAILS);
   const { user } = useAuth();
 
-  const { checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
+  const { loaded, checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
+  console.log('checkout: ', checkout);
 
   const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
@@ -129,6 +143,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   };
 
   const disableContinue = !selectedAddress || !selectedShippingMethod;
+  console.log('selectedShippingMethod: ', selectedShippingMethod);
+  console.log('selectedAddress: ', selectedAddress);
 
   const handleContinue = async () => {
     if (disableContinue || !selectedAddress || !selectedShippingMethod) {
@@ -161,6 +177,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       countryArea,
       phone,
     } = selectedAddress;
+    console.log('items: ', items);
     const checkoutInput = {
       email: user?.email,
       lines: items.map((item) => {
@@ -191,6 +208,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       setSelectedShippingMethod(availableShippingMethods[0]);
     }
   }, [availableShippingMethods]);
+  console.log('availableShippingMethods: ', availableShippingMethods);
 
   // Set default shipping address
   useEffect(() => {
@@ -200,11 +218,25 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
     }
   }, [addressQuery]);
 
+  const _refreshCheckout = async () => {
+    await _createCheckout();
+    // userCheckoutDetailsQuery.refetch();
+    // Temporary(?) workaround for refreshing SaleorState's checkout hooks
+    window.location.reload();
+  };
+
   useEffect(() => {
-    if (checkout && !checkout.id) {
-      _createCheckout();
+    if (selectedAddress && checkout && !checkout.id) {
+      _refreshCheckout();
     }
-  }, []);
+  }, [selectedAddress]);
+
+  useEffect(() => {
+    if (checkout) {
+      if (checkout.shippingAddress && !selectedAddress) {
+      }
+    }
+  }, [checkout]);
 
   if (!items || items?.length === 0) {
     return (
