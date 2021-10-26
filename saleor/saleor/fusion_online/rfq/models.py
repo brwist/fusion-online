@@ -21,9 +21,9 @@ class RFQSubmission(models.Model):
 class RFQLineItem(models.Model):
     mpn = models.CharField(max_length=50)
     mcode = models.CharField(max_length=50)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=True)
     target = models.FloatField()
-    date_code = models.CharField(max_length=50)
+    date_code = models.CharField(max_length=50, null=True)
     comment = models.CharField(max_length=500)
     cipn = models.CharField(max_length=50)
     """
@@ -67,13 +67,14 @@ class RFQResponse(models.Model):
     response = models.CharField(max_length=50, choices=RFQ_RESPONSE_TYPES_CHOICES)
     mpn = models.CharField(max_length=50)
     mcode = models.CharField(max_length=10)
-    quantity = models.IntegerField(validators=[MinValueValidator(limit_value=1)])
+    quantity = models.IntegerField(validators=[MinValueValidator(limit_value=1)], null=True)
     offer_price = models.FloatField()
-    date_code = models.CharField(max_length=50)
-    comment = models.CharField(max_length=300)
-    coo = models.CharField(max_length=60)
+    date_code = models.CharField(max_length=50, null=True)
+    description = models.CharField(max_length=300)
+    coo = models.CharField(max_length=60, null=True)
     lead_time_days = models.CharField(max_length=50)
-    rms_response_id = models.IntegerField()
+    rms_response_id = models.IntegerField(null=True)
+    notes = models.TextField(null=True)
     line_item = models.OneToOneField(RFQLineItem, on_delete=models.CASCADE, related_name="response")
 
     class Meta:

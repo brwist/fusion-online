@@ -7,18 +7,18 @@ from django.utils.text import slugify
 
 
 CATEGORY_ID_CHOICES = [
-    (1000, "CPU_SERVER_INTEL"),
-    (1004, "CPU_SERVER_AMD_EPYC"),
-    (1006, "CPU_DESKTOP_INTEL"),
-    (1007, "CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU"),
-    (1008, "CPU_INTEL"),
-    (1001, "MEM_SERVER_DIMM"),
-    (1002, "MEM_GDDR"),
-    (1003, "MEM_DRAM"),
-    (1009, "MEM_PC_DIMM"),
-    (1010, "GPU_ENTERPRISE"),
-    (1011, "GPU_CONSUMER"),
-    (1005, "STOR_SOLID_STATE_DRIVES")
+    (1000, "CPUs-Server-Intel"),
+    (1004, "CPUs-Server-AMD EPYC"),
+    (1006, "CPUs-Desktop-Intel"),
+    (1007, "CPUs-Desktop-AMD Ryzen Mobile CPU"),
+    (1008, "CPUs-Intel"),
+    (1001, "Memory-Server-DIMM"),
+    (1002, "Memory-GDDR"),
+    (1003, "Memory-DRAM"),
+    (1009, "Memory-PC-DIMM"),
+    (1010, "GPUs-Enterprise"),
+    (1011, "GPUs-Consumer"),
+    (1005, "Storage-Solid State Drives")
 ]
 CATEGORY_ID_DICT = dict(CATEGORY_ID_CHOICES)
 
@@ -92,7 +92,8 @@ class ProductSerializer(serializers.Serializer):
         product_queryset.update(metadata={
             "mpn": validated_data["mpn"],
             "mcode": validated_data["mcode"],
-            "item_master_id": validated_data["item_master_id"]
+            "item_master_id": validated_data["item_master_id"],
+            "market_insight": ""
         })
         print("--METADATA STORED--")
 

@@ -13,7 +13,7 @@ import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
 import { CheckoutPage } from './components/CheckoutPage/CheckoutPage';
 import { CartReview } from './components/CartReview/CartReview';
-
+import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
@@ -180,7 +180,14 @@ function App() {
           <p>{showAlert.message}</p>
         </Container>
       </Alert>
-      <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+      <Switch>
+        <Route exact path="/registration-confirmation">
+          <RegistrationConfirmationPage />
+        </Route>
+        <Route path="/">
+          <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+        </Route>
+      </Switch>
     </>
   );
 }

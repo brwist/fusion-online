@@ -281,9 +281,9 @@ export const GET_CART_PRODUCT_DETAILS = gql`
   ${PriceFragmentDoc}
 `;
 
-export const GET_CATEGORY_LIST = gql`
+export const GET_PARENT_CATEGORY_LIST = gql`
   query CategoryList($first: Int) {
-    categories(first: $first) {
+    categories(first: $first, level: 0) {
       edges {
         node {
           id
