@@ -1,6 +1,68 @@
 @import '../../globalStyles/common';
 
-.container {
-  margin-top: 50px;
-}
+.home {
+  background: url(../../img/logo-mark.png),
+      linear-gradient(
+          to bottom,
+          $white 0%,
+          $white 60%,
+          $white 60%,
+          $light 60%,
+          $light 100%
+      );
+  background-repeat: no-repeat;
+  background-position: left bottom;
+
+  .hero {
+      height: 340px;
+      background-color: $gray-100;
+      background-image: url(../../img/fusion-home-hero.jpg);
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+
+      .container {
+          height: 100%;
+          position: relative;
+      }
+
+      .row {
+          height: 100%;
+      }
+
+      .content {
+          padding: 90px 0;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+
+          h1 {
+              margin: 0;
+          }
+      }
+    }
+
+    .content {
+      margin-bottom: 60px;
+      padding-top: 60px;
+      padding-bottom: 60px;
+      padding-right: 60px;
+      
+
+      h4 {
+          position: relative;
+
+          &::before {
+              content: '';
+              display: block;
+              width: 120px;
+              height: 1px;
+              background: $primary;
+              margin-bottom: 40px;
+          }
+      }
+
+    }
+  }
 
