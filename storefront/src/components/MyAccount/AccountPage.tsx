@@ -28,7 +28,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({
 
   return (
     <Container>
-      <SectionHeader subheading="My Account" heading={`Hello, ${user.email}`} />
+      <SectionHeader subheading="My Account" heading={`Hello, ${user.firstName}`} />
       <Row>
         <Col md={3}>
           <MyAccountNav
