@@ -62,43 +62,43 @@ class HubspotRegistration:
             print(
                 'No existing hubspot emails found for email "%s", creating new account in hubspot.' % user.email)
 
-            existing_companies = self.check_company(user.email)
-            email_domain = self.get_email_domain(user.email)
-            if len(existing_companies['results']) > 0:
-                # pick the first
-                company = existing_companies['results'][0]
-                print(
-                    'Company found: "%s".' % company['properties']['name'])
+            # existing_companies = self.check_company(user.email)
+            # email_domain = self.get_email_domain(user.email)
+            # if len(existing_companies['results']) > 0:
+            #     # pick the first
+            #     company = existing_companies['results'][0]
+            #     print(
+            #         'Company found: "%s".' % company['properties']['name'])
+
+            # Create user with property role_rc = ADMIN
+            hubspot_user = self.add_user(user, 'User')
+            print(
+                'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
+
+                # # Create the association
+                # self.associate_company_with_contact(company['id'], hubspot_user['id'])
+
+            # else:
+            #     print(
+            #         'No company found for email "%s". Creating a new company in Hubspot for domain "%s".' % (user.email, email_domain))
+
+                # company_payload = {
+                #     "name": user.private_metadata['company'],
+                #     "domain": self.get_email_domain(user.email),
+                #     "region_rms": user.private_metadata['region']
+                # }
+
+                # company = self.create_company(company_payload)
 
                 # Create user with property role_rc = ADMIN
-                hubspot_user = self.add_user(user, 'User')
-                print(
-                    'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
+                # hubspot_user = self.add_user(user, 'Admin')
+                # if hubspot_user:
+                #     print(
+                #         'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
-                # Create the association
-                self.associate_company_with_contact(company['id'], hubspot_user['id'])
-
-            else:
-                print(
-                    'No company found for email "%s". Creating a new company in Hubspot for domain "%s".' % (user.email, email_domain))
-
-                company_payload = {
-                    "name": user.private_metadata['company'],
-                    "domain": self.get_email_domain(user.email),
-                    "region_rms": user.private_metadata['region']
-                }
-
-                company = self.create_company(company_payload)
-
-                # Create user with property role_rc = ADMIN
-                hubspot_user = self.add_user(user, 'Admin')
-                if hubspot_user:
-                    print(
-                        'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
-
-                    # Create the association
-                    self.associate_company_with_contact(
-                        company['id'], hubspot_user['id'])
+                #     # Create the association
+                #     self.associate_company_with_contact(
+                #         company['id'], hubspot_user['id'])
 
         return hubspot_user
 
@@ -126,6 +126,8 @@ class HubspotRegistration:
     def add_user(self, user, role):
         data = {
             "company": user.private_metadata['company'],
+            "contact_job_title__rc_": user.private_metadata['job_title'],
+            "contact_company_domain__rc_": user.private_metadata['domain'] or self.get_email_domain(user.email),
             "email": user.email,
             "firstname": user.first_name,
             "lastname": user.last_name,
@@ -133,7 +135,6 @@ class HubspotRegistration:
             "role_rc": role,
             "hubspot_owner_id": settings.HUBSPOT_API_CONTACT_OWNER_ID,
             "phone": "603-555-5555",
-            "jobtitle": "Software Developer",
             "hs_language": "en-us"
         }
         payload = {
@@ -144,6 +145,7 @@ class HubspotRegistration:
                 'Content-Type': 'application/json'
             }))
         if r.status_code != 201:
+            print(r.text)
             return None
         else:
             hubspot_user = r.json()

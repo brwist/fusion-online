@@ -76,6 +76,7 @@ export const CREATE_USER_ADDRESS = gql`
   mutation createAddress($input: AddressInput!) {
     accountAddressCreate(input: $input) {
       address {
+        id
         ...AddressFields
       }
     }

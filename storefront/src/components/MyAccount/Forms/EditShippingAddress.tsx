@@ -1,23 +1,30 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Col, Button, Form } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 
-import { User, AddressInput, CountryCode } from '../../../generated/graphql';
+import { AddressInput, CountryCode} from '../../../generated/graphql';
 import { useMutation } from '@apollo/client';
-
+import { AddressTypeEnum } from "@saleor/sdk/lib/gqlTypes/globalTypes";
 import usStates from '../../../utils/us-states.json';
 import caStates from '../../../utils/ca-states.json';
 import countries from '../../../utils/countries.json';
 
-import { GET_USER_ADDRESSES, CREATE_USER_ADDRESS } from '../../../graphql/account';
+import { GET_USER_ADDRESSES, CREATE_USER_ADDRESS} from '../../../graphql/account';
+import { useDefaultUserAddress, useDeleteUserAddresss } from "@saleor/sdk";
 
 interface Props {
-  user: User | undefined;
+  user: {
+    id: string,
+    email: string,
+    firstName: string,
+    lastName: string,
+  }
   handleCloseEdit: Function;
+  refetchUserAddresses: Function;
 }
 
 type FormValues = {
-  addressName: string;
+  shipToName: string;
   firstName: string;
   lastName: string;
   companyName: string;
@@ -29,6 +36,7 @@ type FormValues = {
   streetAddress1: string;
   streetAddress2: string;
   vatId: string;
+  isDefaultShippingAddress: boolean;
 };
 
 type LocationOption = {
@@ -40,18 +48,20 @@ type AddressMutationInput = {
   input: AddressInput;
 };
 
-export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: Props) => {
+export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit, refetchUserAddresses }: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     control,
   } = useForm<FormValues>();
-  const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS, {
-    refetchQueries: [{ query: GET_USER_ADDRESSES }],
-  });
+  const [isDefaultShippingAddress, setIsDefaultShippingAddress] = useState(false)
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
+  const [createAddress, { data }] = useMutation<any, AddressMutationInput>(CREATE_USER_ADDRESS);
+
+  const [setDefaultUserAddress] = useDefaultUserAddress()
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     let match = Object.entries(CountryCode).find(([key, val]) => val === data.country);
     let country = null,
       val;
@@ -59,30 +69,34 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
     // eslint-disable-next-line
       [val, country] = match;
     }
-    const payload = { ...data, country };
+
+    const payload = { ...data, country};
     console.log('payload: ', payload);
     try {
-      createAddress({ variables: { input: payload } });
+      const newAddress = await createAddress({ variables: { input: payload } });
+      if (isDefaultShippingAddress) {
+        const id = newAddress?.data?.accountAddressCreate.address.id
+        const defaultResponse = await setDefaultUserAddress({id, type: AddressTypeEnum.SHIPPING})
+        console.log(defaultResponse)
+
+      }
+      handleCloseEdit()
+      refetchUserAddresses()
     } catch (err) {
       console.log('err: ', err);
     }
   };
-
-  if (data) {
-    // Close the modal on success
-    handleCloseEdit();
-  }
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
       <Form.Group>
         <Form.Label>{label}</Form.Label>
         {required ? (
-          <Form.Control type="text" {...register(name, { required: true })} />
+          <Form.Control className={errors[name] ? "is-invalid" : ""} type="text" {...register(name, { required: true })} />
         ) : (
           <Form.Control type="text" {...register(name)} />
         )}
-        {errors[name] ? <span>This field is required</span> : null}
+        {errors[name] ? <span className="invalid-feedback">This field is required</span> : null}
       </Form.Group>
     );
   };
@@ -92,7 +106,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
       <Form.Group>
         <Form.Label>{label}</Form.Label>
         <Form.Control type="number" {...register(name)} />
-        {errors[name] ? <span>This field is required</span> : null}
+        {errors[name] ? <span className="invalid-feedback">This field is required</span> : null}
       </Form.Group>
     );
   };
@@ -110,7 +124,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
             );
           })}
         </Form.Control>
-        {errors[name] ? <span>This field is required</span> : null}
+        {errors[name] ? <span className="invalid-feedback">This field is required</span> : null}
       </Form.Group>
     );
   };
@@ -135,6 +149,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
       <Form.Group>
         <Form.Label>Postal Code</Form.Label>
         <Form.Control
+          className={errors['postalCode'] ? "is-invalid" : ""}
           type="text"
           {...register('postalCode', {
             required: {
@@ -155,14 +170,14 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
             },
           })}
         />
-        {errors['postalCode'] ? <span>{errors.postalCode.message}</span> : null}
+        {errors['postalCode'] ? <span className="invalid-feedback">{errors.postalCode.message}</span> : null}
       </Form.Group>
     );
   };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      {textInput('addressName', 'Address Name', true)}
+      {textInput('shipToName', 'Address Name', true)}
       {textInput('firstName', 'First Name', true)}
       {textInput('lastName', 'Last Name', true)}
       {textInput('streetAddress1', 'Street Address 1', true)}
@@ -172,7 +187,7 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
           {textInput('city', 'City', true)}
         </Col>
         <Col>
-          {textInput('countryArea', 'State / Country Code', true)}
+          {textInput('countryArea', 'State / Country Area', true)}
         </Col>
         <Col>
           {zipInput()}
@@ -188,14 +203,16 @@ export const EditShippingAddress: React.FC<Props> = ({ user, handleCloseEdit }: 
       </Form.Row>
       <Form.Group>
         <Form.Check
+          id="save-as-default-address"
           custom
           type="checkbox"
           label="Save as default address"
+          onChange={() => setIsDefaultShippingAddress(!isDefaultShippingAddress)}
         />
       </Form.Group>
 
       <Button variant="primary" type="submit">Save</Button>
-      <Button variant="link">Cancel</Button>
+      <Button variant="link" onClick={() => handleCloseEdit()}>Cancel</Button>
     </Form>
   );
 };
