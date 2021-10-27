@@ -82,7 +82,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const [selectedQuantity, setSelectedQuantity ] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
   const {data, loading} = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
-    variables: {filter: {categories: category.data?.id ? [category.data?.id] : [], isPublished: true, attributes: attributes}, first: 100}
+    variables: {filter: {categories: category.data?.id ? [category.data?.id] : [], isPublished: true, isAvailable: true, attributes: attributes}, first: 100}
   })
   const [products, setProducts] = useState([])
 
