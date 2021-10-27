@@ -177,10 +177,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       </Button>
 
       <div className="mt-3 mb-4">
-        <em>
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at
-          tempor.
-        </em>
+        <em></em>
       </div>
 
       <Modal show={!!editMode} onHide={handleCloseModal}>

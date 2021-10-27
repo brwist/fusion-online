@@ -194,6 +194,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
     };
 
     const checkoutResponse = await createCheckout({ variables: { checkoutInput } });
+    console.log('checkoutResponse: ', checkoutResponse);
   };
 
   // Set default shipping method
@@ -214,8 +215,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   }, [addressQuery]);
 
   const _refreshCheckout = async () => {
-    const newCheckout = await _createCheckout();
-    console.log('newCheckout. manually refresh page: ', newCheckout);
+    await _createCheckout();
     // debugger;
     // userCheckoutDetailsQuery.refetch();
     // Temporary(?) workaround for refreshing SaleorState's checkout hooks

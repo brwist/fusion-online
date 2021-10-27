@@ -4,16 +4,21 @@ Fusion Online Services, Admin Dashboard and Storefront
 
 This project is a shallowly cloned fork of the Saleor Platform 2.11.0 project. It provides:
 
-* The Django-based services
-* The admin dashboard
-* The storefront
+- The Django-based services
+- The admin dashboard
+- The storefront
+
+## Sandbox URLs
+
+- https://storefront-sandbox.fusiononline.io/
+- https://dashboard-sandbox.fusiononline.io/
 
 ## How to run the project the first time
 
 ### Prerequisites:
 
-* docker
-* psql
+- docker
+- psql
 
 Before running these steps, setup your environment file by copying the template (`common.env`) to a file called `common.secret.env`.
 
@@ -27,21 +32,25 @@ in your `common.secret.env` file.
 `common.secret.env` should not be checked in to the git repository.
 
 1. Build the docker images.
+
 ```
 $ docker-compose build
 ```
 
-2. Start the database 
+2. Start the database
+
 ```
 $ docker-compose up db
 ```
 
 3. Populate the database
+
 ```
 $ scripts/seed_db.sh
 ```
 
 4. Start everything
+
 ```
 $ docker-compose stop rm -fv
 $ docker-compose up
@@ -52,21 +61,25 @@ $ docker-compose up
 Services (Django) URL: http://localhost:8000
 
 Dashboard URL: http://localhost:9001
-* Login with admin@example.com / admin
+
+- Login with admin@example.com / admin
 
 Storefront URL: http://localhost:3000 (assuming project is running locally outside of docker)
 
 Mailhog URL: http//localhost:8025
-* Use Mailhog to view emails sent by the platform.
+
+- Use Mailhog to view emails sent by the platform.
 
 ## Starting and stopping everything:
 
 Stop everything:
+
 ```
 docker-compose stop rm -fv
 ```
 
 Start everything:
+
 ```
 docker-compose up
 ```
@@ -90,8 +103,9 @@ npm start
 ```
 
 3. (Optional) Start Storybook:
-- This project uses Storybook as a tool for UI development. 
-- Components can be built in isolation, rendered on the storybook interface and tested. 
+
+- This project uses Storybook as a tool for UI development.
+- Components can be built in isolation, rendered on the storybook interface and tested.
 - See Storybook docs for more info: https://storybook.js.org/docs/react/get-started/introduction
 
 ```
@@ -122,6 +136,7 @@ To populate your local database using the seed SQL script (at `data/saleor-db.sq
 ```
 $ scripts/seed_db.sh
 ```
+
 This script will drop any existing connections to the `saleor` database,
 drop the `saleor` database and then re-create the `saleor` database using
 the seed SQL script.
