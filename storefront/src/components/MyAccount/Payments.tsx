@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Button, Modal } from 'react-bootstrap';
 import { Tag } from '../Tag/Tag';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -14,6 +14,22 @@ interface EditMode {
   edit: Boolean;
   // address?: Address;
 }
+
+interface DeleteMode {
+  id: String | null;
+  deleting: Boolean;
+  errors:
+    | {
+        message: string;
+      }[]
+    | [];
+}
+
+const defaultDeleteMode = {
+  id: null,
+  deleting: false,
+  errors: [],
+};
 
 const GET_USER = gql`
   query GetUser {
@@ -47,11 +63,30 @@ const GET_USER = gql`
   }
 `;
 
+export const REMOVE_STRIPE_TOKEN = gql`
+  mutation removeStripeToken($paymentMethodId: String!) {
+    removeStripePaymentMethod(paymentMethodId: $paymentMethodId) {
+      user {
+        id
+        stripeCards {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
   const [editMode, setEditMode] = useState<EditMode | null>();
+  const [deleteMode, setDeleteMode] = useState<DeleteMode | null>(defaultDeleteMode);
   const userQuery = useQuery(GET_USER);
+  const [removeStripeToken, removeStripeTokenResponse] = useMutation(REMOVE_STRIPE_TOKEN, {
+    refetchQueries: ['GetUser'],
+    onCompleted: () => {
+      handleCloseModal();
+    },
+  });
 
-  const apiKey = process.env.STRIPE_PUBLISHABLE_KEY;
   const stripePromise = loadStripe(
     'pk_test_51JeloZGwGY8wmB3De8nkDq2Eex3bllEFKymSMsRiqwXUtxShtr4JVAKjLOi9WxHblgppNkcKTFhe69AFFHCMtesP00O09X3PHO'
   );
@@ -74,7 +109,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
               EDIT CARD
             </Button>{' '}
             |{' '}
-            <Button variant="link" className="small px-0">
+            <Button variant="link" className="small px-0" onClick={() => setDeleteMode({ ...deleteMode, id: card.id })}>
               REMOVE CARD
             </Button>
           </div>
@@ -104,14 +139,33 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
     return `New Shipping Address`;
   };
 
-  const handleCloseEdit = () => {
+  const handleCloseModal = () => {
     setEditMode(null);
+    setDeleteMode(defaultDeleteMode);
   };
 
   const handleNewCardAdded = () => {
-    handleCloseEdit();
+    handleCloseModal();
     userQuery.refetch();
   };
+
+  const handleDeleteCard = async () => {
+    setDeleteMode({
+      ...deleteMode,
+      deleting: true,
+    });
+    removeStripeToken({ variables: { paymentMethodId: deleteMode.id } });
+  };
+
+  const deleteLabel = deleteMode.deleting ? `Deleting...` : `Delete`;
+
+  // useEffect(() => {
+  //   if (removeStripeTokenResponse.data) {
+  //     console.log('removeStripeTokenResponse.data: ', removeStripeTokenResponse.data);
+  //     handleCloseModal();
+  //     userQuery.refetch();
+  //   }
+  // }, [removeStripeTokenResponse, userQuery]);
 
   return (
     <div className="payments">
@@ -183,7 +237,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
         </p>
       </div>
 
-      <Modal show={!!editMode} onHide={handleCloseEdit}>
+      <Modal show={!!editMode} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title className="mb-0">{editHeader()}</Modal.Title>
         </Modal.Header>
@@ -191,10 +245,23 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
           <Elements stripe={stripePromise}>
             <EditPaymentMethod
               user={userQuery.data || undefined}
-              handleCloseEdit={handleCloseEdit}
+              handleCloseEdit={handleCloseModal}
               onSuccess={handleNewCardAdded}
             />
           </Elements>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={!!deleteMode.id} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title className="mb-0">Delete Card?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this card?
+          <Button variant="danger" onClick={handleDeleteCard}>
+            {deleteLabel}
+          </Button>
+          <Button onClick={handleCloseModal}>Cancel</Button>
         </Modal.Body>
       </Modal>
     </div>

@@ -388,6 +388,9 @@ def complete_checkout(
     :raises ValidationError
     """
     payment = checkout.get_last_active_payment()
+    # Update payment with customer_id
+    customer_id = user.private_metadata['stripe_customer_id']
+    payment.customer_id = customer_id
     _prepare_checkout(
         checkout=checkout,
         discounts=discounts,

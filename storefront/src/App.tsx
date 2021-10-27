@@ -11,7 +11,6 @@ import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from './components/Footer/Footer';
 import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
-import { CheckoutPage } from './components/CheckoutPage/CheckoutPage';
 import { CartReview } from './components/CartReview/CartReview';
 import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
 import './App.scss';
@@ -155,7 +154,6 @@ function App() {
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
-        {/* <Route exact path="/checkout" component={CheckoutPage} /> */}
       </Switch>
       <Footer />
     </>

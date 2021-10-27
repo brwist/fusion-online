@@ -36,7 +36,8 @@ def create_payment_information(
     Returns information required to process payment and additional
     billing/shipping addresses for optional fraud-prevention mechanisms.
     """
-    unwanted_keys = ['customer_id', 'ship_to_name', 'ship_via', 'vat_id', 'validation_message']
+    unwanted_keys = ['customer_id', 'ship_to_name',
+                     'ship_via', 'vat_id', 'validation_message']
     if payment.checkout:
         billing = payment.checkout.billing_address
         print("billing:", billing.as_data())
@@ -46,7 +47,7 @@ def create_payment_information(
         shipping = payment.order.shipping_address
     else:
         billing, shipping = None, None
-    
+
     # Cleaning the shipping and billing data to just include the properties that saleor expects
     if billing:
         billing_dict = billing.as_data()
@@ -87,6 +88,7 @@ def create_payment(
     total: Decimal,
     currency: str,
     email: str,
+    customer_id: str = "",
     customer_ip_address: str = "",
     payment_token: Optional[str] = "",
     extra_data: Dict = None,
@@ -105,6 +107,7 @@ def create_payment(
 
     data = {
         "is_active": True,
+        "customer_id": customer_id,
         "customer_ip_address": customer_ip_address,
         "extra_data": json.dumps(extra_data),
         "token": payment_token,
