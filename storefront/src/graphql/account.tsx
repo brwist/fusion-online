@@ -401,3 +401,14 @@ mutation passwordResetRequest ($email: String!, $redirectUrl: String!) {
   }
 }
 `
+
+export const SET_PASSWORD = gql `
+mutation setPassword ($email: String!, $token: String!, $password: String!) {
+  setPassword (email: $email, token: $token, password: $password) {
+		accountErrors {
+      field
+      message
+    }
+  }
+}
+`

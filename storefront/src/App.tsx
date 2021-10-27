@@ -81,12 +81,14 @@ function App() {
     const { data, dataError } = await registerAccount(email, password, 'http://localhost:3000/');
     return dataError ? { data: dataError } : { data };
   };
+
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
+  const passwordUpdated = new URLSearchParams(search)?.get('password-updated');
   const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (email && token && !confirming) {
+  if (location.pathname === "/" && email && token && !confirming) {
     setConfirming(true);
     confirmAccount({
       variables: { email, token },
@@ -103,6 +105,13 @@ function App() {
       console.error('confirm errors', confirmAccountData?.data?.confirmAccount?.errors);
     }
   }
+
+  if (location.pathname === "/" && passwordUpdated === "true") {
+    if (!showAlert.show) {
+      setShowAlert({ show: true, message: 'Your password has been updated! Please log in.', variant: 'primary' });
+    }
+  }
+
 
   const handleCloseConfirmation = () => {
     setConfirming(false);

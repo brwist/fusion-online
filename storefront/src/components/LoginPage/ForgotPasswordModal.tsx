@@ -28,7 +28,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
     await requestPasswordReset({variables: {...payload, redirectUrl: redirectUrl}})
     console.log(data)
-    if (data.requestPasswordReset.accountErrors.length > 0) {
+    if (data?.requestPasswordReset.accountErrors.length > 0) {
       setMutationErrors(data.requestPasswordReset.accountErrors)
     } else {
       handleClose()
