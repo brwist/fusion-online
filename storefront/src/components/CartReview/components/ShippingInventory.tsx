@@ -215,11 +215,11 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
 
   const _refreshCheckout = async () => {
     const newCheckout = await _createCheckout();
-    console.log('newCheckout: ', newCheckout);
-    debugger;
+    console.log('newCheckout. manually refresh page: ', newCheckout);
+    // debugger;
     // userCheckoutDetailsQuery.refetch();
     // Temporary(?) workaround for refreshing SaleorState's checkout hooks
-    window.location.reload();
+    // window.location.reload();
   };
 
   useEffect(() => {

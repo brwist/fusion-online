@@ -159,14 +159,6 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
   const deleteLabel = deleteMode.deleting ? `Deleting...` : `Delete`;
 
-  // useEffect(() => {
-  //   if (removeStripeTokenResponse.data) {
-  //     console.log('removeStripeTokenResponse.data: ', removeStripeTokenResponse.data);
-  //     handleCloseModal();
-  //     userQuery.refetch();
-  //   }
-  // }, [removeStripeTokenResponse, userQuery]);
-
   return (
     <div className="payments">
       <header className="my-3 d-flex justify-content-between align-items-center">
@@ -189,52 +181,6 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
           Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at
           tempor.
         </em>
-      </div>
-
-      <header className="my-3 d-flex justify-content-between align-items-center">
-        <h2 className="h3 m-0">Credit</h2>
-      </header>
-
-      <Card>
-        <Card.Body>
-          <Row>
-            <Col>
-              <div className="font-weight-bold small">Limit</div>
-              <div className="font-weight-bold">$0000.00</div>
-            </Col>
-            <Col>
-              <div className="font-weight-bold small">Limit</div>
-              <div className="font-weight-bold">$0000.00</div>
-            </Col>
-            <Col>
-              <div className="font-weight-bold small">Limit</div>
-              <div className="font-weight-bold">$0000.00</div>
-            </Col>
-            <Col>
-              <div className="font-weight-bold small">Limit</div>
-              <div className="font-weight-bold">$0000.00</div>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
-
-      <Button variant="primary">Request Credit Increase</Button>
-
-      <div className="mt-3 mb-4">
-        <em>
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at
-          tempor.
-        </em>
-      </div>
-
-      <div>
-        <div className="font-weight-bold">Payment Terms</div>
-        <p>
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Risus feugiat in ante metus dictum at
-          tempor. Faucibus vitae aliquet nec ullamcorper sit amet risus. Ipsum dolor sit amet consectetur adipiscing
-          elit. Quam id leo in vitae turpis massa sed elementum. Faucibus in ornare quam viverra orci sagittis eu
-          volutpat odio. Sed tempus urna et pharetra pharetra.
-        </p>
       </div>
 
       <Modal show={!!editMode} onHide={handleCloseModal}>
