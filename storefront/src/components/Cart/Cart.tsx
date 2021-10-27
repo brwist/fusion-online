@@ -1,37 +1,47 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Row, Col, Accordion, Card, Button, Table, Form, useAccordionToggle, AccordionContext, Container, Dropdown } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Accordion,
+  Card,
+  Button,
+  Table,
+  Form,
+  useAccordionToggle,
+  AccordionContext,
+  Container,
+  Dropdown,
+} from 'react-bootstrap';
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
 // eslint-disable-next-line
 import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
 import { Maybe, Product, ProductVariant } from '../../generated/graphql';
-import { SectionHeader } from '../SectionHeader/SectionHeader'
+import { SectionHeader } from '../SectionHeader/SectionHeader';
 
 import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
 
 import './cart.scss';
 
-type CartProductDetailsQuery = (
-{ productVariants?: Maybe<(
-    & { edges: Array<(
-      { __typename: 'ProductVariantCountableEdge' }
-      & { node: Maybe<ProductVariant>
-        & {product: Maybe<Product> }
-      })>
-    })>}
-);
+type CartProductDetailsQuery = {
+  productVariants?: Maybe<{
+    edges: Array<
+      { __typename: 'ProductVariantCountableEdge' } & { node: Maybe<ProductVariant> & { product: Maybe<Product> } }
+    >;
+  }>;
+};
 
 export interface CartProps {
-  discount: any,
-  items: any,
-  removeItem: any,
-  shippingPrice: any,
-  subtotalPrice: any,
-  totalPrice: any,
-  updateItem: any,
-  subtractItem: any
+  discount: any;
+  items: any;
+  removeItem: any;
+  shippingPrice: any;
+  subtotalPrice: any;
+  totalPrice: any;
+  updateItem: any;
+  subtractItem: any;
 }
 
 export const Cart: React.FC<CartProps> = ({
@@ -42,60 +52,55 @@ export const Cart: React.FC<CartProps> = ({
   subtotalPrice,
   totalPrice,
   updateItem,
-  subtractItem
+  subtractItem,
 }) => {
   function ContextAwareToggle({ eventKey, callback }: any) {
     const currentEventKey = useContext(AccordionContext);
 
-    const decoratedOnClick = useAccordionToggle(
-      eventKey,
-      () => callback && callback(eventKey),
-    );
+    const decoratedOnClick = useAccordionToggle(eventKey, () => callback && callback(eventKey));
 
     const isCurrentEventKey = currentEventKey === eventKey;
 
     return (
-      <Button
-        variant="link"
-        className="py-0 pl-0 pr-3"
-        onClick={decoratedOnClick}
-      >
+      <Button variant="link" className="py-0 pl-0 pr-3" onClick={decoratedOnClick}>
         <FontAwesomeIcon icon={isCurrentEventKey ? faChevronDown : faChevronUp} size="lg" />
       </Button>
     );
   }
 
-  const [quantityField, setQuantityField]: any = useState()
+  const [quantityField, setQuantityField]: any = useState();
 
   useEffect(() => {
     if (items) {
-      const fields: any = {}
-      items.forEach(({variant, quantity}: any) => {
-        fields[`${variant.id}`] = quantity
-      })
-      setQuantityField(fields)
+      const fields: any = {};
+      items.forEach(({ variant, quantity }: any) => {
+        fields[`${variant.id}`] = quantity;
+      });
+      setQuantityField(fields);
     }
-  }, [items])
+  }, [items]);
 
-  const {data} = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {variables: {
-    first: 100,
-    ids: items?.map(({variant}: any) => variant.id)
-  } })
+  const { data } = useQuery<CartProductDetailsQuery>(GET_CART_PRODUCT_DETAILS, {
+    variables: {
+      first: 100,
+      ids: items?.map(({ variant }: any) => variant.id),
+    },
+  });
 
   const calculateSubtotal = () => {
-    return (data?.productVariants?.edges.reduce((acc, curr) => {
-      const currPrice = curr.node.pricing?.price?.gross?.amount || 0;
-      const currQuantity = items?.find((item: any) => curr.node.id === item.variant.id)
-      ?.quantity || 0
-      return acc + (currPrice * currQuantity)
-    }, 0))?.toFixed(2)
-  }
+    return data?.productVariants?.edges
+      .reduce((acc, curr) => {
+        const currPrice = curr.node.pricing?.price?.gross?.amount || 0;
+        const currQuantity = items?.find((item: any) => curr.node.id === item.variant.id)?.quantity || 0;
+        return acc + currPrice * currQuantity;
+      }, 0)
+      ?.toFixed(2);
+  };
 
   const getAttributeValue = (slugName: string, attributes: any): any => {
-    const matchingAttribute = attributes.filter(
-      ({attribute}: any) => attribute.slug === slugName)
-    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
-  }
+    const matchingAttribute = attributes.filter(({ attribute }: any) => attribute.slug === slugName);
+    return matchingAttribute[0] && matchingAttribute[0].values[0]?.name;
+  };
 
   if (!items || items?.length === 0) {
     return (
@@ -113,9 +118,10 @@ export const Cart: React.FC<CartProps> = ({
             <Button variant="link">
               <FontAwesomeIcon icon={farFaBookmark} size="lg" className="mr-1" /> Move All to Parts List
             </Button>
-            <Button variant="link" onClick={() => items.forEach(
-                (item: {variant: {id: string}}) => removeItem(item.variant.id)
-              )}>
+            <Button
+              variant="link"
+              onClick={() => items.forEach((item: { variant: { id: string } }) => removeItem(item.variant.id))}
+            >
               <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove All
             </Button>
           </header>
@@ -130,7 +136,7 @@ export const Cart: React.FC<CartProps> = ({
                         <ContextAwareToggle eventKey="0" />
 
                         <div className="w-100">
-                          <h5 className="text-capitalize">Shipment 1</h5>
+                          <h5 className="text-capitalize">Shipment</h5>
 
                           <Row className="mx-n1 small">
                             <Col sm={6} className="px-1">
@@ -145,7 +151,7 @@ export const Cart: React.FC<CartProps> = ({
                               UNITS:
                             </Col>
                             <Col sm={6} className="font-weight-bold px-1">
-                              {items?.reduce((acc: number, curr: {quantity: number}) => acc + curr.quantity, 0)}
+                              {items?.reduce((acc: number, curr: { quantity: number }) => acc + curr.quantity, 0)}
                             </Col>
                           </Row>
                           <Row className="mx-n1 small">
@@ -156,50 +162,13 @@ export const Cart: React.FC<CartProps> = ({
                               ${calculateSubtotal()}
                             </Col>
                           </Row>
-
                         </div>
                       </div>
-
-                      <Button variant="link" size="sm" className="pt-2" style={{textDecoration: "underline"}}>SCHEDULE DELIVERY DATE</Button>
-
-                      <Form.Group as={Row} controlId="deliver-to" className="small m-0" style={{'width': '45%'}}>
-                        <Form.Label column sm={3} className="col-form-label-sm font-weight-bold px-1">
-                          Deliver to
-                        </Form.Label>
-                        <Col sm={9} className="px-0">
-                          <Form.Control as="select" size="sm" custom>
-                            <option>123 Main St, Haverhill, MA 01835, USA</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                          </Form.Control>
-                        </Col>
-                      </Form.Group>
-                      <Dropdown>
-                        <Dropdown.Toggle className="dropdown-custom" as="a">
-                          <Button variant="link" className="p-0">
-                            <FontAwesomeIcon icon={faEllipsisH} size="lg" className="my-2" />
-                          </Button>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                          <Dropdown.Item as="div">
-                            <Button variant="link" className="p-0">Clone Shipment</Button>
-                          </Dropdown.Item>
-                          <Dropdown.Item as="div">
-                            <Button variant="link" className="p-0">Remove Shipment</Button>
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
                     </div>
                   </Card.Header>
 
                   <Accordion.Collapse eventKey="0">
-                    <Table
-                      borderless
-                      striped
-                      responsive
-                    >
+                    <Table borderless striped responsive>
                       <thead className="border-bottom">
                         <tr>
                           <th className="text-center">Save</th>
@@ -211,92 +180,98 @@ export const Cart: React.FC<CartProps> = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {data?.productVariants?.edges?.map(({node: {id, name, sku, quantityAvailable, product, price, pricing}}) => {
-                          const quantitySelected = items?.find((item: any) => item.variant.id === id).quantity || 1;
-                          return (
-                            <tr key={id}>
-                              <td className="text-center">
-                                <FontAwesomeIcon icon={farFaBookmark} />
-                              </td>
-                              <td>
-                                <div className="small">
-                                  <strong className="text-uppercase">{getAttributeValue("manufacturer", product?.attributes)}</strong> {sku}
-                                </div>
-                                <a href={`/products/${product.slug}`}>{product.name}</a>
-                                <div className="small mt-1">
-                                  Spec Code: {getAttributeValue("spec-code", product?.attributes)} | Ordering Code: {getAttributeValue("ordering-code", product?.attributes)}
-                                </div>
-                              </td>
-                              <td className="text-center font-weight-bold">{quantityAvailable}</td>
-                              <td className="text-center">
-                                <Form.Row className="align-items-center">
-                                  <Col sm={6}>
-                                    <Form.Group controlId="qty-1" className="m-0">
-                                      <Form.Label className="sr-only">Qty</Form.Label>
-                                      <Form.Control
-                                        style={{'width': '70px'}}
-                                        size="sm"
-                                        type="number"
-                                        min={1}
-                                        max={quantityAvailable}
-                                        name={id}
-                                        onChange={(e) => {
-                                          if (parseInt(e.target.value) > 0) {
-                                            updateItem(id, parseInt(e.target.value))
-                                          } else {
-                                            setQuantityField({
-                                              ...quantityField,
-                                              [e.target.name]: e.target.value
-                                            })
-                                          }
-                                          }}
-                                        value={quantityField? quantityField[id]: 1} />
-                                    </Form.Group>
-                                  </Col>
-                                  <Col md={12} lg={6} className="p-0">
-                                    <Row xs={1}>
-                                    <Button variant="link" className="small p-0">Split</Button>
-                                    <Button
-                                      variant="link" className="small p-0"
-                                      onClick={() => removeItem(id) }
-                                    >
-                                      Remove
-                                    </Button>
-                                    </Row>
-                                  </Col>
-                                </Form.Row>
-                              </td>
-
-                              {pricing?.onSale ?
-                                <td className="text-right">
+                        {data?.productVariants?.edges?.map(
+                          ({ node: { id, name, sku, quantityAvailable, product, price, pricing } }) => {
+                            const quantitySelected = items?.find((item: any) => item.variant.id === id).quantity || 1;
+                            return (
+                              <tr key={id}>
+                                <td className="text-center">
+                                  <FontAwesomeIcon icon={farFaBookmark} />
+                                </td>
+                                <td>
                                   <div className="small">
-                                    <s>${(pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}</s>
+                                    <strong className="text-uppercase">
+                                      {getAttributeValue('manufacturer', product?.attributes)}
+                                    </strong>{' '}
+                                    {sku}
                                   </div>
-                                  <div className="font-weight-bold text-primary">${(pricing?.price?.gross.amount || 0).toFixed(2)}</div>
-                                </td> :
-                                <td className="text-right">${(pricing?.price?.gross.amount || 0).toFixed(2)}</td>
-                              }
-                              <td className="text-right font-weight-bold">${(quantitySelected * (pricing?.price?.gross.amount || 0)).toFixed(2)}</td>
-                            </tr>
-                          )
-                        })}
+                                  <a href={`/products/${product.slug}`}>{product.name}</a>
+                                  <div className="small mt-1">
+                                    Spec Code: {getAttributeValue('spec-code', product?.attributes)} | Ordering Code:{' '}
+                                    {getAttributeValue('ordering-code', product?.attributes)}
+                                  </div>
+                                </td>
+                                <td className="text-center font-weight-bold">{quantityAvailable}</td>
+                                <td className="text-center">
+                                  <Form.Row className="align-items-center">
+                                    <Col sm={6}>
+                                      <Form.Group controlId="qty-1" className="m-0">
+                                        <Form.Label className="sr-only">Qty</Form.Label>
+                                        <Form.Control
+                                          style={{ width: '70px' }}
+                                          size="sm"
+                                          type="number"
+                                          min={1}
+                                          max={quantityAvailable}
+                                          name={id}
+                                          onChange={(e) => {
+                                            if (parseInt(e.target.value) > 0) {
+                                              updateItem(id, parseInt(e.target.value));
+                                            } else {
+                                              setQuantityField({
+                                                ...quantityField,
+                                                [e.target.name]: e.target.value,
+                                              });
+                                            }
+                                          }}
+                                          value={quantityField ? quantityField[id] : 1}
+                                        />
+                                      </Form.Group>
+                                    </Col>
+                                    <Col md={12} lg={6} className="p-0">
+                                      <Row xs={1}>
+                                        <Button variant="link" className="small p-0">
+                                          Split
+                                        </Button>
+                                        <Button variant="link" className="small p-0" onClick={() => removeItem(id)}>
+                                          Remove
+                                        </Button>
+                                      </Row>
+                                    </Col>
+                                  </Form.Row>
+                                </td>
+
+                                {pricing?.onSale ? (
+                                  <td className="text-right">
+                                    <div className="small">
+                                      <s>${(pricing?.priceUndiscounted?.gross.amount || 0)?.toFixed(2)}</s>
+                                    </div>
+                                    <div className="font-weight-bold text-primary">
+                                      ${(pricing?.price?.gross.amount || 0).toFixed(2)}
+                                    </div>
+                                  </td>
+                                ) : (
+                                  <td className="text-right">${(pricing?.price?.gross.amount || 0).toFixed(2)}</td>
+                                )}
+                                <td className="text-right font-weight-bold">
+                                  ${(quantitySelected * (pricing?.price?.gross.amount || 0)).toFixed(2)}
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
                       </tbody>
                       <tfoot>
                         <tr className="border-top">
                           <td colSpan={4}></td>
-                          <td className="text-right">
-                            Subtotal
-                          </td>
-                          <td className="font-weight-bold text-right">
-                            ${calculateSubtotal()}
-                          </td>
+                          <td className="text-right">Subtotal</td>
+                          <td className="font-weight-bold text-right">${calculateSubtotal()}</td>
                         </tr>
                       </tfoot>
                     </Table>
                   </Accordion.Collapse>
                 </Card>
-
-                </Accordion>
+              </Accordion>
             </Col>
 
             <Col lg={3}>
