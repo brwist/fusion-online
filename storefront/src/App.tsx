@@ -13,6 +13,7 @@ import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
 import { CartReview } from './components/CartReview/CartReview';
 import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
+import { OrderConfirmation } from './components/CartReview/OrderConfirmation';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
@@ -139,6 +140,9 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+        <Route exact path="/checkout/confirmation">
+          <OrderConfirmation />
+        </Route>
         <Route exact path="/checkout">
           <CartReview
             discount={discount}
@@ -151,6 +155,7 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
