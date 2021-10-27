@@ -6,7 +6,7 @@ import { SectionHeader } from '../../SectionHeader/SectionHeader';
 export const Notes = ({ setOrderNote }) => {
   const handleOnChange = (e) => {
     const val = e.target.value;
-    console.log('val: ', val);
+    setOrderNote(val);
   };
   return (
     <Card.Body>

@@ -111,7 +111,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const { user } = useAuth();
 
   const { loaded, checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  console.log('checkout: ', checkout);
 
   const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
@@ -143,8 +142,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   };
 
   const disableContinue = !selectedAddress || !selectedShippingMethod;
-  console.log('selectedShippingMethod: ', selectedShippingMethod);
-  console.log('selectedAddress: ', selectedAddress);
 
   const handleContinue = async () => {
     if (disableContinue || !selectedAddress || !selectedShippingMethod) {
@@ -177,7 +174,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       countryArea,
       phone,
     } = selectedAddress;
-    console.log('items: ', items);
     const checkoutInput = {
       email: user?.email,
       lines: items.map((item) => {
@@ -198,7 +194,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
     };
 
     const checkoutResponse = await createCheckout({ variables: { checkoutInput } });
-    console.log('checkoutResponse: ', checkoutResponse);
   };
 
   // Set default shipping method
@@ -219,7 +214,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   }, [addressQuery]);
 
   const _refreshCheckout = async () => {
-    await _createCheckout();
+    const newCheckout = await _createCheckout();
+    console.log('newCheckout: ', newCheckout);
+    debugger;
     // userCheckoutDetailsQuery.refetch();
     // Temporary(?) workaround for refreshing SaleorState's checkout hooks
     window.location.reload();
@@ -230,13 +227,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       _refreshCheckout();
     }
   }, [selectedAddress]);
-
-  useEffect(() => {
-    if (checkout) {
-      if (checkout.shippingAddress && !selectedAddress) {
-      }
-    }
-  }, [checkout]);
 
   if (!items || items?.length === 0) {
     return (
@@ -250,7 +240,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
       <Card.Body>
         <Row className="mx-n1 mb-4 small">
           <Col lg={2} className="px-1">
-            <h6 className="m-0">Shipment 1</h6>
+            <h6 className="m-0">Shipment</h6>
           </Col>
           <Col lg={2} className="px-1">
             <span>PRODUCTS:</span>
@@ -265,10 +255,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
           <Col lg={2} className="px-1">
             <span>SUBTOTAL:</span>
             <span className="font-weight-bold px-1">${calculateSubtotal()}</span>
-          </Col>
-          <Col lg={4} className="px-1">
-            <div>DELIVERY TO:</div>
-            <span className="font-weight-bold">123 Main St, Haverhill, MA 01835, USA</span>
           </Col>
         </Row>
         <h5>Shipment Inventory</h5>
@@ -377,9 +363,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
             })}
           </tbody>
         </Table>
-        <div className="mb-4">
-          Deliver By <Button variant="link">Set a delivery date</Button>
-        </div>
         <h5>Domestic Shipping Method</h5>
         <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">

@@ -46,7 +46,6 @@ export const Payment = ({ setActiveTab }) => {
     if (paymentMethodsQuery.data) {
       const cards = paymentMethodsQuery.data.me.stripeCards;
       setSelectedPaymentMethod(cards[0]);
-      console.log('setSelectedPaymentMethod: ', cards[0]);
     }
   }, [paymentMethodsQuery, setSelectedPaymentMethod]);
 
@@ -95,8 +94,6 @@ export const Payment = ({ setActiveTab }) => {
     if (!selectedPaymentMethod) {
       return;
     }
-
-    console.log('selectedPaymentMethod: ', selectedPaymentMethod);
 
     const cardData = {
       brand: selectedPaymentMethod?.brand,
