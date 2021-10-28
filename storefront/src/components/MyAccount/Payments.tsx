@@ -10,9 +10,9 @@ import { EditPaymentMethod } from './Forms/EditPaymentMethod';
 
 export interface PaymentsProps {}
 
-interface EditMode {
+export interface EditMode {
   edit: Boolean;
-  // address?: Address;
+  paymentMethod: any;
 }
 
 interface DeleteMode {
@@ -59,6 +59,7 @@ const GET_USER = gql`
           expYear
         }
       }
+      defaultStripeCard
     }
   }
 `;
@@ -86,12 +87,23 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       handleCloseModal();
     },
   });
+  const [defaultStripeCard, setDefaultStripeCard] = useState(null);
+
+  useEffect(() => {
+    if (userQuery.data) {
+      if (userQuery.data.me.defaultStripeCard) {
+        setDefaultStripeCard(userQuery.data.me.defaultStripeCard);
+      }
+    }
+  }, [userQuery]);
 
   const stripePromise = loadStripe(
     'pk_test_51JeloZGwGY8wmB3De8nkDq2Eex3bllEFKymSMsRiqwXUtxShtr4JVAKjLOi9WxHblgppNkcKTFhe69AFFHCMtesP00O09X3PHO'
   );
 
   const renderStripeCardRow = (card, index) => {
+    const isDefault = defaultStripeCard && defaultStripeCard === card.id;
+
     return (
       <Row key={index}>
         <Col>
@@ -105,7 +117,11 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
             </small>
           </div>
           <div>
-            <Button variant="link" className="small px-0">
+            <Button
+              variant="link"
+              className="small px-0"
+              onClick={() => setEditMode({ edit: true, paymentMethod: card })}
+            >
               EDIT CARD
             </Button>{' '}
             |{' '}
@@ -122,9 +138,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
           {`${card.billingDetails.address.city}, ${card.billingDetails.address.state} ${card.billingDetails.address.postalCode} ${card.billingDetails.address.country}`}
           ,
         </Col>
-        <Col className="text-right">
-          <Tag size="sm" label="Default" />
-        </Col>
+        <Col className="text-right">{isDefault && <Tag size="sm" label="Default" />}</Col>
       </Row>
     );
   };
@@ -134,9 +148,9 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       return;
     }
     if (editMode.edit) {
-      return `Edit Shipping Address`;
+      return `Edit Payment Method`;
     }
-    return `New Shipping Address`;
+    return `New Payment Method`;
   };
 
   const handleCloseModal = () => {
@@ -172,7 +186,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
         )}
       </Card>
 
-      <Button variant="primary" onClick={() => setEditMode({ edit: false })}>
+      <Button variant="primary" onClick={() => setEditMode({ edit: false, paymentMethod: null })}>
         Add Credit Card
       </Button>
 
@@ -190,6 +204,8 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
               user={userQuery.data || undefined}
               handleCloseEdit={handleCloseModal}
               onSuccess={handleNewCardAdded}
+              editMode={editMode}
+              defaultStripeCard={defaultStripeCard}
             />
           </Elements>
         </Modal.Body>

@@ -219,7 +219,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
     // debugger;
     // userCheckoutDetailsQuery.refetch();
     // Temporary(?) workaround for refreshing SaleorState's checkout hooks
-    // window.location.reload();
+    window.location.reload();
   };
 
   useEffect(() => {

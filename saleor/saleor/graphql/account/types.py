@@ -245,6 +245,8 @@ class User(CountableDjangoObjectType):
         description="List of stripe stored payment methods.",
     )
 
+    default_stripe_card = graphene.String()
+
     class Meta:
         description = "Represents user data."
         interfaces = [relay.Node, ObjectWithMetadata]
@@ -343,6 +345,13 @@ class User(CountableDjangoObjectType):
         if root == info.context.user:
             return resolve_stripe_cards(root)
         raise PermissionDenied()
+
+    @staticmethod
+    def resolve_default_stripe_card(root: models.User, info):
+        if 'stripe_default_payment_method_id' in root.private_metadata:
+            return root.private_metadata['stripe_default_payment_method_id']
+        else:
+            return None
 
     @staticmethod
     @one_of_permissions_required(
