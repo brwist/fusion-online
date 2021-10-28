@@ -13,6 +13,7 @@ import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
 import { CartReview } from './components/CartReview/CartReview';
 import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
+import { ResetPasswordForm } from './components/Forms/ResetPasswordForm';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
@@ -79,12 +80,14 @@ function App() {
     const { data, dataError } = await registerAccount(email, password, 'http://localhost:3000/');
     return dataError ? { data: dataError } : { data };
   };
+
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
+  const passwordUpdated = new URLSearchParams(search)?.get('password-updated');
   const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (email && token && !confirming) {
+  if (location.pathname === "/" && email && token && !confirming) {
     setConfirming(true);
     confirmAccount({
       variables: { email, token },
@@ -182,8 +185,11 @@ function App() {
         <Route exact path="/registration-confirmation">
           <RegistrationConfirmationPage />
         </Route>
+        <Route exact path="/password-reset">
+          <ResetPasswordForm setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)}/>
+        </Route>
         <Route path="/">
-          <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+          <LoginPage setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)} handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
         </Route>
       </Switch>
     </>

@@ -389,3 +389,26 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+
+export const REQUEST_PASSWORD_RESET = gql `
+mutation passwordResetRequest ($email: String!) {
+  requestPasswordReset (email: $email) {
+		accountErrors {
+      field
+      message
+    }
+  }
+}
+`
+
+export const SET_PASSWORD = gql `
+mutation setPassword ($email: String!, $token: String!, $password: String!) {
+  setPassword (email: $email, token: $token, password: $password) {
+		accountErrors {
+      field
+      message
+    }
+  }
+}
+`

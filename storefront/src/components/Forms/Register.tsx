@@ -69,7 +69,7 @@ export const Register: React.FC<RegisterProps> = ({
       </Form.Group>
     );
   };
-
+  console.log(errors)
   return (
     <div className="form-register">
       <Row>
@@ -86,11 +86,24 @@ export const Register: React.FC<RegisterProps> = ({
           <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             {textInput('firstName', 'First Name', true)}
             {textInput('lastName', 'Last Name', true)}
-            {textInput('email', 'Email', true)}
             <Form.Group>
-              <Form.Control type='password' className={errors["password"] ? "is-invalid" : ""} {...register('password', {required: true})} placeholder="Password"/>
+              <Form.Control type='email' className={errors["email"] ? "is-invalid" : ""} {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                    value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    message: 'Please enter a valid email',
+                }},
+              )} placeholder="Email"/>
+              <Form.Label>Email</Form.Label>
+              {errors['email'] ? <div className="invalid-feedback">{errors['email'].message}</div> : null}
+            </Form.Group>
+            <Form.Group>
+              <Form.Control type='password' className={errors["password"] ? "is-invalid" : ""} {...register('password', {
+                  required: 'Password is required',
+                  minLength: {value: 8, message: "Password must be at least 8 characters"}
+                })} placeholder="Password"/>
               <Form.Label>Password</Form.Label>
-              {errors['password'] ? <div className="invalid-feedback">This field is required</div> : null}
+              {errors['password'] ? <div className="invalid-feedback">{errors['password'].message}</div> : null}
             </Form.Group>
             {textInput('companyName', 'Company Name', true)}
             <Form.Group controlId="jobTitle">
