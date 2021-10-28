@@ -35,10 +35,10 @@ export const ResetPasswordForm: React.FC<ResetPasswordProps> = ({
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
-    await setPassword({variables: {token, email, password: payload.password}})
-    console.log(data)
-    if (data?.setPassword.accountErrors.length > 0) {
-      setMutationErrors(data.setPassword.accountErrors)
+    const password = await setPassword({variables: {token, email, password: payload.password}})
+    console.log(password.data)
+    if (password.data.setPassword.accountErrors.length > 0) {
+      setMutationErrors(password.data.setPassword.accountErrors)
     } else {
       reset()
       setMutationErrors([])
@@ -65,13 +65,15 @@ export const ResetPasswordForm: React.FC<ResetPasswordProps> = ({
           </Card.Title> */}
           <Card.Text>
             {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
-            return <p className="text-danger">{error.field}: {error.message}</p>
+            return <p className="text-danger">{error.message}</p>
             })}
             <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)} autoComplete="off">
               <Form.Group>
                   <Form.Control
                     type='password' className={errors["password"] ? "is-invalid" : ""} {...register('password', {
-                    required: 'Password is required'},
+                    required: 'Password is required',
+                    minLength: 8
+                  },
                   )} placeholder="New Password"/>
                   <Form.Label>New Password</Form.Label>
                   {errors['password'] ? <div className="invalid-feedback">{errors['password'].message}</div> : null}

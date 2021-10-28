@@ -57,8 +57,7 @@ class HubspotEmails:
         payload = {
             "message": {
                 "from": "info@rocketchips.com",
-                "to": user.email,
-                "sendId":  hubspot_user['id']
+                "to": user.email
             },
             "customProperties": {
                 "LinkToConfirmEmailToResetPassword": reseturl,
