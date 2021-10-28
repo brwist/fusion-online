@@ -82,6 +82,7 @@ def process_payment(
         payment=payment,
         payment_token=token,
         store_source=store_source,
+        customer_id=payment.customer_id if payment.customer_id else None,
         additional_data=additional_data,
     )
 

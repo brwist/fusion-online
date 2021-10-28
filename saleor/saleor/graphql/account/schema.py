@@ -30,6 +30,7 @@ from .mutations.account import (
     AccountUpdate,
     AccountUpdateMeta,
     AddStripePaymentMethod,
+    RemoveStripePaymentMethod,
     ConfirmEmailChange,
     RequestEmailChange,
 )
@@ -259,6 +260,12 @@ class AccountMutations(graphene.ObjectType):
     add_stripe_payment_method = AddStripePaymentMethod.Field(
         description=(
             "Allows customer to add stripe payment method id to private metadata for CC retrieval."
+        )
+    )
+
+    remove_stripe_payment_method = RemoveStripePaymentMethod.Field(
+        description=(
+            "Allows customer to remove stripe payment method id to private metadata for CC retrieval."
         )
     )
 

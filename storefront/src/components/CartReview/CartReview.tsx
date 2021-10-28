@@ -81,6 +81,7 @@ export const CartReview: React.FC<CartProps> = ({
   const [quantityField, setQuantityField]: any = useState();
   const [activeTab, setActiveTab] = useState('shipping');
   const [agreed, setAgreed] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
 
   const [submitErrors, setSubmitErrors] = useState<errorsType>([]);
   const { completeCheckout } = useCheckout();
@@ -170,19 +171,20 @@ export const CartReview: React.FC<CartProps> = ({
                   <Accordion.Collapse eventKey="agreement">
                     <Agreement setActiveTab={setActiveTab} agreed={agreed} setAgreed={setAgreed} />
                   </Accordion.Collapse>
-
-                  <Card.Header>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <h5 className="m-0 text-capitalize">
-                        Notes <small className="text-muted">Step 4</small>
-                      </h5>
-                      <ContextAwareToggle eventKey="notes" callback={() => setActiveTab('notes')} />
-                    </div>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="notes">
-                    <Notes />
-                  </Accordion.Collapse>
                 </Card>
+              </Accordion>
+              <Accordion activeKey={'notes'}>
+                <Card.Header>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h5 className="m-0 text-capitalize">
+                      Notes <small className="text-muted">Step 4</small>
+                    </h5>
+                    <ContextAwareToggle eventKey="notes" callback={() => setActiveTab('notes')} />
+                  </div>
+                </Card.Header>
+                <Accordion.Collapse eventKey="notes">
+                  <Notes setOrderNote={setOrderNote} />
+                </Accordion.Collapse>
               </Accordion>
               <Button onClick={handleSubmitOrder} disabled={disableSubmit}>
                 Place Your Order

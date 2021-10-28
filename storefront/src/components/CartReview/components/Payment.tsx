@@ -41,7 +41,6 @@ export const Payment = ({ setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const { createPayment, payment } = useCheckout();
-  console.log('payment: ', payment);
 
   useEffect(() => {
     if (paymentMethodsQuery.data) {
@@ -95,8 +94,6 @@ export const Payment = ({ setActiveTab }) => {
     if (!selectedPaymentMethod) {
       return;
     }
-
-    console.log('selectedPaymentMethod: ', selectedPaymentMethod);
 
     const cardData = {
       brand: selectedPaymentMethod?.brand,

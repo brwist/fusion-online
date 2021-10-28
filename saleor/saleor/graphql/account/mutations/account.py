@@ -24,6 +24,7 @@ from .base import (
     BaseAddressUpdate,
     BaseCustomerCreate,
 )
+from saleor.plugins.manager import get_plugins_manager
 
 import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
@@ -429,8 +430,53 @@ class AddStripePaymentMethod(BaseMutation):
         else:
             user.private_metadata['stripe_payment_method_ids'] = [
                 data['payment_method_id']]
+        # If a stripe customer id is not set, we need to create and store one
+        if 'stripe_customer_id' not in user.private_metadata:
+            plugin_manager = get_plugins_manager(
+                plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
+            customer = plugin_manager.plugins[0].create_customer()
+            user.private_metadata['stripe_customer_id'] = customer['id']
         user.save()
         return AddStripePaymentMethod(user=user)
+
+
+class RemoveStripePaymentMethod(BaseMutation):
+    user = graphene.Field(User, description="An updated user instance.")
+
+    """
+    For the credit card forms, we want to store
+    Stripe payment method ids as private metadata so that we can 
+    surface CC info.
+    """
+    class Meta:
+        description = "Updates privatemetadata of the logged-in user."
+        model = models.User
+        public = False
+        error_type_class = AccountError
+        error_type_field = "account_errors"
+
+    class Arguments:
+        payment_method_id = graphene.String(
+            description="The stripe payment method id to remove from this user's private metadata.",
+            required=True,
+        )
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def get_instance(cls, info, **data):
+        return info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+        if 'stripe_payment_method_ids' in user.private_metadata:
+            user.private_metadata['stripe_payment_method_ids'].remove(
+                data['payment_method_id'])
+            user.save()
+        return RemoveStripePaymentMethod(user=user)
 
 
 class RequestEmailChange(BaseMutation):

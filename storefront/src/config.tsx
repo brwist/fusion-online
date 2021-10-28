@@ -283,7 +283,7 @@ export const GET_CART_PRODUCT_DETAILS = gql`
 
 export const GET_PARENT_CATEGORY_LIST = gql`
   query CategoryList($first: Int) {
-    categories(first: $first, level: 0) {
+    categories(first: $first, level: 0, sortBy: {direction: ASC, field: NAME}) {
       edges {
         node {
           id

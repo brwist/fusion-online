@@ -4,12 +4,6 @@ import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
 
 export const Agreement = ({ setActiveTab, agreed, setAgreed }) => {
-  const disableContinue = !agreed;
-
-  const handleContinue = async () => {
-    setActiveTab('notes');
-  };
-
   return (
     <Card.Body>
       <Form.Group>
@@ -24,9 +18,6 @@ export const Agreement = ({ setActiveTab, agreed, setAgreed }) => {
           onChange={() => setAgreed(!agreed)}
         />
       </Form.Group>
-      <Button onClick={handleContinue} disabled={disableContinue}>
-        Continue to Notes
-      </Button>
     </Card.Body>
   );
 };

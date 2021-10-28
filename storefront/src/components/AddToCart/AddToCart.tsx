@@ -28,7 +28,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
     <Card className="add-to-cart-card">
       <Card.Body>
         <Card.Text>
-          <div className="mb-3">
+          {/* <div className="mb-3">
             <Form.Check
               custom
               type="radio"
@@ -38,7 +38,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
               label="Single/One-time Order"
               checked
             />
-          </div>
+          </div> */}
           <Row className="align-items-center">
             <Col sm="auto" lg={4} xl={5} className="d-flex align-items-center">
               <span className="h2 m-0 font-weight-bold">${variant?.pricing?.price?.gross.amount.toFixed(2)}</span>
@@ -67,7 +67,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
         </Card.Text>
       </Card.Body>
 
-      <div className="border-top"></div>
+      {/* <div className="border-top"></div>
 
       <Card.Body>
         <Card.Text>
@@ -174,7 +174,7 @@ export const AddToCart: React.FC<AddToCartProps> = ({
           </Button>
 
         </Card.Text>
-      </Card.Body>
+      </Card.Body> */}
       <Card.Footer className="flex-column">
         <div className="w-100 mb-3 d-flex justify-content-between align-items-center">
           <div className="font-weight-bold">Total</div>
