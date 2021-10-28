@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
+import { useCart } from '@saleor/sdk';
 
 export interface OrderSummaryProps {
   subtotal: string | 0;
@@ -8,6 +9,8 @@ export interface OrderSummaryProps {
 }
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSubmit, handleSubmit }) => {
+  const { totalPrice } = useCart();
+  const total = totalPrice.net.amount.toFixed(2);
   return (
     <Card className="order-summary">
       <Card.Body>
@@ -37,7 +40,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSub
             <tfoot>
               <tr>
                 <td className="font-weight-bold text-capitalize">Order Total</td>
-                <td className="text-right font-weight-bold">$000.00</td>
+                <td className="text-right font-weight-bold">${total}</td>
               </tr>
             </tfoot>
           </Table>
