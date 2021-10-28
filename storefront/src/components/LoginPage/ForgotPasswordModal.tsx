@@ -16,7 +16,6 @@ export interface ForgotPasswordModalProps {
 type FormValues = {
   email: string,
 }
-const redirectUrl = 'http://localhost:3000/password-reset' 
 
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   show,
@@ -24,11 +23,11 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   setLandingPageAlert
 }) => {
   const { register, reset, handleSubmit, formState: {errors}} = useForm<FormValues>();
-  const [requestPasswordReset, {data}] = useMutation<any, {email: string, redirectUrl: string}>(REQUEST_PASSWORD_RESET)
+  const [requestPasswordReset, {data}] = useMutation<any, {email: string}>(REQUEST_PASSWORD_RESET)
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
-    await requestPasswordReset({variables: {...payload, redirectUrl: redirectUrl}})
+    await requestPasswordReset({variables: {...payload}})
     console.log(data)
     if (data?.requestPasswordReset.accountErrors.length > 0) {
       setMutationErrors(data.requestPasswordReset.accountErrors)

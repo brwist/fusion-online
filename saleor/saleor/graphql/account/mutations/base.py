@@ -3,6 +3,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import transaction
+from django.conf import settings
 
 from ....account import events as account_events, models
 from ....account.emails import (
@@ -107,7 +108,7 @@ class RequestPasswordReset(BaseMutation):
             description="Email of the user that will be used for password recovery.",
         )
         redirect_url = graphene.String(
-            required=True,
+            required=False,
             description=(
                 "URL of a view where users should be redirected to "
                 "reset the password. URL in RFC 1808 format."
@@ -122,7 +123,7 @@ class RequestPasswordReset(BaseMutation):
     @classmethod
     def perform_mutation(cls, _root, info, **data):
         email = data["email"]
-        redirect_url = data["redirect_url"]
+        redirect_url = settings.STOREFRONT_ROOT_URL + "/password-reset"
         try:
             validate_storefront_url(redirect_url)
         except ValidationError as error:
