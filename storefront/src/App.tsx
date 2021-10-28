@@ -105,13 +105,6 @@ function App() {
     }
   }
 
-  if (location.pathname === "/" && passwordUpdated === "true") {
-    if (!showAlert.show) {
-      setShowAlert({ show: true, message: 'Your password has been updated! Please log in.', variant: 'primary' });
-    }
-  }
-
-
   const handleCloseConfirmation = () => {
     setConfirming(false);
     let queryParams = new URLSearchParams(location.search);
@@ -193,10 +186,10 @@ function App() {
           <RegistrationConfirmationPage />
         </Route>
         <Route exact path="/password-reset">
-          <ResetPasswordForm />
+          <ResetPasswordForm setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)}/>
         </Route>
         <Route path="/">
-          <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+          <LoginPage setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)} handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
         </Route>
       </Switch>
     </>

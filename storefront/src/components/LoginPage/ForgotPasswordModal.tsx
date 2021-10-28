@@ -9,17 +9,19 @@ import './forgotpasswordmodal.scss'
 
 export interface ForgotPasswordModalProps {
   show: boolean,
-  handleClose: Function
+  handleClose: Function,
+  setLandingPageAlert(alertInfo: {show: boolean, message: string, variant: string}): void
 }
 
 type FormValues = {
-  email: string
+  email: string,
 }
 const redirectUrl = 'http://localhost:3000/password-reset' 
 
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   show,
-  handleClose
+  handleClose,
+  setLandingPageAlert
 }) => {
   const { register, reset, handleSubmit, formState: {errors}} = useForm<FormValues>();
   const [requestPasswordReset, {data}] = useMutation<any, {email: string, redirectUrl: string}>(REQUEST_PASSWORD_RESET)
@@ -32,6 +34,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       setMutationErrors(data.requestPasswordReset.accountErrors)
     } else {
       handleClose()
+      setLandingPageAlert({show: true, message: "Check your inbox to complete the password reset process.", variant: "primary"})
       reset()
       setMutationErrors([])
     }

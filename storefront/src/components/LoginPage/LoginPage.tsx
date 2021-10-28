@@ -11,9 +11,15 @@ import './loginpage.scss';
 export interface LoginPageProps {
   handleSignIn(email: string, password: string): void,
   handleRegistration(email: string, password: string): Promise<{data: {}}>,
-  errors: any
+  errors: any,
+  setLandingPageAlert(alertInfo: {show: boolean, message: string, variant: string}): void
 }
-export const LoginPage: React.FC<LoginPageProps> = ({ handleSignIn, handleRegistration, errors }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ 
+  handleSignIn,
+  handleRegistration,
+  errors,
+  setLandingPageAlert
+}) => {
   const [showModal, setShowModal] = useState(false)
   return (
     <div className="home">
@@ -38,7 +44,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ handleSignIn, handleRegist
           </Col>
           <Col md={4}>
             <Login handleSignIn={handleSignIn} openModal={() => setShowModal(true)} errors={errors} />
-            <ForgotPasswordModal show={showModal} handleClose={() => setShowModal(false)}/>
+            <ForgotPasswordModal setLandingPageAlert={setLandingPageAlert} show={showModal} handleClose={() => setShowModal(false)}/>
           </Col>
         </Row>
 
