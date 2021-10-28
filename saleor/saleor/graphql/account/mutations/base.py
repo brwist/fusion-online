@@ -28,6 +28,7 @@ from ...meta.deprecated.mutations import ClearMetaBaseMutation, UpdateMetaBaseMu
 from .jwt import CreateToken
 
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
+from saleor.fusion_online.hubspot.email import HubspotEmails
 
 BILLING_ADDRESS_FIELD = "default_billing_address"
 SHIPPING_ADDRESS_FIELD = "default_shipping_address"
@@ -142,7 +143,26 @@ class RequestPasswordReset(BaseMutation):
                     )
                 }
             )
-        send_user_password_reset_email_with_url(redirect_url, user)
+
+        # saleor default workflow:
+        # send_user_password_reset_email_with_url(redirect_url, user)
+
+        #Hubpost workflow:
+        hubspot_reg = HubspotRegistration()
+        hubspot_user = hubspot_reg.get_hubspot_user_by_email(email)
+        if hubspot_user is None:
+            raise ValidationError(
+                {
+                    "email": ValidationError(
+                        "User with this email doesn't exist",
+                        code=AccountErrorCode.NOT_FOUND,
+                    )
+                }
+            )
+
+        hubspot_email = HubspotEmails()
+        hubspot_email.send_password_reset_link(user, hubspot_user, redirect_url)
+
         return RequestPasswordReset()
 
 
