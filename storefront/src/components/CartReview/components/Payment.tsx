@@ -33,6 +33,7 @@ const GET_USER_PAYMENTS = gql`
           expYear
         }
       }
+      defaultStripeCard
     }
   }
 `;
@@ -41,11 +42,15 @@ export const Payment = ({ setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const { createPayment, payment } = useCheckout();
+  const [defaultStripeCard, setDefaultStripeCard] = useState(null);
 
   useEffect(() => {
     if (paymentMethodsQuery.data) {
       const cards = paymentMethodsQuery.data.me.stripeCards;
-      setSelectedPaymentMethod(cards[0]);
+      const defaultCardId = paymentMethodsQuery.data.me.defaultStripeCard;
+      let defaultCard = defaultCardId ? cards.find((x) => x.id === defaultCardId) : cards[0];
+      setSelectedPaymentMethod(defaultCard);
+      setDefaultStripeCard(paymentMethodsQuery.data.me.defaultStripeCard);
     }
   }, [paymentMethodsQuery, setSelectedPaymentMethod]);
 
@@ -59,7 +64,7 @@ export const Payment = ({ setActiveTab }) => {
             type="radio"
             id={`paymentMethod-${card.id}`}
             value={card.id}
-            defaultChecked={index === 0}
+            // defaultChecked={index === 0}
             checked={checked}
             onChange={() => setSelectedPaymentMethod(card)}
           />
@@ -83,7 +88,7 @@ export const Payment = ({ setActiveTab }) => {
           {`${card.billingDetails.address.city}, ${card.billingDetails.address.state} ${card.billingDetails.address.postalCode} ${card.billingDetails.address.country}`}
           ,
         </td>
-        <td>{index === 0 && <Tag size="sm" label="Default" />}</td>
+        <td>{defaultStripeCard === card.id && <Tag size="sm" label="Default" />}</td>
       </tr>
     );
   };

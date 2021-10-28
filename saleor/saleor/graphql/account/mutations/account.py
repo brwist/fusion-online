@@ -30,6 +30,7 @@ import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
 from saleor.fusion_online.hubspot.email import HubspotEmails
 
+
 class AccountRegisterInput(graphene.InputObjectType):
     first_name = graphene.String(description="User first name", required=True)
     last_name = graphene.String(description="User last name", required=True)
@@ -412,6 +413,10 @@ class AddStripePaymentMethod(BaseMutation):
             description="The stripe payment method id to add to this user's private metadata.",
             required=True,
         )
+        is_default = graphene.Boolean(
+            description="Set as the default payment method",
+            required=False
+        )
 
     @classmethod
     def check_permissions(cls, context):
@@ -425,8 +430,10 @@ class AddStripePaymentMethod(BaseMutation):
     def perform_mutation(cls, _root, info, **data):
         user = info.context.user
         if 'stripe_payment_method_ids' in user.private_metadata:
-            user.private_metadata['stripe_payment_method_ids'].append(
-                data['payment_method_id'])
+            # When editing just the default payment method, we don't need to append
+            if data['payment_method_id'] not in user.private_metadata['stripe_payment_method_ids']:
+                user.private_metadata['stripe_payment_method_ids'].append(
+                    data['payment_method_id'])
         else:
             user.private_metadata['stripe_payment_method_ids'] = [
                 data['payment_method_id']]
@@ -436,6 +443,9 @@ class AddStripePaymentMethod(BaseMutation):
                 plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
             customer = plugin_manager.plugins[0].create_customer()
             user.private_metadata['stripe_customer_id'] = customer['id']
+        # Override default payment method if applicable.
+        if data['is_default'] or len(user.private_metadata['stripe_payment_method_ids']) == 1:
+            user.private_metadata['stripe_default_payment_method_id'] = data['payment_method_id']
         user.save()
         return AddStripePaymentMethod(user=user)
 
