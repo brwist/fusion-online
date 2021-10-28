@@ -64,23 +64,23 @@ class BraintreeGatewayPlugin(BasePlugin):
         },
         "Use sandbox": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should use Braintree sandbox API.",
+            "help_text": "Determines if RocketChips should use Braintree sandbox API.",
             "label": "Use sandbox",
         },
         "Store customers card": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should store cards on payments"
+            "help_text": "Determines if RocketChips should store cards on payments"
             " in Braintree customer.",
             "label": "Store customers card",
         },
         "Automatic payment capture": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should automaticaly capture payments.",
+            "help_text": "Determines if RocketChips should automatically capture payments.",
             "label": "Automatic payment capture",
         },
         "Require 3D secure": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should enforce 3D secure during payment.",
+            "help_text": "Determines if RocketChips should enforce 3D secure during payment.",
             "label": "Require 3D secure",
         },
         "Supported currencies": {
