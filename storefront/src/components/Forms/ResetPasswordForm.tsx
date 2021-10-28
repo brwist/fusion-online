@@ -72,7 +72,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordProps> = ({
                   <Form.Control
                     type='password' className={errors["password"] ? "is-invalid" : ""} {...register('password', {
                     required: 'Password is required',
-                    minLength: 8
+                    minLength: {value: 8, message: "Password must be at least 8 characters"}
                   },
                   )} placeholder="New Password"/>
                   <Form.Label>New Password</Form.Label>
