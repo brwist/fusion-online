@@ -27,10 +27,10 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const [mutationErrors, setMutationErrors] = useState<AccountError[]>([])
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
-    await requestPasswordReset({variables: {...payload}})
-    console.log(data)
-    if (data?.requestPasswordReset.accountErrors.length > 0) {
-      setMutationErrors(data.requestPasswordReset.accountErrors)
+    const response = await requestPasswordReset({variables: {...payload}})
+
+    if (response.data.requestPasswordReset.accountErrors.length > 0) {
+      setMutationErrors(response.data.requestPasswordReset.accountErrors)
     } else {
       handleClose()
       setLandingPageAlert({show: true, message: "Check your inbox to complete the password reset process.", variant: "primary"})
@@ -54,7 +54,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     <Modal.Body className="mx-5 mb-5">
       <div className="form-password-reset-request">
       {mutationErrors.length > 0 && mutationErrors.map((error: AccountError) => {
-          return <p className="text-danger">{error.field}: {error.message}</p>
+          return <p className="text-danger">{error.message}</p>
         })}
       <Form className="floating-labels" noValidate  onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <Form.Group>

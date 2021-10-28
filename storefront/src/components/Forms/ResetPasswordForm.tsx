@@ -36,7 +36,7 @@ export const ResetPasswordForm: React.FC<ResetPasswordProps> = ({
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
     const password = await setPassword({variables: {token, email, password: payload.password}})
-    console.log(password.data)
+
     if (password.data.setPassword.accountErrors.length > 0) {
       setMutationErrors(password.data.setPassword.accountErrors)
     } else {
