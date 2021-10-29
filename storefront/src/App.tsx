@@ -14,6 +14,7 @@ import { Cart } from './components/Cart/Cart';
 import { CartReview } from './components/CartReview/CartReview';
 import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
 import { ResetPasswordForm } from './components/Forms/ResetPasswordForm';
+import { OrderConfirmation } from './components/CartReview/OrderConfirmation';
 import './App.scss';
 
 import { useMutation } from '@apollo/client';
@@ -87,7 +88,7 @@ function App() {
   const passwordUpdated = new URLSearchParams(search)?.get('password-updated');
   const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (location.pathname === "/" && email && token && !confirming) {
+  if (location.pathname === '/' && email && token && !confirming) {
     setConfirming(true);
     confirmAccount({
       variables: { email, token },
@@ -142,6 +143,9 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+        <Route exact path="/checkout/confirmation">
+          <OrderConfirmation />
+        </Route>
         <Route exact path="/checkout">
           <CartReview
             discount={discount}
@@ -154,6 +158,7 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
@@ -186,10 +191,15 @@ function App() {
           <RegistrationConfirmationPage />
         </Route>
         <Route exact path="/password-reset">
-          <ResetPasswordForm setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)}/>
+          <ResetPasswordForm setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)} />
         </Route>
         <Route path="/">
-          <LoginPage setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)} handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+          <LoginPage
+            setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)}
+            handleSignIn={handleSignIn}
+            handleRegistration={handleRegistration}
+            errors={errors}
+          />
         </Route>
       </Switch>
     </>
