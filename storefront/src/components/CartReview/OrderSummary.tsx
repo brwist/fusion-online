@@ -10,7 +10,7 @@ export interface OrderSummaryProps {
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSubmit, handleSubmit }) => {
   const { totalPrice } = useCart();
-  const total = totalPrice.net.amount.toFixed(2);
+  const total = totalPrice?.net?.amount?.toFixed(2);
   return (
     <Card className="order-summary">
       <Card.Body>
