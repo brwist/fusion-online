@@ -370,13 +370,12 @@ export function useUserOrderByTokenQuery(
 
 
 
-export const GET_USER_APPROVAL = gql `{
-  query UserApproval() {
+export const GET_USER_APPROVAL = gql `
+  query {
     me {
       isApproved
     }
-  }
-}`
+  }`
 
 
 

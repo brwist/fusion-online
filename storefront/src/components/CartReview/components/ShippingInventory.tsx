@@ -81,7 +81,7 @@ export interface ShippingInventoryProps {
 }
 
 export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
-  mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: AddressInput!) {
+  mutation checkoutShippingAddressUpdate($checkoutId: String!, $shippingAddress: AddressInput!) {
     checkoutShippingAddressUpdate(checkoutId: $checkoutId, shippingAddress: $shippingAddress) {
       errors {
         field
@@ -89,9 +89,7 @@ export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
       }
       checkout {
         id
-        shippingAddress {
-
-        }
+        shippingAddress
       }
       checkoutErrors {
         field

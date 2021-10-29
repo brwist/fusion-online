@@ -20,7 +20,8 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './productdetail.scss';
 
 export interface ProductDetailProps {
-  addItem: any
+  addItem: any,
+  userApproval: boolean | undefined
 }
 
 type ProductDetailsQuery = {
@@ -28,7 +29,7 @@ type ProductDetailsQuery = {
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
-  addItem
+  addItem, userApproval
 }) => {
   const { slug } = useParams<{slug: string}>();
   const history = useHistory();

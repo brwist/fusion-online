@@ -17,8 +17,9 @@ import { ResetPasswordForm } from './components/Forms/ResetPasswordForm';
 import { OrderConfirmation } from './components/CartReview/OrderConfirmation';
 import './App.scss';
 
-import { useMutation } from '@apollo/client';
-import { CONFIRM_ACCOUNT } from './graphql/account';
+import { useMutation, useQuery } from '@apollo/client';
+import { CONFIRM_ACCOUNT, GET_USER_APPROVAL } from './graphql/account';
+import { User } from './generated/graphql'
 
 import { Alert, Container } from 'react-bootstrap';
 
@@ -37,9 +38,15 @@ type AlertState = {
   variant?: string;
 };
 
+type UserApprovalQuery = {me: User}
+
 function App() {
   const [errors, setErrors] = useState();
   const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const userApprovalData = useQuery<UserApprovalQuery>(GET_USER_APPROVAL);
+
+  const userApproval = userApprovalData.data?.me?.isApproved;
+
   const {
     addItem,
     discount,
@@ -123,13 +130,13 @@ function App() {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/search">
-          <SearchContainer addItem={addItem} />
+          <SearchContainer userApproval={userApproval} addItem={addItem} />
         </Route>
         <Route exact path="/products/:slug">
-          <ProductDetail addItem={addItem} />
+          <ProductDetail addItem={addItem} userApproval={userApproval}/>
         </Route>
         <Route exact path="/categories/:slug">
-          <CategoryPage addItem={addItem} />
+          <CategoryPage addItem={addItem} userApproval={userApproval}/>
         </Route>
         <Route exact path="/cart">
           <Cart
