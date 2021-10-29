@@ -171,7 +171,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
     removeStripeToken({ variables: { paymentMethodId: deleteMode.id } });
   };
 
-  const deleteLabel = deleteMode.deleting ? `Deleting...` : `Delete`;
+  const deleteLabel = deleteMode.deleting ? `Removing...` : `Remove`;
 
   return (
     <div className="payments">
@@ -213,14 +213,14 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
       <Modal show={!!deleteMode.id} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title className="mb-0">Delete Card?</Modal.Title>
+          <Modal.Title className="mb-0">Remove Card?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete this card?
+          <p>Are you sure you want to remove this card?</p>
           <Button variant="danger" onClick={handleDeleteCard}>
             {deleteLabel}
           </Button>
-          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button variant="link" onClick={handleCloseModal}>Cancel</Button>
         </Modal.Body>
       </Modal>
     </div>
