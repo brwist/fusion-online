@@ -368,6 +368,18 @@ export function useUserOrderByTokenQuery(
   return useQuery(GET_USER_ORDER_BY_TOKEN, options);
 }
 
+
+
+export const GET_USER_APPROVAL = gql `{
+  query UserApproval() {
+    me {
+      isApproved
+    }
+  }
+}`
+
+
+
 export const CREATE_USER = gql`
   mutation registerUser($input: AccountRegisterInput!) {
     accountRegister(input: $input) {
