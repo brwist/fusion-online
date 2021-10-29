@@ -24,6 +24,7 @@ import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
 
 import './cart.scss';
+import { ICheckoutModelPriceValue } from '@saleor/sdk/lib/helpers';
 
 type CartProductDetailsQuery = {
   productVariants?: Maybe<{
@@ -37,7 +38,7 @@ export interface CartProps {
   discount: any;
   items: any;
   removeItem: any;
-  shippingPrice: any;
+  shippingPrice: ICheckoutModelPriceValue;
   subtotalPrice: any;
   totalPrice: any;
   updateItem: any;
@@ -120,6 +121,7 @@ export const Cart: React.FC<CartProps> = ({
             </Button>
             <Button
               variant="link"
+              className="text-danger"
               onClick={() => items.forEach((item: { variant: { id: string } }) => removeItem(item.variant.id))}
             >
               <FontAwesomeIcon icon={faTimes} size="lg" className="mr-1 text-danger" /> Remove All
@@ -229,14 +231,9 @@ export const Cart: React.FC<CartProps> = ({
                                       </Form.Group>
                                     </Col>
                                     <Col md={12} lg={6} className="p-0">
-                                      <Row xs={1}>
-                                        <Button variant="link" className="small p-0">
-                                          Split
-                                        </Button>
-                                        <Button variant="link" className="small p-0" onClick={() => removeItem(id)}>
+                                        <Button variant="link" className="small p-0 text-danger" onClick={() => removeItem(id)}>
                                           Remove
                                         </Button>
-                                      </Row>
                                     </Col>
                                   </Form.Row>
                                 </td>
