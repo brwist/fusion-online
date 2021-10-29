@@ -180,10 +180,12 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
       </header>
 
       <Card>
-        <Card.Body>{userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}</Card.Body>
-        {(!userQuery?.data?.me?.stripeCards || userQuery?.data?.me?.stripeCards?.length === 0) && (
-          <p>Please add a payment method.</p>
-        )}
+        <Card.Body>
+          <React.Fragment>{userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}</React.Fragment>
+          {(!userQuery?.data?.me?.stripeCards || userQuery?.data?.me?.stripeCards?.length === 0) && (
+            <p>Please add a payment method.</p>
+          )}
+        </Card.Body>
       </Card>
 
       <Button variant="primary" onClick={() => setEditMode({ edit: false, paymentMethod: null })}>
