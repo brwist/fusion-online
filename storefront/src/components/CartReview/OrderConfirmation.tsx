@@ -10,7 +10,7 @@ export const OrderConfirmation: React.FC = () => {
   return (
     <Container>
       <SectionHeader subheading="Checkout" heading="Thank you for your order!" />
-      <p>Lorem ipsum ...</p>
+
       <Button onClick={() => history.push('/')} variant="primary" size="lg">
         Return Home
       </Button>
