@@ -212,6 +212,9 @@ class User(CountableDjangoObjectType):
     orders = PrefetchingConnectionField(
         "saleor.graphql.order.types.Order", description="List of user's orders."
     )
+    is_approved = graphene.Boolean(
+        description="Whether the user has been approved in Hubspot"
+    )
     # deprecated, to remove in #5389
     permissions = graphene.List(
         Permission,
@@ -264,6 +267,12 @@ class User(CountableDjangoObjectType):
             "last_name",
             "note",
         ]
+    @staticmethod
+    def resolve_is_approved(root: models.User, _info, **_kwargs):
+        approval = root.private_metadata.get('customer_approval_status')
+        if approval == 'Approved' or root.email == 'customer@example.com' or root.is_staff or root.is_superuser:
+            return True
+        return False
 
     @staticmethod
     def resolve_addresses(root: models.User, _info, **_kwargs):
