@@ -111,7 +111,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const { user } = useAuth();
 
   const { loaded, checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
-  console.log('checkout: ', checkout);
 
   const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
