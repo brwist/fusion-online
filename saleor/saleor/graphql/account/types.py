@@ -269,7 +269,7 @@ class User(CountableDjangoObjectType):
         ]
     @staticmethod
     def resolve_is_approved(root: models.User, _info, **_kwargs):
-        approval = root.private_metadata.get('customer_approval_status')
+        approval = root.private_metadata.get('customer_approval_status', False)
         if approval == 'Approved' or root.email == 'customer@example.com' or root.is_staff or root.is_superuser:
             return True
         return False
