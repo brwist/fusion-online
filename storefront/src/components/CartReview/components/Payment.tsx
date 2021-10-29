@@ -4,6 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import { Tag } from '../../Tag/Tag';
 import { User, StripePaymentMethod } from '../../../generated/graphql';
 import { useCheckout } from '@saleor/sdk';
+import { CountryCode } from '../../../generated/graphql';
 
 type userPaymentMethodsQuery = {
   me: User & { stripeCards: Array<StripePaymentMethod> };
@@ -41,7 +42,7 @@ const GET_USER_PAYMENTS = gql`
 export const Payment = ({ setActiveTab }) => {
   const paymentMethodsQuery = useQuery(GET_USER_PAYMENTS);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const { createPayment, payment } = useCheckout();
+  const { createPayment, setBillingAddress } = useCheckout();
   const [defaultStripeCard, setDefaultStripeCard] = useState(null);
 
   useEffect(() => {
@@ -49,7 +50,6 @@ export const Payment = ({ setActiveTab }) => {
       const cards = paymentMethodsQuery.data.me.stripeCards;
       const defaultCardId = paymentMethodsQuery.data.me.defaultStripeCard;
       let defaultCard = defaultCardId ? cards.find((x) => x.id === defaultCardId) : cards[0];
-      console.log('defaultCard: ', defaultCard);
       setSelectedPaymentMethod(defaultCard);
       setDefaultStripeCard(paymentMethodsQuery.data.me.defaultStripeCard);
     }
@@ -100,7 +100,35 @@ export const Payment = ({ setActiveTab }) => {
     if (!selectedPaymentMethod) {
       return;
     }
-    console.log('selectedPaymentMethod: ', selectedPaymentMethod);
+
+    const nameParts = selectedPaymentMethod.billingDetails.name.split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.pop();
+
+    let match = Object.entries(CountryCode).find(
+      ([key, val]) => val === selectedPaymentMethod.billingDetails.address.country
+    );
+    let country = null,
+      val;
+    if (match) {
+      // eslint-disable-next-line
+      [val, country] = match;
+    }
+
+    // Update billing address for checkout
+    const billingAddress = {
+      firstName,
+      lastName,
+      streetAddress1: selectedPaymentMethod.billingDetails.address.line1,
+      streetAddress2: selectedPaymentMethod.billingDetails.address.line2,
+      city: selectedPaymentMethod.billingDetails.address.city,
+      postalCode: selectedPaymentMethod.billingDetails.address.postalCode,
+      country: { code: country, country: val },
+      countryArea: selectedPaymentMethod.billingDetails.address.state,
+    };
+
+    const setBillingAddressResponse = await setBillingAddress(billingAddress);
+    console.log('setBillingAddressResponse: ', setBillingAddressResponse);
 
     const cardData = {
       brand: selectedPaymentMethod?.brand,
