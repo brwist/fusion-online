@@ -82,7 +82,7 @@ export const EditPaymentMethod: React.FC<Props> = ({
     if (editMode) {
       setEdit(editMode.edit);
       setPaymentMethod(editMode.paymentMethod);
-      if (defaultStripeCard && defaultStripeCard === editMode.paymentMethod.id) {
+      if (defaultStripeCard && defaultStripeCard === editMode?.paymentMethod?.id) {
         setIsDefault(true);
       }
     } else {
@@ -280,7 +280,7 @@ export const EditPaymentMethod: React.FC<Props> = ({
           </Col>
         </Row>
       )}
-      {!edit && paymentMethod && (
+      {!edit && (
         <>
           <Form.Group>
             <Form.Label>Credit Card Number</Form.Label>
