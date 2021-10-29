@@ -111,6 +111,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   const { user } = useAuth();
 
   const { loaded, checkout, availableShippingMethods, setShippingAddress, setShippingMethod } = useCheckout();
+  console.log('checkout: ', checkout);
 
   const [createCheckout] = useMutation(CREATE_CHECKOUT);
 
@@ -200,11 +201,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   // Set default shipping method
   useEffect(() => {
     if (availableShippingMethods && !selectedShippingMethod) {
-      console.log('setting shipping method to', availableShippingMethods[0]);
       setSelectedShippingMethod(availableShippingMethods[0]);
     }
   }, [availableShippingMethods]);
-  console.log('availableShippingMethods: ', availableShippingMethods);
 
   // Set default shipping address
   useEffect(() => {
