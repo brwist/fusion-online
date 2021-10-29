@@ -1,14 +1,21 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
 import { useCart } from '@saleor/sdk';
+import { ICheckoutModelPriceValue } from '@saleor/sdk/lib/helpers';
 
 export interface OrderSummaryProps {
   subtotal: string | 0;
   disableSubmit: any;
   handleSubmit: any;
+  shippingPrice: ICheckoutModelPriceValue;
 }
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSubmit, handleSubmit }) => {
+export const OrderSummary: React.FC<OrderSummaryProps> = ({ 
+  subtotal,
+  disableSubmit,
+  handleSubmit,
+  shippingPrice
+}) => {
   const { totalPrice } = useCart();
   const total = totalPrice?.net?.amount?.toFixed(2);
   return (
@@ -21,7 +28,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSub
           <Table>
             <tbody>
               <tr>
-                <td>Shipment 1</td>
+                <td>Shipment</td>
                 <td className="text-right font-weight-bold">${subtotal}</td>
               </tr>
               <tr>
@@ -30,7 +37,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, disableSub
               </tr>
               <tr>
                 <td>Shipping &amp; Handling</td>
-                <td className="text-right font-weight-bold">$0.00</td>
+                <td className="text-right font-weight-bold">${shippingPrice?.amount?.toFixed(2)}</td>
               </tr>
               <tr>
                 <td>Credit Card Processing Fee</td>

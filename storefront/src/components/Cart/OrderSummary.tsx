@@ -20,7 +20,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           <Table>
             <tbody>
               <tr>
-                <td>Shipment 1</td>
+                <td>Shipment</td>
                 <td className="text-right font-weight-bold">${subtotal}</td>
               </tr>
             </tbody>

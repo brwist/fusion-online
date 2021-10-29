@@ -29,6 +29,7 @@ import { ShippingInventory } from './components/ShippingInventory';
 import { Payment } from './components/Payment';
 import { Agreement } from './components/Agreement';
 import { Notes } from './components/Notes';
+import { ICheckoutModelPriceValue } from '@saleor/sdk/lib/helpers';
 
 type CartProductDetailsQuery = {
   productVariants?: Maybe<{
@@ -42,7 +43,7 @@ export interface CartProps {
   discount: any;
   items: any;
   removeItem: any;
-  shippingPrice: any;
+  shippingPrice: ICheckoutModelPriceValue;
   subtotalPrice: any;
   totalPrice: any;
   updateItem: any;
@@ -199,6 +200,7 @@ export const CartReview: React.FC<CartProps> = ({
                 subtotal={calculateSubtotal() || 0}
                 disableSubmit={disableSubmit}
                 handleSubmit={handleSubmitOrder}
+                shippingPrice={shippingPrice}
               />
             </Col>
           </Row>
