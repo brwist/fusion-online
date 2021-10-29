@@ -79,7 +79,7 @@ export const EditPaymentMethod: React.FC<Props> = ({
   const [paymentMethod, setPaymentMethod] = useState(null);
 
   useEffect(() => {
-    if (editMode) {
+    if (editMode.edit) {
       setEdit(editMode.edit);
       setPaymentMethod(editMode.paymentMethod);
       if (defaultStripeCard && defaultStripeCard === editMode?.paymentMethod?.id) {
