@@ -21,6 +21,7 @@ import { useCheckout } from '@saleor/sdk';
 
 import { useQuery } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
+import { useHistory } from 'react-router-dom';
 
 import './cart-review.scss';
 
@@ -77,6 +78,7 @@ export const CartReview: React.FC<CartProps> = ({
       </Button>
     );
   }
+  const history = useHistory();
 
   const [quantityField, setQuantityField]: any = useState();
   const [activeTab, setActiveTab] = useState('shipping');
@@ -89,6 +91,7 @@ export const CartReview: React.FC<CartProps> = ({
   const handleSubmitOrder = async () => {
     const response = await completeCheckout();
     console.log('response: ', response);
+    history.push('/checkout/confirmation');
   };
 
   useEffect(() => {
