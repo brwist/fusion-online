@@ -185,7 +185,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <div className="mb-5">
             <span className="font-weight-bold">Offers:</span>
             <Row className="offer-options mt-2 mx-n1">
-              {data?.product?.variants?.map((variant, index) => {
+              {userApproval ? data?.product?.variants?.map((variant, index) => {
                 return (
                   <Col lg={3} className="p-1" key={variant?.id}>
                     <Button onClick={() => setSelectedOffer(variant?.id)} variant={ selectedOffer === variant?.id ? "primary" : "secondary"} block>
@@ -212,16 +212,18 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     </Button>
                   </Col>
                 )
-              })}
+              }) :
+                <Button block> Complete your registration to unlock offers</Button>
+              }
             </Row>
           </div>
 
-          <AddToCart
+          {userApproval && <AddToCart
             variant={data?.product?.variants && data?.product?.variants.find(variant => variant.id === selectedOffer)}
             addItem={addItem}
             updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
             showItemAddedAlert={() => setShowAlert(true)}
-          />
+          />}
         </Col>
       </Row>
 
