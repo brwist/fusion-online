@@ -21,7 +21,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { CONFIRM_ACCOUNT, GET_USER_APPROVAL } from './graphql/account';
 import { User } from './generated/graphql'
 
-import { Alert, Container } from 'react-bootstrap';
+import { Alert, Button, Col, Container, Row } from 'react-bootstrap';
 
 type AccountConfirmMutation = {
   confirmAccount: {
@@ -92,7 +92,7 @@ function App() {
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
-  const passwordUpdated = new URLSearchParams(search)?.get('password-updated');
+
   const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
   if (location.pathname === '/' && email && token && !confirming) {
@@ -126,6 +126,24 @@ function App() {
 
   return authenticated && user ? (
     <>
+      <Alert
+        show={userApproval === false}
+        variant="dark"
+        className="limited-user-banner"
+      >
+        <Container>
+          <Row>
+            <Col>
+              <p>Hello, <strong>{user.firstName}</strong>, it looks like you still need to complete your registration to unlock the full features of RocketChips.</p>
+            </Col>
+            <Col md="auto">
+              <Button>
+                Complete Registration
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Alert>
       <NavBar signOut={signOut} cartItemsNum={items?.length || 0} />
       <Switch>
         <Route exact path="/" component={HomePage} />
