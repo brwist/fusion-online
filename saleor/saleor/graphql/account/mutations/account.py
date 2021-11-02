@@ -441,7 +441,7 @@ class AddStripePaymentMethod(BaseMutation):
         if 'stripe_customer_id' not in user.private_metadata:
             plugin_manager = get_plugins_manager(
                 plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
-            customer = plugin_manager.plugins[0].create_customer()
+            customer = plugin_manager.plugins[0].create_customer(user)
             user.private_metadata['stripe_customer_id'] = customer['id']
         # Override default payment method if applicable.
         if data['is_default'] or len(user.private_metadata['stripe_payment_method_ids']) == 1:
@@ -482,7 +482,11 @@ class RemoveStripePaymentMethod(BaseMutation):
     @classmethod
     def perform_mutation(cls, _root, info, **data):
         user = info.context.user
-        if 'stripe_payment_method_ids' in user.private_metadata:
+        is_default = False
+        if 'stripe_default_payment_method_id' in user.private_metadata:
+            if user.private_metadata['stripe_default_payment_method_id'] == data['payment_method_id']:
+                user.private_metadata['stripe_default_payment_method_id'].delete()
+        if 'stripe_payment_method_ids' in user.private_metadata and data['payment_method_id'] in user.private_metadata['stripe_payment_method_ids']:
             user.private_metadata['stripe_payment_method_ids'].remove(
                 data['payment_method_id'])
             user.save()
