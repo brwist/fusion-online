@@ -253,3 +253,11 @@ def create_stripe_customer(config: GatewayConfig):
     client = _get_client(**config.connection_params)
     customer = client.Customer.create()
     return customer
+
+
+def update_payment_with_order_info(config: GatewayConfig, payment_id, order_id):
+    client = _get_client(**config.connection_params)
+    updated_payment = client.PaymentIntent.modify(
+        payment_id,
+        metadata={"order_id": order_id},
+    )
