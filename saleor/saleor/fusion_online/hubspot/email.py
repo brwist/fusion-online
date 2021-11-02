@@ -84,21 +84,21 @@ class HubspotEmails:
         to = order.user_email
 
         order_num = order.private_metadata['customer_purchase_order_num']
-        order_date = order.created.strftime(("%d.%m.%Y %H:%M:%S"))
+        order_date = order.created.strftime(("%m/%d/%Y %I:%M:%S"))
+
+        address = order.shipping_address
+
+        address_output = address.full_name + '<br />' + \
+            address.street_address_1 + ' ' + address.street_address_2 \
+            + '<br />' + address.city + ', ' + address.country_area + ' ' + address.country.ioc_code
 
         items = order.items.all()
-        lines = order.lines.all()
-        # manager = get_plugins_manager()
 
-        for line in lines:
-            # total_line_price = manager.calculate_checkout_line_total(checkout_line, discounts)
-            a = 2
         items_output = "<table><thead><tr><th>Product</th><th>Qty</th><th>Price</th></tr><tbody>"
         for item in items:
             item_price = item.unit_price_gross_amount * item.quantity
             cents = decimal.Decimal('.01')
             price_decimal = item_price.quantize(cents, decimal.ROUND_HALF_UP)
-            # price = item_price.to_eng_string()
             price = "$" + price_decimal.to_eng_string()
             items_output += "<tr><td>" + item.product_name + \
                 "</td><td>" + str(item.quantity) + "</td><td>" + price + "</td></tr >"
@@ -114,7 +114,8 @@ class HubspotEmails:
                 "OrderNumber": order_num,
                 "OrderDate": order_date,
                 "OrderLineItemsWithSummaryAndTerms": items_output,
-                "OrderShippingAddress": "123 State Ave"
+                "OrderShippingAddress": address_output,
+                "linktositelogin": "https://storefront-sandbox.fusiononline.io/"
             },
             "emailId": 54722887344
         }
