@@ -2,6 +2,8 @@ from saleor.plugins.base_plugin import BasePlugin
 
 from ...fusion_online.hubspot.serializers import HubspotContactSerializer
 
+from saleor.fusion_online.hubspot.email import HubspotEmails
+
 
 class FusionOnlinePlugin(BasePlugin):
     PLUGIN_ID = "fusion_online"
@@ -12,23 +14,8 @@ class FusionOnlinePlugin(BasePlugin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def customer_created(self, customer: "User", previous_value):
-        return
-        # print("---In customer create plugin---")
-        # data = {
-        #     "properties": {
-        #         "firstname": "Sample contact",
-        #         "email": customer.email,
-        #         "approval_status": "Pending"
-        #     }
-        # }
-        # try:
-        #     serializer = HubspotContactSerializer(data=data)
+    def order_fully_paid(self, order, previous_value):
 
-        #     if serializer.is_valid():
-        #         response = serializer.save()
-        #         print("Hubspot api response:", response)
-        #     else:
-        #         print("hubspot contact serializer errors:", serializer.errors)
-        # except Exception as e:
-        #     print("hubspot contact create error:", str(e))
+        hubspot_email = HubspotEmails()
+        hubspot_email.send_order_confirmation(
+            order)
