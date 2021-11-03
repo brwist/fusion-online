@@ -424,6 +424,12 @@ def complete_checkout(
             order = _create_order(
                 checkout=checkout, order_data=order_data, user=user,  # type: ignore
             )
+            # Save order id to stripe payment intent
+            if hasattr(txn.gateway_response, 'stripe_id'):
+                plugin_manager = get_plugins_manager(
+                    plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
+                plugin_manager.plugins[0].update_payment_with_order_info(
+                    txn.gateway_response.stripe_id, order.id)
             # remove checkout after order is successfully created
             checkout.delete()
         except InsufficientStock as e:
