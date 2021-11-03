@@ -149,7 +149,7 @@ class StripeGatewayPlugin(BasePlugin):
         return retrieve_payment_method(payment_method_id, config)
 
     @require_active_plugin
-    def create_customer(self):
+    def create_customer(self, user):
         config = self._get_gateway_config()
         return create_stripe_customer(config)
 
