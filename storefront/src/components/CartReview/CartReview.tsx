@@ -1,25 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Accordion,
-  Card,
-  Button,
-  useAccordionToggle,
-  AccordionContext,
-  Container,
-  Dropdown,
-} from 'react-bootstrap';
+import { Row, Col, Accordion, Card, Button, useAccordionToggle, AccordionContext, Container } from 'react-bootstrap';
 import { OrderSummary } from './OrderSummary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBookmark as farFaBookmark, faChevronDown, faChevronUp, faTimes } from '@fortawesome/pro-regular-svg-icons';
-// eslint-disable-next-line
-import { faBookmark as fasFaBookmark, faEllipsisH } from '@fortawesome/pro-solid-svg-icons';
+import { faChevronDown, faChevronUp } from '@fortawesome/pro-regular-svg-icons';
 import { Maybe, Product, ProductVariant } from '../../generated/graphql';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
 import { useCheckout } from '@saleor/sdk';
 
-import { useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import { GET_CART_PRODUCT_DETAILS } from '../../config';
 import { useHistory } from 'react-router-dom';
 
@@ -56,6 +44,17 @@ type errorsType =
     }[]
   | [];
 
+const ADD_ORDER_NOTE = gql`
+  mutation orderAddCustomerNote($order: ID!, $input: OrderAddNoteInput!) {
+    orderAddCustomerNote(order: $order, input: $input) {
+      order {
+        id
+        customerNote
+      }
+    }
+  }
+`;
+
 export const CartReview: React.FC<CartProps> = ({
   discount,
   items,
@@ -90,12 +89,23 @@ export const CartReview: React.FC<CartProps> = ({
   const { completeCheckout } = useCheckout();
   const [submitting, setSubmitting] = useState(false);
 
+  const [orderAddNote] = useMutation(ADD_ORDER_NOTE);
+
   const handleSubmitOrder = async () => {
     setSubmitting(true);
     const response = await completeCheckout();
     if (response.data) {
-      console.log('response.data: ', response.data);
-
+      if (orderNote.length > 0) {
+        const order_id = response.data.order.id;
+        const noteResponse = await orderAddNote({
+          variables: {
+            order: order_id,
+            input: {
+              message: orderNote,
+            },
+          },
+        });
+      }
       history.push('/checkout/confirmation');
     } else {
       console.log('error processing order', response.dataError?.error);
