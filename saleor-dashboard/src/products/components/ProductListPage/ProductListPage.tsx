@@ -32,6 +32,7 @@ import {
   ProductFilterKeys,
   ProductListFilterOpts
 } from "./filters";
+import { ProductListFileUpload } from "./ProductListFileUpload"
 
 export interface ProductListPageProps
   extends PageListProps<ProductListColumns>,
@@ -150,6 +151,7 @@ export const ProductListPage: React.FC<ProductListPageProps> = props => {
           onFetchMore={onFetchMore}
           onSave={handleSave}
         />
+        <ProductListFileUpload />
         <Button
           onClick={onAdd}
           color="primary"
