@@ -25,7 +25,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = (props) => {
   } = useCheckout();
   const { loaded: cartLoaded, shippingPrice, discount, subtotalPrice, totalPrice, items } = useCart();
   const apiKey = process.env.STRIPE_PUBLISHABLE_KEY;
-  const stripePromise = loadStripe(process.env.STRIPE_PK);
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
   const processPayment = async (gateway: string, token?: string, cardData?: any) => {
     const { dataError } = await createPayment({

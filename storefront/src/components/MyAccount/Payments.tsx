@@ -97,7 +97,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
     }
   }, [userQuery]);
 
-  const stripePromise = loadStripe(process.env.STRIPE_PK);
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
   const renderStripeCardRow = (card, index) => {
     const isDefault = defaultStripeCard && defaultStripeCard === card.id;
