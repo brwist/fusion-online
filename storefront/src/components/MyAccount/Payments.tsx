@@ -97,9 +97,7 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
     }
   }, [userQuery]);
 
-  const stripePromise = loadStripe(
-    'pk_test_51JeloZGwGY8wmB3De8nkDq2Eex3bllEFKymSMsRiqwXUtxShtr4JVAKjLOi9WxHblgppNkcKTFhe69AFFHCMtesP00O09X3PHO'
-  );
+  const stripePromise = loadStripe(process.env.STRIPE_PK);
 
   const renderStripeCardRow = (card, index) => {
     const isDefault = defaultStripeCard && defaultStripeCard === card.id;
@@ -181,7 +179,9 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
 
       <Card>
         <Card.Body>
-          <React.Fragment>{userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}</React.Fragment>
+          <React.Fragment>
+            {userQuery?.data?.me?.stripeCards.map((card, index) => renderStripeCardRow(card, index))}
+          </React.Fragment>
           {(!userQuery?.data?.me?.stripeCards || userQuery?.data?.me?.stripeCards?.length === 0) && (
             <p>Please add a payment method.</p>
           )}
@@ -222,7 +222,9 @@ export const Payments: React.FC<PaymentsProps> = ({ ...props }) => {
           <Button variant="danger" onClick={handleDeleteCard}>
             {deleteLabel}
           </Button>
-          <Button variant="link" onClick={handleCloseModal}>Cancel</Button>
+          <Button variant="link" onClick={handleCloseModal}>
+            Cancel
+          </Button>
         </Modal.Body>
       </Modal>
     </div>
