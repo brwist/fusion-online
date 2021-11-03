@@ -12,11 +12,10 @@ import { GET_PRODUCT_LIST } from '../../config';
 import { ProductListQuery } from '../CategoryPage/CategoryPage'
 
 export interface SearchContainerProps {
-  addItem: any,
-  userApproval: boolean | undefined
+  addItem: any
 };
 
-export const SearchContainer: React.FC<SearchContainerProps> = ({addItem, userApproval}) => {
+export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
   const useQuerySearch = () => {
     return new URLSearchParams(useLocation().search);
   }
@@ -57,7 +56,6 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem, userAp
           <ProductTable 
             loading={loading}
             productData={products}
-            userApproval={userApproval}
             addItem={addItem}
             updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
             updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}

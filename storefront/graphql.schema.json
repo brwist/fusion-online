@@ -787,34 +787,6 @@
             "deprecationReason": null
           },
           {
-            "name": "jobTitle",
-            "description": "User job title",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "ENUM",
-                "name": "JobTitle",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "domain",
-            "description": "User domain",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "region",
             "description": "User geographic region",
             "type": {
@@ -22976,71 +22948,6 @@
       },
       {
         "kind": "ENUM",
-        "name": "JobTitle",
-        "description": "An enumeration.",
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
-          {
-            "name": "BUYER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "COMMODITY_PRODUCT_MANAGER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "MATERIALS_PLANNING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "IT_MANAGER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ENGINEER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ACCOUNTS_PAYABLE",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "SERVICE_TECHNICIAN",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "SALES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "OTHER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "possibleTypes": null
-      },
-      {
-        "kind": "ENUM",
         "name": "LanguageCodeEnum",
         "description": "An enumeration.",
         "fields": null,
@@ -35251,9 +35158,13 @@
                 "name": "redirectUrl",
                 "description": "URL of a view where users should be redirected to reset the password. URL in RFC 1808 format.",
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -35819,18 +35730,6 @@
             "description": "Allows customer to add stripe payment method id to private metadata for CC retrieval.",
             "args": [
               {
-                "name": "isDefault",
-                "description": "Set as the default payment method",
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "Boolean",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
                 "name": "paymentMethodId",
                 "description": "The stripe payment method id to add to this user's private metadata.",
                 "type": {
@@ -35850,35 +35749,6 @@
             "type": {
               "kind": "OBJECT",
               "name": "AddStripePaymentMethod",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "removeStripePaymentMethod",
-            "description": "Allows customer to remove stripe payment method id to private metadata for CC retrieval.",
-            "args": [
-              {
-                "name": "paymentMethodId",
-                "description": "The stripe payment method id to remove from this user's private metadata.",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "OBJECT",
-              "name": "RemoveStripePaymentMethod",
               "ofType": null
             },
             "isDeprecated": false,
@@ -47137,18 +47007,6 @@
             "deprecationReason": null
           },
           {
-            "name": "isAvailable",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "price",
             "description": null,
             "type": {
@@ -56505,77 +56363,6 @@
         "possibleTypes": null
       },
       {
-        "kind": "OBJECT",
-        "name": "RemoveStripePaymentMethod",
-        "description": "Updates privatemetadata of the logged-in user.",
-        "fields": [
-          {
-            "name": "errors",
-            "description": "List of errors that occurred executing the mutation.",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Error",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": true,
-            "deprecationReason": "Use typed errors with error codes. This field will be removed after 2020-07-31."
-          },
-          {
-            "name": "user",
-            "description": "An updated user instance.",
-            "args": [],
-            "type": {
-              "kind": "OBJECT",
-              "name": "User",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "accountErrors",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AccountError",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
         "kind": "INPUT_OBJECT",
         "name": "ReorderInput",
         "description": null,
@@ -65776,18 +65563,6 @@
             "deprecationReason": null
           },
           {
-            "name": "isApproved",
-            "description": "Whether the user has been approved in Hubspot",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "permissions",
             "description": "List of user's permissions.",
             "args": [],
@@ -65920,18 +65695,6 @@
                 "name": "StripePaymentMethod",
                 "ofType": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "defaultStripeCard",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

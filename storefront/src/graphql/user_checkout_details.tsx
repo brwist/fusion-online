@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const USER_CHECKOUT_DETAILS = gql`
-  fragment Checkout_Price on TaxedMoney {
+  fragment Price on TaxedMoney {
     gross {
       amount
       currency
@@ -12,16 +12,16 @@ export const USER_CHECKOUT_DETAILS = gql`
     }
   }
 
-  fragment Checkout_ProductVariant on ProductVariant {
+  fragment ProductVariant on ProductVariant {
     id
     name
     pricing {
       onSale
       priceUndiscounted {
-        ...Checkout_Price
+        ...Price
       }
       price {
-        ...Checkout_Price
+        ...Price
       }
     }
     product {
@@ -41,11 +41,11 @@ export const USER_CHECKOUT_DETAILS = gql`
     id
     quantity
     totalPrice {
-      ...Checkout_Price
+      ...Price
     }
     variant {
       stockQuantity
-      ...Checkout_ProductVariant
+      ...ProductVariant
     }
     quantity
   }
@@ -90,10 +90,10 @@ export const USER_CHECKOUT_DETAILS = gql`
     token
     id
     totalPrice {
-      ...Checkout_Price
+      ...Price
     }
     subtotalPrice {
-      ...Checkout_Price
+      ...Price
     }
     billingAddress {
       ...Address
@@ -109,7 +109,7 @@ export const USER_CHECKOUT_DETAILS = gql`
       ...ShippingMethod
     }
     shippingPrice {
-      ...Checkout_Price
+      ...Price
     }
     lines {
       ...CheckoutLine

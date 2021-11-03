@@ -20,8 +20,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './productdetail.scss';
 
 export interface ProductDetailProps {
-  addItem: any,
-  userApproval: boolean | undefined
+  addItem: any
 }
 
 type ProductDetailsQuery = {
@@ -29,7 +28,7 @@ type ProductDetailsQuery = {
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
-  addItem, userApproval
+  addItem
 }) => {
   const { slug } = useParams<{slug: string}>();
   const history = useHistory();
@@ -185,7 +184,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <div className="mb-5">
             <span className="font-weight-bold">Offers:</span>
             <Row className="offer-options mt-2 mx-n1">
-              {userApproval ? data?.product?.variants?.map((variant, index) => {
+              {data?.product?.variants?.map((variant, index) => {
                 return (
                   <Col lg={3} className="p-1" key={variant?.id}>
                     <Button onClick={() => setSelectedOffer(variant?.id)} variant={ selectedOffer === variant?.id ? "primary" : "secondary"} block>
@@ -212,18 +211,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     </Button>
                   </Col>
                 )
-              }) :
-                <Button block> Complete your registration to unlock offers</Button>
-              }
+              })}
             </Row>
           </div>
 
-          {userApproval && <AddToCart
+          <AddToCart
             variant={data?.product?.variants && data?.product?.variants.find(variant => variant.id === selectedOffer)}
             addItem={addItem}
             updateQuantity={(quantity: number) => setSelectedQuantity(quantity)}
             showItemAddedAlert={() => setShowAlert(true)}
-          />}
+          />
         </Col>
       </Row>
 

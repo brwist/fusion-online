@@ -5,9 +5,6 @@ import { Tag } from '../../Tag/Tag';
 import { User, StripePaymentMethod } from '../../../generated/graphql';
 import { useCheckout } from '@saleor/sdk';
 import { CountryCode } from '../../../generated/graphql';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/pro-regular-svg-icons';
 
 type userPaymentMethodsQuery = {
   me: User & { stripeCards: Array<StripePaymentMethod> };
@@ -171,9 +168,6 @@ export const Payment = ({ setActiveTab }) => {
           })}
         </tbody>
       </Table>
-      <div className="add-option">
-        <FontAwesomeIcon icon={faPlus}/><Link to="/account/payments">Add Payment Method</Link>
-      </div>
       <Button onClick={handleContinue} disabled={disableContinue}>
         Continue to Agreement
       </Button>

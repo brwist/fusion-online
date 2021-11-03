@@ -5,7 +5,7 @@ import { useForm, SubmitHandler, useFormState} from 'react-hook-form';
 import { useMutation } from '@apollo/client';
 
 import { CREATE_USER } from '../../graphql/account';
-import { AccountRegister, AccountRegisterInput, AccountError, JobTitle } from '../../generated/graphql';
+import { AccountRegister, AccountRegisterInput, AccountError } from '../../generated/graphql';
 
 import './register.scss';
 
@@ -27,7 +27,7 @@ type FormValues = {
   email: string;
   password: string;
   companyName: string;
-  jobTitle: JobTitle;
+  jobTitle: string;
   domain: string;
   region: string;
 };

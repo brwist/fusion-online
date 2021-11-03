@@ -3,14 +3,11 @@ import { useCheckout, useAuth } from '@saleor/sdk';
 import { Row, Col, Card, Button, Table, Form } from 'react-bootstrap';
 import { Maybe, Product, ProductVariant } from '../../../generated/graphql';
 import { SectionHeader } from '../../SectionHeader/SectionHeader';
-import { Link } from 'react-router-dom';
 
 import { GET_CART_PRODUCT_DETAILS } from '../../../config';
 import { GET_USER_ADDRESSES } from '../../../graphql/account';
 import { USER_CHECKOUT_DETAILS } from '../../../graphql/user_checkout_details';
 import { User, Address, Checkout } from '../../../generated/graphql';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/pro-regular-svg-icons';
 
 import { gql, useQuery, useMutation } from '@apollo/client';
 
@@ -364,9 +361,6 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
             })}
           </tbody>
         </Table>
-        <div className="add-option">
-        <FontAwesomeIcon icon={faPlus}/><Link to="/account/shipping">Add Shipping Address</Link>
-      </div>
         <h5>Domestic Shipping Method</h5>
         <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">

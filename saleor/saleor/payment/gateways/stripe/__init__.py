@@ -17,7 +17,6 @@ from .utils import (
     get_currency_from_stripe,
     shipping_to_stripe_dict,
 )
-from saleor.account.models import User
 
 
 def get_client_token(**_):
@@ -250,12 +249,15 @@ def retrieve_payment_method(payment_method_id, config: GatewayConfig):
     return card
 
 
-def create_stripe_customer(config: GatewayConfig, user: User):
+def create_stripe_customer(config: GatewayConfig):
     client = _get_client(**config.connection_params)
-    name = user.first_name + ' ' + user.last_name
-    email = user.email
-    metadata = {
-        "customer_id": user.id
-    }
-    customer = client.Customer.create(name=name, email=email, metadata=metadata)
+    customer = client.Customer.create()
     return customer
+
+
+def update_payment_with_order_info(config: GatewayConfig, payment_id, order_id):
+    client = _get_client(**config.connection_params)
+    updated_payment = client.PaymentIntent.modify(
+        payment_id,
+        metadata={"order_id": order_id},
+    )

@@ -12,7 +12,6 @@ import './producttable.scss';
 export interface ProductTableRowProps {
   product: Product,
   addItem?: any,
-  userApproval: boolean | undefined,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
   showItemAddedAlert: () => void
@@ -20,7 +19,6 @@ export interface ProductTableRowProps {
 export const ProductTableRow: React.FC<ProductTableRowProps> = ({
   product,
   addItem,
-  userApproval,
   updateSelectedProduct,
   updateSelectedQuantity,
   showItemAddedAlert
@@ -63,11 +61,11 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
         Spec Code: {product?.attributes && getAttributeValue("spec-code")} | Ordering Code: { product?.attributes && getAttributeValue("ordering-code")}
       </div>
     </td>
-    <td className="text-center">{userApproval ? 'Incoming Stock' : '--'}</td>
-    <td className="text-center">{userApproval ? product?.defaultVariant?.quantityAvailable : '--'}</td>
+    <td className="text-center">Incoming Stock</td>
+    <td className="text-center">{product?.defaultVariant?.quantityAvailable}</td>
     <td className="text-center">{unitPrice !== "0.00" ? `${unitPrice}` : `--`}</td>
     <td className="text-center">
-      <Button variant="primary" onClick={() => setShow(true)} disabled={!userApproval}>
+      <Button variant="primary" onClick={() => setShow(true)} disabled={unitPrice === "0.00"}>
         Select Quantity
       </Button>
 

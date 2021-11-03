@@ -26,8 +26,7 @@ import { ItemAddedAlert } from '../AddToCart/ItemAddedAlert';
 import './categorypage.scss';
 
 export interface CategoryPageProps {
-  addItem: any,
-  userApproval: boolean | undefined
+  addItem: any
 }
 export type MoneyFragment = (
   { __typename: 'Money' }
@@ -75,7 +74,7 @@ export type ProductListQuery = (
   )> }
 );
 
-export const CategoryPage: React.FC<CategoryPageProps> = ({addItem, userApproval}) => {
+export const CategoryPage: React.FC<CategoryPageProps> = ({addItem}) => {
   const [attributes, setAttributes] = useState<Array<AttributeInput>>([]);
   const {slug} = useParams<{slug: string}>();
   const category = useCategoryDetails({slug: slug});
@@ -87,7 +86,6 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem, userApproval
   })
   const [products, setProducts] = useState([])
 
-  console.log('userApproval', userApproval)
   useEffect(() => {
     if (data?.products) {
       setProducts(data.products.edges)
@@ -117,7 +115,6 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({addItem, userApproval
             loading={loading}
             productData={products}
             addItem={addItem}
-            userApproval={userApproval}
             updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
             updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}
             showItemAddedAlert={ () => setShowAlert(true)}
