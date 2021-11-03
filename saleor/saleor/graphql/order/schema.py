@@ -30,6 +30,7 @@ from .mutations.fulfillments import (
 )
 from .mutations.orders import (
     OrderAddNote,
+    OrderAddCustomerNote,
     OrderCancel,
     OrderCapture,
     OrderClearMeta,
@@ -157,6 +158,7 @@ class OrderMutations(graphene.ObjectType):
     draft_order_update = DraftOrderUpdate.Field()
 
     order_add_note = OrderAddNote.Field()
+    order_add_customer_note = OrderAddCustomerNote.Field()
     order_cancel = OrderCancel.Field()
     order_capture = OrderCapture.Field()
     order_clear_private_meta = OrderClearPrivateMeta.Field(

@@ -323,6 +323,51 @@ class OrderAddNote(BaseMutation):
         return OrderAddNote(order=order, event=event)
 
 
+class OrderAddCustomerNote(BaseMutation):
+    order = graphene.Field(Order, description="Order with the note added.")
+
+    class Arguments:
+        id = graphene.ID(
+            required=True,
+            description="ID of the order to add a note for.",
+            name="order",
+        )
+        input = OrderAddNoteInput(
+            required=True, description="Fields required to create a note for the order."
+        )
+
+    class Meta:
+        description = "Adds note to the order."
+        error_type_class = OrderError
+        error_type_field = "order_errors"
+
+    @classmethod
+    def clean_input(cls, _info, _instance, data):
+        try:
+            cleaned_input = validate_required_string_field(data["input"], "message")
+        except ValidationError:
+            raise ValidationError(
+                {
+                    "message": ValidationError(
+                        "Message can't be empty.", code=OrderErrorCode.REQUIRED,
+                    )
+                }
+            )
+        return cleaned_input
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        order = cls.get_node_or_error(info, data.get("id"), only_type=Order)
+        cleaned_input = cls.clean_input(info, order, data)
+        order.customer_note = cleaned_input['message']
+        order.save()
+        return OrderAddCustomerNote(order=order)
+
+
 class OrderCancel(BaseMutation):
     order = graphene.Field(Order, description="Canceled order.")
 
