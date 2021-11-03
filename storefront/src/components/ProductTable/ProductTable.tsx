@@ -9,6 +9,7 @@ export interface ProductTableProps {
   loading: boolean,
   productData: Array<{node: Product}>,
   addItem?: any,
+  userApproval: boolean | undefined,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
   showItemAddedAlert: () => void
@@ -18,6 +19,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   loading,
   productData,
   addItem,
+  userApproval,
   updateSelectedProduct,
   updateSelectedQuantity,
   showItemAddedAlert
@@ -62,6 +64,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
                 key={node?.id}
                 product={node}
                 addItem={addItem}
+                userApproval={userApproval}
                 showItemAddedAlert={showItemAddedAlert}
                 updateSelectedProduct={updateSelectedProduct}
                 updateSelectedQuantity={updateSelectedQuantity}
