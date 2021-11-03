@@ -28,7 +28,4 @@ urlpatterns = [
     # webhook
     path("install-webhook", hubspot_views.install_webhook),
     path("contact/changed", hubspot_views.update_contact_approval_status),
-
-    #product-upload
-    path("/admin/product-upload", admin_views.upload_file)
 ]
