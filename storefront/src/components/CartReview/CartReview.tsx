@@ -93,8 +93,9 @@ export const CartReview: React.FC<CartProps> = ({
   const handleSubmitOrder = async () => {
     setSubmitting(true);
     const response = await completeCheckout();
-    console.log('response: ', response);
     if (response.data) {
+      console.log('response.data: ', response.data);
+
       history.push('/checkout/confirmation');
     } else {
       console.log('error processing order', response.dataError?.error);
