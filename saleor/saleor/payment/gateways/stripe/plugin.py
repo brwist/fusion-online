@@ -12,7 +12,8 @@ from . import (
     refund,
     void,
     retrieve_payment_method,
-    create_stripe_customer
+    create_stripe_customer,
+    update_payment_with_order_info
 )
 
 GATEWAY_NAME = "Stripe"
@@ -148,6 +149,11 @@ class StripeGatewayPlugin(BasePlugin):
         return retrieve_payment_method(payment_method_id, config)
 
     @require_active_plugin
-    def create_customer(self):
+    def create_customer(self, user):
         config = self._get_gateway_config()
-        return create_stripe_customer(config)
+        return create_stripe_customer(config, user)
+
+    @require_active_plugin
+    def update_payment_with_order_info(self, payment_id, order_id):
+        config = self._get_gateway_config()
+        return update_payment_with_order_info(config, payment_id, order_id)

@@ -88,8 +88,10 @@ export const CartReview: React.FC<CartProps> = ({
 
   const [submitErrors, setSubmitErrors] = useState<errorsType>([]);
   const { completeCheckout } = useCheckout();
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmitOrder = async () => {
+    setSubmitting(true);
     const response = await completeCheckout();
     if (response.data) {
       console.log('response.data: ', response.data);
@@ -99,6 +101,10 @@ export const CartReview: React.FC<CartProps> = ({
       console.log('error processing order', response.dataError?.error);
     }
   };
+
+  useEffect(() => {
+    setSubmitting(false);
+  }, []);
 
   useEffect(() => {
     if (items) {
@@ -127,7 +133,9 @@ export const CartReview: React.FC<CartProps> = ({
       ?.toFixed(2);
   };
 
-  const disableSubmit = !agreed;
+  const disableSubmit = !agreed || submitting;
+
+  const submitLabel = submitting ? `Placing Order...` : `Place Your Order`;
 
   if (!items || items?.length === 0) {
     return (
@@ -196,7 +204,7 @@ export const CartReview: React.FC<CartProps> = ({
                 </Accordion.Collapse>
               </Accordion>
               <Button onClick={handleSubmitOrder} disabled={disableSubmit}>
-                Place Your Order
+                {submitLabel}
               </Button>
             </Col>
 

@@ -225,33 +225,33 @@ export const ProductVariants: React.FC<ProductVariantsProps> = props => {
           defaultMessage: "Variants",
           description: "section header"
         })}
-        toolbar={
-          hasVariants ? (
-            <Button
-              onClick={onVariantAdd}
-              variant="text"
-              color="primary"
-              data-test="button-add-variant"
-            >
-              <FormattedMessage
-                defaultMessage="Create variant"
-                description="button"
-              />
-            </Button>
-          ) : (
-            <Button
-              onClick={onVariantsAdd}
-              variant="text"
-              color="primary"
-              data-test="button-add-variants"
-            >
-              <FormattedMessage
-                defaultMessage="Create variants"
-                description="button"
-              />
-            </Button>
-          )
-        }
+        // toolbar={
+        //   hasVariants ? (
+        //     <Button
+        //       onClick={onVariantAdd}
+        //       variant="text"
+        //       color="primary"
+        //       data-test="button-add-variant"
+        //     >
+        //       <FormattedMessage
+        //         defaultMessage="Create variant"
+        //         description="button"
+        //       />
+        //     </Button>
+        //   ) : (
+        //     <Button
+        //       onClick={onVariantsAdd}
+        //       variant="text"
+        //       color="primary"
+        //       data-test="button-add-variants"
+        //     >
+        //       <FormattedMessage
+        //         defaultMessage="Create variants"
+        //         description="button"
+        //       />
+        //     </Button>
+        //   )
+        // }
       />
 
       {variants.length > 0 ? (
@@ -273,7 +273,7 @@ export const ProductVariants: React.FC<ProductVariantsProps> = props => {
       ) : (
         <CardContent>
           <Typography color={hasVariants ? "textPrimary" : "textSecondary"}>
-            <FormattedMessage defaultMessage="Use variants for products that come in a variety of versions for example different sizes or colors" />
+            <FormattedMessage defaultMessage="Use the pricing tool to create product variants from offers." />
           </Typography>
         </CardContent>
       )}

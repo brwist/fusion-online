@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
   //   paddingBottom: 48,
   },
   formControl: {
-    minWidth: 200,
+    minWidth: 210,
   },
   padding: {
     padding: 24,
@@ -472,7 +472,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
           className={classes.formControl}
           variant="outlined"
         >
-          <InputLabel htmlFor="default-variant">Default Variant</InputLabel>
+          <InputLabel htmlFor="default-variant">Default Variant ID</InputLabel>
           <Select
             native
             inputProps={{
@@ -518,7 +518,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
                   className={`${classes.formControl} ${hideDropdown && 'd-none'}`}
                     variant="outlined"
                 >
-                  <InputLabel htmlFor="select-offer">Select Offer</InputLabel>
+                  <InputLabel htmlFor="select-offer">Select Offer ID-Vendor</InputLabel>
                   <Select
                     native
                     inputProps={{
@@ -527,9 +527,9 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
                     }}
                     onChange={handleOfferSelect}
                   >
-                    <option aria-label="None" value="" />
+                    <option aria-label="None" value=""/>
                     {productItemMasterId && offers?.map(offer => (
-                      <option key={offer.id} value={offer.id}>{offer.vendor.vendorNumber}</option>
+                      <option key={offer.id} value={offer.id}>{offer.offerId}-{offer.vendor.vendorNumber}</option>
                     ))}
                   </Select>
                 </FormControl>
