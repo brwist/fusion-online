@@ -42,6 +42,7 @@ class ProductSerializer(serializers.Serializer):
     storage_class = serializers.CharField(max_length=100, required=False, allow_blank=True)
     storage_capacity = serializers.CharField(max_length=100, required=False, allow_blank=True)
     storage_size = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    storage_type = serializers.CharField(max_length=100, required=False, allow_blank=True)
     gpu_line = serializers.CharField(max_length=100, required=False, allow_blank=True)
     gpu_model = serializers.CharField(max_length=100, required=False, allow_blank=True)
     gpu_memory_config = serializers.CharField(max_length=100, required=False, allow_blank=True)
