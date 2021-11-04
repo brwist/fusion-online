@@ -108,7 +108,7 @@ class HubspotEmails:
         payload = {
             "message": {
                 "from": "info@rocketchips.com",
-                "to": "alex@bowst.com"
+                "to": to
             },
             "customProperties": {
                 "OrderNumber": order_num,
