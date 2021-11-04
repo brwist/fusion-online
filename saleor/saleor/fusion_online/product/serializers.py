@@ -57,7 +57,7 @@ class ProductSerializer(serializers.Serializer):
         elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("GPU"):
             product_type_slug = "gpu"
             attr_slugs =["gpu_line", "gpu_model", "gpu_memory_config", "gpu_interface", "gpu_cooling", "gpu_packaging"]
-        elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("MEM"):
+        elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("Mem"):
             product_type_slug = "memory"
             attr_slugs = ["memory_ddr", "memory_type", "memory_density", "memory_rank_org", "memory_speed"]
         else:
