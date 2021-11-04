@@ -592,10 +592,11 @@ JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
 )
 
 CORS_ALLOWED_ORIGINS = [
-    "https://api-docs-sandbox.fusiononline.io"
+    "https://api-docs-sandbox.fusiononline.io",
+    "http://localhost:9001"
 ]
 
-CORS_URLS_REGEX = r'^/fo-api/.*$'
+CORS_URLS_REGEX = r'^/(fo-api|admin)/.*$'
 
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
