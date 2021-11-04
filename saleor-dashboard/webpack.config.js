@@ -102,7 +102,7 @@ module.exports = (env, argv) => {
     output,
     plugins: [checkerPlugin, environmentPlugin, htmlWebpackPlugin],
     resolve: {
-      extensions: [".js", ".jsx", ".ts", ".tsx"],
+      extensions: [".mjs", ".js", ".jsx", ".ts", ".tsx"],
       plugins: [pathsPlugin]
     }
   };
