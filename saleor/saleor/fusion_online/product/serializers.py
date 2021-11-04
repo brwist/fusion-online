@@ -83,7 +83,7 @@ class ProductSerializer(serializers.Serializer):
         # attribute values that do not exist will be created
         for attr_slug in attr_slugs: 
             attribute = Attribute.objects.get(slug=attr_slug)
-            if validated_data[attr_slug]:
+            if validated_data.get(attr_slug, None):
                 attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
                 associate_attribute_values_to_instance(product, attribute, attribute_value[0])
         print("--ATTRIBUTE VALUES STORED--")
