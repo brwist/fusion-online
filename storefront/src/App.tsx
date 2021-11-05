@@ -124,6 +124,8 @@ function App() {
     setShowAlert({ show: false });
   };
 
+  console.log("userApproval", userApproval)
+
   return authenticated && user ? (
     <>
       <Alert
@@ -137,7 +139,7 @@ function App() {
               <p>Hello, <strong>{user.firstName}</strong>, it looks like you still need to complete your registration to unlock the full features of RocketChips.</p>
             </Col>
             <Col md="auto">
-              <Button>
+              <Button onClick={() => history.push('/account/complete-registration')}>
                 Complete Registration
               </Button>
             </Col>

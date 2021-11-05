@@ -213,7 +213,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                   </Col>
                 )
               }) :
-                <Button block> Complete your registration to unlock offers</Button>
+                <Button block onClick={() => history.push('/account/complete-registration')}> Complete your registration to unlock offers</Button>
               }
             </Row>
           </div>
