@@ -12,7 +12,7 @@ export const ProductListFileUpload: React.FC<ProductListFileUploadProps> = props
   const onFileUpload = async () => {
     const formData = new FormData();
     formData.append(
-      "productListFile",
+      "product_list_csv",
       selectedFile,
       selectedFile.name
     )
