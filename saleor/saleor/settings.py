@@ -390,7 +390,7 @@ PAYMENT_HOST = get_host
 
 PAYMENT_MODEL = "order.Payment"
 
-MAX_CHECKOUT_LINE_QUANTITY = int(os.environ.get("MAX_CHECKOUT_LINE_QUANTITY", 50))
+MAX_CHECKOUT_LINE_QUANTITY = int(os.environ.get("MAX_CHECKOUT_LINE_QUANTITY", 500))
 
 TEST_RUNNER = "saleor.tests.runner.PytestTestRunner"
 
@@ -627,3 +627,6 @@ HUBSPOT_CLIENT_ID = os.environ.get("HUBSPOT_CLIENT_ID")
 HUBSPOT_APP_ID = os.environ.get("HUBSPOT_APP_ID")
 HUBSPOT_OAUTH_REDIRECT_URL = os.environ.get("HUBSPOT_OAUTH_REDIRECT_URL")
 HUBSPOT_API_CONTACT_OWNER_ID = os.environ.get("HUBSPOT_API_CONTACT_OWNER_ID")
+
+# Storefront url for redirect links
+STOREFRONT_ROOT_URL = os.environ.get("STOREFRONT_ROOT_URL")

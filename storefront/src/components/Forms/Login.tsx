@@ -1,20 +1,23 @@
 import React, {useState} from 'react';
 import { Form, Button } from 'react-bootstrap';
 
+
 import './login.scss';
 
 export interface LoginProps {
   handleSignIn(email: string, password: string): void,
-  errors: any
+  errors: any,
+  openModal: Function
 }
 
 export const Login: React.FC<LoginProps> = ({
-  handleSignIn, errors
+  handleSignIn, errors, openModal
 }) => {
   const [formValues, setFormValues] = useState({
     email: "",
     password: ""
   })
+
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormValues({
@@ -66,7 +69,11 @@ export const Login: React.FC<LoginProps> = ({
         </Form.Group>
 
         <Form.Text className="mb-3">
-          <Button variant="link">
+          <Button
+            variant="link"
+            className="pl-0"
+            onClick={() => openModal()}
+          >
             Forgot your password?
           </Button>
         </Form.Text>

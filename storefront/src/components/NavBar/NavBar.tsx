@@ -10,7 +10,7 @@ import { NavBarSearch } from './NavBarSearch';
 import './navbar.scss';
 
 import { useQuery } from '@apollo/client';
-import { GET_CATEGORY_LIST } from '../../config';
+import { GET_PARENT_CATEGORY_LIST } from '../../config';
 
 type CategoryListQuery = {
   categories?: Maybe<(
@@ -28,15 +28,11 @@ export interface NavBarProps {
 export const NavBar: React.FC<NavBarProps> = ({
   signOut, cartItemsNum
 }) => {
-  const {data} = useQuery<CategoryListQuery>(GET_CATEGORY_LIST, {variables: {first: 6}});
+  const {data} = useQuery<CategoryListQuery>(GET_PARENT_CATEGORY_LIST, {variables: {first: 6}});
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const parentCategories = data?.categories?.edges?.filter(
-    ({node}) => !node?.parent
-  )
 
   return (
     <>
@@ -65,7 +61,7 @@ export const NavBar: React.FC<NavBarProps> = ({
             <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
               <Nav as="ul" id="main-nav">
-                <NavDropdown as="li" title="Mega Menu" className="mega-menu" id="basic-nav-dropdown">
+                {/* <NavDropdown as="li" title="Mega Menu" className="mega-menu" id="basic-nav-dropdown">
                   <Container>
                     <Row>
                       <Col lg className="d-none d-lg-block">
@@ -98,8 +94,8 @@ export const NavBar: React.FC<NavBarProps> = ({
                       </Col>
                     </Row>
                   </Container>
-                </NavDropdown>
-                {parentCategories?.map(({node}) => {
+                </NavDropdown> */}
+                {data?.categories?.edges?.map(({node}) => {
                   return (
                     <Nav.Item key={node?.id} as="li">
                       <Link className="nav-link" to={`/categories/${node?.slug}`}>{node?.name}</Link>

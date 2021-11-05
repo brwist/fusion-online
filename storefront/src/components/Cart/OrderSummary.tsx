@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Table, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom'
 
 export interface OrderSummaryProps {
   subtotal: string | 0
@@ -8,6 +9,7 @@ export interface OrderSummaryProps {
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
   subtotal
 }) => {
+  const history = useHistory()
   return (
     <Card className="order-summary">
       <Card.Body>
@@ -18,7 +20,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           <Table>
             <tbody>
               <tr>
-                <td>Shipment 1</td>
+                <td>Shipment</td>
                 <td className="text-right font-weight-bold">${subtotal}</td>
               </tr>
             </tbody>
@@ -30,11 +32,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
             </tfoot>
           </Table>
 
-          <p className="my-3">
-            <em>Some text some text some text some text some text some text</em>
-          </p>
-
-          <Button variant="primary" size="lg" block>
+          <Button onClick={() => history.push('/checkout')} variant="primary" size="lg" block>
             Place Order
           </Button>
           <div className="py-3 text-center">

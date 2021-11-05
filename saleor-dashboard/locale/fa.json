@@ -5096,7 +5096,7 @@
     "string": "This where you will find all of the settings determining your stores e-mails. You can determine main email address and some of the contents of your emails."
   },
   "src_dot_somethingWentWrong": {
-    "string": "Saleor ran into an unexpected problem"
+    "string": "RocketChips ran into an unexpected problem"
   },
   "src_dot_staff": {
     "context": "staff section name",

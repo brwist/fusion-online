@@ -36,8 +36,11 @@ def create_payment_information(
     Returns information required to process payment and additional
     billing/shipping addresses for optional fraud-prevention mechanisms.
     """
+    unwanted_keys = ['customer_id', 'ship_to_name',
+                     'ship_via', 'vat_id', 'validation_message']
     if payment.checkout:
         billing = payment.checkout.billing_address
+        print("billing:", billing.as_data())
         shipping = payment.checkout.shipping_address
     elif payment.order:
         billing = payment.order.billing_address
@@ -45,8 +48,20 @@ def create_payment_information(
     else:
         billing, shipping = None, None
 
-    billing_address = AddressData(**billing.as_data()) if billing else None
-    shipping_address = AddressData(**shipping.as_data()) if shipping else None
+    # Cleaning the shipping and billing data to just include the properties that saleor expects
+    if billing:
+        billing_dict = billing.as_data()
+        for key in unwanted_keys:
+            if key in billing_dict:
+                billing_dict.pop(key)
+    if shipping:
+        shipping_dict = shipping.as_data()
+        for key in unwanted_keys:
+            if key in shipping_dict:
+                shipping_dict.pop(key)
+
+    billing_address = AddressData(**billing_dict) if billing else None
+    shipping_address = AddressData(**shipping_dict) if shipping else None
 
     order_id = payment.order.pk if payment.order else None
     graphql_payment_id = graphene.Node.to_global_id("Payment", payment.pk)
@@ -73,6 +88,7 @@ def create_payment(
     total: Decimal,
     currency: str,
     email: str,
+    customer_id: str = "",
     customer_ip_address: str = "",
     payment_token: Optional[str] = "",
     extra_data: Dict = None,
@@ -91,6 +107,7 @@ def create_payment(
 
     data = {
         "is_active": True,
+        "customer_id": customer_id,
         "customer_ip_address": customer_ip_address,
         "extra_data": json.dumps(extra_data),
         "token": payment_token,

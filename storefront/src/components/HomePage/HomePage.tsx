@@ -7,6 +7,7 @@ import { Tag } from '../Tag/Tag';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { NewsCard } from '../NewsCard/NewsCard';
 import { SectionHeader } from '../SectionHeader/SectionHeader';
+import { HelpBlock } from '../HelpBlock/HelpBlock';
 
 import "./homepage.scss";
 
@@ -17,7 +18,7 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
   const history = useHistory();
   return (
     <Container>
-      <SectionHeader subheading="Lorem Impsum Dolor" heading="RocketChips Product Portal" />
+      <SectionHeader subheading="Welcome" heading="RocketChips Product Portal" />
       <SearchBar />
       <Row>
         <Col className="my-auto" md="auto">
@@ -51,34 +52,37 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
       </Row>
       <Row className="my-3">
         <Col>
-          <ProductCard 
+          <ProductCard
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
             onClick={() => history.push('/account/orders/open-orders/1')}
           />
         </Col>
         <Col>
-          <ProductCard 
+          <ProductCard
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
             onClick={() => history.push('/account/orders/open-orders/2')}
           />
         </Col>
         <Col>
-          <ProductCard 
+          <ProductCard
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
             onClick={() => history.push('/account/orders/open-orders/3')}
           />
         </Col>
         <Col>
-          <ProductCard 
+          <ProductCard
             title="Intel Pentium Gold 7505 Processor"
             buttonLabel="View Order"
             onClick={() => history.push('/account/orders/open-orders/4')}
           />
         </Col>
       </Row>
+
+      <HelpBlock />
+
       <Row>
       <Col className="my-auto">
           <h6 className="my-auto">Latest News:</h6>
@@ -94,16 +98,16 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <NewsCard
             date="Sept. 16, 2022"
             title="Lorem Ipsum"
-            text="Suspendisse potenti. Pellentesque mattis 
-            mattis posuere. Curabitur id metus tristique, 
-            porttitor turpis et, rhoncus mauris. Mauris ac 
-            viverra sem. Aliquam quam tellus, egestas vitae 
-            neque nec, posuere tempus velit. Nam lobortis 
-            eros quam. Fusce ut vehicula odio. Nam ornare 
-            dui vel lectus ornare, nec interdum velit 
-            pharetra. Morbi ac libero erat. Vestibulum ante 
-            ipsum primis in faucibus orci luctus et ultrices 
-            posuere cubilia curae; Nam gravida ligula non 
+            text="Suspendisse potenti. Pellentesque mattis
+            mattis posuere. Curabitur id metus tristique,
+            porttitor turpis et, rhoncus mauris. Mauris ac
+            viverra sem. Aliquam quam tellus, egestas vitae
+            neque nec, posuere tempus velit. Nam lobortis
+            eros quam. Fusce ut vehicula odio. Nam ornare
+            dui vel lectus ornare, nec interdum velit
+            pharetra. Morbi ac libero erat. Vestibulum ante
+            ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Nam gravida ligula non
             varius vestibulum. Donec eleifend congue massa."
             buttonLabel="Read More"
           />
@@ -112,16 +116,16 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <NewsCard
             date="Sept. 16, 2022"
             title="Lorem Ipsum"
-            text="Suspendisse potenti. Pellentesque mattis 
-            mattis posuere. Curabitur id metus tristique, 
-            porttitor turpis et, rhoncus mauris. Mauris ac 
-            viverra sem. Aliquam quam tellus, egestas vitae 
-            neque nec, posuere tempus velit. Nam lobortis 
-            eros quam. Fusce ut vehicula odio. Nam ornare 
-            dui vel lectus ornare, nec interdum velit 
-            pharetra. Morbi ac libero erat. Vestibulum ante 
-            ipsum primis in faucibus orci luctus et ultrices 
-            posuere cubilia curae; Nam gravida ligula non 
+            text="Suspendisse potenti. Pellentesque mattis
+            mattis posuere. Curabitur id metus tristique,
+            porttitor turpis et, rhoncus mauris. Mauris ac
+            viverra sem. Aliquam quam tellus, egestas vitae
+            neque nec, posuere tempus velit. Nam lobortis
+            eros quam. Fusce ut vehicula odio. Nam ornare
+            dui vel lectus ornare, nec interdum velit
+            pharetra. Morbi ac libero erat. Vestibulum ante
+            ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Nam gravida ligula non
             varius vestibulum. Donec eleifend congue massa."
             buttonLabel="Read More"
           />
@@ -130,16 +134,16 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <NewsCard
             date="Sept. 16, 2022"
             title="Lorem Ipsum"
-            text="Suspendisse potenti. Pellentesque mattis 
-            mattis posuere. Curabitur id metus tristique, 
-            porttitor turpis et, rhoncus mauris. Mauris ac 
-            viverra sem. Aliquam quam tellus, egestas vitae 
-            neque nec, posuere tempus velit. Nam lobortis 
-            eros quam. Fusce ut vehicula odio. Nam ornare 
-            dui vel lectus ornare, nec interdum velit 
-            pharetra. Morbi ac libero erat. Vestibulum ante 
-            ipsum primis in faucibus orci luctus et ultrices 
-            posuere cubilia curae; Nam gravida ligula non 
+            text="Suspendisse potenti. Pellentesque mattis
+            mattis posuere. Curabitur id metus tristique,
+            porttitor turpis et, rhoncus mauris. Mauris ac
+            viverra sem. Aliquam quam tellus, egestas vitae
+            neque nec, posuere tempus velit. Nam lobortis
+            eros quam. Fusce ut vehicula odio. Nam ornare
+            dui vel lectus ornare, nec interdum velit
+            pharetra. Morbi ac libero erat. Vestibulum ante
+            ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Nam gravida ligula non
             varius vestibulum. Donec eleifend congue massa."
             buttonLabel="Read More"
           />
@@ -148,16 +152,16 @@ export const HomePage: React.FC<HomePageProps> = ({...props}) => {
           <NewsCard
             date="Sept. 16, 2022"
             title="Lorem Ipsum"
-            text="Suspendisse potenti. Pellentesque mattis 
-            mattis posuere. Curabitur id metus tristique, 
-            porttitor turpis et, rhoncus mauris. Mauris ac 
-            viverra sem. Aliquam quam tellus, egestas vitae 
-            neque nec, posuere tempus velit. Nam lobortis 
-            eros quam. Fusce ut vehicula odio. Nam ornare 
-            dui vel lectus ornare, nec interdum velit 
-            pharetra. Morbi ac libero erat. Vestibulum ante 
-            ipsum primis in faucibus orci luctus et ultrices 
-            posuere cubilia curae; Nam gravida ligula non 
+            text="Suspendisse potenti. Pellentesque mattis
+            mattis posuere. Curabitur id metus tristique,
+            porttitor turpis et, rhoncus mauris. Mauris ac
+            viverra sem. Aliquam quam tellus, egestas vitae
+            neque nec, posuere tempus velit. Nam lobortis
+            eros quam. Fusce ut vehicula odio. Nam ornare
+            dui vel lectus ornare, nec interdum velit
+            pharetra. Morbi ac libero erat. Vestibulum ante
+            ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Nam gravida ligula non
             varius vestibulum. Donec eleifend congue massa."
             buttonLabel="Read More"
           />

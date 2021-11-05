@@ -4,6 +4,7 @@ export const productErrorFragment = gql`
   fragment ProductErrorFragment on ProductError {
     code
     field
+    message
   }
 `;
 

@@ -1,6 +1,9 @@
 RocketChips API Changelog
 ==========================
 
+### 2021-10-25 (version 0.0.10):
+  - Make certain fields no longer required in RFQLineItem schema and add the notes property to the RFQLineItem schema.
+
 ### 2021-10-06 (version 0.0.9):
   - Removed item_num_id from the Sales Order schema.
   - Provided max lengths for various Ship-To, Sales Order and Product schema properties.

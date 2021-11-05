@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import { ProductTable } from '../ProductTable/ProductTable';
@@ -12,10 +12,11 @@ import { GET_PRODUCT_LIST } from '../../config';
 import { ProductListQuery } from '../CategoryPage/CategoryPage'
 
 export interface SearchContainerProps {
-  addItem: any
+  addItem: any,
+  userApproval: boolean | undefined
 };
 
-export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
+export const SearchContainer: React.FC<SearchContainerProps> = ({addItem, userApproval}) => {
   const useQuerySearch = () => {
     return new URLSearchParams(useLocation().search);
   }
@@ -27,22 +28,17 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
   const [selectedQuantity, setSelectedQuantity ] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
   const { data, loading } = useQuery<ProductListQuery>(GET_PRODUCT_LIST, {
-    variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true}, first: 100}
+    variables: {filter: {search: searchQuery, attributes: attributes, isPublished: true, isAvailable: true}, first: 100}
   })
 
+  const [products, setProducts] = useState([])
 
-  let results: any = [];
-  if (data) {
-    results = data.products?.edges.map(({node}) => {
-      return {
-        otherData: {
-          saved: false,
-          status: "Incoming Stock",
-        },
-        product: node
-      }
-    }) || []
-  }
+  useEffect(() => {
+    if (data?.products) {
+      setProducts(data.products.edges)
+    }
+  })
+
   return (
     <>
     <ItemAddedAlert 
@@ -60,7 +56,8 @@ export const SearchContainer: React.FC<SearchContainerProps> = ({addItem}) => {
           <SearchBar initialSearchQuery={initialSearchQuery} updateSearchQuery={(searchString) => { return (setSearchquery(searchString))}} />
           <ProductTable 
             loading={loading}
-            productData={results}
+            productData={products}
+            userApproval={userApproval}
             addItem={addItem}
             updateSelectedProduct={(productName: string) => setSelectedProduct(productName)}
             updateSelectedQuantity={(quantity: number) => setSelectedQuantity(quantity)}

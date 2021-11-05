@@ -1,0 +1,27 @@
+@import '../../globalStyles/common';
+
+.help-block {
+    background: $navy url(../../img/help-block_bg.png) no-repeat;
+    background-size: cover;
+    background-position: right top;
+    margin: 100px 0;
+    padding: 80px 60px;
+
+    .row {
+        align-items: flex-end;
+    }
+
+    &,
+    h3 {
+        color: $white;
+    }
+
+    h3 {
+        margin: 0;
+        text-transform: none;
+    }
+
+    .btn {
+        width: 45%;
+    }
+}

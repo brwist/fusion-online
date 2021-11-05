@@ -18,6 +18,11 @@ export const ProductFragmentDoc = gql`
       key
       value
     }
+    defaultVariant {
+      id
+      sku
+      quantityAvailable
+    }
     variants {
       id
       sku
@@ -159,6 +164,11 @@ export const GET_PRODUCT_DETAILS = gql`
     }
     isAvailable
     quantityAvailable(countryCode: $countryCode)
+    offer {
+      id
+      leadTimeDays
+      coo
+    }
     pricing {
       onSale
       priceUndiscounted {
@@ -271,9 +281,9 @@ export const GET_CART_PRODUCT_DETAILS = gql`
   ${PriceFragmentDoc}
 `;
 
-export const GET_CATEGORY_LIST = gql`
+export const GET_PARENT_CATEGORY_LIST = gql`
   query CategoryList($first: Int) {
-    categories(first: $first) {
+    categories(first: $first, level: 0, sortBy: {direction: ASC, field: NAME}) {
       edges {
         node {
           id

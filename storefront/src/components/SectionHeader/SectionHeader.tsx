@@ -4,12 +4,17 @@ import './sectionheader.scss'
 
 export interface SectionHeaderProps {
   subheading: String,
-  heading: String
+  heading: String,
+  borderClass?: 'mb-5 border-bottom' | '',
 }
 
-export const SectionHeader: React.FC<SectionHeaderProps> = ({subheading, heading}) => {
+export const SectionHeader: React.FC<SectionHeaderProps> = ({
+  subheading,
+  heading,
+  borderClass = 'mb-5 border-bottom',
+}) => {
   return (
-    <header className="mb-5 border-bottom d-flex justify-content-between align-items-center">
+    <header className={['d-flex justify-content-between align-items-center', borderClass].join(' ')}>
       <div>
         <div className="small section-header pb-3">
           <svg width="35px" height="15px" viewBox="0 0 35 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">

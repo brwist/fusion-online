@@ -5,18 +5,11 @@ import {Product} from '../../generated/graphql'
 import { ScrollToTopOnMount } from '../../utils/ScrollToTopOnMount'
 import './producttable.scss';
 
-type ProductData = {
-  otherData: {
-    saved: boolean,
-    status: string
-  },
-  product: Product
-}
-
 export interface ProductTableProps {
   loading: boolean,
-  productData: Array<ProductData>,
+  productData: Array<{node: Product}>,
   addItem?: any,
+  userApproval: boolean | undefined,
   updateSelectedProduct: (productName: string) => void,
   updateSelectedQuantity: (quantity: number) => void,
   showItemAddedAlert: () => void
@@ -26,6 +19,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   loading,
   productData,
   addItem,
+  userApproval,
   updateSelectedProduct,
   updateSelectedQuantity,
   showItemAddedAlert
@@ -48,6 +42,7 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       </>
     )
   }
+
   return (
     <Card className="search-results">
       <ScrollToTopOnMount />
@@ -63,13 +58,13 @@ export const ProductTable: React.FC<ProductTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {productData?.map(({otherData, product}) => {
+          {productData?.map(({node}) => {
             return (
               <ProductTableRow
-                key={product.id}
-                otherData={otherData}
-                product={product}
+                key={node?.id}
+                product={node}
                 addItem={addItem}
+                userApproval={userApproval}
                 showItemAddedAlert={showItemAddedAlert}
                 updateSelectedProduct={updateSelectedProduct}
                 updateSelectedQuantity={updateSelectedQuantity}

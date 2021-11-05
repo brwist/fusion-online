@@ -32,7 +32,7 @@ export const AppInstallErrorPage: React.FC<AppInstallErrorPageProps> = ({
           </Typography>
           <Typography variant="body2">
             <FormattedMessage
-              defaultMessage="Saleor couldn’t fetch crucial information regarding installation. Without those System can’t install the app in your Saleor. Please use the button below to get back to system’s dashboard."
+              defaultMessage="RocketChips couldn’t fetch crucial information regarding installation. Without those System can’t install the app in your RocketChips. Please use the button below to get back to system’s dashboard."
               description="content"
             />
           </Typography>

@@ -152,6 +152,8 @@ def filter_categories(qs, _, value):
 def filter_has_category(qs, _, value):
     return qs.filter(category__isnull=not value)
 
+def filter_is_available(qs, _, value):
+    return qs.filter(available_for_purchase__isnull=not value)
 
 def filter_collections(qs, _, value):
     if value:
@@ -317,6 +319,7 @@ class ProductStockFilterInput(graphene.InputObjectType):
 
 class ProductFilter(django_filters.FilterSet):
     is_published = django_filters.BooleanFilter()
+    is_available = django_filters.BooleanFilter(method=filter_is_available)
     collections = GlobalIDMultipleChoiceFilter(method=filter_collections)
     categories = GlobalIDMultipleChoiceFilter(method=filter_categories)
     has_category = django_filters.BooleanFilter(method=filter_has_category)

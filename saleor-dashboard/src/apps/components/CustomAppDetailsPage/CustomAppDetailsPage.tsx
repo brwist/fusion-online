@@ -142,7 +142,7 @@ const CustomAppDetailsPage: React.FC<CustomAppDetailsPageProps> = props => {
                 })}
                 description={intl.formatMessage({
                   defaultMessage:
-                    "Expand or restrict app permissions to access certain part of Saleor system.",
+                    "Expand or restrict app permissions to access certain part of RocketChips system.",
                   description: "card description"
                 })}
               />

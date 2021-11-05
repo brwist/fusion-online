@@ -29,6 +29,8 @@ from .mutations.account import (
     AccountSetDefaultAddress,
     AccountUpdate,
     AccountUpdateMeta,
+    AddStripePaymentMethod,
+    RemoveStripePaymentMethod,
     ConfirmEmailChange,
     RequestEmailChange,
 )
@@ -252,6 +254,18 @@ class AccountMutations(graphene.ObjectType):
         deprecation_reason=(
             "Use the `updateMetadata` mutation. This field will be removed after "
             "2020-07-31."
+        )
+    )
+
+    add_stripe_payment_method = AddStripePaymentMethod.Field(
+        description=(
+            "Allows customer to add stripe payment method id to private metadata for CC retrieval."
+        )
+    )
+
+    remove_stripe_payment_method = RemoveStripePaymentMethod.Field(
+        description=(
+            "Allows customer to remove stripe payment method id to private metadata for CC retrieval."
         )
     )
 

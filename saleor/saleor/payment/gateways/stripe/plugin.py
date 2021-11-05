@@ -11,6 +11,9 @@ from . import (
     process_payment,
     refund,
     void,
+    retrieve_payment_method,
+    create_stripe_customer,
+    update_payment_with_order_info
 )
 
 GATEWAY_NAME = "Stripe"
@@ -55,13 +58,13 @@ class StripeGatewayPlugin(BasePlugin):
         },
         "Store customers card": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should store cards on payments "
+            "help_text": "Determines if RocketChips should store cards on payments "
             "in Stripe customer.",
             "label": "Store customers card",
         },
         "Automatic payment capture": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should automaticaly capture payments.",
+            "help_text": "Determines if RocketChips should automaticaly capture payments.",
             "label": "Automatic payment capture",
         },
         "Supported currencies": {
@@ -139,3 +142,18 @@ class StripeGatewayPlugin(BasePlugin):
             {"field": "api_key", "value": config.connection_params["public_key"]},
             {"field": "store_customer_card", "value": config.store_customer},
         ]
+
+    @require_active_plugin
+    def get_payment_method(self, payment_method_id):
+        config = self._get_gateway_config()
+        return retrieve_payment_method(payment_method_id, config)
+
+    @require_active_plugin
+    def create_customer(self, user):
+        config = self._get_gateway_config()
+        return create_stripe_customer(config, user)
+
+    @require_active_plugin
+    def update_payment_with_order_info(self, payment_id, order_id):
+        config = self._get_gateway_config()
+        return update_payment_with_order_info(config, payment_id, order_id)

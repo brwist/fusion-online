@@ -17,6 +17,7 @@ from .utils import (
     get_currency_from_stripe,
     shipping_to_stripe_dict,
 )
+from saleor.account.models import User
 
 
 def get_client_token(**_):
@@ -36,7 +37,7 @@ def authorize(
     currency = get_currency_for_stripe(payment_information.currency)
     stripe_amount = get_amount_for_stripe(payment_information.amount, currency)
     future_use = "off_session" if config.store_customer else "on_session"
-    customer_id = PaymentData.customer_id if payment_information.reuse_source else None
+    customer_id = payment_information.customer_id if payment_information.customer_id else None
     shipping = (
         shipping_to_stripe_dict(payment_information.shipping)
         if payment_information.shipping
@@ -241,3 +242,28 @@ def fill_card_details(intent: stripe.PaymentIntent, response: GatewayResponse):
             type="card",
         )
     return response
+
+
+def retrieve_payment_method(payment_method_id, config: GatewayConfig):
+    client = _get_client(**config.connection_params)
+    card = client.PaymentMethod.retrieve(payment_method_id)
+    return card
+
+
+def create_stripe_customer(config: GatewayConfig, user: User):
+    client = _get_client(**config.connection_params)
+    name = user.first_name + ' ' + user.last_name
+    email = user.email
+    metadata = {
+        "customer_id": user.id
+    }
+    customer = client.Customer.create(name=name, email=email, metadata=metadata)
+    return customer
+
+
+def update_payment_with_order_info(config: GatewayConfig, payment_id, order_id):
+    client = _get_client(**config.connection_params)
+    updated_payment = client.PaymentIntent.modify(
+        payment_id,
+        metadata={"order_id": order_id},
+    )

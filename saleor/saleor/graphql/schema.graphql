@@ -84,6 +84,12 @@ type AccountRegister {
 }
 
 input AccountRegisterInput {
+  firstName: String!
+  lastName: String!
+  companyName: String!
+  jobTitle: JobTitle!
+  domain: String
+  region: String!
   email: String!
   password: String!
   redirectUrl: String
@@ -110,6 +116,12 @@ type AccountUpdateMeta {
   errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
   accountErrors: [AccountError!]!
   user: User
+}
+
+type AddStripePaymentMethod {
+  errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
+  user: User
+  accountErrors: [AccountError!]!
 }
 
 type Address implements Node {
@@ -2244,6 +2256,18 @@ enum JobStatusEnum {
   DELETED
 }
 
+enum JobTitle {
+  BUYER
+  COMMODITY_PRODUCT_MANAGER
+  MATERIALS_PLANNING
+  IT_MANAGER
+  ENGINEER
+  ACCOUNTS_PAYABLE
+  SERVICE_TECHNICIAN
+  SALES
+  OTHER
+}
+
 enum LanguageCodeEnum {
   AR
   AZ
@@ -2718,6 +2742,7 @@ type Mutation {
   draftOrderLineUpdate(id: ID!, input: OrderLineInput!): DraftOrderLineUpdate
   draftOrderUpdate(id: ID!, input: DraftOrderInput!): DraftOrderUpdate
   orderAddNote(order: ID!, input: OrderAddNoteInput!): OrderAddNote
+  orderAddCustomerNote(order: ID!, input: OrderAddNoteInput!): OrderAddCustomerNote
   orderCancel(id: ID!): OrderCancel
   orderCapture(amount: PositiveDecimal!, id: ID!): OrderCapture
   orderClearPrivateMeta(id: ID!, input: MetaPath!): OrderClearPrivateMeta @deprecated(reason: "Use the `deletePrivateMetadata` mutation instead. This field will be removed after 2020-07-31.")
@@ -2812,7 +2837,7 @@ type Mutation {
   tokenRefresh(csrfToken: String, refreshToken: String): RefreshToken
   tokenVerify(token: String!): VerifyToken
   tokensDeactivateAll: DeactivateAllUserTokens
-  requestPasswordReset(email: String!, redirectUrl: String!): RequestPasswordReset
+  requestPasswordReset(email: String!, redirectUrl: String): RequestPasswordReset
   confirmAccount(email: String!, token: String!): ConfirmAccount
   setPassword(email: String!, password: String!, token: String!): SetPassword
   passwordChange(newPassword: String!, oldPassword: String!): PasswordChange
@@ -2827,6 +2852,8 @@ type Mutation {
   accountRequestDeletion(redirectUrl: String!): AccountRequestDeletion
   accountDelete(token: String!): AccountDelete
   accountUpdateMeta(input: MetaInput!): AccountUpdateMeta @deprecated(reason: "Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.")
+  addStripePaymentMethod(isDefault: Boolean, paymentMethodId: String!): AddStripePaymentMethod
+  removeStripePaymentMethod(paymentMethodId: String!): RemoveStripePaymentMethod
   addressCreate(input: AddressInput!, userId: ID!): AddressCreate
   addressUpdate(id: ID!, input: AddressInput!): AddressUpdate
   addressDelete(id: ID!): AddressDelete
@@ -2886,16 +2913,34 @@ interface ObjectWithMetadata {
 type Offer {
   id: ID!
   type: OfferType!
+  itemTypeId: OfferItemTypeId!
+  offerId: Int
   leadTimeDays: Int!
-  dateAdded: Int!
-  itemNumId: Int!
+  dateAdded: String
+  itemMasterId: String
+  mpn: String!
+  mcode: String!
   quantity: Int!
   offerPrice: Float!
   dateCode: String
+  comment: String
   coo: String
   vendor: Vendor
   tariffRate: Float
   productVariant: ProductVariant
+}
+
+enum OfferItemTypeId {
+  A_0
+  A_1
+  A_2
+  A_3
+  A_4
+  A_5
+  A_6
+  A_7
+  A_8
+  A_9
 }
 
 enum OfferType {
@@ -2958,6 +3003,12 @@ enum OrderAction {
   MARK_AS_PAID
   REFUND
   VOID
+}
+
+type OrderAddCustomerNote {
+  errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
+  order: Order
+  orderErrors: [OrderError!]!
 }
 
 type OrderAddNote {
@@ -3840,6 +3891,7 @@ input ProductFilterInput {
   stocks: ProductStockFilterInput
   search: String
   metadata: MetadataInput
+  isAvailable: Boolean
   price: PriceRangeInput
   minimalPrice: PriceRangeInput
   productTypes: [ID]
@@ -4150,6 +4202,7 @@ type ProductVariant implements Node & ObjectWithMetadata {
   digitalContent: DigitalContent
   stocks(countryCode: CountryCode): [Stock]
   quantityAvailable(countryCode: CountryCode): Int!
+  offer: Offer
 }
 
 type ProductVariantBulkCreate {
@@ -4304,7 +4357,7 @@ type ProductVariantUpdatePrivateMeta {
 }
 
 type Query {
-  offers(itemNumId: String): [Offer]
+  offers(itemMasterId: String): [Offer]
   webhook(id: ID!): Webhook
   webhooks(sortBy: WebhookSortingInput, filter: WebhookFilterInput, before: String, after: String, first: Int, last: Int): WebhookCountableConnection @deprecated(reason: "Use webhooks field on app(s) query instead. This field will be removed after 2020-07-31.")
   webhookEvents: [WebhookEvent]
@@ -4387,6 +4440,12 @@ type ReducedRate {
 type RefreshToken {
   errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
   token: String
+  user: User
+  accountErrors: [AccountError!]!
+}
+
+type RemoveStripePaymentMethod {
+  errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
   user: User
   accountErrors: [AccountError!]!
 }
@@ -5053,6 +5112,63 @@ input StockInput {
   quantity: Int
 }
 
+type Stripe3DSecureUsage {
+  supported: Boolean
+}
+
+type StripeBillingAddress {
+  city: String
+  country: String
+  line1: String
+  line2: String
+  postalCode: String
+  state: String
+}
+
+type StripeBillingDetails {
+  address: StripeBillingAddress
+  email: String
+  name: String
+  phone: String
+}
+
+type StripeCard {
+  brand: String
+  checks: StripeCardCheck
+  country: String
+  expMonth: String
+  expYear: String
+  fingerprint: String
+  funding: String
+  generatedFrom: String
+  last4: String
+  networks: StripeNetwork
+  threeDSecureUsage: Stripe3DSecureUsage
+  wallet: String
+}
+
+type StripeCardCheck {
+  addressLine1Check: String
+  addressPostalCodeCheck: String
+  cvcCheck: String
+}
+
+type StripeNetwork {
+  available: [String]
+  preferred: String
+}
+
+type StripePaymentMethod {
+  id: String
+  object: String
+  billingDetails: StripeBillingDetails
+  card: StripeCard
+  created: Int
+  customer: String
+  livemode: Boolean
+  type: String
+}
+
 enum TaxRateType {
   ACCOMMODATION
   ADMISSION_TO_CULTURAL_EVENTS
@@ -5222,6 +5338,7 @@ type User implements Node & ObjectWithMetadata {
   checkout: Checkout
   giftCards(before: String, after: String, first: Int, last: Int): GiftCardCountableConnection
   orders(before: String, after: String, first: Int, last: Int): OrderCountableConnection
+  isApproved: Boolean
   permissions: [Permission] @deprecated(reason: "Will be removed in Saleor 2.11.Use the `userPermissions` instead.")
   userPermissions: [UserPermission]
   permissionGroups: [Group]
@@ -5229,6 +5346,8 @@ type User implements Node & ObjectWithMetadata {
   avatar(size: Int): Image
   events: [CustomerEvent]
   storedPaymentSources: [PaymentSource]
+  stripeCards: [StripePaymentMethod]
+  defaultStripeCard: String
 }
 
 type UserAvatarDelete {

@@ -212,6 +212,9 @@ class User(CountableDjangoObjectType):
     orders = PrefetchingConnectionField(
         "saleor.graphql.order.types.Order", description="List of user's orders."
     )
+    is_approved = graphene.Boolean(
+        description="Whether the user has been approved in Hubspot"
+    )
     # deprecated, to remove in #5389
     permissions = graphene.List(
         Permission,
@@ -240,6 +243,13 @@ class User(CountableDjangoObjectType):
         description="List of stored payment sources.",
     )
 
+    stripe_cards = graphene.List(
+        "saleor.graphql.payment.stripe_types.StripePaymentMethod",
+        description="List of stripe stored payment methods.",
+    )
+
+    default_stripe_card = graphene.String()
+
     class Meta:
         description = "Represents user data."
         interfaces = [relay.Node, ObjectWithMetadata]
@@ -257,6 +267,12 @@ class User(CountableDjangoObjectType):
             "last_name",
             "note",
         ]
+    @staticmethod
+    def resolve_is_approved(root: models.User, _info, **_kwargs):
+        approval = root.private_metadata.get('customer_approval_status', False)
+        if approval == 'Approved' or root.email == 'customer@example.com' or root.is_staff or root.is_superuser:
+            return True
+        return False
 
     @staticmethod
     def resolve_addresses(root: models.User, _info, **_kwargs):
@@ -330,6 +346,21 @@ class User(CountableDjangoObjectType):
         if root == info.context.user:
             return resolve_payment_sources(root)
         raise PermissionDenied()
+
+    @staticmethod
+    def resolve_stripe_cards(root: models.User, info):
+        from .resolvers import resolve_stripe_cards
+
+        if root == info.context.user:
+            return resolve_stripe_cards(root)
+        raise PermissionDenied()
+
+    @staticmethod
+    def resolve_default_stripe_card(root: models.User, info):
+        if 'stripe_default_payment_method_id' in root.private_metadata:
+            return root.private_metadata['stripe_default_payment_method_id']
+        else:
+            return None
 
     @staticmethod
     @one_of_permissions_required(

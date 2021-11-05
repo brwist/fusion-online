@@ -11,7 +11,7 @@ from ....checkout import AddressType
 from ....core.jwt import create_token, jwt_decode
 from ....core.utils.url import validate_storefront_url
 from ....settings import JWT_TTL_REQUEST_EMAIL_CHANGE
-from ...account.enums import AddressTypeEnum
+from ...account.enums import AddressTypeEnum, JobTitleEnum
 from ...account.types import Address, AddressInput, User
 from ...core.mutations import BaseMutation, ModelDeleteMutation, ModelMutation
 from ...core.types.common import AccountError
@@ -24,7 +24,9 @@ from .base import (
     BaseAddressUpdate,
     BaseCustomerCreate,
 )
+from saleor.plugins.manager import get_plugins_manager
 
+import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
 from saleor.fusion_online.hubspot.email import HubspotEmails
 
@@ -34,6 +36,8 @@ class AccountRegisterInput(graphene.InputObjectType):
     last_name = graphene.String(description="User last name", required=True)
     company_name = graphene.String(
         description="User company or organization", required=True)
+    job_title = JobTitleEnum(description="User job title", required=True)
+    domain = graphene.String(description="User domain")
     region = graphene.String(description="User geographic region", required=True)
     email = graphene.String(description="The email address of the user.", required=True)
     password = graphene.String(description="Password.", required=True)
@@ -72,7 +76,7 @@ class AccountRegister(ModelMutation):
     def clean_input(cls, info, instance, data, input_cls=None):
         if not settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
             return super().clean_input(info, instance, data, input_cls=None)
-        elif not data.get("redirect_url"):
+        elif not settings.STOREFRONT_ROOT_URL:
             raise ValidationError(
                 {
                     "redirect_url": ValidationError(
@@ -82,7 +86,7 @@ class AccountRegister(ModelMutation):
             )
 
         try:
-            validate_storefront_url(data["redirect_url"])
+            validate_storefront_url(settings.STOREFRONT_ROOT_URL)
         except ValidationError as error:
             raise ValidationError(
                 {
@@ -106,7 +110,9 @@ class AccountRegister(ModelMutation):
         user.set_password(password)
         user.private_metadata = {
             "company": cleaned_input["company_name"],
-            "region": cleaned_input["region"]
+            "region": cleaned_input["region"],
+            "job_title": cleaned_input["job_title"],
+            "domain": cleaned_input["domain"]
         }
         hubspot_reg = HubspotRegistration()
         if settings.ENABLE_ACCOUNT_CONFIRMATION_BY_EMAIL:
@@ -118,10 +124,10 @@ class AccountRegister(ModelMutation):
             user.save()
 
             # Send confirmation email
-
+            redirect_url = settings.STOREFRONT_ROOT_URL + '/'
             hubspot_email = HubspotEmails()
             hubspot_email.send_registration_confirmation(
-                user, hubspot_user, cleaned_input["redirect_url"])
+                user, hubspot_user, redirect_url)
 
             # emails.send_account_confirmation_email(
             #     user, cleaned_input["redirect_url"])
@@ -385,6 +391,106 @@ class AccountUpdateMeta(UpdateMetaBaseMutation):
     @classmethod
     def get_instance(cls, info, **data):
         return info.context.user
+
+
+class AddStripePaymentMethod(BaseMutation):
+    user = graphene.Field(User, description="An updated user instance.")
+
+    """
+    For the credit card forms, we want to store
+    Stripe payment method ids as private metadata so that we can 
+    surface CC info.
+    """
+    class Meta:
+        description = "Updates privatemetadata of the logged-in user."
+        model = models.User
+        public = False
+        error_type_class = AccountError
+        error_type_field = "account_errors"
+
+    class Arguments:
+        payment_method_id = graphene.String(
+            description="The stripe payment method id to add to this user's private metadata.",
+            required=True,
+        )
+        is_default = graphene.Boolean(
+            description="Set as the default payment method",
+            required=False
+        )
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def get_instance(cls, info, **data):
+        return info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+        if 'stripe_payment_method_ids' in user.private_metadata:
+            # When editing just the default payment method, we don't need to append
+            if data['payment_method_id'] not in user.private_metadata['stripe_payment_method_ids']:
+                user.private_metadata['stripe_payment_method_ids'].append(
+                    data['payment_method_id'])
+        else:
+            user.private_metadata['stripe_payment_method_ids'] = [
+                data['payment_method_id']]
+        # If a stripe customer id is not set, we need to create and store one
+        if 'stripe_customer_id' not in user.private_metadata:
+            plugin_manager = get_plugins_manager(
+                plugins=['saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin'])
+            customer = plugin_manager.plugins[0].create_customer(user)
+            user.private_metadata['stripe_customer_id'] = customer['id']
+        # Override default payment method if applicable.
+        if data['is_default'] or len(user.private_metadata['stripe_payment_method_ids']) == 1:
+            user.private_metadata['stripe_default_payment_method_id'] = data['payment_method_id']
+        user.save()
+        return AddStripePaymentMethod(user=user)
+
+
+class RemoveStripePaymentMethod(BaseMutation):
+    user = graphene.Field(User, description="An updated user instance.")
+
+    """
+    For the credit card forms, we want to store
+    Stripe payment method ids as private metadata so that we can 
+    surface CC info.
+    """
+    class Meta:
+        description = "Updates privatemetadata of the logged-in user."
+        model = models.User
+        public = False
+        error_type_class = AccountError
+        error_type_field = "account_errors"
+
+    class Arguments:
+        payment_method_id = graphene.String(
+            description="The stripe payment method id to remove from this user's private metadata.",
+            required=True,
+        )
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def get_instance(cls, info, **data):
+        return info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+        is_default = False
+        if 'stripe_default_payment_method_id' in user.private_metadata:
+            if user.private_metadata['stripe_default_payment_method_id'] == data['payment_method_id']:
+                user.private_metadata['stripe_default_payment_method_id'].delete()
+        if 'stripe_payment_method_ids' in user.private_metadata and data['payment_method_id'] in user.private_metadata['stripe_payment_method_ids']:
+            user.private_metadata['stripe_payment_method_ids'].remove(
+                data['payment_method_id'])
+            user.save()
+        return RemoveStripePaymentMethod(user=user)
 
 
 class RequestEmailChange(BaseMutation):

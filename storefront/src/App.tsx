@@ -11,13 +11,17 @@ import { HomePage } from './components/HomePage/HomePage';
 import { Footer } from './components/Footer/Footer';
 import { AccountPage } from './components/MyAccount/AccountPage';
 import { Cart } from './components/Cart/Cart';
-
+import { CartReview } from './components/CartReview/CartReview';
+import { RegistrationConfirmationPage } from './components/RegistrationConfirmationPage/RegistrationConfirmationPage';
+import { ResetPasswordForm } from './components/Forms/ResetPasswordForm';
+import { OrderConfirmation } from './components/CartReview/OrderConfirmation';
 import './App.scss';
 
-import { useMutation } from '@apollo/client';
-import { CONFIRM_ACCOUNT } from './graphql/account';
+import { useMutation, useQuery } from '@apollo/client';
+import { CONFIRM_ACCOUNT, GET_USER_APPROVAL } from './graphql/account';
+import { User } from './generated/graphql'
 
-import { Alert, Container } from 'react-bootstrap';
+import { Alert, Button, Col, Container, Row } from 'react-bootstrap';
 
 type AccountConfirmMutation = {
   confirmAccount: {
@@ -34,9 +38,15 @@ type AlertState = {
   variant?: string;
 };
 
+type UserApprovalQuery = {me: User}
+
 function App() {
   const [errors, setErrors] = useState();
   const { authenticated, user, signIn, signOut, registerAccount } = useAuth();
+  const userApprovalData = useQuery<UserApprovalQuery>(GET_USER_APPROVAL);
+
+  const userApproval = userApprovalData.data?.me?.isApproved;
+
   const {
     addItem,
     discount,
@@ -78,12 +88,14 @@ function App() {
     const { data, dataError } = await registerAccount(email, password, 'http://localhost:3000/');
     return dataError ? { data: dataError } : { data };
   };
+
   const search = useLocation()?.search;
   const email = new URLSearchParams(search)?.get('email');
   const token = new URLSearchParams(search)?.get('token');
+
   const [confirmAccount, confirmAccountData] = useMutation<AccountConfirmMutation>(CONFIRM_ACCOUNT, {});
 
-  if (email && token && !confirming) {
+  if (location.pathname === '/' && email && token && !confirming) {
     setConfirming(true);
     confirmAccount({
       variables: { email, token },
@@ -114,17 +126,35 @@ function App() {
 
   return authenticated && user ? (
     <>
+      <Alert
+        show={userApproval === false}
+        variant="dark"
+        className="limited-user-banner"
+      >
+        <Container>
+          <Row>
+            <Col>
+              <p>Hello, <strong>{user.firstName}</strong>, it looks like you still need to complete your registration to unlock the full features of RocketChips.</p>
+            </Col>
+            <Col md="auto">
+              <Button>
+                Complete Registration
+              </Button>
+            </Col>
+          </Row>
+        </Container>
+      </Alert>
       <NavBar signOut={signOut} cartItemsNum={items?.length || 0} />
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/search">
-          <SearchContainer addItem={addItem} />
+          <SearchContainer userApproval={userApproval} addItem={addItem} />
         </Route>
         <Route exact path="/products/:slug">
-          <ProductDetail addItem={addItem} />
+          <ProductDetail addItem={addItem} userApproval={userApproval}/>
         </Route>
         <Route exact path="/categories/:slug">
-          <CategoryPage addItem={addItem} />
+          <CategoryPage addItem={addItem} userApproval={userApproval}/>
         </Route>
         <Route exact path="/cart">
           <Cart
@@ -138,6 +168,22 @@ function App() {
             subtractItem={subtractItem}
           />
         </Route>
+        <Route exact path="/checkout/confirmation">
+          <OrderConfirmation />
+        </Route>
+        <Route exact path="/checkout">
+          <CartReview
+            discount={discount}
+            items={items}
+            removeItem={removeItem}
+            shippingPrice={shippingPrice}
+            subtotalPrice={subtotalPrice}
+            totalPrice={totalPrice}
+            updateItem={updateItem}
+            subtractItem={subtractItem}
+          />
+        </Route>
+
         <Route path="/account/:slug">
           <AccountPage signOut={signOut} user={user} />
         </Route>
@@ -165,7 +211,22 @@ function App() {
           <p>{showAlert.message}</p>
         </Container>
       </Alert>
-      <LoginPage handleSignIn={handleSignIn} handleRegistration={handleRegistration} errors={errors} />
+      <Switch>
+        <Route exact path="/registration-confirmation">
+          <RegistrationConfirmationPage />
+        </Route>
+        <Route exact path="/password-reset">
+          <ResetPasswordForm setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)} />
+        </Route>
+        <Route path="/">
+          <LoginPage
+            setLandingPageAlert={(alertInfo) => setShowAlert(alertInfo)}
+            handleSignIn={handleSignIn}
+            handleRegistration={handleRegistration}
+            errors={errors}
+          />
+        </Route>
+      </Switch>
     </>
   );
 }

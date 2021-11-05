@@ -35,6 +35,7 @@ from ...discount.dataloaders import DiscountsByDateTimeLoader
 from ...meta.deprecated.resolvers import resolve_meta, resolve_private_meta
 from ...meta.types import ObjectWithMetadata
 from ...translations.fields import TranslationField
+from ...fusion_online.offer.types import Offer
 from ...translations.types import (
     CategoryTranslation,
     CollectionTranslation,
@@ -273,6 +274,10 @@ class ProductVariant(CountableDjangoObjectType):
                 "quantity from all shipping zones."
             ),
         ),
+    )
+
+    offer = graphene.Field(
+        Offer
     )
 
     class Meta:

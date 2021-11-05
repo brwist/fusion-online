@@ -3,6 +3,7 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import transaction
+from django.conf import settings
 
 from ....account import events as account_events, models
 from ....account.emails import (
@@ -27,6 +28,7 @@ from ...meta.deprecated.mutations import ClearMetaBaseMutation, UpdateMetaBaseMu
 from .jwt import CreateToken
 
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
+from saleor.fusion_online.hubspot.email import HubspotEmails
 
 BILLING_ADDRESS_FIELD = "default_billing_address"
 SHIPPING_ADDRESS_FIELD = "default_shipping_address"
@@ -107,7 +109,7 @@ class RequestPasswordReset(BaseMutation):
             description="Email of the user that will be used for password recovery.",
         )
         redirect_url = graphene.String(
-            required=True,
+            required=False,
             description=(
                 "URL of a view where users should be redirected to "
                 "reset the password. URL in RFC 1808 format."
@@ -122,7 +124,7 @@ class RequestPasswordReset(BaseMutation):
     @classmethod
     def perform_mutation(cls, _root, info, **data):
         email = data["email"]
-        redirect_url = data["redirect_url"]
+        redirect_url = settings.STOREFRONT_ROOT_URL + "/password-reset"
         try:
             validate_storefront_url(redirect_url)
         except ValidationError as error:
@@ -141,7 +143,26 @@ class RequestPasswordReset(BaseMutation):
                     )
                 }
             )
-        send_user_password_reset_email_with_url(redirect_url, user)
+
+        # saleor default workflow:
+        # send_user_password_reset_email_with_url(redirect_url, user)
+
+        #Hubpost workflow:
+        hubspot_reg = HubspotRegistration()
+        hubspot_user = hubspot_reg.get_hubspot_user_by_email(email)
+        if hubspot_user is None:
+            raise ValidationError(
+                {
+                    "email": ValidationError(
+                        "User with this email doesn't exist",
+                        code=AccountErrorCode.NOT_FOUND,
+                    )
+                }
+            )
+
+        hubspot_email = HubspotEmails()
+        hubspot_email.send_password_reset_link(user, hubspot_user, redirect_url)
+
         return RequestPasswordReset()
 
 
