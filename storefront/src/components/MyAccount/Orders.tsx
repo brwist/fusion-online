@@ -32,7 +32,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
           Open Orders (3)
         </NavLink>
       </Nav.Item>
-      <Nav.Item as="li">
+      {/* <Nav.Item as="li">
         <NavLink
           to="/account/orders/scheduled-orders"
           className="nav-link"
@@ -40,7 +40,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
         >
           Scheduled Orders (3)
         </NavLink>
-      </Nav.Item>
+      </Nav.Item> */}
       <Nav.Item as="li">
         <NavLink
           to="/account/orders/past-orders"

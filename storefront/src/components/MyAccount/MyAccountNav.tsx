@@ -35,7 +35,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
                 OPEN ORDERS
               </NavLink>
             </Nav.Item>
-            <Nav.Item as="li">
+            {/* <Nav.Item as="li">
               <NavLink
                 className="nav-link"
                 role="button"
@@ -43,7 +43,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
               >
                 SCHEDULED ORDERS
               </NavLink>
-            </Nav.Item>
+            </Nav.Item> */}
             <Nav.Item as="li">
               <NavLink
                 className="nav-link"
