@@ -18,6 +18,8 @@ export interface OrdersProps {
 
 export const Orders: React.FC<OrdersProps> = (props) => {
   const {data} = useOrdersByUserQuery( {variables: {perPage: 10}});
+  const openOrders = data?.me?.orders?.edges?.filter((order) => order?.node.statusDisplay === "Unfulfilled")
+  const pastOrders = data?.me?.orders?.edges?.filter((order) => order?.node.statusDisplay === "Fulfilled")
   
   console.log("ordersCustom", data)
   return (
@@ -29,7 +31,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
           className="nav-link"
           role="tab"
         >
-          Open Orders (3)
+          {`Open Orders (${openOrders?.length || 0})`}
         </NavLink>
       </Nav.Item>
       {/* <Nav.Item as="li">
@@ -47,7 +49,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
           className="nav-link"
           role="tab"
         >
-          Past Orders (3)
+          {`Past Orders (${pastOrders?.length || 0})`}
         </NavLink>
       </Nav.Item>
       <Nav.Item as="li">
@@ -56,7 +58,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
           className="nav-link"
           role="tab"
         >
-          Open RFQs (3)
+          Open RFQs
         </NavLink>
       </Nav.Item>
       <Nav.Item as="li">
@@ -65,7 +67,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
           className="nav-link"
           role="tab"
         >
-          Past RFQs (3)
+          Past RFQs
         </NavLink>
       </Nav.Item>
     </Nav>
