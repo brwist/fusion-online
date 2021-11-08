@@ -77,25 +77,25 @@ services:
         volumes:
             - saleor-redis:/data
 
-    #  worker:
-    #    build:
-    #      context: ./saleor
-    #      dockerfile: ./Dockerfile
-    #      args:
-    #        STATIC_URL: "/static/"
-    #    command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info
-    #    restart: unless-stopped
-    #    networks:
-    #      - saleor-backend-tier
-    #    env_file: common.env
-    #    depends_on:
-    #      - redis
-    #      - mailhog
-    #    volumes:
-    #      - ./saleor/saleor/:/app/saleor:Z,cached
-    #      - ./saleor/templates/:/app/templates:Z,cached
-    #      # shared volume between worker and api for media
-    #      - saleor-media:/app/media
+    worker:
+       build:
+         context: ./saleor
+         dockerfile: ./Dockerfile
+         args:
+           STATIC_URL: "/static/"
+       command: celery -A saleor --app=saleor.celeryconf:app worker --loglevel=info
+       restart: unless-stopped
+       networks:
+         - saleor-backend-tier
+       env_file: common.env
+       depends_on:
+         - redis
+         - mailhog
+       volumes:
+         - ./saleor/saleor/:/app/saleor:Z,cached
+         - ./saleor/templates/:/app/templates:Z,cached
+         # shared volume between worker and api for media
+         - saleor-media:/app/media
 
     #  jaeger:
     #    image: jaegertracing/all-in-one
