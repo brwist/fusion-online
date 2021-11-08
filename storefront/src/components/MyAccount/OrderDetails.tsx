@@ -129,7 +129,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               {data?.orderByToken?.shippingAddress?.city}, {data?.orderByToken?.shippingAddress?.countryArea} {data?.orderByToken?.shippingAddress?.postalCode}, {data?.orderByToken?.shippingAddress?.country.code}
             </Col>
             <Col lg={4} className="text-right">
-              <Button variant="primary">
+              <Button variant="primary" disabled>
                 Track Package
               </Button>
             </Col>

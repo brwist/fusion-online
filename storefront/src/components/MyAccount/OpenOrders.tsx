@@ -61,7 +61,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                   {shippingAddress?.city}, {shippingAddress?.countryArea} {shippingAddress?.postalCode}, {shippingAddress?.country.code}
               </td>
               <td className="text-center" style={{'verticalAlign': 'middle'}}>
-                <Button variant="primary">
+                <Button variant="primary" disabled>
                   Track Package
                 </Button>
               </td>
