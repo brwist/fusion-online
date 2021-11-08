@@ -73,7 +73,7 @@ export const Orders: React.FC<OrdersProps> = (props) => {
     </Nav>
     <Switch>
       <Route exact path="/account/orders/open-orders">
-        <OpenOrders orders={data?.me?.orders?.edges || []}/>
+        <OpenOrders orders={openOrders || []}/>
       </Route>
       <Route exact path="/account/orders/open-orders/:id" component={OrderDetails} />
       <Route exact path="/account/orders/scheduled-orders" component={ScheduledOrders} />
