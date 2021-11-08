@@ -73,7 +73,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
             </Nav.Item>
           </Nav>
         </Nav.Item>
-        <Nav.Item as="li">
+        {/* <Nav.Item as="li">
           <NavLink
             className="nav-link"
             role="button"
@@ -81,7 +81,7 @@ export const MyAccountNav: React.FC<MyAccountNavProps> = ({
           >
             SPEND REPORT
           </NavLink>
-        </Nav.Item>
+        </Nav.Item> */}
         <Nav.Item as="li">
           <NavLink
             className="nav-link"
