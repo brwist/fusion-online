@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 
@@ -11,6 +11,9 @@ interface CompleteRegistrationProps {}
 
 type FormValues = {
   companyName: string;
+  companyType: string;
+  companyRevenue: number;
+  numberOfEmployees: number;
   tradeName: string;
   customerAddress: string;
   city: string;
@@ -38,13 +41,19 @@ type AddressMutationInput = {
 };
 
 export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...props }) => {
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
+
     control,
+    getValues,
+    setValue,
   } = useForm<FormValues>();
+
+  // Additional fields
+  const [nonDisclosure, setNonDisclosure] = useState(false);
+  const [terms, setTerms] = useState(false);
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
@@ -56,6 +65,16 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
           <Form.Control type="text" {...register(name)} />
         )}
         {errors[name] ? <span>This field is required</span> : null}
+      </Form.Group>
+    );
+  };
+
+  const numInput = (name: keyof FormValues, label: string) => {
+    return (
+      <Form.Group>
+        <Form.Label>{label}</Form.Label>
+        <Form.Control type="number" {...register(name)} />
+        {errors[name] ? <span className="invalid-feedback">This field is required</span> : null}
       </Form.Group>
     );
   };
@@ -93,13 +112,13 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
   };
 
-  const zipInput = () => {
+  const zipInput = (name) => {
     return (
       <Form.Group>
         <Form.Label>Postal Code</Form.Label>
         <Form.Control
           type="text"
-          {...register('postalCode', {
+          {...register(name, {
             required: {
               value: true,
               message: 'Postal code is required.',
@@ -118,10 +137,47 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             },
           })}
         />
-        {errors['postalCode'] ? <span>{errors.postalCode.message}</span> : null}
+        {errors[name] ? <span>{errors[name].message}</span> : null}
       </Form.Group>
     );
   };
+
+  const toggleSameAsBusinessAddress = (e) => {
+    const checked = e.target.checked;
+
+    if (!checked) {
+      return;
+    }
+    const values = getValues();
+
+    const { companyName, customerAddress, city, countryArea, postalCode, country } = values;
+
+    if (companyName) {
+      setValue('shippingName', companyName);
+    }
+
+    if (customerAddress) {
+      setValue('shippingAddress', customerAddress);
+    }
+
+    if (city) {
+      setValue('shippingCity', city);
+    }
+
+    if (countryArea) {
+      setValue('shippingCountryArea', countryArea);
+    }
+
+    if (postalCode) {
+      setValue('shippingPostalCode', countryArea);
+    }
+
+    if (country) {
+      setValue('shippingCountry', country);
+    }
+  };
+
+  console.log('errors: ', errors);
 
   return (
     <div>
@@ -142,28 +198,21 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
         <Row className="justify-content-center">
           <Col xl={6}>
             <h3 className="h4 font-weight-bold">Business Information</h3>
-
             <Form.Group>
               <Form.Label>Job Title</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-              >
+              <Form.Control as="select" custom>
                 <option>Please Select</option>
                 <option>Option 2</option>
               </Form.Control>
             </Form.Group>
+
             {textInput('companyName', 'Legal Company Name', true)}
             {textInput('tradeName', 'Trade Name/DBA', true)}
             {textInput('customerAddress', 'Customer Address', true)}
             {textInput('city', 'City', true)}
             <Form.Row>
-              <Col lg={8}>
-                {textInput('countryArea', 'State/Province', true)}
-              </Col>
-              <Col lg={4}>
-                {zipInput()}
-              </Col>
+              <Col lg={8}>{textInput('countryArea', 'State/Province', true)}</Col>
+              <Col lg={4}>{zipInput('postalCode')}</Col>
             </Form.Row>
             {locationSelect('country', 'Country', countries)}
             <Form.Group>
@@ -175,6 +224,9 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                   type="radio"
                   name="companyType"
                   label="Public"
+                  id="public"
+                  value="public"
+                  {...register('companyType', { required: true })}
                 />
                 <Form.Check
                   inline
@@ -182,6 +234,9 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                   type="radio"
                   name="companyType"
                   label="Private"
+                  id="private"
+                  value="private"
+                  {...register('companyType', { required: true })}
                 />
               </div>
             </Form.Group>
@@ -190,38 +245,25 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             {textInput('vatId', 'VAT ID')}
             <Form.Group>
               <Form.Label>Revenue</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-                required
-              >
+              <Form.Control as="select" custom required>
                 <option>Please Select</option>
                 <option>Option 2</option>
               </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Number of Employees</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-                required
-              >
+              <Form.Control as="select" custom required>
                 <option>Please Select</option>
                 <option>Option 2</option>
               </Form.Control>
             </Form.Group>
+
             <Form.Group as={Row}>
               <Col xs={12}>
                 <Form.Label>Description of Business (select all that apply)</Form.Label>
               </Col>
               <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
+                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
               </Col>
               <Col sm={6}>
                 <Form.Check
@@ -233,13 +275,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 />
               </Col>
               <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
+                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
               </Col>
               <Col sm={6}>
                 <Form.Check
@@ -251,13 +287,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 />
               </Col>
               <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
+                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
               </Col>
               <Col sm={6}>
                 <Form.Check
@@ -283,18 +313,16 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 custom
                 type="checkbox"
                 label="Same as business address"
+                id="sameAsBusinessAddress"
+                onChange={toggleSameAsBusinessAddress}
               />
             </Form.Group>
             {textInput('shippingName', 'Ship to Name', true)}
             {textInput('shippingAddress', 'Address', true)}
             {textInput('shippingCity', 'City', true)}
             <Form.Row>
-              <Col lg={8}>
-                {textInput('shippingCountryArea', 'State/Province', true)}
-              </Col>
-              <Col lg={4}>
-                {zipInput()}
-              </Col>
+              <Col lg={8}>{textInput('shippingCountryArea', 'State/Province', true)}</Col>
+              <Col lg={4}>{zipInput('shippingPostalCode')}</Col>
             </Form.Row>
             {locationSelect('shippingCountry', 'Country', countries)}
           </Col>
@@ -308,10 +336,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
             <Form.Group>
               <Form.Label>Reseller Certificate</Form.Label>
-              <Form.File
-                label="Select file to upload"
-                custom
-              />
+              <Form.File label="Select file to upload" custom />
             </Form.Group>
           </Col>
         </Row>
@@ -323,33 +348,49 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             <h3 className="h4 font-weight-bold">Agreements</h3>
 
             <Form.Group>
-              <div className="custom-control custom-checkbox mb-2">
+              <div className="custom-control custom-checkbox mb-2 pl-0">
                 <Form.Check
-                  className="custom-control-input"
-                  id="test1"
+                  custom
+                  id="terms"
                   type="checkbox"
                   required
+                  checked={terms}
+                  onChange={(e) => setTerms(!terms)}
+                  label={
+                    <>
+                      I have read and agree to the <a href="/">Terms and Conditions</a>
+                    </>
+                  }
                 />
-                <Form.Label className="custom-control-label">I have read and agree to the <a href="/">Terms and Conditions</a></Form.Label>
               </div>
-              <div className="custom-control custom-checkbox mb-2">
+              <div className="custom-control custom-checkbox mb-2 pl-0">
                 <Form.Check
-                  className="custom-control-input"
+                  custom
+                  id="non-disclosure"
                   type="checkbox"
                   required
+                  checked={nonDisclosure}
+                  onChange={(e) => setNonDisclosure(!nonDisclosure)}
+                  label={
+                    <>
+                      I have read and agree to the <a href="/">Non-Disclosure Agreement</a>
+                    </>
+                  }
                 />
-                <Form.Label className="custom-control-label">I have read and agree to the <a href="/">Non-Disclosure Agreement</a></Form.Label>
               </div>
             </Form.Group>
             <Form.Group>
-              <Form.Label>I have read and agree to the <a href="/">Export Compliance Check</a>, and certify that this document is being signed</Form.Label>
+              <Form.Label>
+                I have read and agree to the <a href="/">Export Compliance Check</a>, and certify that this document is
+                being signed
+              </Form.Label>
               <Form.Check
                 custom
                 className="mb-2"
                 type="radio"
                 name="exportComplianceCheck"
                 label="on behalf of itself, its subsidiaries, and affiliates"
-                required
+                // required
               />
               <Form.Check
                 custom
@@ -357,14 +398,16 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 type="radio"
                 name="exportComplianceCheck"
                 label="only for the locations in the country specified in the address line below"
-                required
+                // required
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">Complete</Button>
+            <Button variant="primary" type="submit">
+              Complete
+            </Button>
           </Col>
         </Row>
       </Form>
     </div>
-  )
-}
+  );
+};
