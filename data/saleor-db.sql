@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 12.6
--- Dumped by pg_dump version 13.2
+-- Dumped by pg_dump version 13.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1422,9 +1422,9 @@ CREATE TABLE public.fusion_online_rfqlineitem (
     id integer NOT NULL,
     mpn character varying(50) NOT NULL,
     mcode character varying(50) NOT NULL,
-    quantity integer NOT NULL,
+    quantity integer,
     target double precision NOT NULL,
-    date_code character varying(50) NOT NULL,
+    date_code character varying(50),
     comment character varying(500) NOT NULL,
     cipn character varying(50) NOT NULL,
     commodity_code integer NOT NULL,
@@ -1466,14 +1466,15 @@ CREATE TABLE public.fusion_online_rfqresponse (
     response character varying(50) NOT NULL,
     mpn character varying(50) NOT NULL,
     mcode character varying(10) NOT NULL,
-    quantity integer NOT NULL,
+    quantity integer,
     offer_price double precision NOT NULL,
-    date_code character varying(50) NOT NULL,
-    comment character varying(300) NOT NULL,
-    coo character varying(60) NOT NULL,
+    date_code character varying(50),
+    description character varying(300) NOT NULL,
+    coo character varying(60),
     lead_time_days character varying(50) NOT NULL,
-    rms_response_id integer NOT NULL,
-    line_item_id integer NOT NULL
+    rms_response_id integer,
+    line_item_id integer NOT NULL,
+    notes text
 );
 
 
@@ -1584,7 +1585,7 @@ ALTER SEQUENCE public.fusion_online_shippingaddress_id_seq OWNED BY public.fusio
 
 CREATE TABLE public.fusion_online_vendor (
     id integer NOT NULL,
-    vendor_name character varying(50) NOT NULL,
+    vendor_name character varying(100) NOT NULL,
     vendor_number bigint NOT NULL,
     vendor_region character varying(50),
     vendor_type character varying(50)
@@ -1613,6 +1614,41 @@ ALTER TABLE public.fusion_online_vendor_id_seq OWNER TO saleor;
 --
 
 ALTER SEQUENCE public.fusion_online_vendor_id_seq OWNED BY public.fusion_online_vendor.id;
+
+
+--
+-- Name: fusion_online_vendor_products; Type: TABLE; Schema: public; Owner: saleor
+--
+
+CREATE TABLE public.fusion_online_vendor_products (
+    id integer NOT NULL,
+    vendor_id integer NOT NULL,
+    product_id integer NOT NULL
+);
+
+
+ALTER TABLE public.fusion_online_vendor_products OWNER TO saleor;
+
+--
+-- Name: fusion_online_vendor_products_id_seq; Type: SEQUENCE; Schema: public; Owner: saleor
+--
+
+CREATE SEQUENCE public.fusion_online_vendor_products_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.fusion_online_vendor_products_id_seq OWNER TO saleor;
+
+--
+-- Name: fusion_online_vendor_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: saleor
+--
+
+ALTER SEQUENCE public.fusion_online_vendor_products_id_seq OWNED BY public.fusion_online_vendor_products.id;
 
 
 --
@@ -2241,6 +2277,7 @@ CREATE TABLE public.payment_payment (
     to_confirm boolean NOT NULL,
     payment_method_type character varying(256) NOT NULL,
     return_url character varying(200),
+    customer_id character varying(256) NOT NULL,
     CONSTRAINT payment_paymentmethod_cc_exp_month_check CHECK ((cc_exp_month >= 0)),
     CONSTRAINT payment_paymentmethod_cc_exp_year_check CHECK ((cc_exp_year >= 0))
 );
@@ -4275,6 +4312,13 @@ ALTER TABLE ONLY public.fusion_online_vendor ALTER COLUMN id SET DEFAULT nextval
 
 
 --
+-- Name: fusion_online_vendor_products id; Type: DEFAULT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor_products ALTER COLUMN id SET DEFAULT nextval('public.fusion_online_vendor_products_id_seq'::regclass);
+
+
+--
 -- Name: giftcard_giftcard id; Type: DEFAULT; Schema: public; Owner: saleor
 --
 
@@ -4665,7 +4709,6 @@ ALTER TABLE ONLY public.wishlist_wishlistitem_variants ALTER COLUMN id SET DEFAU
 
 COPY public.account_address (id, first_name, last_name, company_name, street_address_1, street_address_2, city, postal_code, country, country_area, phone, city_area, customer_id, ship_to_name, ship_via, validation_message, vat_id) FROM stdin;
 1	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
-2	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
 3	Samantha	Hardy		2913 Frye Gateway		Millerport	57612	US	SD			\N	\N	\N	\N	\N
 4	Nicholas	Nelson		53909 Madeline Estate Suite 716		South Sheriton	59120	US	MT			\N	\N	\N	\N	\N
 5	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
@@ -4674,7 +4717,6 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 8	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
 9	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
 10	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON	02128	US	MA	+16033614198		\N	\N	\N	\N	\N
-11				123 test st.		BOSTON	02128	US	MA			\N	\N	\N	\N	\N
 13	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 14	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 15	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
@@ -4686,7 +4728,6 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 20	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 58	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
 21	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
-22			Fusion Worldwide	1 Marina Park Drive		BOSTON	02210	US	MA			\N	\N	\N	\N	\N
 23	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 24	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 59	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
@@ -4696,8 +4737,6 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 60	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
 28	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 29	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
-30	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
-12	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 31	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
 36	Alex	Vallejo	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
 37	Alex	Vallejo	Bowst	180 NE 29th St	Apt 1904	Miami	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
@@ -4733,6 +4772,10 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 71	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
 72	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		\N	\N	\N	\N	\N
 73	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
+22			Fusion Worldwide	1 Marina Park Drive		BOSTON	02210	US	MA			\N	\N	\N	\N	\N
+30	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+2	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
+11				1 Marina Park Drive		BOSTON	02128	US	MA			\N	\N	\N	\N	\N
 74	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
 75	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
 76	Maeghan	Provencher	Bowst	2 Pleasant St.		Cambridge	33137	US	MA	+19782704786		124	Home	USPS	pending	not sure
@@ -4742,6 +4785,88 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 80	Alex	Vallejo	63 Creative	180 NE 29th St	Apt 1904	MIAMI	33137	US	FL	+19782704786		\N	\N	\N	\N	\N
 81	Another	Tester	63 Creative	123 Main		City	03842	US	US	+19782704786		\N	\N	\N	\N	\N
 82	And	Another	72 Creative	456 Main St		Maine	03842	US	US	+19782704786		\N	\N	\N	\N	\N
+83	Gail	Smith		700 Main St.		BOSTON	02128	US	MA			\N	100 Main St.	\N	\N	123
+84	Ziggy	Testerson		1000 Main St.		MANCHESTER	03102	US	NH			\N	1000 Main St.	\N	\N	456
+85	Jane	Doe		123 Main St.		BOSTON	02124	US	MA			\N	Work	\N	\N	678
+86	Hyusid	Demetrius		345 Jessica Ave		CHICKOPEE	02345	US	MA			\N	Work	\N	\N	879
+87	Jake	Smith		345 Jessica Ave		CHICKOPEE	02345	US	MA			\N	Another Address	\N	\N	678
+88	Joe	Biden		1600 Pennsylvania Avenue		WASHINGTON	20500	US	DC			\N	Home	\N	\N	111
+89	Kamala	Harris		1600 Pennsylvania Avenue		WASHINGTON	20500	US	DC			\N	Work	\N	\N	222
+90	Jill	Biden		1600 Pennsylvania Avenue		WASHINGTON	20500	US	DC			\N	Home	\N	\N	333
+91	Maeghan	Provencher		122 Cottage St.		BOSTON	02128	US	MA			\N	Work	\N	\N	345
+92	Craig	Barstow		5 Julia Drive		DOVER	03102	US	NH			\N	Home	\N	\N	543
+93	Molly	Frances		82 Bennington St.		SOMERVILLE	02128	US	MA			\N	Work	\N	\N	123
+94	Test	TEst		123 test st.		MANCHESTER	03102	US	NH			\N	Test	\N	\N	\N
+95	Maeghan	Test		123 Main St.		BOSTON	02124	US	MA			\N	HOme	\N	\N	\N
+96	Test	TEst		1234 Test St		BOSTON	02128	US	MA			\N	Work	\N	\N	\N
+97	Alex	Test		123 Main St.		BOSTON	02128	US	MA			\N	Home	\N	\N	\N
+98	Maeghan	Provencher		16 Julia Drive		DOVER	03459	US	NH			\N	Work	\N	\N	\N
+99	Harry	Potter		12 Gryffindor Tower		HOGWARTS	03102	US	NH			\N	Hogwarts	\N	\N	\N
+100	Steve	Thirdy	SIx	123 Main		Denver	80014	US	Colorado	+19782704786		\N	\N	\N	\N	\N
+101	Jane	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+102	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	Warehouse 1	\N	\N	1234
+103	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+117	Kynan	Delorey		180 NE 29th St	Apt 1904	MIAMI	33137	US	FL			\N	\N	\N	\N	\N
+126	George	Burton		027 Weaver Isle Suite 892		HATFIELDTON	47301	US	IN			\N	\N	\N	\N	\N
+128	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
+105	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	Facility 1	\N	\N	989991
+106	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+148	Adam	Tester		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+108	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	Home	\N	\N	\N
+109	Adam	Friday		13 Falcone Cir		HAMPTON	03842	US	NH			\N	Another Home	\N	\N	\N
+110	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+129	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+146	Adam	Tester		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+112	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+119	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+114	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+113	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+130	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+131	Alice	Customer		9 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+132	Alice	Customer		9 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+133	Bob	Customer		9 Paper St.		PORTSMOUTH	03801	US	NH			\N	Facility 1	\N	\N	777999
+104	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+115	Kynan	Delorey		180 NE 29th St	Apt 1904	MIAMI	33137	US	FL			\N	\N	\N	\N	\N
+116	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+107	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+118	Alice	Customer		44 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+120	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+121	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+12	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+122	jim	Doe	ACME	123 Main St.		BOSTON	02124	US	MA	+18005555555		\N	\N	\N	\N	\N
+123	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+134	Bob	Customer		9 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+135	Bob	Customer		9 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+136	Bob	Customer		9 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+137	Bob	Customer		9 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+138	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	Facility 1	\N	\N	999999
+139	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+140	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+141	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+143	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+142	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+144	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+145	Dan	Customer		5 Paper St.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+124	Kynan	Delorey		1 Test Ln.		PORTSMOUTH	03801	US	NH			\N	\N	\N	\N	\N
+125	Kynan	Delorey		180 NE 29th St	Apt 1904	MIAMI	33137	US	FL			\N	\N	\N	\N	\N
+111	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+147	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+149	Dan	Customer		123 Test Ln.		PORTSMOUTH	03801	US	NH			\N	Address 3	\N	\N	123333
+127	Gail	Smith		700 Main St.		BOSTON	02128	US	MA			\N	\N	\N	\N	\N
+150	Gail	Smith		700 Main St.		BOSTON	02128	US	MA			\N	\N	\N	\N	\N
+151	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+152	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+153	Adam	Tester		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+154	George	Burton		027 Weaver Isle Suite 892		HATFIELDTON	47301	US	IN			\N	\N	\N	\N	\N
+156	George	Burton		027 Weaver Isle Suite 892		Hatfieldton	47301	US	IN			\N	\N	\N	\N	\N
+155	George	Burton		027 Weaver Isle Suite 892		HATFIELDTON	47301	US	IN			\N	\N	\N	\N	\N
+157	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+158	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+159	Adam	Vicinus		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+160	Adam	Vicinus		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+161	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+162	Adam	Billers		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
+163	Adam	Vicinus		13 Falcone Cir		HAMPTON	03842	US	NH			\N	\N	\N	\N	\N
 \.
 
 
@@ -4803,6 +4928,41 @@ COPY public.account_customerevent (id, date, type, parameters, order_id, user_id
 52	2021-09-16 17:55:07.4648+00	account_created	{}	\N	36
 53	2021-10-04 19:20:35.756515+00	email_assigned	{"message": "admin@63creative.com"}	\N	1
 54	2021-10-04 19:20:35.767142+00	name_assigned	{"message": "admin@63creative.com"}	\N	1
+55	2021-10-25 15:22:04.08214+00	account_created	{}	\N	37
+56	2021-10-25 18:18:12.357418+00	password_reset	{}	\N	5
+57	2021-10-27 16:28:37.651338+00	password_reset	{}	\N	5
+58	2021-10-27 16:37:53.376794+00	password_reset	{}	\N	5
+59	2021-10-27 16:39:57.104937+00	password_changed	{}	\N	5
+60	2021-10-28 15:43:07.329838+00	password_reset	{}	\N	5
+61	2021-10-28 15:44:32.783797+00	password_reset	{}	\N	5
+62	2021-10-28 17:16:09.094364+00	account_created	{}	\N	38
+63	2021-10-28 19:21:14.751479+00	account_created	{}	\N	39
+64	2021-10-28 19:42:13.218075+00	placed_order	{}	458	5
+65	2021-10-28 19:54:14.216525+00	account_created	{}	\N	40
+66	2021-10-28 20:25:22.264907+00	password_reset	{}	\N	38
+67	2021-10-29 03:44:38.408641+00	account_created	{}	\N	41
+68	2021-10-29 11:43:34.886065+00	account_created	{}	\N	42
+69	2021-10-29 12:05:27.762054+00	password_reset	{}	\N	42
+70	2021-10-29 12:23:28.631403+00	placed_order	{}	459	5
+71	2021-10-29 13:46:11.222455+00	placed_order	{}	460	39
+72	2021-10-29 13:56:34.845748+00	placed_order	{}	461	41
+73	2021-10-29 15:56:14.940911+00	placed_order	{}	462	41
+74	2021-10-29 16:00:13.840364+00	account_created	{}	\N	43
+75	2021-10-29 16:05:44.915517+00	placed_order	{}	463	43
+76	2021-10-29 16:08:18.415059+00	password_reset	{}	\N	43
+77	2021-10-29 16:22:58.096727+00	account_created	{}	\N	44
+78	2021-10-29 16:28:09.334448+00	placed_order	{}	464	44
+79	2021-10-29 16:30:46.221627+00	password_reset	{}	\N	44
+80	2021-10-29 16:32:56.460337+00	placed_order	{}	465	44
+81	2021-10-29 18:04:39.539902+00	placed_order	{}	466	39
+82	2021-10-29 18:51:38.07825+00	account_created	{}	\N	45
+83	2021-10-29 19:01:28.652395+00	placed_order	{}	467	42
+84	2021-11-02 10:08:16.039584+00	placed_order	{}	468	1
+85	2021-11-02 15:36:15.333112+00	account_created	{}	\N	46
+86	2021-11-02 17:46:51.462629+00	placed_order	{}	469	42
+87	2021-11-03 20:46:42.241452+00	placed_order	{}	470	42
+88	2021-11-05 15:45:51.370846+00	placed_order	{}	471	42
+89	2021-11-05 18:28:23.336761+00	account_created	{}	\N	48
 \.
 
 
@@ -4854,14 +5014,26 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 25	f	marg@example.com	f	f	pbkdf2_sha256$216000$QBnP79Qo3CvY$LBGH8cqGJI4aMWBVYPahbqbVpMvTBz3SiIfj8V4mBto=	2021-09-09 14:43:30.979392+00	\N	\N	\N	\N	Margaret	Mac		{}	{"region": "Region 1", "company": "ACME"}	bb8nUsxnoqJm
 29	f	hgwells@example.com	f	f	pbkdf2_sha256$216000$h9LSica7oG8H$UvePYq3dA4puOQHIzfSpIlsgkZxgl53jL7yONPdv3jo=	2021-09-09 15:32:50.282923+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6sexxyyWl1kZ
 30	f	mjg@example.com	f	f	pbkdf2_sha256$216000$W0Sy964QCTFH$drTJsVBGrtjUn5kFDTEejddUZFIOGzKFz2TjrkOwlAA=	2021-09-09 16:10:48.595468+00	\N	\N	\N	\N				{}	{"region": "Region 3", "company": ""}	6KZGwufNXLB8
-5	f	customer@example.com	f	t	pbkdf2_sha256$216000$sjeT7lQ8368f$nhKGUhuuUkayQqhrmmIUd0oYKCm6fhHI/KZMcGtbi7A=	2021-06-22 17:05:55.441801+00	2021-09-20 18:43:08.623923+00	12	12	\N	Jane	Doe		{}	{}	5zjUmf5N9P7K
 35	f	mprovenc@wellesley.edu	f	f	pbkdf2_sha256$216000$Ynd4yVShm7rm$IIne8IVm3Jv7l7K94lnpCs+1SExaaGbkrnW0cZLP7p8=	2021-09-16 17:53:54.687918+00	\N	\N	\N	\N	Maeghan	Provencher		{}	{"region": "Asia/Pacific", "company": "Test"}	r9vE8wLDNWyJ
 32	f	ziggy@example.com	f	t	pbkdf2_sha256$216000$IZ3VmjuHO78N$DGYRcL8BMekoVApZhyYRmSryo+e+O8Seou6tGeepr3g=	2021-09-16 17:30:41.030409+00	2021-09-16 17:33:49.39617+00	\N	\N	\N				{}	{}	DWJ1hxf9b5Ov
 33	f	test123@example.com	f	f	pbkdf2_sha256$216000$K1SBq227yMAW$k8IYHRAQmfalq+Hmv1uPD2PS8dyqu9mKQnmSEqmwozo=	2021-09-16 17:47:13.770693+00	\N	\N	\N	\N	test	test		{}	{"region": "Americas", "company": "Test"}	0gykgHOyc9sx
 21	f	mollyprovencher@example.com	f	t		2021-09-08 19:13:07.03735+00	\N	\N	\N	\N	Molly	Provencher		{}	{}	ia1GLEq8iRgd
 36	f	1234test@example.com	f	f	pbkdf2_sha256$216000$IkYyi21OkCML$AkpT/BZFdlAYAyPbHWatCEnaoZVFKWmUL4WiPWJIYps=	2021-09-16 17:55:07.331893+00	\N	\N	\N	\N	Test	TESt		{}	{"region": "Americas", "company": "TESt"}	FfYGcf8n47iS
-1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-10-06 12:06:06.413767+00	2	2	\N	RocketChips	Admin		{}	{}	05Sjy5bUYQS3
 4	f	admin@63creative.com	f	f	pbkdf2_sha256$216000$8dwxa4qPFnbo$d14QNM7cxLCVFrSH2QwCdLDq9GmKqNnqcNLvZq5RJto=	2021-06-22 17:00:09.434333+00	\N	82	80	\N				{}	{}	GRRIv5ptFkEd
+5	f	customer@example.com	f	t	pbkdf2_sha256$216000$Q11GJT3nXNYn$NpDE6z3hl1cYS9VGS9urZdTJ0Ns9ky5KfbnGl8hDZ3g=	2021-06-22 17:05:55.441801+00	2021-11-01 14:54:58.289611+00	12	12	\N	Jane	Doe		{"stripe_customer_id": "cus_KUdQLpKc8Gu7wN", "stripe_payment_method_ids": [], "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUdQLpKc8Gu7wN"}	{}	5zjUmf5N9P7K
+37	f	maeghanp@example.com	f	t	pbkdf2_sha256$216000$2fCwZkAqC6bC$Unw4Sw7vD0kdhZwMgjK8iprUwkNIkdW2uOPev+ESbys=	2021-10-25 15:22:02.513921+00	2021-10-25 15:22:46.113056+00	\N	\N	\N	Maeghan	Provencher		{"domain": "example.com", "region": "Americas", "company": "Acme", "job_title": "Engineer", "hubspot_user_id": "1051", "customer_approval_status": "Limited"}	{}	7ZOV4ZNyVVVC
+38	f	maeghan.m.provencher@gmail.com	f	t	pbkdf2_sha256$216000$WYjVTUVRCqKe$g++mqPlSDihEkB/yontmuHUknEfwdEqzgBX0BowEq3M=	2021-10-28 17:16:07.196634+00	2021-11-05 18:24:22.776973+00	\N	\N	\N	Maeghan	Provencher		{"domain": "gmail.com", "region": "Americas", "company": "36 Creative", "job_title": "Engineer", "hubspot_user_id": "14815051", "customer_approval_status": "Limited"}	{}	skIyEgaKOGrU
+46	f	maeghan.m.provencher+rc@gmail.com	f	f	pbkdf2_sha256$216000$7Lw9PwXx3YmS$8zJhZaznvd3qPtfFv0SD14F9m2bx/tJooUTKAjyIRRI=	2021-11-02 15:36:13.597926+00	\N	\N	\N	\N	Maeghan	Provencher		{"domain": "gmail.com", "region": "Americas", "company": "36 Creative", "job_title": "Engineer", "hubspot_user_id": "14935251"}	{}	cSVfk3o7YX5N
+43	f	kynand+rcsandbox3@gmail.com	f	t	pbkdf2_sha256$216000$8oJeYjKlf039$N6d5OAvNgtmea3kyOTirLzLCRcxESUaavPnwijQ0w9A=	2021-10-29 16:00:12.143172+00	2021-10-29 16:08:41.466229+00	137	137	\N	Bob	Customer		{"domain": "rcsandbox3.com", "region": "Americas", "company": "RC Sandbox 3", "job_title": "Engineer", "hubspot_user_id": "14848301", "stripe_customer_id": "cus_KUxRaqV8WrHZ8m", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JpxWvGwGY8wmB3DVGyCqNwM"], "stripe_default_payment_method_id": "pm_1JpxWvGwGY8wmB3DVGyCqNwM", "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUxRaqV8WrHZ8m"}	{}	iurgS5Ql1p2K
+42	f	avicinus+friday@gmail.com	f	t	pbkdf2_sha256$216000$s67ef3sFTU3T$/b6EVfZ94kBaScDjwvypMKI62S4m2Qjq0h8Mizu0ygE=	2021-10-29 11:43:33.497778+00	2021-11-04 16:07:22.68827+00	148	147	\N	Adam	Friday		{"domain": "36creative.com", "region": "Americas", "company": "ThirtySix", "job_title": "Buyer", "hubspot_user_id": "14839901", "stripe_customer_id": "cus_KUtWYWq5I864Ul", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JptjJGwGY8wmB3DoZq5pNY7", "pm_1Jrn3NGwGY8wmB3DuSDlL6uB"], "stripe_default_payment_method_id": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUtWYWq5I864Ul"}	{}	qILQwmLZWND9
+40	f	maeghan.m.provencher+1@gmail.com	f	f	pbkdf2_sha256$216000$j3EJmjzxZ1bj$4rULOp3h5/VlHYbleJhbb4DVz733kex3RtycQQLVRGA=	2021-10-28 19:54:12.251018+00	\N	\N	\N	\N	Maeghan	Provencher		{"domain": "@gmail.com", "region": "Americas", "company": "36 Creative", "job_title": "Engineer", "hubspot_user_id": "14820201"}	{}	DVNQ5hePX8VM
+39	f	kynand+rcsandbox1@gmail.com	f	t	pbkdf2_sha256$216000$yGx89xrZW87e$LfTcyLGjnzRz2ldIlu2x+UBPKPA0lDTMQ9GlINeRe44=	2021-10-28 19:21:13.436973+00	2021-11-02 17:44:49.077026+00	117	116	\N	Kynan	Delorey		{"domain": "kynandrcsandbox1.com", "region": "Americas", "company": "Kynan D RC Sandbox 1", "job_title": "IT Manager", "hubspot_user_id": "14818851", "stripe_customer_id": "cus_KUdYHBDOZZKmdi", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JpuNdGwGY8wmB3DgNnWmjrr"], "stripe_default_payment_method_id": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUdYHBDOZZKmdi"}	{}	PM6nnszUU5Xe
+41	f	kynand+rcsandbox2@gmail.com	f	t	pbkdf2_sha256$216000$0E3PTcgOVi8x$H47cbBNbWAY3INZfXGa3qLsIQ1wRHpL1ZyHSq7WwhQQ=	2021-10-29 03:44:37.15904+00	2021-10-29 15:07:43.159438+00	119	119	\N	Alice	Customer		{"domain": "rcsandbox2.com", "region": "Americas", "company": "RC Sandbox 2", "job_title": "Service Technician", "hubspot_user_id": "14828801", "stripe_customer_id": "cus_KUlezc18epzzMY", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JpxPoGwGY8wmB3DXNXZNXS3"], "stripe_default_payment_method_id": "pm_1JpxPoGwGY8wmB3DXNXZNXS3", "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUlezc18epzzMY"}	{}	fZwgRzYO8wnH
+44	f	kynand+rcsandbox4@gmail.com	f	t	pbkdf2_sha256$216000$7j3R5LvAQAgE$nLpX1bWXde2EBsnOs54mIpqAEKxz+HzKTHtXdhSxz4k=	2021-10-29 16:22:56.760071+00	2021-11-05 18:26:20.777205+00	142	142	\N	Dan	Customer		{"domain": "rcsandbox4.com", "region": "Americas", "company": "RC Sandbox 4", "job_title": "IT Manager", "hubspot_user_id": "14848601", "stripe_customer_id": "cus_KUxpSQQeky7FZV", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JpxuAGwGY8wmB3D0xyKVTaO"], "stripe_default_payment_method_id": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUxpSQQeky7FZV"}	{}	2hyUMOGj14rT
+45	f	avicinus+friday2@gmail.com	f	t	pbkdf2_sha256$216000$ruUMDPBZcte6$2eDsgtciumBsVKC81NktL4rHAqe6+4WmuT6FPapuons=	2021-10-29 18:51:36.788243+00	2021-11-03 20:44:47.031506+00	\N	\N	\N	Adam	Friday		{"domain": "36creative.com", "region": "Americas", "company": "Testing", "job_title": "Buyer", "hubspot_user_id": "14851701", "stripe_customer_id": "cus_KV0HZ59jj2rR2b", "customer_approval_status": "Limited", "stripe_payment_method_ids": ["pm_1Jq0GfGwGY8wmB3DNWBAkWuO"], "stripe_default_payment_method_id": "pm_1Jq0GfGwGY8wmB3DNWBAkWuO"}	{}	5K7Z1itCgWZD
+47	f	adam@vicinus.com	t	t		2021-11-03 21:22:10.461088+00	\N	\N	\N	\N	Adam	Vicinus		{}	{}	Gwjj2CdCMyq5
+48	f	maeghan.m.provencher+rc2@gmail.com	f	t	pbkdf2_sha256$216000$aGIx0YzvcSji$ZYy/RshqQbFpCJDTvQpFBojVGdiYdU76rJOcCu9e6og=	2021-11-05 18:28:21.448726+00	2021-11-05 18:29:05.954224+00	\N	\N	\N	Maeghan	Provencher		{"domain": "gmail.com", "region": "Americas", "company": "36 Creative", "job_title": "Engineer", "hubspot_user_id": "15095701", "customer_approval_status": "Limited"}	{}	PSjc6uh59WiZ
+1	t	rc-admin-sandbox@36creative.com	t	t	pbkdf2_sha256$216000$oO09p82RDWTd$UOn/ydXH4lEL5/7WNzB0d93Trs09Rrhn+D0yepO7GmA=	2021-05-19 15:49:25.493381+00	2021-11-09 20:01:00.816589+00	2	99	\N	RocketChips	Admin		{"stripe_customer_id": "cus_KUdWmnwhIThYd3", "customer_approval_status": "Approved", "stripe_payment_method_ids": ["pm_1JpeFoGwGY8wmB3DSt3GA2lO"], "MIRUMEE.PAYMENTS.STRIPE.customer_id": "cus_KUdWmnwhIThYd3"}	{}	05Sjy5bUYQS3
 \.
 
 
@@ -4877,6 +5049,42 @@ COPY public.account_user_addresses (id, user_id, address_id) FROM stdin;
 7	4	80
 8	4	81
 9	4	82
+11	1	83
+12	1	84
+13	1	85
+14	1	86
+15	1	87
+16	1	88
+17	1	89
+18	1	90
+19	1	91
+21	1	92
+23	1	93
+25	1	94
+27	1	95
+29	1	96
+31	1	97
+33	1	98
+35	1	99
+37	5	100
+38	5	101
+39	39	102
+40	41	105
+41	42	108
+42	42	109
+43	39	116
+44	39	117
+45	41	119
+46	41	132
+47	43	133
+48	43	137
+49	44	138
+50	44	142
+51	42	147
+52	42	148
+53	44	149
+54	1	150
+55	42	160
 \.
 
 
@@ -4888,6 +5096,7 @@ COPY public.account_user_groups (id, user_id, group_id) FROM stdin;
 1	1	1
 2	2	2
 3	3	2
+6	47	1
 \.
 
 
@@ -5316,7 +5525,8 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.checkout_checkout (created, last_change, email, token, quantity, user_id, billing_address_id, discount_amount, discount_name, note, shipping_address_id, shipping_method_id, voucher_code, translated_discount_name, metadata, private_metadata, currency, country, redirect_url, tracking_code) FROM stdin;
-2021-08-13 18:39:45.17068+00	2021-08-13 18:43:04.155203+00	customer@example.com	5f124ec1-5932-4fec-bc2d-1797e5defc42	12	5	31	0.000	\N		30	1	\N	\N	{}	{}	USD	US	\N	\N
+2021-10-29 15:00:24.37604+00	2021-10-29 15:00:25.494857+00	customer@example.com	0346ccff-416a-4305-9d1e-7466dea748ce	2	5	122	0.000	\N		121	\N	\N	\N	{}	{}	USD	US	\N	\N
+2021-11-02 19:08:13.962568+00	2021-11-08 14:41:44.798614+00	rc-admin-sandbox@36creative.com	0ab0a837-33db-475d-b240-399adc3da0ee	0	1	156	0.000	\N		155	\N	\N	\N	{}	{}	USD	US	\N	\N
 \.
 
 
@@ -5333,7 +5543,7 @@ COPY public.checkout_checkout_gift_cards (id, checkout_id, giftcard_id) FROM std
 --
 
 COPY public.checkout_checkoutline (id, quantity, checkout_id, variant_id, data) FROM stdin;
-10	12	5f124ec1-5932-4fec-bc2d-1797e5defc42	56	{}
+18	2	0346ccff-416a-4305-9d1e-7466dea748ce	67	{}
 \.
 
 
@@ -5342,6 +5552,8 @@ COPY public.checkout_checkoutline (id, quantity, checkout_id, variant_id, data) 
 --
 
 COPY public.csv_exportevent (id, date, type, parameters, app_id, export_file_id, user_id) FROM stdin;
+1	2021-11-08 20:19:25.34799+00	export_pending	{}	\N	1	1
+2	2021-11-08 20:21:11.108625+00	export_pending	{}	\N	2	1
 \.
 
 
@@ -5350,6 +5562,8 @@ COPY public.csv_exportevent (id, date, type, parameters, app_id, export_file_id,
 --
 
 COPY public.csv_exportfile (id, status, created_at, updated_at, content_file, app_id, user_id, message) FROM stdin;
+1	pending	2021-11-08 20:19:25.303249+00	2021-11-08 20:19:25.303287+00		\N	1	\N
+2	pending	2021-11-08 20:21:11.057402+00	2021-11-08 20:21:11.057435+00		\N	1	\N
 \.
 
 
@@ -6096,6 +6310,12 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 572	fusion_online	0024_auto_20210923_1816	2021-09-23 18:16:57.248094+00
 573	fusion_online	0025_auto_20210927_1557	2021-09-27 15:58:17.857379+00
 574	fusion_online	0025_auto_20210930_1741	2021-09-30 19:15:30.838803+00
+575	fusion_online	0026_auto_20211006_1822	2021-10-06 20:09:18.292861+00
+576	fusion_online	0027_vendor_products	2021-10-06 20:09:18.589082+00
+577	fusion_online	0028_auto_20211006_1859	2021-10-06 20:09:19.542824+00
+578	fusion_online	0029_auto_20211020_1420	2021-10-20 14:21:20.604947+00
+579	fusion_online	0030_auto_20211025_1940	2021-10-25 19:40:36.094552+00
+580	payment	0022_payment_customer_id	2021-10-28 19:39:25.150083+00
 \.
 
 
@@ -6137,42 +6357,22 @@ COPY public.django_site (id, domain, name) FROM stdin;
 --
 
 COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code, comment, product_variant_id, tariff_rate, coo, item_master_id, mcode, mpn, offer_id, offer_price, quantity, vendor_id, item_type_id) FROM stdin;
-1	vendor_offer	0	1625254322	2 days	test	21	\N		0	string	string	0	0.00000	1	\N	0
-2	vendor_offer	0	1625254322	2 days		23	\N		0	string	string	0	0.00000	1	\N	0
-3	vendor_offer	10	1625254322	2 days		24	\N		0	string	string	0	0.00000	1	\N	0
-4	vendor_offer	10	1625254322	2 days		46	\N		0	string	string	0	0.00000	1	\N	0
-5	vendor_offer	10	1625254322	2 days		47	\N		0	string	string	0	0.00000	1	\N	0
-6	vendor_offer	10	1625254322	2 days		48	\N		0	string	string	0	0.00000	1	\N	0
-7	vendor_offer	10	1625254322	2 days		49	\N		0	string	string	0	0.00000	1	\N	0
-8	vendor_offer	10	1625254322	2 days		50	\N		0	string	string	0	0.00000	1	\N	0
-9	vendor_offer	10	1625254322	2 days		51	0.00000		0	string	string	0	0.00000	1	\N	0
-10	VENDOR_OFFER	10	1625254322	2 days		54	0.00000		0	string	string	0	0.00000	1	\N	0
-11	VENDOR_OFFER	0	1625254322	2 days		55	0.00000		0	string	string	0	0.00000	1	\N	0
-12	VENDOR_OFFER	-1	1625254322	2 days		56	0.00000		0	string	string	0	0.00000	1	\N	0
-13	VENDOR_OFFER	-1	1625254322	2 days		58	0.00000		0	string	string	0	0.00000	1	\N	0
-14	EXCESS_LIST	-1	0	string	string	59	12.00125	string	0	string	string	0	0.00000	1	\N	0
-15	EXCESS_LIST	-1	0	string	string	60	12.00125	string	0	string	string	0	0.00000	1	\N	0
-16	EXCESS_LIST	-1	0	string	string	62	12.00125	string	0	string	string	0	0.00000	1	\N	0
-17	EXCESS_LIST	-1	1630696738000	string	string	64	12.00125	string	0	string	string	0	0.00000	1	\N	0
-18	EXCESS_LIST	-1	0	string	string	65	12.00125	string	0	string	string	0	0.00000	1	\N	0
-19	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-20	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-21	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-22	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-23	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-24	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-25	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-26	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-27	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-28	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-29	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
-30	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
-31	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
-32	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
-33	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
-34	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
-35	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
-36	EXCESS_LIST	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
+149	Vendor Offer	-1	1635483600000		NEW, I3-10100F, RETAIL BOX, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		205840	INTEL	SRH8U	210597399	81.00000	500	9	3
+150	Vendor Offer	-1	1635483600000		NEW, I3-10100, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		203753	INTEL	SRH3N	210597400	106.50000	315	9	3
+151	Vendor Offer	-1	1635483600000		NEW, I3-10105F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212344	INTEL	SRH8V	210597401	80.00000	315	9	3
+152	Vendor Offer	-1	1635483600000		NEW, I3-10105F, RETAIL BOX, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212344	INTEL	SRH8V	210597402	83.00000	370	9	3
+153	Vendor Offer	-1	1635483600000		NEW, I3-10105, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		208597	INTEL	SRH3P	210597403	106.50000	315	9	3
+154	Vendor Offer	-1	1635483600000		NEW, I3-10320, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212337	INTEL	SRH3G	210597404	140.00000	606	9	3
+155	Vendor Offer	-1	1635483600000		NEW, I5-10400F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		208940	INTEL	SRH79	210597405	127.50000	315	9	3
+156	Vendor Offer	-1	1635483600000		NEW, I5-10400F, RETAIL BOX, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		208940	INTEL	SRH79	210597406	141.00000	881	9	3
+187	Vendor Offer	-1	1635483600000		NEW. STOCK. FCFS	\N	0.25000		184914	INTEL	SR2HG	210597669	110.00000	1300	16	3
+188	Vendor Offer	-1	1635483600000		NEW. STOCK. FCFS	\N	0.25000		196982	INTEL	SR3W4	210597671	70.00000	5000	16	3
+189	Vendor Offer	-1	1635483600000		NEW. DELIVERY BY 19-NOV.	\N	0.25000		195452	INTEL	SR3Y8	210597673	125.00000	5000	16	3
+190	Vendor Offer	-1	1635483600000		NEW. DELIVERY BY 12-NOV	\N	0.25000		195958	INTEL	SR3XD	210597675	185.00000	3000	16	3
+191	Vendor Offer	-1	1635483600000		NEW. STOCK. FCFS	\N	0.25000		191302	INTEL	SR3QS	210597676	270.00000	1500	16	3
+192	Vendor Offer	-1	1635483600000		NEW. STOCK. FCFS	\N	0.25000		195894	INTEL	SR3WX	210597677	230.00000	230	16	3
+193	RMS Offer	0	1635503520000		stock, new - box	\N	0.25000		201028	INTEL	SRG1W	210599263	686.41000	15	39	5
+194	Vendor Offer	0	1636025940000		in stock, new	\N	0.25000		198821	INTEL	SRFPP	211003579	1845.56000	109	30	3
 37	Excess List	0	1632422107157	10-1	Test offer 1	\N	12.00125	United States	99998	ACME	2501-99998	77776	60.50000	100	15	0
 38	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106	\N	0.25000		3	INTEL	SR3GL	206891032	285.00000	84	4	0
 39	Vendor Offer	-1	1627966800000		new, stock, fcfs. Need to rcfm, may pull to factory use. 4108	\N	0.25000		3	INTEL	SR3GJ	206891033	485.00000	38	4	0
@@ -6193,8 +6393,21 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 54	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3X9	209342247	82.00000	259	9	0
 55	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3QT	209342286	159.00000	500	9	0
 56	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3N5	209342293	124.00000	1000	9	0
+19	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+20	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+21	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+22	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+23	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+24	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+25	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+26	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+27	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+28	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+29	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	1	0
+30	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
+31	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
+32	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
 57	Vendor Offer	0	1632373200000		NEW, STOCK, FCFS	\N	0.25000		3	INTEL	SR3XE	209342298	177.00000	1500	9	0
-58	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
 59	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
 60	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
 61	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
@@ -6216,7 +6429,6 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 77	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
 78	Excess List	60	1632778752618	DC	This is a comment	\N	12.00125	China	1	intel	quux126	1	123.45678	100	20	0
 79	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
-80	RMS Offer	0	1632698220000		new, stock, 5 days to hk fusion. only left 4k.	\N	0.25000		5	INTEL	SR2Z7	209428121	20.00000	4000	23	0
 81	Vendor Offer	5	1632719700000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	\N	0.25000		3	INTEL	SR2Z7	209431962	14.00000	5742	20	0
 82	RMS PO	-1	1632780180000		PO# 258234-10	\N	0.25000		8	INTEL	SR2Z7	209489677	14.00000	4785	20	0
 83	Vendor Offer	-1	1632805200000		new. Stock. fcfs. 8500	\N	0.25000		3	INTEL	SR3XE	209491201	177.00000	588	17	0
@@ -6229,42 +6441,286 @@ COPY public.fusion_online_offer (id, type, lead_time_days, date_added, date_code
 90	Vendor Offer	-1	1632805200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209585370	172.00000	3000	16	0
 91	Vendor Offer	-1	1632805200000		NEW. STOCK. FCFS	\N	0.25000		3	INTEL	SR3XE	209585416	180.00000	2000	19	0
 92	Vendor Offer	2	1632805200000		New, LT:1-2days	\N	0.25000		3	INTEL	SR3B5	209586125	2050.00000	193	18	0
-93	Vendor Offer	0	1632863280000		new, stock, 4110	\N	0.25000		189978	INTEL	SR3GH	209588532	445.00000	298	18	3
-94	RMS PO	-1	1632866520000		PO# 258338-10	\N	0.25000		189978	INTEL	SR3GH	209588881	445.00000	298	18	8
-95	Vendor Offer	-1	1632899160000		new, booking LT: 2-3week, 4110 , subject to Intel allocation	\N	0.25000		189978	INTEL	SR3GH	209595207	445.00000	1000	18	3
-96	Vendor Offer	-1	1632891600000		new, booking LT: 2-3weeks, 6138, subject to INTEL allocation	\N	0.25000		192616	INTEL	SR3B5	209595233	2050.00000	300	18	3
-97	Vendor Offer	-1	1632891600000		NEW, LT: 2-3weeks, 6130, subkect to INTEL allocation	\N	0.25000		191229	INTEL	SR3B9	209595235	1400.00000	300	18	3
-98	Vendor Offer	-1	1632978000000		new. Stock. fcfs. 8500	\N	0.25000		193981	INTEL	SR3XE	209636844	177.00000	588	17	3
-99	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106. DC:19+	\N	0.25000		193359	INTEL	SR3GL	209640155	285.00000	53	4	3
-100	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use. DC:19+. 4108	\N	0.25000		193358	INTEL	SR3GJ	209640156	485.00000	38	4	3
-101	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use.DC:19+ 5118	\N	0.25000		189979	INTEL	SR3GF	209640157	710.00000	80	4	3
-102	Vendor Offer	-1	1632978000000		NEW. DELIVERY BY 15-OCT	\N	0.25000		192553	INTEL	SR3X9	209640268	85.00000	2000	16	3
-103	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	\N	0.25000		190696	INTEL	SR3QT	209640270	158.00000	3500	16	3
-104	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	\N	0.25000		193981	INTEL	SR3XE	209640271	175.00000	3000	16	3
-105	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	\N	0.25000		193981	INTEL	SR3XE	209640306	180.00000	2000	19	3
-106	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		194248	INTEL	SR3N5	209640538	124.00000	1000	9	3
-107	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		190696	INTEL	SR3QT	209640548	159.00000	500	9	3
-108	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		193981	INTEL	SR3XE	209640555	177.00000	1500	9	3
-109	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		192553	INTEL	SR3X9	209640585	82.00000	59	9	3
-110	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		192553	INTEL	SR3X9	209654651	82.00000	59	9	3
-111	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		194248	INTEL	SR3N5	209654653	124.00000	1000	9	3
-112	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		190696	INTEL	SR3QT	209654654	159.00000	500	9	3
-113	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		193981	INTEL	SR3XE	209654655	177.00000	1500	9	3
-114	Vendor Offer	-1	1633385460000		new, booking LT: 2-3WEEKS, 4110 , subject to Intel allocation	\N	0.25000		189978	INTEL	SR3GH	209671107	445.00000	1000	18	3
-115	RMS PO	-1	1633390800000		PO# 258742-10	\N	0.25000		189978	INTEL	SR3GH	209671380	445.00000	1000	18	8
-116	Vendor Offer	-1	1633404300000		new, feedback LT is very long for now, can't get a confirmation date from Intel, can only load order and wait for allocation , 6130	\N	0.25000		191229	INTEL	SR3B9	209762451	0.00000	1	18	3
-117	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		192553	INTEL	SR3X9	209765380	84.00000	59	9	3
-118	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		194248	INTEL	SR3N5	209765382	124.00000	1000	9	3
-119	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		190696	INTEL	SR3QT	209765383	159.00000	500	9	3
-120	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		193981	INTEL	SR3XE	209765384	177.00000	1500	9	3
-121	RMS Offer	-1	1633480260000		loaded 1kpcs for LT OFFER to INTEL and pending on allocation  for DELL order. vendor not confidence to book additional qty for now	\N	0.25000		189978	INTEL	SR3GH	209874671	0.00000	1	18	5
-122	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		192553	INTEL	SR3X9	209876879	84.00000	59	9	3
-123	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		194248	INTEL	SR3N5	209876881	124.00000	1000	9	3
-124	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		190696	INTEL	SR3QT	209876882	158.00000	500	9	3
-125	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		193981	INTEL	SR3XE	209876883	176.00000	500	9	3
-126	Vendor Offer	-1	1633496400000		NEW. DELIVERY BY 15-OCT	\N	0.25000		192553	INTEL	SR3X9	209880378	85.00000	2000	16	3
-127	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS	\N	0.25000		190696	INTEL	SR3QT	209880380	158.00000	3500	16	3
-128	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS	\N	0.25000		193981	INTEL	SR3XE	209880381	175.00000	3000	16	3
+134	RMS Offer	4	1635477600000		new, LT: 2-4days, 4216, highly subject to reconfirmation	\N	0.25000		198368	INTEL	SRFBB	210596380	760.00000	150	6	5
+157	Vendor Offer	-1	1635483600000		NEW, I5-10400F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		203749	INTEL	SRH3D	210597407	127.50000	315	9	3
+58	RMS Offer	5	1632697200000		NEW. SEALED. MOQ=SPQ=957PCS PER SEALED PACK. LT 3-5 DAYS. DEPENDING ON WHEN LOAD THE ORDER - CHINA GOLDEN WEEK 1ST-8TH OCT.	78	0.25000		5	INTEL	SR2Z7	209426249	14.00000	5742	20	0
+95	Vendor Offer	-1	1632899160000		new, booking LT: 2-3week, 4110 , subject to Intel allocation	\N	0.25000	China	189978	INTEL	SR3GH	209595207	445.00000	1000	18	3
+135	RMS Offer	0	1635480840000		NEW. STOCK. FCFS. G4900	\N	0.25000		196982	INTEL	SR3W4	210596626	70.00000	500	16	5
+158	Vendor Offer	-1	1635483600000		NEW, I5-10400F, RETIAL BOX, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		203749	INTEL	SRH3D	210597408	141.00000	881	9	3
+159	Vendor Offer	-1	1635483600000		NEW, I5-10400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204819	INTEL	SRH3C	210597409	141.50000	315	9	3
+160	Vendor Offer	-1	1635483600000		NEW, I5-10400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212345	INTEL	SRH78	210597410	141.50000	315	9	3
+161	Vendor Offer	-1	1635483600000		NEW, I5-10500, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		202015	INTEL	SRH3A	210597411	161.00000	315	9	3
+162	Vendor Offer	-1	1635483600000		NEW, I5-10600KF, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204332	INTEL	SRH6S	210597412	198.00000	315	9	3
+163	Vendor Offer	-1	1635483600000		NEW, I7-10700F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204488	INTEL	SRH70	210597413	284.00000	315	9	3
+164	Vendor Offer	-1	1635483600000		NEW, I7-10700, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204324	INTEL	SRH6Y	210597414	294.00000	315	9	3
+165	Vendor Offer	-1	1635483600000		NEW, I7-10700K, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		202592	INTEL	SRH72	210597415	314.00000	59	9	3
+166	Vendor Offer	-1	1635483600000		NEW, I9-10850K, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		209983	INTEL	SRK51	210597416	385.00000	300	9	3
+167	Vendor Offer	-1	1635483600000		NEW, I9-10900F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		208057	INTEL	SRH90	210597417	343.00000	50	9	3
+168	Vendor Offer	-1	1635483600000		NEW, I9-10900KF, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		202595	INTEL	SRH92	210597418	421.00000	315	9	3
+169	Vendor Offer	-1	1635483600000		NEW, I5-11400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212353	INTEL	SRKP0	210597419	155.00000	315	9	3
+170	Vendor Offer	-1	1635483600000		NEW, I5-11400F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212354	INTEL	SRKP1	210597420	155.50000	315	9	3
+171	Vendor Offer	-1	1635483600000		NEW, I5-11500, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		209756	INTEL	SRKNY	210597421	166.00000	315	9	3
+172	Vendor Offer	-1	1635483600000		NEW, I7-11700F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212362	INTEL	SRKNR	210597422	283.00000	315	9	3
+173	Vendor Offer	-1	1635483600000		NEW, I7-11700, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		206605	INTEL	SRKNS	210597423	285.00000	315	9	3
+174	Vendor Offer	-1	1635483600000		NEW, I7-11700K, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		206361	INTEL	SRKNL	210597424	316.00000	315	9	3
+175	Vendor Offer	-1	1635483600000		NEW, I7-11700KF, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212360	INTEL	SRKNN	210597425	308.00000	315	9	3
+176	Vendor Offer	-1	1635483600000		NEW, I9-11900, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212363	INTEL	SRKNJ	210597426	398.00000	315	9	3
+177	Vendor Offer	-1	1635483600000		NEW, I9-11900KF, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212366	INTEL	SRKNF	210597427	496.00000	315	9	3
+178	Vendor Offer	-1	1635483600000		NEW, I9-11900K, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		206362	INTEL	SRKND	210597428	501.00000	315	9	3
+179	Vendor Offer	-1	1635483600000		NEW, E-2124 , EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		196789	INTEL	SR3WQ	210597438	81.00000	2000	9	3
+180	Vendor Offer	-1	1635483600000		NEW, E-2134 , EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		196795	INTEL	SR3WP	210597439	96.00000	2000	9	3
+181	Vendor Offer	-1	1635483600000		NEW, Ryzen 7 5700G, PRICE REFERENCE ONLY, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212484	AMD	100-000000263	210597448	318.00000	1	9	3
+182	Vendor Offer	-1	1635483600000		NEW, Ryzen 5 5600X, PRICE REFERENCE ONLY, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204309	AMD	100-000000065	210597449	264.00000	1	9	3
+183	Vendor Offer	-1	1635483600000		NEW, Ryzen 7 5800X, PRICE REFERENCE ONLY, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204725	AMD	100-000000063	210597450	328.00000	1	9	3
+184	Vendor Offer	-1	1635483600000		NEW, Ryzen 9 5900X, PRICE REFERENCE ONLY, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		204874	AMD	100-000000061	210597451	461.00000	1	9	3
+185	Vendor Offer	-1	1635483600000		NEW, Ryzen 9 5950X, PRICE REFERENCE ONLY, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		205236	AMD	100-000000059	210597452	655.00000	1	9	3
+186	Vendor Offer	-1	1635483600000		(NEW, i9-11900K, RETAIL BOX, ETA 5TH NOV HK, FCFS, RECFM QTY AGAIN)	\N	0.25000		206362	INTEL	SRKND	210597501	530.00000	150	9	3
+33	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	2	0
+34	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
+35	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
+36	Excess List	-1	123456789	string	string	\N	12.00125	string	27	string	string	2348798	49.99000	1	3	0
+94	RMS PO	-1	1632866520000		PO# 258338-10	67	0.25000	China	189978	INTEL	SR3GH	209588881	445.00000	298	18	8
+97	Vendor Offer	-1	1632891600000		NEW, LT: 2-3weeks, 6130, subkect to INTEL allocation	\N	0.25000	China	191229	INTEL	SR3B9	209595235	1400.00000	300	18	3
+99	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use. 3106. DC:19+	\N	0.25000	China	193359	INTEL	SR3GL	209640155	285.00000	53	4	3
+100	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use. DC:19+. 4108	\N	0.25000	China	193358	INTEL	SR3GJ	209640156	485.00000	38	4	3
+101	Vendor Offer	-1	1632978000000		new, stock, fcfs. Need to rcfm, may pull to factory use.DC:19+ 5118	\N	0.25000	China	189979	INTEL	SR3GF	209640157	710.00000	80	4	3
+98	Vendor Offer	-1	1632978000000		new. Stock. fcfs. 8500	71	0.25000	China	193981	INTEL	SR3XE	209636844	177.00000	588	17	3
+136	Vendor Offer	-1	1635483600000		NEW, G4400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		185808	INTEL	SR2DC	210597377	63.00000	315	9	3
+105	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	\N	0.25000	China	193981	INTEL	SR3XE	209640306	180.00000	2000	19	3
+137	Vendor Offer	-1	1635483600000		NEW, G4900, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		196982	INTEL	SR3W4	210597379	74.00000	315	9	3
+107	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	190696	INTEL	SR3QT	209640548	159.00000	500	9	3
+108	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	193981	INTEL	SR3XE	209640555	177.00000	1500	9	3
+109	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	192553	INTEL	SR3X9	209640585	82.00000	59	9	3
+110	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	192553	INTEL	SR3X9	209654651	82.00000	59	9	3
+138	Vendor Offer	-1	1635483600000		NEW, I3-6100, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		184914	INTEL	SR2HG	210597383	112.00000	315	9	3
+112	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	190696	INTEL	SR3QT	209654654	159.00000	500	9	3
+113	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	193981	INTEL	SR3XE	209654655	177.00000	1500	9	3
+114	Vendor Offer	-1	1633385460000		new, booking LT: 2-3WEEKS, 4110 , subject to Intel allocation	\N	0.25000	China	189978	INTEL	SR3GH	209671107	445.00000	1000	18	3
+115	RMS PO	-1	1633390800000		PO# 258742-10	\N	0.25000	China	189978	INTEL	SR3GH	209671380	445.00000	1000	18	8
+116	Vendor Offer	-1	1633404300000		new, feedback LT is very long for now, can't get a confirmation date from Intel, can only load order and wait for allocation , 6130	\N	0.25000	China	191229	INTEL	SR3B9	209762451	0.00000	1	18	3
+117	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	192553	INTEL	SR3X9	209765380	84.00000	59	9	3
+119	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	190696	INTEL	SR3QT	209765383	159.00000	500	9	3
+120	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	193981	INTEL	SR3XE	209765384	177.00000	1500	9	3
+121	RMS Offer	-1	1633480260000		loaded 1kpcs for LT OFFER to INTEL and pending on allocation  for DELL order. vendor not confidence to book additional qty for now	\N	0.25000	China	189978	INTEL	SR3GH	209874671	0.00000	1	18	5
+122	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	192553	INTEL	SR3X9	209876879	84.00000	59	9	3
+123	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	194248	INTEL	SR3N5	209876881	124.00000	1000	9	3
+124	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	190696	INTEL	SR3QT	209876882	158.00000	500	9	3
+125	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	193981	INTEL	SR3XE	209876883	176.00000	500	9	3
+126	Vendor Offer	-1	1633496400000		NEW. DELIVERY BY 15-OCT	\N	0.25000	China	192553	INTEL	SR3X9	209880378	85.00000	2000	16	3
+127	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS	\N	0.25000	China	190696	INTEL	SR3QT	209880380	158.00000	3500	16	3
+128	Vendor Offer	-1	1633496400000		NEW. STOCK. FCFS	\N	0.25000	China	193981	INTEL	SR3XE	209880381	175.00000	3000	16	3
+129	Vendor Offer	-1	1633582800000		Sold Out	\N	0.25000	China	192553	INTEL	SR3X9	209889168	0.00000	1	9	3
+130	Vendor Offer	-1	1633582800000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	194248	INTEL	SR3N5	209889170	123.00000	1000	9	3
+131	Vendor Offer	-1	1633582800000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	190696	INTEL	SR3QT	209889171	158.00000	500	9	3
+132	Vendor Offer	-1	1633582800000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000	China	193981	INTEL	SR3XE	209889172	176.00000	500	9	3
+93	Vendor Offer	0	1632863280000		new, stock, 4110	66	0.25000	China	189978	INTEL	SR3GH	209588532	445.00000	298	18	3
+102	Vendor Offer	-1	1632978000000		NEW. DELIVERY BY 15-OCT	68	0.25000	China	192553	INTEL	SR3X9	209640268	85.00000	2000	16	3
+106	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	69	0.25000	China	194248	INTEL	SR3N5	209640538	124.00000	1000	9	3
+111	Vendor Offer	-1	1633323600000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	70	0.25000	China	194248	INTEL	SR3N5	209654653	124.00000	1000	9	3
+104	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	72	0.25000	China	193981	INTEL	SR3XE	209640271	175.00000	3000	16	3
+139	Vendor Offer	-1	1635483600000		NEW, I5-7500, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		188614	INTEL	SR335	210597386	171.00000	87	9	3
+140	Vendor Offer	-1	1635483600000		NEW, I7-7700, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		188314	INTEL	SR338	210597387	272.00000	132	9	3
+141	Vendor Offer	-1	1635483600000		NEW, I7-8700, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		191302	INTEL	SR3QS	210597391	271.00000	315	9	3
+142	Vendor Offer	-1	1635483600000		NEW, I3-9100F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		207935	INTEL	SRF7W	210597392	90.00000	296	9	3
+143	Vendor Offer	-1	1635483600000		NEW, I3-9100F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.00000		212368	INTEL	SRF6N	210597393	90.00000	296	9	3
+144	Vendor Offer	-1	1635483600000		NEW, I5-9400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		198091	INTEL	SR3X5	210597394	146.50000	315	9	3
+145	Vendor Offer	-1	1635483600000		NEW, I5-9400, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		198479	INTEL	SRG0Y	210597395	146.50000	315	9	3
+146	Vendor Offer	-1	1635483600000		NEW, I5-9500, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		198462	INTEL	SRF4B	210597396	159.50000	315	9	3
+147	Vendor Offer	-1	1635483600000		NEW, I5-9600K, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		199792	INTEL	SRG11	210597397	154.00000	315	9	3
+148	Vendor Offer	-1	1635483600000		NEW, I3-10100F, EX STK HK, MAY HAVE MORE QTY IF PRICE WORK, FCFS, RECFM QTY AGAIN	\N	0.25000		205840	INTEL	SRH8U	210597398	77.00000	315	9	3
+118	Vendor Offer	-1	1633410000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	75	0.25000	China	194248	INTEL	SR3N5	209765382	124.00000	1000	9	3
+195	Vendor Offer	0	1636002000000		stock, new tray	\N	0.25000		201567	INTEL	SRGZA	211007632	1824.19000	4	41	3
+103	Vendor Offer	-1	1632978000000		NEW. STOCK. FCFS	73	0.25000	China	190696	INTEL	SR3QT	209640270	158.00000	3500	16	3
+96	Vendor Offer	-1	1632891600000		new, booking LT: 2-3weeks, 6138, subject to INTEL allocation	74	0.25000	China	192616	INTEL	SR3B5	209595233	2050.00000	300	18	3
+196	Vendor Offer	0	1636040700000		stock, new	\N	0.00000		212657	INTEL	SSDSCKKB240GZ01	211078197	190.00000	179	46	3
+197	Vendor Offer	0	1636041600000		stock, new S4520, new version faster operating speed	\N	0.00000		212657	INTEL	SSDSCKKB240GZ01	211105141	190.00000	179	46	3
+198	RMS Offer	-1	1636062720000		No offer. Previous offer has sold. Not seeing any incoming from Intel yet	\N	0.25000		203136	INTEL	SRF7C	211105679	0.00000	1	16	5
+199	RMS Offer	0	1636064280000		new. stock. fcfs	\N	0.25000		195894	INTEL	SR3WX	211105766	225.00000	230	16	5
+200	Vendor Offer	4	1636065060000		new, LT: 2-4days, S4610 3.84T	\N	0.00000		197235	INTEL	SSDSC2KG038T801	211105827	830.00000	71	6	3
+201	RMS Offer	2	1636066020000		NEW. SEALED. LT 1-2 DAYS. FCFS. MOQ=SPQ=957PCS PER SEALED PACK	\N	0.25000		202965	INTEL	SREKK	211105884	22.80000	3828	16	5
+202	RMS PO	-1	1636066020000		PO# 261788-10	\N	0.00000		197235	INTEL	SSDSC2KG038T801	211105886	830.00000	71	6	8
+203	RMS Offer	2	1636066080000		NEW. SEALED. LT 1-2 DAYS. FCFS. MOQ=SPQ=957PCS PER SEALED PACK	\N	0.25000		202965	INTEL	SREKK	211105888	22.80000	4785	16	5
+204	Vendor Offer	0	1636088400000		New. Stock. FCFS. Need to reconfirm qty. i7-10700	\N	0.25000		204324	INTEL	SRH6Y	211106077	289.00000	2000	9	3
+205	RMS Offer	0	1636068900000		New. Stock. FCFS. Need to reconfirm qty.	\N	0.25000		204324	INTEL	SRH6Y	211106083	289.00000	2000	9	5
+206	RMS Offer	0	1636078140000		New. Stock HK. FCFS. Reconfirm qty.	\N	0.25000		196982	INTEL	SR3W4	211107404	67.50000	2400	9	5
+207	RMS Offer	0	1636078200000		New. Stock. FCFS.	\N	0.25000		197832	INTEL	SRCZV	211107406	197.50000	560	9	5
+208	RMS Offer	0	1636078620000		New. Stock. FCFS.	\N	0.25000		197832	INTEL	SRCZV	211107433	107.50000	560	9	5
+209	Vendor Offer	0	1636080660000		new. stock. fcfs	\N	0.25000		195894	INTEL	SR3WX	211107621	225.00000	230	16	3
+210	Vendor Offer	0	1636082220000	21+	NEW. SEALED. STOCK. MOQ=SPQ=957PCS PER SEALED PACK. FCFS.	\N	0.25000		202965	INTEL	SREKK	211107732	22.80000	4785	16	3
+211	RMS Offer	-1	1636084320000		NEW. DELIVERY BY 12-NOV	\N	0.25000		197832	INTEL	SRCZV	211107897	107.00000	600	16	5
+212	RMS Offer	0	1636084380000		NEW. STOCK. FCFS G4900	\N	0.25000		196982	INTEL	SR3W4	211107901	67.00000	3000	16	5
+213	RMS Offer	0	1636086900000		New. Stock. FCFS.	\N	0.25000		185808	INTEL	SR2DC	211108164	61.00000	125	9	5
+214	RMS Offer	0	1636087500000		New. Stock. FCFS. 4216.	\N	0.25000		198368	INTEL	SRFBB	211108240	775.00000	500	9	5
+215	RMS PO	-1	1636087860000		PO# 261846-10	\N	0.25000		202965	INTEL	SREKK	211108286	22.80000	4785	16	8
+216	Vendor Offer	-1	1636088400000		No offer. Shortage. Not seeing any allocation from Intel for long.	\N	0.25000		201547	INTEL	SRGZC	211108435	0.00000	1	16	3
+217	Vendor Offer	-1	1636088400000		No offer. Shortage. Not seeing any allocation from Intel for long.	\N	0.25000		201028	INTEL	SRG1W	211108440	0.00000	1	16	3
+218	Vendor Offer	-1	1636088400000		no offer. previous 61pcs has sold	\N	0.25000		202369	INTEL	SRGZE	211108444	0.00000	1	16	3
+219	Vendor Offer	-1	1636088400000		No offer. Shortage. Not seeing any allocation from Intel for long.	\N	0.25000		201567	INTEL	SRGZA	211108447	0.00000	1	16	3
+220	RMS Offer	-1	1636090200000		No offer	\N	0.25000		203712	AMD	100-000000143	211108484	0.00000	1	9	5
+221	RMS Offer	-1	1636091220000		NO OFFER	\N	0.25000		185808	INTEL	SR2DC	211108557	0.00000	1	16	5
+222	Vendor Offer	0	1636104540000		stock, new	\N	0.00000		203458	MICRO	MTFDHAL3T8TDP-1AT1ZABYY	211109455	1025.00000	250	41	3
+223	RMS Offer	0	1636105680000		stock, new box	\N	0.25000		198368	INTEL	SRFBB	211109521	882.85000	10	40	5
+224	Vendor Offer	-1	1636088400000		new. stock. reference.	\N	0.00000		212672	INTEL	SSDPE2KE032T807	211109524	0.00000	400	4	3
+225	RMS Offer	0	1636105980000		stock, new box	\N	0.25000		197832	INTEL	SRCZV	211109535	118.53000	13	41	5
+226	Vendor Offer	-1	1636088400000		reference. stock.	\N	0.00000		198646	INTEL	SSDPE2KE064T801	211109543	0.00000	250	4	3
+227	RMS PO	-1	1636107960000		PO# 261879-10	\N	0.00000		197143	INTEL	SSDSC2KB480G801	211109700	180.00000	1000	4	8
+228	RMS Offer	0	1636111440000		in stock, new OPEN BOX / Firmaware HXT7904Q.	\N	0.00000		196974	SAM	MZ7LH240HAHQ-00005	211110186	100.00000	240	47	5
+133	RMS PO	-1	1635458460000		PO# 261049-10	76	0.25000		202369	INTEL	SRGZE	210588654	670.00000	46	16	8
+80	RMS Offer	0	1632698220000		new, stock, 5 days to hk fusion. only left 4k.	77	0.25000		5	INTEL	SR2Z7	209428121	20.00000	4000	23	0
+229	RMS Offer	-1	1636122540000		stock, new	\N	0.00000		197235	INTEL	SSDSC2KG038T801	211132793	960.00000	7	30	5
+230	RMS Offer	0	1636126140000		in stock, new	\N	0.00000		197235	INTEL	SSDSC2KG038T801	211146820	960.00000	7	30	5
+231	Vendor Offer	0	1636318260000		New. Stock. LT 1 - 2 days. FCFS.	\N	0.25000		196982	INTEL	SR3W4	211148108	68.00000	100	9	3
+232	Vendor Offer	2	1636318680000		NEW. OPEN PACK . LT 1-2 DAYS. FCFS	\N	0.25000		190486	INTEL	SR340	211148134	263.00000	80	16	3
+233	RMS Offer	4	1636321380000		new, LT: 2-4days, FCFS	\N	0.25000		201001	SAM	M393A8G40AB2-CWE	211148427	299.00000	600	62	5
+234	Vendor Offer	0	1636347600000		New. Stock HK. LT 1 - 2 days. FCFS. 10700.	\N	0.25000		204324	INTEL	SRH6Y	211148555	286.00000	3000	9	3
+235	RMS Offer	4	1636324020000		new, LT: 2-4days, FCFS	\N	0.00000		197235	INTEL	SSDSC2KG038T801	211148828	832.00000	100	6	5
+236	Vendor Offer	0	1636347600000		new, stock. fcfs.	\N	0.00000	taiwan	197143	INTEL	SSDSC2KB480G801	211152415	180.00000	259	4	3
+237	RMS Offer	-1	1636332960000		ATMD is still waiting for November official pricing to be released.	\N	0.25000		201001	SAM	M393A8G40AB2-CWE	211152456	0.00000	1	67	5
+238	RMS Offer	-1	1636333080000		ATMD is still waiting for November's official pricing to be released.	\N	0.25000		194688	SAM	M378A5244CB0-CTD	211152462	0.00000	1	67	5
+239	Vendor Offer	0	1636347600000		new. stock. fcfs	\N	0.00000		198251	INTEL	SSDPE2KX020T801	211153609	440.00000	200	4	3
+240	RMS Offer	0	1636340640000		new. stock.	\N	0.00000		199173	SAM	MZ7KH960HAJR-00005	211158321	320.00000	100	53	5
+241	RMS Offer	4	1636341240000		new, LT: 2-4DAYS, end suffix BY	\N	0.25000	NON CN	203963	SAM	M393A2K40DB2-CVF	211158376	83.00000	1000	62	5
+242	RMS Offer	0	1636341240000		new. stock. fcfs	\N	0.00000		199786	INTEL	SSDPE2KE016T801	211158377	500.00000	500	4	5
+243	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		195522	INTEL	SSDSC2KG960G801	211158509	310.00000	1000	4	3
+244	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		199018	INTEL	SSDSC2KG019T801	211158510	550.00000	747	4	3
+245	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		198518	INTEL	SSDSC2KB038T801	211158511	680.00000	150	4	3
+246	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		194490	INTEL	SSDSC2KB019T801	211158512	450.00000	1000	4	3
+247	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		198646	INTEL	SSDPE2KE064T801	211158513	1550.00000	250	4	3
+248	Vendor Offer	-1	1636347600000		New, stock, fcfs. Need to rcfm.	\N	0.00000		199786	INTEL	SSDPE2KE016T801	211158514	500.00000	500	4	3
+249	Vendor Offer	4	1636347600000		new, LT: 2-4days, FCFS	\N	0.25000		204158	SAM	M393A4K40DB2-CVF	211158555	150.00000	1000	62	3
+250	RMS Offer	4	1636342800000		new, LT: 2-4days, end suffx GQ, FCFS	\N	0.25000		203963	SAM	M393A2K40DB2-CVF	211158576	88.00000	2000	60	5
+251	RMS Offer	3	1636343760000	21+	new, LT: 2-3days, FCFS	\N	0.25000		194688	SAM	M378A5244CB0-CTD	211160650	16.60000	2000	68	5
+252	Vendor Offer	-1	1636347600000		1WEEK	\N	0.00000		198518	INTEL	SSDSC2KB038T801	211161540	640.00000	1000	50	3
+253	Vendor Offer	-1	1636347600000		2weeks	\N	0.00000		212668	INTEL	SSDPE2KX010T807	211161541	300.00000	1000	50	3
+254	RMS Offer	0	1636370880000		in stock	\N	0.00000		199965	MICRO	MTFDDAK480TDT-1AW1ZABYY	211163414	169.24000	33	39	5
+255	RMS Offer	0	1636371060000		in stock, new	\N	0.00000		199965	MICRO	MTFDDAK480TDT-1AW1ZABYY	211163419	169.24000	33	39	5
+256	RMS Offer	0	1636371540000		in stock, new	\N	0.00000		202154	MICRO	MTFDDAK480TDS-1AW1ZABYY	211163489	194.99000	33	39	5
+257	RMS Offer	0	1636371600000		in stock, new	\N	0.00000		202154	MICRO	MTFDDAK480TDS-1AW1ZABYY	211163491	169.24000	33	39	5
+258	RMS Offer	0	1636378980000		stock, new, 970 EVO plus	\N	0.00000		200383	SAM	MZ-V7S250B/AM	211226781	60.34000	2032	40	5
+259	Vendor Offer	0	1636347600000			\N	0.25000		197185	SAM	MZ7KH1T9HAJR-00005	211263646	625.00000	73	47	3
+260	Vendor Offer	0	1636347600000			\N	0.00000		199376	SAM	MZ7KH240HAHQ-00005	211263647	120.00000	113	47	3
+261	Vendor Offer	0	1636347600000			\N	0.00000		200266	SAM	MZ7KH480HAHQ-00005	211263648	185.00000	85	47	3
+262	Vendor Offer	0	1636347600000			\N	0.00000		195688	SAM	MZ7LH1T9HMLT-00005	211263658	314.00000	735	47	3
+263	Vendor Offer	0	1636347600000			\N	0.00000		196974	SAM	MZ7LH240HAHQ-00005	211263659	95.00000	593	47	3
+264	Vendor Offer	0	1636347600000			\N	0.00000		197065	SAM	MZ7LH3T8HMLT-00005	211263660	565.00000	120	47	3
+265	Vendor Offer	0	1636347600000			\N	0.00000		198490	SAM	MZ7LH7T6HMLA-00005	211263661	1055.00000	402	47	3
+266	Vendor Offer	0	1636347600000			\N	0.00000		202932	SAM	MZILT15THALA-00007	211263662	2450.00000	298	47	3
+267	Vendor Offer	0	1636347600000			\N	0.00000		204816	SAM	MZILT1T9HBJR-00007	211263663	525.00000	98	47	3
+268	Vendor Offer	0	1636347600000			\N	0.00000		212728	SAM	MZILT30THALA-00007	211263664	5250.00000	46	47	3
+269	Vendor Offer	0	1636347600000			\N	0.00000		208341	SAM	MZILT3T8HBLS-00007	211263665	835.00000	89	47	3
+270	Vendor Offer	0	1636347600000			\N	0.25000		205712	SAM	MZILT7T6HALA-00007	211263666	1400.00000	32	47	3
+271	Vendor Offer	0	1636347600000			\N	0.00000		203892	SAM	MZILT960HBHQ-00007	211263667	290.00000	200	47	3
+272	Vendor Offer	0	1636347600000			\N	0.00000		204660	SAM	MZPLJ12THALA-00007	211263668	2475.00000	194	47	3
+273	Vendor Offer	0	1636347600000			\N	0.00000		205333	SAM	MZPLJ1T6HBJR-00007	211263669	415.00000	161	47	3
+274	Vendor Offer	0	1636347600000			\N	0.00000		206003	SAM	MZPLJ3T2HBJR-00007	211263670	745.00000	335	47	3
+275	Vendor Offer	0	1636347600000			\N	0.00000		212724	SAM	MZPLJ6T4HALA-00007	211263671	1250.00000	245	47	3
+276	Vendor Offer	0	1636347600000			\N	0.00000		212698	SAM	MZQL21T9HCJR-00A07	211263672	320.00000	385	47	3
+277	Vendor Offer	0	1636347600000			\N	0.00000		210538	SAM	MZQL2960HCJR-00A07	211263674	169.00000	264	47	3
+278	Vendor Offer	0	1636347600000			\N	0.00000		202382	SAM	MZWLJ15THALA-00007	211263676	2475.00000	168	47	3
+279	Vendor Offer	0	1636347600000			\N	0.00000		204729	SAM	MZWLJ1T9HBJR-00007	211263677	415.00000	948	47	3
+280	Vendor Offer	0	1636347600000			\N	0.00000		207591	SAM	MZWLJ3T8HBLS-00007	211263678	745.00000	48	47	3
+281	Vendor Offer	0	1636347600000			\N	0.00000		212725	SAM	MZWLJ7T6HALA-00007	211263679	1250.00000	450	47	3
+282	RMS Offer	0	1636383120000		in stock, new	\N	0.00000		199965	MICRO	MTFDDAK480TDT-1AW1ZABYY	211267304	169.24000	8	39	5
+283	RMS Offer	0	1636384260000		stock, new tray	\N	0.25000		198821	INTEL	SRFPP	211267317	1710.90000	115	41	5
+284	RMS Offer	0	1636384860000		in stock, new	\N	0.25000		187987	SAM	M386A8K40BM1-CRC	211267320	340.44000	74	39	5
+285	RMS Offer	0	1636388760000		stock, new	\N	0.00000		199786	INTEL	SSDPE2KE016T801	211284085	511.64000	87	41	5
+286	RMS Offer	0	1636388820000		stock, new	\N	0.00000		199786	INTEL	SSDPE2KE016T801	211284088	514.50000	103	40	5
+287	RMS Offer	0	1636388880000		stock, new	\N	0.00000		199786	INTEL	SSDPE2KE016T801	211284093	450.00000	580	46	5
+288	RMS Offer	0	1636389600000		stock, new	\N	0.00000		212692	SAM	MZ-V8P250B/AM	211284107	59.53000	5	40	5
+289	RMS Offer	0	1636394100000		stock, new	\N	0.25000		187987	SAM	M386A8K40BM1-CRC	211284249	359.00000	1	64	5
+290	RMS Offer	-1	1636404540000		NO OFFER. PREVIOUS OFFER HAS SOLD.	\N	0.25000		195958	INTEL	SR3XD	211286972	0.00000	1	16	5
+291	RMS Offer	-1	1636405260000		No offer . shortage. Not getting supply from Intel yet.	\N	0.25000		196793	INTEL	SR3WS	211291361	0.00000	1	16	5
+292	Vendor Offer	-1	1636410600000		no offer. previous offer has sold.	\N	0.25000		195958	INTEL	SR3XD	211292369	0.00000	1	16	3
+293	Vendor Offer	0	1636410780000		new. stock. fcfs. only left with 259pcs.	\N	0.00000	taiwan	197143	INTEL	SSDSC2KB480G801	211292377	180.00000	259	4	3
+294	RMS Offer	-1	1636411620000		no offer	\N	0.00000		197442	INTEL	SSDSC2KG480G801	211292441	0.00000	1	4	5
+295	RMS PO	-1	1636412880000		PO# 262089-10	\N	0.00000		197143	INTEL	SSDSC2KB480G801	211293968	180.00000	259	4	8
+296	Vendor Offer	3	1636416000000		new, stock in sz, 3-4 days to hk fusion.	\N	0.00000		199173	SAM	MZ7KH960HAJR-00005	211333339	325.00000	20	53	3
+297	RMS Offer	0	1636419300000		new. stock. fcfs.	\N	0.00000		198646	INTEL	SSDPE2KE064T801	211338256	1450.00000	25	4	5
+298	Vendor Offer	4	1636434000000	21+	NEW, LT: 2-4days, SPQ: MOQ: 375pcs, FCFS	\N	0.25000		198280	SAM	M471A2K43CB1-CTD	211352872	54.00000	2000	68	3
+299	RMS Offer	-1	1636421220000		NO OFFER	\N	0.25000		201838	AMD	100-000000031	211352969	0.00000	1	16	5
+300	Vendor Offer	4	1636434000000		new, LT: 2-4days, COO: CN:2133PCS/KR:2067PCS	\N	0.25000		199355	HYNIX	HMAA8GR7AJR4N-XN	211353774	280.00000	4200	69	3
+301	Vendor Offer	4	1636434000000		new, ;LT: 2-4days, 16G DDR4 2933 REG 1R*4	\N	0.00000	NON CN	213085	HYNIX	HMA82GR7JJR4N-WM	211353835	70.00000	575	69	3
+302	Vendor Offer	0	1636434000000		New. Stock HK. FCFS. i5-8500T. (Likely to be duplicated from WPI.)	\N	0.25000		195958	INTEL	SR3XD	211353983	177.00000	2000	9	3
+303	Vendor Offer	-1	1636434000000	20+:264PCS/21+;3936PCS	NEW, LT: 2-4days, FCFS , CN:2133PCS/KR:2067PCS	\N	0.25000		199355	HYNIX	HMAA8GR7AJR4N-XN	211354692	280.00000	4200	69	3
+304	RMS PO	-1	1636427700000		PO# 262136-10	\N	0.00000		199173	SAM	MZ7KH960HAJR-00005	211355003	325.00000	20	53	8
+305	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		204767	SAM	M471A2K43DB1-CWE	211355191	58.50000	133	62	3
+306	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		203191	SAM	M471A5244CB0-CWE	211355192	17.00000	150	62	3
+307	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		206782	SAM	M378A2G43AB3-CWE	211355194	57.00000	260	62	3
+308	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		206380	SAM	M378A4G43MB1-CTD	211355195	117.00000	297	62	3
+309	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.00000		212842	SAM	M378A1K43DB2-CTD	211355196	29.00000	376	62	3
+310	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		197277	SAM	M378A2K43CB1-CTD	211355197	58.00000	500	62	3
+311	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.00000		211602	SAM	M378A1G44AB0-CWE	211355199	29.00000	819	62	3
+312	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		204355	SAM	M471A1K43DB1-CWE	211355204	29.50000	1122	62	3
+313	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		193733	SAM	M471A1K43CB1-CTD	211355207	27.00000	1325	62	3
+314	Vendor Offer	-1	1636434000000		NEW, LT: 2-4days, FCFS	\N	0.25000		198280	SAM	M471A2K43CB1-CTD	211355209	54.00000	1525	62	3
+315	RMS Offer	-1	1636431180000		No offer	\N	0.25000		195334	INTEL	SRELS	211355422	0.00000	1	9	5
+316	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		185808	INTEL	SR2DC	211356741	61.50000	500	9	3
+317	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		184914	INTEL	SR2HG	211356744	112.00000	300	9	3
+318	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		188614	INTEL	SR335	211356746	170.00000	77	9	3
+319	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		188314	INTEL	SR338	211356747	271.00000	303	9	3
+320	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		196982	INTEL	SR3W4	211356750	68.00000	500	9	3
+321	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		191302	INTEL	SR3QS	211356754	269.00000	300	9	3
+322	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		197832	INTEL	SRCZV	211356755	108.00000	300	9	3
+323	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty. (NEED TO RECFM EXACT STEP CODE, COULD BE SRG0Y)	\N	0.25000		198091	INTEL	SR3X5	211356756	144.50000	1000	9	3
+324	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty. (NEED TO RECFM EXACT STEP CODE, COULD BE SR3X5)	\N	0.25000		198479	INTEL	SRG0Y	211356757	144.50000	1000	9	3
+325	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		198462	INTEL	SRF4B	211356758	157.00000	300	9	3
+326	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		199792	INTEL	SRG11	211356759	154.00000	300	9	3
+327	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty. (NEED TO RECFM EXACT STEP CODE, COULD BE SRF6N)	\N	0.25000		207935	INTEL	SRF7W	211356760	90.00000	44	9	3
+328	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty.(NEED TO RECFM EXACT STEP CODE, COULD BE SRF7W)	\N	0.00000		212368	INTEL	SRF6N	211356761	90.00000	44	9	3
+329	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		202595	INTEL	SRH92	211356762	421.00000	300	9	3
+330	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		204332	INTEL	SRH6S	211356763	197.00000	300	9	3
+331	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		202015	INTEL	SRH3A	211356764	157.00000	223	9	3
+332	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty.(NEED TO RECFM EXACT STEP CODE, COULD BE SRH3D)	\N	0.25000		208940	INTEL	SRH79	211356765	124.50000	300	9	3
+333	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty.(NEED TO RECFM EXACT STEP CODE, COULD BE SRH79)	\N	0.25000		203749	INTEL	SRH3D	211356766	124.50000	300	9	3
+334	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty.(NEED TO RECFM EXACT STEP CODE, COULD BE SRH3C)	\N	0.00000		212345	INTEL	SRH78	211356767	138.00000	500	9	3
+335	Vendor Offer	-1	1636434000000		New. Stock. FCFS. Need to reconfirm qty. (NEED TO RECFM EXACT STEP CODE, COULD BE SRH78)	\N	0.25000		204819	INTEL	SRH3C	211356768	138.00000	500	9	3
+336	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		203753	INTEL	SRH3N	211356769	104.50000	300	9	3
+337	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		205840	INTEL	SRH8U	211356770	75.50000	300	9	3
+338	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		208597	INTEL	SRH3P	211356771	104.50000	588	9	3
+339	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212344	INTEL	SRH8V	211356772	79.00000	500	9	3
+340	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY. BOX.	\N	0.25000		202592	INTEL	SRH72	211356775	318.00000	200	9	3
+341	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		204488	INTEL	SRH70	211356776	285.50000	300	9	3
+342	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		204324	INTEL	SRH6Y	211356777	286.00000	2000	9	3
+343	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		209983	INTEL	SRK51	211356778	385.00000	211	9	3
+344	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212353	INTEL	SRKP0	211356779	157.00000	200	9	3
+345	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212354	INTEL	SRKP1	211356780	149.50000	300	9	3
+346	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		209756	INTEL	SRKNY	211356781	162.00000	588	9	3
+347	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		206605	INTEL	SRKNS	211356782	281.50000	300	9	3
+348	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		206361	INTEL	SRKNL	211356783	314.00000	200	9	3
+349	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212360	INTEL	SRKNN	211356784	307.00000	300	9	3
+350	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212362	INTEL	SRKNR	211356785	279.00000	300	9	3
+351	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		206362	INTEL	SRKND	211356786	496.00000	200	9	3
+352	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212366	INTEL	SRKNF	211356787	491.00000	300	9	3
+353	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		196789	INTEL	SR3WQ	211356793	76.00000	2000	9	3
+354	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		196795	INTEL	SR3WP	211356794	86.00000	2000	9	3
+355	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.00000		212482	AMD	100-000000252	211356797	215.00000	720	9	3
+356	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		204725	AMD	100-000000063	211356798	327.00000	500	9	3
+357	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY. MOQ 180	\N	0.25000		204874	AMD	100-000000061	211356799	463.00000	720	9	3
+358	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS. NEED TO RECONFIRM QTY.	\N	0.25000		205236	AMD	100-000000059	211356800	657.00000	500	9	3
+359	Vendor Offer	-1	1636434000000		NEW. DELIVERY BY 16-NOV	\N	0.25000		198368	INTEL	SRFBB	211357165	780.00000	61	16	3
+360	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.00000		212312	INTEL	SRKHP	211357166	2300.00000	200	16	3
+361	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.00000		212325	INTEL	SRKXN	211357167	430.00000	1000	16	3
+362	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		184914	INTEL	SR2HG	211357171	105.00000	1000	16	3
+363	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		188614	INTEL	SR335	211357173	172.00000	700	16	3
+364	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		196982	INTEL	SR3W4	211357177	65.00000	4500	16	3
+365	Vendor Offer	-1	1636434000000		NEW. DELIVERY BY 19-NOV.	\N	0.25000		195452	INTEL	SR3Y8	211357179	115.00000	4999	16	3
+366	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		191302	INTEL	SR3QS	211357182	270.00000	1000	16	3
+367	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		195894	INTEL	SR3WX	211357184	223.00000	230	16	3
+368	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		197832	INTEL	SRCZV	211357185	107.00000	3000	16	3
+369	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		198479	INTEL	SRG0Y	211357186	148.00000	4000	16	3
+370	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		198462	INTEL	SRF4B	211357187	156.00000	800	16	3
+371	Vendor Offer	-1	1636434000000		NEW. DELIVERY BY 9-NOV	\N	0.25000		204819	INTEL	SRH3C	211357190	138.00000	15000	16	3
+372	Vendor Offer	-1	1636434000000		NEW. DELIVERY BY 9-NOV	\N	0.25000		203753	INTEL	SRH3N	211357191	103.00000	20000	16	3
+373	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		208597	INTEL	SRH3P	211357192	103.00000	2200	16	3
+374	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		204324	INTEL	SRH6Y	211357193	285.00000	2800	16	3
+375	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.00000		212352	INTEL	SRH6U	211357194	290.00000	342	16	3
+376	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		206605	INTEL	SRKNS	211357196	282.00000	1500	16	3
+377	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.25000		206361	INTEL	SRKNL	211357197	313.00000	3000	16	3
+378	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.00000		212360	INTEL	SRKNN	211357198	306.00000	300	16	3
+379	Vendor Offer	-1	1636434000000		NEW. STOCK. FCFS	\N	0.00000		212362	INTEL	SRKNR	211357199	280.00000	354	16	3
+380	Vendor Offer	0	1636450020000		stock, new	\N	0.00000		199965	MICRO	MTFDDAK480TDT-1AW1ZABYY	211364677	169.24000	8	39	3
+381	RMS Offer	16	1636467660000		Incoming stock, by 11/30 tray CM8068403380018	\N	0.25000		196793	INTEL	SR3WS	211371116	349.00000	66	30	5
+382	RMS Offer	14	1636467780000		incoming stock, by 11/22 box, BX80684E2176G	\N	0.25000		196793	INTEL	SR3WS	211371119	359.00000	20	30	5
 \.
 
 
@@ -6605,6 +7061,466 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 404	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	242
 405	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	243
 406	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	243
+407	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	244
+408	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	244
+409	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	245
+410	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	245
+411	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	246
+412	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	246
+413	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	247
+414	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	247
+415	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	248
+416	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	248
+417	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	249
+418	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	249
+419	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	250
+420	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	250
+421	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	251
+422	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	251
+423	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	252
+424	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	252
+425	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	253
+426	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	253
+427	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	254
+428	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	254
+429	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	255
+430	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	255
+431	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	256
+432	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	256
+433	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	257
+434	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	257
+435	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	258
+436	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	258
+437	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	259
+438	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	259
+439	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	260
+440	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	260
+441	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	261
+442	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	261
+443	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	262
+444	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	262
+445	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	263
+446	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	263
+447	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	264
+448	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	264
+449	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	265
+450	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	265
+451	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	266
+452	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	266
+453	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	267
+454	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	267
+455	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	268
+456	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	268
+457	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	269
+458	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	269
+459	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	270
+460	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	270
+461	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	271
+462	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	271
+463	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	272
+464	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	272
+465	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	273
+466	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	273
+467	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	274
+468	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	274
+469	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	275
+470	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	275
+471	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	276
+472	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	276
+473	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	277
+474	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	277
+475	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	278
+476	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	278
+477	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	279
+478	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	279
+479	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	280
+480	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	280
+481	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	281
+482	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	281
+483	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	282
+484	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	282
+485	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	283
+486	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	283
+487	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	284
+488	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	284
+489	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	285
+490	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	285
+491	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	286
+492	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	286
+493	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	287
+494	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	287
+495	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	288
+496	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	288
+497	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	289
+498	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	289
+499	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	290
+500	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	290
+501	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	291
+502	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	291
+503	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	292
+504	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	292
+505	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	293
+506	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	293
+507	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	294
+508	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	294
+509	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	295
+510	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	295
+511	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	296
+512	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	296
+513	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	297
+514	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	297
+515	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	298
+516	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	298
+517	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	299
+518	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	299
+519	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	300
+520	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	300
+521	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	301
+522	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	301
+523	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	302
+524	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	302
+525	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	303
+526	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	303
+527	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	304
+528	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	304
+529	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	305
+530	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	305
+531	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	306
+532	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	306
+533	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	307
+534	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	307
+535	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	308
+536	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	308
+537	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	309
+538	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	309
+539	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	310
+540	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	310
+541	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	311
+542	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	311
+543	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	312
+544	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	312
+545	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	313
+546	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	313
+547	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	314
+548	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	314
+549	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	315
+550	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	315
+551	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	316
+552	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	316
+553	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	317
+554	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	317
+555	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	318
+556	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	318
+557	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	319
+558	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	319
+559	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	320
+560	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	320
+561	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	321
+562	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	321
+563	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	322
+564	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	322
+565	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	323
+566	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	323
+567	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	324
+568	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	324
+569	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	325
+570	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	325
+571	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	326
+572	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	326
+573	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	327
+574	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	327
+575	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	328
+576	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	328
+577	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	329
+578	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	329
+579	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	330
+580	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	330
+581	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	331
+582	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	331
+583	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	332
+584	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	332
+585	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	333
+586	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	333
+587	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	334
+588	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	334
+589	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	335
+590	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	335
+591	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	336
+592	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	336
+593	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	337
+594	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	337
+595	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	338
+596	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	338
+597	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	339
+598	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	339
+599	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	340
+600	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	340
+601	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	341
+602	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	341
+603	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	342
+604	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	342
+605	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	343
+606	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	343
+607	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	344
+608	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	344
+609	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	345
+610	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	345
+611	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	346
+612	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	346
+613	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	347
+614	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	347
+615	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	348
+616	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	348
+617	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	349
+618	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	349
+619	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	350
+620	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	350
+621	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	351
+622	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	351
+623	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	352
+624	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	352
+625	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	353
+626	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	353
+627	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	354
+628	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	354
+629	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	355
+630	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	355
+631	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	356
+632	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	356
+633	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	357
+634	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	357
+635	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	358
+636	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	358
+637	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	359
+638	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	359
+639	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	360
+640	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	360
+641	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	361
+642	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	361
+643	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	362
+644	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	362
+645	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	363
+646	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	363
+647	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	364
+648	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	364
+649	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	365
+650	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	365
+651	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	366
+652	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	366
+653	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	367
+654	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	367
+655	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	368
+656	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	368
+657	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	369
+658	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	369
+659	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	370
+660	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	370
+661	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	371
+662	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	371
+663	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	372
+664	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	372
+665	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	373
+666	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	373
+667	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	374
+668	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	374
+669	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	375
+670	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	375
+671	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	376
+672	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	376
+673	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	377
+674	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	377
+675	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	378
+676	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	378
+677	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	379
+678	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	379
+679	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	380
+680	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	380
+681	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	381
+682	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	381
+683	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	382
+684	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	382
+685	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	383
+686	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	383
+687	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	384
+688	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	384
+689	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	385
+690	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	385
+691	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	386
+692	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	386
+693	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	387
+694	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	387
+695	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	388
+696	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	388
+697	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	389
+698	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	389
+699	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	390
+700	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	390
+701	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	391
+702	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	391
+703	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	392
+704	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	392
+705	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	393
+706	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	393
+707	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	394
+708	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	394
+709	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	395
+710	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	395
+711	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	396
+712	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	396
+713	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	397
+714	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	397
+715	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	398
+716	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	398
+717	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	399
+718	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	399
+719	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	400
+720	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	400
+721	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	401
+722	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	401
+723	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	402
+724	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	402
+725	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	403
+726	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	403
+727	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	404
+728	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	404
+729	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	405
+730	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	405
+731	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	406
+732	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	406
+733	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	407
+734	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	407
+735	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	408
+736	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	408
+737	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	409
+738	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	409
+739	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	410
+740	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	410
+741	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	411
+742	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	411
+743	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	412
+744	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	412
+745	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	413
+746	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	413
+747	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	414
+748	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	414
+749	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	415
+750	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	415
+751	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	416
+752	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	416
+753	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	417
+754	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	417
+755	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	418
+756	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	418
+757	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	419
+758	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	419
+759	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	420
+760	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	420
+761	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	421
+762	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	421
+763	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	422
+764	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	422
+765	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	423
+766	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	423
+767	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	424
+768	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	424
+769	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	425
+770	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	425
+771	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	426
+772	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	426
+773	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	427
+774	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	427
+775	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	428
+776	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	428
+777	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	429
+778	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	429
+779	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	430
+780	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	430
+781	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	431
+782	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	431
+783	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	432
+784	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	432
+785	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	433
+786	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	433
+787	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	434
+788	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	434
+789	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	435
+790	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	435
+791	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	436
+792	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	436
+793	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	437
+794	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	437
+795	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	438
+796	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	438
+797	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	439
+798	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	439
+799	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	440
+800	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	440
+801	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	441
+802	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	441
+803	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	442
+804	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	442
+805	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	443
+806	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	443
+807	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	444
+808	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	444
+809	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	445
+810	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	445
+811	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	446
+812	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	446
+813	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	447
+814	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	447
+815	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	448
+816	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	448
+817	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	449
+818	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	449
+819	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	450
+820	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	450
+821	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	451
+822	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	451
+823	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	452
+824	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	452
+825	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	453
+826	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	453
+827	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	454
+828	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	454
+829	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	455
+830	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	455
+831	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	456
+832	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	456
+833	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	457
+834	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	457
+835	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	458
+836	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	458
+837	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	459
+838	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	459
+839	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	460
+840	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	460
+841	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	461
+842	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	461
+843	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	462
+844	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	462
+845	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	463
+846	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	463
+847	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	464
+848	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	464
+849	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	465
+850	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	465
+851	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	466
+852	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	466
+853	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	467
+854	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	467
+855	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	468
+856	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	468
+857	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	469
+858	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	469
+859	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	470
+860	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	470
+861	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	471
+862	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	471
+863	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	472
+864	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	472
+865	SLBLD	INTEL	200	16.5	10/15	My Comment	INTL-1001	22000000	\N	473
+866	SLBLJ	INTEL	50	11.05	10/15	My Comment	INTL-1002	22000000	\N	473
 \.
 
 
@@ -6612,11 +7528,13 @@ COPY public.fusion_online_rfqlineitem (id, mpn, mcode, quantity, target, date_co
 -- Data for Name: fusion_online_rfqresponse; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, comment, coo, lead_time_days, rms_response_id, line_item_id) FROM stdin;
-1	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	3
-2	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	2
-3	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	1
-4	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	4
+COPY public.fusion_online_rfqresponse (id, response, mpn, mcode, quantity, offer_price, date_code, description, coo, lead_time_days, rms_response_id, line_item_id, notes) FROM stdin;
+1	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	3	\N
+2	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	2	\N
+3	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	1	\N
+4	OFFER	CCCC	Intel	2	12.00125	2 days	string	China	0	1234	4	\N
+5	NO_BID	SLBLD	INTEL	\N	-1	string	foo bar	\N	0	\N	853	baz quux
+6	NO_BID	SLBLD	INTEL	\N	-1	string	foo bar	\N	0	\N	856	baz quux
 \.
 
 
@@ -6793,6 +7711,236 @@ COPY public.fusion_online_rfqsubmission (id, date_added, user_id) FROM stdin;
 241	2021-10-06 14:00:02.722115+00	5
 242	2021-10-06 15:00:02.891206+00	5
 243	2021-10-06 16:00:01.995827+00	5
+244	2021-10-06 17:00:02.280314+00	5
+245	2021-10-06 18:00:02.806699+00	5
+246	2021-10-06 19:00:01.817331+00	5
+247	2021-10-06 20:00:06.331978+00	5
+248	2021-10-06 20:32:21.338023+00	5
+249	2021-10-06 20:32:58.543174+00	5
+250	2021-10-06 20:36:36.71942+00	5
+251	2021-10-06 21:00:06.470621+00	5
+252	2021-10-06 21:05:32.85704+00	5
+253	2021-10-06 22:00:02.77469+00	5
+254	2021-10-06 23:00:01.850108+00	5
+255	2021-10-07 00:00:02.251015+00	5
+256	2021-10-07 01:00:02.441508+00	5
+257	2021-10-07 02:00:02.576888+00	5
+258	2021-10-07 03:00:03.276022+00	5
+259	2021-10-07 04:00:02.360919+00	5
+260	2021-10-07 05:00:02.795467+00	5
+261	2021-10-07 06:00:01.874581+00	5
+262	2021-10-07 07:00:01.973849+00	5
+263	2021-10-07 08:00:02.166267+00	5
+264	2021-10-07 09:00:02.344498+00	5
+265	2021-10-07 10:00:02.765904+00	5
+266	2021-10-07 11:00:03.595453+00	5
+267	2021-10-07 12:00:02.773043+00	5
+268	2021-10-07 13:00:02.876628+00	5
+269	2021-10-07 14:00:02.337227+00	5
+270	2021-10-07 15:00:02.741662+00	5
+271	2021-10-07 16:00:03.299385+00	5
+272	2021-10-07 17:00:02.543932+00	5
+273	2021-10-07 18:00:02.676802+00	5
+274	2021-10-07 19:00:06.646838+00	5
+275	2021-10-07 20:00:02.877941+00	5
+276	2021-10-07 21:00:02.432426+00	5
+277	2021-10-07 22:00:02.754341+00	5
+278	2021-10-07 23:00:02.434541+00	5
+279	2021-10-08 00:00:02.976624+00	5
+280	2021-10-08 01:00:02.057039+00	5
+281	2021-10-08 02:00:02.173718+00	5
+282	2021-10-08 03:00:02.45552+00	5
+283	2021-10-08 04:00:02.6808+00	5
+284	2021-10-08 05:00:02.938389+00	5
+285	2021-10-08 06:00:02.309159+00	5
+286	2021-10-08 07:00:02.649494+00	5
+287	2021-10-08 08:00:03.141748+00	5
+288	2021-10-08 09:00:02.416762+00	5
+289	2021-10-08 10:00:02.725666+00	5
+290	2021-10-08 11:00:02.930727+00	5
+291	2021-10-08 12:00:02.069949+00	5
+292	2021-10-08 13:00:02.838366+00	5
+293	2021-10-08 14:00:01.911981+00	5
+294	2021-10-08 15:00:01.94237+00	5
+295	2021-10-08 16:00:01.856004+00	5
+296	2021-10-08 17:00:01.981298+00	5
+297	2021-10-08 18:00:01.953345+00	5
+298	2021-10-08 19:00:02.270283+00	5
+299	2021-10-08 20:00:02.576081+00	5
+300	2021-10-08 21:00:03.063726+00	5
+301	2021-10-08 22:00:02.369071+00	5
+302	2021-10-08 23:00:02.633923+00	5
+303	2021-10-09 00:00:02.95133+00	5
+304	2021-10-09 01:00:02.519849+00	5
+305	2021-10-09 02:00:03.11807+00	5
+306	2021-10-09 03:00:02.459467+00	5
+307	2021-10-09 04:00:02.557751+00	5
+308	2021-10-09 05:00:02.759595+00	5
+309	2021-10-09 06:00:03.045972+00	5
+310	2021-10-09 07:00:02.162724+00	5
+311	2021-10-09 08:00:02.256809+00	5
+312	2021-10-09 09:00:02.256333+00	5
+313	2021-10-09 10:00:02.461509+00	5
+314	2021-10-09 11:00:02.648499+00	5
+315	2021-10-09 12:00:03.043162+00	5
+316	2021-10-09 13:00:02.268841+00	5
+317	2021-10-09 14:00:02.545787+00	5
+318	2021-10-09 15:00:02.86089+00	5
+319	2021-10-09 16:00:01.870397+00	5
+320	2021-10-09 17:00:01.960035+00	5
+321	2021-10-09 18:00:02.075319+00	5
+322	2021-10-09 19:00:02.263994+00	5
+323	2021-10-09 20:00:02.56232+00	5
+324	2021-10-09 21:00:02.957821+00	5
+325	2021-10-09 22:00:02.265041+00	5
+326	2021-10-09 23:00:02.452869+00	5
+327	2021-10-10 00:00:02.64728+00	5
+328	2021-10-10 01:00:02.940171+00	5
+329	2021-10-10 02:00:01.950006+00	5
+330	2021-10-10 03:00:02.069932+00	5
+331	2021-10-10 04:00:02.373354+00	5
+332	2021-10-10 05:00:02.75258+00	5
+333	2021-10-10 06:00:03.069577+00	5
+334	2021-10-10 07:00:02.051729+00	5
+335	2021-10-10 08:00:02.549426+00	5
+336	2021-10-10 09:00:02.663895+00	5
+337	2021-10-10 10:00:02.848798+00	5
+338	2021-10-10 11:00:01.762518+00	5
+339	2021-10-10 12:00:03.123547+00	5
+340	2021-10-10 13:00:02.554544+00	5
+341	2021-10-10 14:00:02.916749+00	5
+342	2021-10-10 15:00:01.979352+00	5
+343	2021-10-10 16:00:02.073196+00	5
+344	2021-10-10 17:00:02.251761+00	5
+345	2021-10-10 18:00:02.43193+00	5
+346	2021-10-10 19:00:02.357126+00	5
+347	2021-10-10 20:00:02.852743+00	5
+348	2021-10-10 21:00:01.886299+00	5
+349	2021-10-10 22:00:03.254925+00	5
+350	2021-10-10 23:00:02.554044+00	5
+351	2021-10-11 00:00:03.253607+00	5
+352	2021-10-11 01:00:02.459983+00	5
+353	2021-10-11 02:00:02.56226+00	5
+354	2021-10-11 03:00:02.853441+00	5
+355	2021-10-11 04:00:01.966682+00	5
+356	2021-10-11 05:00:02.417924+00	5
+357	2021-10-11 06:00:02.536223+00	5
+358	2021-10-11 07:00:02.670108+00	5
+359	2021-10-11 08:00:02.744345+00	5
+360	2021-10-11 09:00:03.151728+00	5
+361	2021-10-11 10:00:02.461392+00	5
+362	2021-10-11 11:00:02.958693+00	5
+363	2021-10-11 12:00:02.042739+00	5
+364	2021-10-11 13:00:02.521475+00	5
+365	2021-10-11 14:00:04.46415+00	5
+366	2021-10-11 15:00:02.565497+00	5
+367	2021-10-11 16:00:03.061126+00	5
+368	2021-10-11 17:00:02.718299+00	5
+369	2021-10-11 18:00:02.972166+00	5
+370	2021-10-11 19:00:02.065264+00	5
+371	2021-10-11 20:00:02.556482+00	5
+372	2021-10-11 21:00:02.65477+00	5
+373	2021-10-11 22:00:02.886801+00	5
+374	2021-10-11 23:00:02.424997+00	5
+375	2021-10-12 00:00:02.85666+00	5
+376	2021-10-12 01:00:02.058372+00	5
+377	2021-10-12 02:00:02.358307+00	5
+378	2021-10-12 03:00:02.533162+00	5
+379	2021-10-12 04:00:02.765672+00	5
+380	2021-10-12 05:00:01.968092+00	5
+381	2021-10-12 06:00:02.236972+00	5
+382	2021-10-12 07:00:02.464232+00	5
+383	2021-10-12 08:00:02.569424+00	5
+384	2021-10-12 09:00:02.931798+00	5
+385	2021-10-12 10:00:02.228065+00	5
+386	2021-10-12 11:00:02.417601+00	5
+387	2021-10-12 12:00:02.558644+00	5
+388	2021-10-12 13:00:02.851044+00	5
+389	2021-10-12 14:00:01.919042+00	5
+390	2021-10-12 15:00:02.136591+00	5
+391	2021-10-12 16:00:02.441249+00	5
+392	2021-10-12 17:00:02.656381+00	5
+393	2021-10-12 18:00:03.017886+00	5
+394	2021-10-12 18:56:35.051808+00	5
+395	2021-10-12 19:00:02.353699+00	5
+396	2021-10-12 20:00:02.644617+00	5
+397	2021-10-12 21:00:02.892235+00	5
+398	2021-10-12 22:00:02.06582+00	5
+399	2021-10-12 23:00:02.259307+00	5
+400	2021-10-13 00:00:02.564906+00	5
+401	2021-10-13 01:00:02.748987+00	5
+402	2021-10-13 02:00:02.874331+00	5
+403	2021-10-13 03:00:01.968207+00	5
+404	2021-10-13 04:00:02.013861+00	5
+405	2021-10-13 05:00:02.414258+00	5
+406	2021-10-13 06:00:02.24779+00	5
+407	2021-10-13 07:00:02.359149+00	5
+408	2021-10-13 08:00:02.655164+00	5
+409	2021-10-13 09:00:02.946816+00	5
+410	2021-10-13 10:00:01.976187+00	5
+411	2021-10-13 11:00:02.332825+00	5
+412	2021-10-13 12:00:02.435076+00	5
+413	2021-10-13 13:00:02.653209+00	5
+414	2021-10-13 14:00:02.965153+00	5
+415	2021-10-13 15:00:01.972799+00	5
+416	2021-10-13 16:00:02.163876+00	5
+417	2021-10-13 17:00:02.452818+00	5
+418	2021-10-13 18:00:02.717486+00	5
+419	2021-10-13 19:00:02.935061+00	5
+420	2021-10-13 20:00:02.018851+00	5
+421	2021-10-13 21:00:02.367939+00	5
+422	2021-10-13 22:00:02.450371+00	5
+423	2021-10-13 23:00:02.656411+00	5
+424	2021-10-14 00:00:03.085374+00	5
+425	2021-10-14 01:00:02.245268+00	5
+426	2021-10-14 02:00:02.556365+00	5
+427	2021-10-14 03:00:02.943333+00	5
+428	2021-10-14 04:00:02.056121+00	5
+429	2021-10-14 05:00:02.165377+00	5
+430	2021-10-14 06:00:02.463308+00	5
+431	2021-10-14 07:00:02.659031+00	5
+432	2021-10-14 08:00:02.761787+00	5
+433	2021-10-14 09:00:02.940137+00	5
+434	2021-10-14 10:00:02.024988+00	5
+435	2021-10-14 11:00:02.077168+00	5
+436	2021-10-14 12:00:02.259928+00	5
+437	2021-10-14 13:00:02.553651+00	5
+438	2021-10-14 14:00:02.898296+00	5
+439	2021-10-14 15:00:02.451667+00	5
+440	2021-10-14 16:00:02.658935+00	5
+441	2021-10-14 17:00:02.73744+00	5
+442	2021-10-14 18:00:03.07207+00	5
+443	2021-10-14 19:00:02.118463+00	5
+444	2021-10-14 20:00:02.250655+00	5
+445	2021-10-14 21:00:02.252275+00	5
+446	2021-10-14 22:00:02.365776+00	5
+447	2021-10-14 23:00:02.567212+00	5
+448	2021-10-15 00:00:03.003172+00	5
+449	2021-10-15 01:00:02.373548+00	5
+450	2021-10-15 02:00:02.478858+00	5
+451	2021-10-15 03:00:02.836288+00	5
+452	2021-10-15 04:00:02.041383+00	5
+453	2021-10-15 05:00:02.048494+00	5
+454	2021-10-15 06:00:02.151259+00	5
+455	2021-10-15 07:00:02.143076+00	5
+456	2021-10-15 08:00:02.369083+00	5
+457	2021-10-15 09:00:02.531498+00	5
+458	2021-10-15 10:00:02.690833+00	5
+459	2021-10-15 11:00:02.713617+00	5
+460	2021-10-15 12:00:02.859222+00	5
+461	2021-10-15 13:00:02.351779+00	5
+462	2021-10-15 14:00:02.555317+00	5
+463	2021-10-15 15:00:02.912042+00	5
+464	2021-10-15 16:00:02.179424+00	5
+465	2021-10-15 17:00:02.425555+00	5
+466	2021-10-15 18:00:02.520396+00	5
+467	2021-10-25 19:17:00.187366+00	5
+468	2021-10-25 20:10:50.114491+00	5
+469	2021-10-25 20:12:23.913869+00	5
+470	2021-10-25 20:12:25.352354+00	5
+471	2021-10-25 20:12:26.48667+00	5
+472	2021-10-25 20:12:27.596252+00	5
+473	2021-10-27 19:06:45.002408+00	5
 \.
 
 
@@ -6843,28 +7991,11515 @@ COPY public.fusion_online_shippingaddress (id, customer_id, ship_to_name, ship_v
 --
 
 COPY public.fusion_online_vendor (id, vendor_name, vendor_number, vendor_region, vendor_type) FROM stdin;
-1	Test Company	1	ASIA	AUTHORIZED_FRANCHISE
-2	Test Name Change	3	USA	AUTHORIZED_FRANCHISE
-3	Test Company	2	USA	AUTHORIZED_FRANCHISE
-6	EX-CHANNEL GROUP LTD	9321		
 7	STARTECH PACIFIC LIMITED	10393		
-8	E-ENERGY LIMITED	12431		
-10	Digital China (HK) Ltd	12430		
 11	HONGKONG YOUCHENG TECHNOLOGY LIMITED	13749		
 12	UHOP TECH CO., LIMITED	17199		
-14	SHANGHAI NAME CHANGE	12790		
 5	JOINTHARVEST(HONG KONG) NAME CHANGE	12089		
 15	Acme 1	2501	Americas	Authorized/Franchise
-18	HONG KONG SUPERPHI TECHNOLOGY LIMITED	19053	Asia/Pacific	Broker
-9	YICK WAH HONG CO., LTD	9565	Asia/Pacific	Broker
+36	SERTEK INC (HK)	5851	\N	\N
+37	WT MICROELECTRONICS (HK) LTD	10935	\N	\N
 16	WPI INTERNATIONAL (HK) LIMITED	8493	Asia/Pacific	Authorized/Franchise
-17	SYNNEX TECHNOLOGY INT'L CORP	5233	Asia/Pacific	Authorized/Franchise
+38	ARROW ELECTRONICS, INC.	5189	\N	\N
+39	INGRAM MICRO	8128	Americas	Authorized/Franchise
+62	Xel (Asia) Limited	9363	Asia/Pacific	Authorized/Franchise
+45	36C	88887	\N	\N
 4	TCH INTERNATIONAL CO., LIMITED	12882	Asia/Pacific	Broker
+56	36C	55556	\N	\N
+43	OEMXS, INC.	8962	\N	\N
+18	HONG KONG SUPERPHI TECHNOLOGY LIMITED	19053	Asia/Pacific	Broker
+26	MACLE GMBH	12650	\N	\N
+44	JOINT-HARVEST INTERNATION HOLDINGS LTD	22287	\N	\N
+57	36C	44446	\N	\N
 21	ACME Corp 1	124	\N	\N
 22	ACME Corp 2	125	\N	\N
+68	YUDA HONGKONG CO. LIMITED	20743	Asia/Pacific	Broker
 19	WORLD PEACE INDUSTRIAL CO. LTD	5140	Asia/Pacific	Authorized/Franchise
+28	FUTURE ELECTRONICS	5004	\N	\N
+30	ASI CORPORATION	5628	Americas	Authorized/Franchise
+27	A-1 ELECTRONICS CO.	5952	\N	\N
+29	D'Mark Technologies (S) Pte Ltd	18768	\N	\N
+17	SYNNEX TECHNOLOGY INT'L CORP	5233	Asia/Pacific	Authorized/Franchise
+66	ZHICHENG TECHNOLOGY(HK)LTD	19077	\N	\N
+31	Digger Technology (Hong Kong) Limited	13673	\N	\N
+32	F-LINK ELECTRONIC CO., LTD	11105	\N	\N
 23	INGO FORTUNE GROUP LIMITED	19396	Asia/Pacific	Broker
 20	HONGKONG EASY INTELLIGENT LIMITED	18537	Asia/Pacific	Broker
+47	NETLIST, INC.	7949	Americas	OEM/CM Excess
+69	CLOUD CREATION TECHNOLOGY LIMITED	20757	Asia/Pacific	Broker
+58	GLOBAL MEMORY PROCUREMENT CORP	5137	\N	\N
+59	GOLDEN CHIPS INC.	7382	\N	\N
+14	SHANGHAI SUPERSERVER INFORMATION	12790		
+53	HK STES TECHNOLOGY CO., LIMITED	20802	Asia/Pacific	Broker
+1	Test Company	1	Asia/Pacific	Authorized/Franchise
+2	Test Name Change	3	Americas	Authorized/Franchise
+3	Test Company	2	Americas	Authorized/Franchise
+33	HONG KONG HEART WORLDS TECHNOLOGY CO., LIMITED	21119	\N	\N
+34	WEIKENG	10498	\N	\N
+61	IHI ELECTRONICS	7864	\N	\N
+41	SYNNEX CORPORATION	5202	Americas	Authorized/Franchise
+24	FUSION	5431	\N	\N
+42	MA LABS	5143	\N	\N
+46	COMPUTECH INTERNATIONAL	7016	Americas	Authorized/Franchise
+48	NX ELECTRONICS LIMITED	5035	\N	\N
+25	DIGI-KEY Electronics	5091	\N	\N
+49	PHOENICS ELECTRONICS CORP	11169	\N	\N
+10	Digital China (HK) Ltd	12430		
+40	D&H DISTRIBUTING COMPANY	8830	Americas	Authorized/Franchise
+64	SET TECH	11159	Americas	Broker
+6	EX-CHANNEL GROUP LTD	9321	Asia/Pacific	Authorized/Franchise
+35	TOP GREAT TECHNOLOGY (HK) CO., LIMITED	13958	\N	\N
+51	UNWIN TECHNOLOGY LIMITED	16836	\N	\N
+52	WIWYNN INTERNATIONAL CORPORATION	18422	\N	\N
+9	YICK WAH HONG CO., LTD	9565	Asia/Pacific	Broker
+54	WMAX TECHNOLOGY CO., LIMITED	21354	\N	\N
+55	PILLS CO.LTD	22086	\N	\N
+60	HONG KONG HUASUN RICH POINT	9253	Asia/Pacific	Authorized/Franchise
+63	S2 COMPONENTS INC.	10609	\N	\N
+8	E-ENERGY LIMITED	12431		
+65	EINS System Co., Ltd	19040	\N	\N
+67	ATMD ELECTRONICS (SINGAPORE) PTE. LTD.	19245	Asia/Pacific	Authorized/Franchise
+50	SUPER CLUSTER INC.	13174	Asia/Pacific	OEM/CM Excess
+\.
+
+
+--
+-- Data for Name: fusion_online_vendor_products; Type: TABLE DATA; Schema: public; Owner: saleor
+--
+
+COPY public.fusion_online_vendor_products (id, vendor_id, product_id) FROM stdin;
+3	18	136
+4	26	136
+17	24	145
+18	30	145
+21	31	147
+22	32	147
+23	18	148
+24	26	148
+25	18	149
+26	26	149
+27	18	150
+28	26	150
+29	18	151
+30	26	151
+31	18	152
+32	26	152
+33	33	154
+34	34	154
+35	35	154
+36	8	154
+37	24	155
+38	25	157
+39	9	157
+40	16	157
+41	36	157
+42	37	157
+43	10	157
+44	38	157
+45	6	157
+46	30	157
+47	39	157
+48	40	157
+49	41	157
+50	42	157
+51	43	157
+52	25	158
+53	9	158
+54	16	158
+55	36	158
+56	37	158
+57	10	158
+58	38	158
+59	6	158
+60	30	158
+61	39	158
+62	40	158
+63	41	158
+64	42	158
+65	43	158
+68	44	148
+69	39	148
+70	8	148
+71	45	173
+72	45	174
+73	30	175
+74	46	175
+75	40	175
+76	6	175
+77	39	175
+78	42	175
+79	47	175
+80	48	175
+81	41	175
+82	49	175
+83	10	175
+84	4	175
+85	50	175
+86	35	175
+87	51	175
+88	52	175
+89	53	175
+90	54	175
+91	55	175
+92	30	176
+93	46	176
+94	40	176
+95	6	176
+96	39	176
+97	42	176
+98	47	176
+99	48	176
+100	41	176
+101	49	176
+102	10	176
+103	4	176
+104	50	176
+105	35	176
+106	51	176
+107	52	176
+108	53	176
+109	54	176
+110	55	176
+111	30	177
+112	46	177
+113	40	177
+114	6	177
+115	39	177
+116	42	177
+117	47	177
+118	48	177
+119	41	177
+120	49	177
+121	10	177
+122	4	177
+123	50	177
+124	35	177
+125	51	177
+126	52	177
+127	53	177
+128	54	177
+129	55	177
+130	30	178
+131	46	178
+132	40	178
+133	6	178
+134	39	178
+135	42	178
+136	47	178
+137	48	178
+138	41	178
+139	49	178
+140	10	178
+141	4	178
+142	50	178
+143	35	178
+144	51	178
+145	52	178
+146	53	178
+147	54	178
+148	55	178
+149	30	179
+150	46	179
+151	40	179
+152	6	179
+153	39	179
+154	42	179
+155	47	179
+156	48	179
+157	41	179
+158	49	179
+159	10	179
+160	4	179
+161	50	179
+162	35	179
+163	51	179
+164	52	179
+165	53	179
+166	54	179
+167	55	179
+168	30	180
+169	46	180
+170	40	180
+171	6	180
+172	39	180
+173	42	180
+174	47	180
+175	48	180
+176	41	180
+177	49	180
+178	10	180
+179	4	180
+180	50	180
+181	35	180
+182	51	180
+183	52	180
+184	53	180
+185	54	180
+186	55	180
+187	30	181
+188	46	181
+189	40	181
+190	6	181
+191	39	181
+192	42	181
+193	47	181
+194	48	181
+195	41	181
+196	49	181
+197	10	181
+198	4	181
+199	50	181
+200	35	181
+201	51	181
+202	52	181
+203	53	181
+204	54	181
+205	55	181
+206	30	182
+207	46	182
+208	40	182
+209	6	182
+210	39	182
+211	42	182
+212	47	182
+213	48	182
+214	41	182
+215	49	182
+216	10	182
+217	4	182
+218	50	182
+219	35	182
+220	51	182
+221	52	182
+222	53	182
+223	54	182
+224	55	182
+225	30	183
+226	46	183
+227	40	183
+228	6	183
+229	39	183
+230	42	183
+231	47	183
+232	48	183
+233	41	183
+234	49	183
+235	10	183
+236	4	183
+237	50	183
+238	35	183
+239	51	183
+240	52	183
+241	53	183
+242	54	183
+243	55	183
+244	30	184
+245	46	184
+246	40	184
+247	6	184
+248	39	184
+249	42	184
+250	47	184
+251	48	184
+252	41	184
+253	49	184
+254	10	184
+255	4	184
+256	50	184
+257	35	184
+258	51	184
+259	52	184
+260	53	184
+261	54	184
+262	55	184
+263	30	185
+264	46	185
+265	40	185
+266	6	185
+267	39	185
+268	42	185
+269	47	185
+270	48	185
+271	41	185
+272	49	185
+273	10	185
+274	4	185
+275	50	185
+276	35	185
+277	51	185
+278	52	185
+279	53	185
+280	54	185
+281	55	185
+282	30	186
+283	46	186
+284	40	186
+285	6	186
+286	39	186
+287	42	186
+288	47	186
+289	48	186
+290	41	186
+291	49	186
+292	10	186
+293	4	186
+294	50	186
+295	35	186
+296	51	186
+297	52	186
+298	53	186
+299	54	186
+300	55	186
+301	30	187
+302	46	187
+303	40	187
+304	6	187
+305	39	187
+306	42	187
+307	47	187
+308	48	187
+309	41	187
+310	49	187
+311	10	187
+312	4	187
+313	50	187
+314	35	187
+315	51	187
+316	52	187
+317	53	187
+318	54	187
+319	55	187
+320	30	188
+321	46	188
+322	40	188
+323	6	188
+324	39	188
+325	42	188
+326	47	188
+327	48	188
+328	41	188
+329	49	188
+330	10	188
+331	4	188
+332	50	188
+333	35	188
+334	51	188
+335	52	188
+336	53	188
+337	54	188
+338	55	188
+339	30	189
+340	46	189
+341	40	189
+342	6	189
+343	39	189
+344	42	189
+345	47	189
+346	48	189
+347	41	189
+348	49	189
+349	10	189
+350	4	189
+351	50	189
+352	35	189
+353	51	189
+354	52	189
+355	53	189
+356	54	189
+357	55	189
+358	30	190
+359	46	190
+360	40	190
+361	6	190
+362	39	190
+363	42	190
+364	47	190
+365	48	190
+366	41	190
+367	49	190
+368	10	190
+369	4	190
+370	50	190
+371	35	190
+372	51	190
+373	52	190
+374	53	190
+375	54	190
+376	55	190
+377	30	191
+378	46	191
+379	40	191
+380	6	191
+381	39	191
+382	42	191
+383	47	191
+384	48	191
+385	41	191
+386	49	191
+387	10	191
+388	4	191
+389	50	191
+390	35	191
+391	51	191
+392	52	191
+393	53	191
+394	54	191
+395	55	191
+396	30	192
+397	46	192
+398	40	192
+399	6	192
+400	39	192
+401	42	192
+402	47	192
+403	48	192
+404	41	192
+405	49	192
+406	10	192
+407	4	192
+408	50	192
+409	35	192
+410	51	192
+411	52	192
+412	53	192
+413	54	192
+414	55	192
+415	30	193
+416	46	193
+417	40	193
+418	6	193
+419	39	193
+420	42	193
+421	47	193
+422	48	193
+423	41	193
+424	49	193
+425	10	193
+426	4	193
+427	50	193
+428	35	193
+429	51	193
+430	52	193
+431	53	193
+432	54	193
+433	55	193
+434	30	194
+435	46	194
+436	40	194
+437	6	194
+438	39	194
+439	42	194
+440	47	194
+441	48	194
+442	41	194
+443	49	194
+444	10	194
+445	4	194
+446	50	194
+447	35	194
+448	51	194
+449	52	194
+450	53	194
+451	54	194
+452	55	194
+453	30	195
+454	46	195
+455	40	195
+456	6	195
+457	39	195
+458	42	195
+459	47	195
+460	48	195
+461	41	195
+462	49	195
+463	10	195
+464	4	195
+465	50	195
+466	35	195
+467	51	195
+468	52	195
+469	53	195
+470	54	195
+471	55	195
+472	30	196
+473	46	196
+474	40	196
+475	6	196
+476	39	196
+477	42	196
+478	47	196
+479	48	196
+480	41	196
+481	49	196
+482	10	196
+483	4	196
+484	50	196
+485	35	196
+486	51	196
+487	52	196
+488	53	196
+489	54	196
+490	55	196
+491	30	197
+492	46	197
+493	40	197
+494	6	197
+495	39	197
+496	42	197
+497	47	197
+498	48	197
+499	41	197
+500	49	197
+501	10	197
+502	4	197
+503	50	197
+504	35	197
+505	51	197
+506	52	197
+507	53	197
+508	54	197
+509	55	197
+510	30	198
+511	46	198
+512	40	198
+513	6	198
+514	39	198
+515	42	198
+516	47	198
+517	48	198
+518	41	198
+519	49	198
+520	10	198
+521	4	198
+522	50	198
+523	35	198
+524	51	198
+525	52	198
+526	53	198
+527	54	198
+528	55	198
+529	30	199
+530	46	199
+531	40	199
+532	6	199
+533	39	199
+534	42	199
+535	47	199
+536	48	199
+537	41	199
+538	49	199
+539	10	199
+540	4	199
+541	50	199
+542	35	199
+543	51	199
+544	52	199
+545	53	199
+546	54	199
+547	55	199
+548	30	200
+549	46	200
+550	40	200
+551	6	200
+552	39	200
+553	42	200
+554	47	200
+555	48	200
+556	41	200
+557	49	200
+558	10	200
+559	4	200
+560	50	200
+561	35	200
+562	51	200
+563	52	200
+564	53	200
+565	54	200
+566	55	200
+567	30	201
+568	46	201
+569	40	201
+570	6	201
+571	39	201
+572	42	201
+573	47	201
+574	48	201
+575	41	201
+576	49	201
+577	10	201
+578	4	201
+579	50	201
+580	35	201
+581	51	201
+582	52	201
+583	53	201
+584	54	201
+585	55	201
+586	30	202
+587	46	202
+588	40	202
+589	6	202
+590	39	202
+591	42	202
+592	47	202
+593	48	202
+594	41	202
+595	49	202
+596	10	202
+597	4	202
+598	50	202
+599	35	202
+600	51	202
+601	52	202
+602	53	202
+603	54	202
+604	55	202
+605	30	203
+606	46	203
+607	40	203
+608	6	203
+609	39	203
+610	42	203
+611	47	203
+612	48	203
+613	41	203
+614	49	203
+615	10	203
+616	4	203
+617	50	203
+618	35	203
+619	51	203
+620	52	203
+621	53	203
+622	54	203
+623	55	203
+624	30	204
+625	46	204
+626	40	204
+627	6	204
+628	39	204
+629	42	204
+630	47	204
+631	48	204
+632	41	204
+633	49	204
+634	10	204
+635	4	204
+636	50	204
+637	35	204
+638	51	204
+639	52	204
+640	53	204
+641	54	204
+642	55	204
+643	30	205
+644	46	205
+645	40	205
+646	6	205
+647	39	205
+648	42	205
+649	47	205
+650	48	205
+651	41	205
+652	49	205
+653	10	205
+654	4	205
+655	50	205
+656	35	205
+657	51	205
+658	52	205
+659	53	205
+660	54	205
+661	55	205
+662	30	206
+663	46	206
+664	40	206
+665	6	206
+666	39	206
+667	42	206
+668	47	206
+669	48	206
+670	41	206
+671	49	206
+672	10	206
+673	4	206
+674	50	206
+675	35	206
+676	51	206
+677	52	206
+678	53	206
+679	54	206
+680	55	206
+681	30	207
+682	46	207
+683	40	207
+684	6	207
+685	39	207
+686	42	207
+687	47	207
+688	48	207
+689	41	207
+690	49	207
+691	10	207
+692	4	207
+693	50	207
+694	35	207
+695	51	207
+696	52	207
+697	53	207
+698	54	207
+699	55	207
+700	30	208
+701	46	208
+702	40	208
+703	6	208
+704	39	208
+705	42	208
+706	47	208
+707	48	208
+708	41	208
+709	49	208
+710	10	208
+711	4	208
+712	50	208
+713	35	208
+714	51	208
+715	52	208
+716	53	208
+717	54	208
+718	55	208
+719	30	209
+720	46	209
+721	40	209
+722	6	209
+723	39	209
+724	42	209
+725	47	209
+726	48	209
+727	41	209
+728	49	209
+729	10	209
+730	4	209
+731	50	209
+732	35	209
+733	51	209
+734	52	209
+735	53	209
+736	54	209
+737	55	209
+738	30	210
+739	46	210
+740	40	210
+741	6	210
+742	39	210
+743	42	210
+744	47	210
+745	48	210
+746	41	210
+747	49	210
+748	10	210
+749	4	210
+750	50	210
+751	35	210
+752	51	210
+753	52	210
+754	53	210
+755	54	210
+756	55	210
+757	30	211
+758	46	211
+759	40	211
+760	6	211
+761	39	211
+762	42	211
+763	47	211
+764	48	211
+765	41	211
+766	49	211
+767	10	211
+768	4	211
+769	50	211
+770	35	211
+771	51	211
+772	52	211
+773	53	211
+774	54	211
+775	55	211
+776	30	212
+777	46	212
+778	40	212
+779	6	212
+780	39	212
+781	42	212
+782	47	212
+783	48	212
+784	41	212
+785	49	212
+786	10	212
+787	4	212
+788	50	212
+789	35	212
+790	51	212
+791	52	212
+792	53	212
+793	54	212
+794	55	212
+795	30	213
+796	46	213
+797	40	213
+798	6	213
+799	39	213
+800	42	213
+801	47	213
+802	48	213
+803	41	213
+804	49	213
+805	10	213
+806	4	213
+807	50	213
+808	35	213
+809	51	213
+810	52	213
+811	53	213
+812	54	213
+813	55	213
+814	30	214
+815	46	214
+816	40	214
+817	6	214
+818	39	214
+819	42	214
+820	47	214
+821	48	214
+822	41	214
+823	49	214
+824	10	214
+825	4	214
+826	50	214
+827	35	214
+828	51	214
+829	52	214
+830	53	214
+831	54	214
+832	55	214
+833	30	215
+834	46	215
+835	40	215
+836	6	215
+837	39	215
+838	42	215
+839	47	215
+840	48	215
+841	41	215
+842	49	215
+843	10	215
+844	4	215
+845	50	215
+846	35	215
+847	51	215
+848	52	215
+849	53	215
+850	54	215
+851	55	215
+852	30	216
+853	46	216
+854	40	216
+855	6	216
+856	39	216
+857	42	216
+858	47	216
+859	48	216
+860	41	216
+861	49	216
+862	10	216
+863	4	216
+864	50	216
+865	35	216
+866	51	216
+867	52	216
+868	53	216
+869	54	216
+870	55	216
+871	30	217
+872	46	217
+873	40	217
+874	6	217
+875	39	217
+876	42	217
+877	47	217
+878	48	217
+879	41	217
+880	49	217
+881	10	217
+882	4	217
+883	50	217
+884	35	217
+885	51	217
+886	52	217
+887	53	217
+888	54	217
+889	55	217
+890	30	218
+891	46	218
+892	40	218
+893	6	218
+894	39	218
+895	42	218
+896	47	218
+897	48	218
+898	41	218
+899	49	218
+900	10	218
+901	4	218
+902	50	218
+903	35	218
+904	51	218
+905	52	218
+906	53	218
+907	54	218
+908	55	218
+909	30	219
+910	46	219
+911	40	219
+912	6	219
+913	39	219
+914	42	219
+915	47	219
+916	48	219
+917	41	219
+918	49	219
+919	10	219
+920	4	219
+921	50	219
+922	35	219
+923	51	219
+924	52	219
+925	53	219
+926	54	219
+927	55	219
+928	30	220
+929	46	220
+930	40	220
+931	6	220
+932	39	220
+933	42	220
+934	47	220
+935	48	220
+936	41	220
+937	49	220
+938	10	220
+939	4	220
+940	50	220
+941	35	220
+942	51	220
+943	52	220
+944	53	220
+945	54	220
+946	55	220
+947	30	221
+948	46	221
+949	40	221
+950	6	221
+951	39	221
+952	42	221
+953	47	221
+954	48	221
+955	41	221
+956	49	221
+957	10	221
+958	4	221
+959	50	221
+960	35	221
+961	51	221
+962	52	221
+963	53	221
+964	54	221
+965	55	221
+966	30	222
+967	46	222
+968	40	222
+969	6	222
+970	39	222
+971	42	222
+972	47	222
+973	48	222
+974	41	222
+975	49	222
+976	10	222
+977	4	222
+978	50	222
+979	35	222
+980	51	222
+981	52	222
+982	53	222
+983	54	222
+984	55	222
+985	30	223
+986	46	223
+987	40	223
+988	6	223
+989	39	223
+990	42	223
+991	47	223
+992	48	223
+993	41	223
+994	49	223
+995	10	223
+996	4	223
+997	50	223
+998	35	223
+999	51	223
+1000	52	223
+1001	53	223
+1002	54	223
+1003	55	223
+1004	30	224
+1005	46	224
+1006	40	224
+1007	6	224
+1008	39	224
+1009	42	224
+1010	47	224
+1011	48	224
+1012	41	224
+1013	49	224
+1014	10	224
+1015	4	224
+1016	50	224
+1017	35	224
+1018	51	224
+1019	52	224
+1020	53	224
+1021	54	224
+1022	55	224
+1023	30	225
+1024	46	225
+1025	40	225
+1026	6	225
+1027	39	225
+1028	42	225
+1029	47	225
+1030	48	225
+1031	41	225
+1032	49	225
+1033	10	225
+1034	4	225
+1035	50	225
+1036	35	225
+1037	51	225
+1038	52	225
+1039	53	225
+1040	54	225
+1041	55	225
+1042	30	226
+1043	46	226
+1044	40	226
+1045	6	226
+1046	39	226
+1047	42	226
+1048	47	226
+1049	48	226
+1050	41	226
+1051	49	226
+1052	10	226
+1053	4	226
+1054	50	226
+1055	35	226
+1056	51	226
+1057	52	226
+1058	53	226
+1059	54	226
+1060	55	226
+1061	30	227
+1062	46	227
+1063	40	227
+1064	6	227
+1065	39	227
+1066	42	227
+1067	47	227
+1068	48	227
+1069	41	227
+1070	49	227
+1071	10	227
+1072	4	227
+1073	50	227
+1074	35	227
+1075	51	227
+1076	52	227
+1077	53	227
+1078	54	227
+1079	55	227
+1080	30	228
+1081	46	228
+1082	40	228
+1083	6	228
+1084	39	228
+1085	42	228
+1086	47	228
+1087	48	228
+1088	41	228
+1089	49	228
+1090	10	228
+1091	4	228
+1092	50	228
+1093	35	228
+1094	51	228
+1095	52	228
+1096	53	228
+1097	54	228
+1098	55	228
+1099	30	229
+1100	46	229
+1101	40	229
+1102	6	229
+1103	39	229
+1104	42	229
+1105	47	229
+1106	48	229
+1107	41	229
+1108	49	229
+1109	10	229
+1110	4	229
+1111	50	229
+1112	35	229
+1113	51	229
+1114	52	229
+1115	53	229
+1116	54	229
+1117	55	229
+1118	30	230
+1119	46	230
+1120	40	230
+1121	6	230
+1122	39	230
+1123	42	230
+1124	47	230
+1125	48	230
+1126	41	230
+1127	49	230
+1128	10	230
+1129	4	230
+1130	50	230
+1131	35	230
+1132	51	230
+1133	52	230
+1134	53	230
+1135	54	230
+1136	55	230
+1137	30	231
+1138	46	231
+1139	40	231
+1140	6	231
+1141	39	231
+1142	42	231
+1143	47	231
+1144	48	231
+1145	41	231
+1146	49	231
+1147	10	231
+1148	4	231
+1149	50	231
+1150	35	231
+1151	51	231
+1152	52	231
+1153	53	231
+1154	54	231
+1155	55	231
+1156	30	232
+1157	46	232
+1158	40	232
+1159	6	232
+1160	39	232
+1161	42	232
+1162	47	232
+1163	48	232
+1164	41	232
+1165	49	232
+1166	10	232
+1167	4	232
+1168	50	232
+1169	35	232
+1170	51	232
+1171	52	232
+1172	53	232
+1173	54	232
+1174	55	232
+1175	30	233
+1176	46	233
+1177	40	233
+1178	6	233
+1179	39	233
+1180	42	233
+1181	47	233
+1182	48	233
+1183	41	233
+1184	49	233
+1185	10	233
+1186	4	233
+1187	50	233
+1188	35	233
+1189	51	233
+1190	52	233
+1191	53	233
+1192	54	233
+1193	55	233
+1194	30	234
+1195	46	234
+1196	40	234
+1197	6	234
+1198	39	234
+1199	42	234
+1200	47	234
+1201	48	234
+1202	41	234
+1203	49	234
+1204	10	234
+1205	4	234
+1206	50	234
+1207	35	234
+1208	51	234
+1209	52	234
+1210	53	234
+1211	54	234
+1212	55	234
+1213	30	235
+1214	46	235
+1215	40	235
+1216	6	235
+1217	39	235
+1218	42	235
+1219	47	235
+1220	48	235
+1221	41	235
+1222	49	235
+1223	10	235
+1224	4	235
+1225	50	235
+1226	35	235
+1227	51	235
+1228	52	235
+1229	53	235
+1230	54	235
+1231	55	235
+1232	30	236
+1233	46	236
+1234	40	236
+1235	6	236
+1236	39	236
+1237	42	236
+1238	47	236
+1239	48	236
+1240	41	236
+1241	49	236
+1242	10	236
+1243	4	236
+1244	50	236
+1245	35	236
+1246	51	236
+1247	52	236
+1248	53	236
+1249	54	236
+1250	55	236
+1251	30	237
+1252	46	237
+1253	40	237
+1254	6	237
+1255	39	237
+1256	42	237
+1257	47	237
+1258	48	237
+1259	41	237
+1260	49	237
+1261	10	237
+1262	4	237
+1263	50	237
+1264	35	237
+1265	51	237
+1266	52	237
+1267	53	237
+1268	54	237
+1269	55	237
+1270	30	238
+1271	46	238
+1272	40	238
+1273	6	238
+1274	39	238
+1275	42	238
+1276	47	238
+1277	48	238
+1278	41	238
+1279	49	238
+1280	10	238
+1281	4	238
+1282	50	238
+1283	35	238
+1284	51	238
+1285	52	238
+1286	53	238
+1287	54	238
+1288	55	238
+1289	30	239
+1290	46	239
+1291	40	239
+1292	6	239
+1293	39	239
+1294	42	239
+1295	47	239
+1296	48	239
+1297	41	239
+1298	49	239
+1299	10	239
+1300	4	239
+1301	50	239
+1302	35	239
+1303	51	239
+1304	52	239
+1305	53	239
+1306	54	239
+1307	55	239
+1308	30	240
+1309	46	240
+1310	40	240
+1311	6	240
+1312	39	240
+1313	42	240
+1314	47	240
+1315	48	240
+1316	41	240
+1317	49	240
+1318	10	240
+1319	4	240
+1320	50	240
+1321	35	240
+1322	51	240
+1323	52	240
+1324	53	240
+1325	54	240
+1326	55	240
+1327	30	241
+1328	46	241
+1329	40	241
+1330	6	241
+1331	39	241
+1332	42	241
+1333	47	241
+1334	48	241
+1335	41	241
+1336	49	241
+1337	10	241
+1338	4	241
+1339	50	241
+1340	35	241
+1341	51	241
+1342	52	241
+1343	53	241
+1344	54	241
+1345	55	241
+1346	30	242
+1347	46	242
+1348	40	242
+1349	6	242
+1350	39	242
+1351	42	242
+1352	47	242
+1353	48	242
+1354	41	242
+1355	49	242
+1356	10	242
+1357	4	242
+1358	50	242
+1359	35	242
+1360	51	242
+1361	52	242
+1362	53	242
+1363	54	242
+1364	55	242
+1365	30	243
+1366	46	243
+1367	40	243
+1368	6	243
+1369	39	243
+1370	42	243
+1371	47	243
+1372	48	243
+1373	41	243
+1374	49	243
+1375	10	243
+1376	4	243
+1377	50	243
+1378	35	243
+1379	51	243
+1380	52	243
+1381	53	243
+1382	54	243
+1383	55	243
+1384	30	244
+1385	46	244
+1386	40	244
+1387	6	244
+1388	39	244
+1389	42	244
+1390	47	244
+1391	48	244
+1392	41	244
+1393	49	244
+1394	10	244
+1395	4	244
+1396	50	244
+1397	35	244
+1398	51	244
+1399	52	244
+1400	53	244
+1401	54	244
+1402	55	244
+1403	30	245
+1404	46	245
+1405	40	245
+1406	6	245
+1407	39	245
+1408	42	245
+1409	47	245
+1410	48	245
+1411	41	245
+1412	49	245
+1413	10	245
+1414	4	245
+1415	50	245
+1416	35	245
+1417	51	245
+1418	52	245
+1419	53	245
+1420	54	245
+1421	55	245
+1422	30	246
+1423	46	246
+1424	40	246
+1425	6	246
+1426	39	246
+1427	42	246
+1428	47	246
+1429	48	246
+1430	41	246
+1431	49	246
+1432	10	246
+1433	4	246
+1434	50	246
+1435	35	246
+1436	51	246
+1437	52	246
+1438	53	246
+1439	54	246
+1440	55	246
+1441	30	247
+1442	46	247
+1443	40	247
+1444	6	247
+1445	39	247
+1446	42	247
+1447	47	247
+1448	48	247
+1449	41	247
+1450	49	247
+1451	10	247
+1452	4	247
+1453	50	247
+1454	35	247
+1455	51	247
+1456	52	247
+1457	53	247
+1458	54	247
+1459	55	247
+1460	30	248
+1461	46	248
+1462	40	248
+1463	6	248
+1464	39	248
+1465	42	248
+1466	47	248
+1467	48	248
+1468	41	248
+1469	49	248
+1470	10	248
+1471	4	248
+1472	50	248
+1473	35	248
+1474	51	248
+1475	52	248
+1476	53	248
+1477	54	248
+1478	55	248
+1479	30	249
+1480	46	249
+1481	40	249
+1482	6	249
+1483	39	249
+1484	42	249
+1485	47	249
+1486	48	249
+1487	41	249
+1488	49	249
+1489	10	249
+1490	4	249
+1491	50	249
+1492	35	249
+1493	51	249
+1494	52	249
+1495	53	249
+1496	54	249
+1497	55	249
+1498	30	250
+1499	46	250
+1500	40	250
+1501	6	250
+1502	39	250
+1503	42	250
+1504	47	250
+1505	48	250
+1506	41	250
+1507	49	250
+1508	10	250
+1509	4	250
+1510	50	250
+1511	35	250
+1512	51	250
+1513	52	250
+1514	53	250
+1515	54	250
+1516	55	250
+1517	30	251
+1518	46	251
+1519	40	251
+1520	6	251
+1521	39	251
+1522	42	251
+1523	47	251
+1524	48	251
+1525	41	251
+1526	49	251
+1527	10	251
+1528	4	251
+1529	50	251
+1530	35	251
+1531	51	251
+1532	52	251
+1533	53	251
+1534	54	251
+1535	55	251
+1536	30	252
+1537	46	252
+1538	40	252
+1539	6	252
+1540	39	252
+1541	42	252
+1542	47	252
+1543	48	252
+1544	41	252
+1545	49	252
+1546	10	252
+1547	4	252
+1548	50	252
+1549	35	252
+1550	51	252
+1551	52	252
+1552	53	252
+1553	54	252
+1554	55	252
+1555	30	253
+1556	46	253
+1557	40	253
+1558	6	253
+1559	39	253
+1560	42	253
+1561	47	253
+1562	48	253
+1563	41	253
+1564	49	253
+1565	10	253
+1566	4	253
+1567	50	253
+1568	35	253
+1569	51	253
+1570	52	253
+1571	53	253
+1572	54	253
+1573	55	253
+1574	30	254
+1575	46	254
+1576	40	254
+1577	6	254
+1578	39	254
+1579	42	254
+1580	47	254
+1581	48	254
+1582	41	254
+1583	49	254
+1584	10	254
+1585	4	254
+1586	50	254
+1587	35	254
+1588	51	254
+1589	52	254
+1590	53	254
+1591	54	254
+1592	55	254
+1593	30	255
+1594	46	255
+1595	40	255
+1596	6	255
+1597	39	255
+1598	42	255
+1599	47	255
+1600	48	255
+1601	41	255
+1602	49	255
+1603	10	255
+1604	4	255
+1605	50	255
+1606	35	255
+1607	51	255
+1608	52	255
+1609	53	255
+1610	54	255
+1611	55	255
+1612	30	256
+1613	46	256
+1614	40	256
+1615	6	256
+1616	39	256
+1617	42	256
+1618	47	256
+1619	48	256
+1620	41	256
+1621	49	256
+1622	10	256
+1623	4	256
+1624	50	256
+1625	35	256
+1626	51	256
+1627	52	256
+1628	53	256
+1629	54	256
+1630	55	256
+1631	30	257
+1632	46	257
+1633	40	257
+1634	6	257
+1635	39	257
+1636	42	257
+1637	47	257
+1638	48	257
+1639	41	257
+1640	49	257
+1641	10	257
+1642	4	257
+1643	50	257
+1644	35	257
+1645	51	257
+1646	52	257
+1647	53	257
+1648	54	257
+1649	55	257
+1650	30	258
+1651	46	258
+1652	40	258
+1653	6	258
+1654	39	258
+1655	42	258
+1656	47	258
+1657	48	258
+1658	41	258
+1659	49	258
+1660	10	258
+1661	4	258
+1662	50	258
+1663	35	258
+1664	51	258
+1665	52	258
+1666	53	258
+1667	54	258
+1668	55	258
+1669	30	259
+1670	46	259
+1671	40	259
+1672	6	259
+1673	39	259
+1674	42	259
+1675	47	259
+1676	48	259
+1677	41	259
+1678	49	259
+1679	10	259
+1680	4	259
+1681	50	259
+1682	35	259
+1683	51	259
+1684	52	259
+1685	53	259
+1686	54	259
+1687	55	259
+1688	30	260
+1689	46	260
+1690	40	260
+1691	6	260
+1692	39	260
+1693	42	260
+1694	47	260
+1695	48	260
+1696	41	260
+1697	49	260
+1698	10	260
+1699	4	260
+1700	50	260
+1701	35	260
+1702	51	260
+1703	52	260
+1704	53	260
+1705	54	260
+1706	55	260
+1707	30	261
+1708	46	261
+1709	40	261
+1710	6	261
+1711	39	261
+1712	42	261
+1713	47	261
+1714	48	261
+1715	41	261
+1716	49	261
+1717	10	261
+1718	4	261
+1719	50	261
+1720	35	261
+1721	51	261
+1722	52	261
+1723	53	261
+1724	54	261
+1725	55	261
+1726	30	262
+1727	46	262
+1728	40	262
+1729	6	262
+1730	39	262
+1731	42	262
+1732	47	262
+1733	48	262
+1734	41	262
+1735	49	262
+1736	10	262
+1737	4	262
+1738	50	262
+1739	35	262
+1740	51	262
+1741	52	262
+1742	53	262
+1743	54	262
+1744	55	262
+1745	30	263
+1746	46	263
+1747	40	263
+1748	6	263
+1749	39	263
+1750	42	263
+1751	47	263
+1752	48	263
+1753	41	263
+1754	49	263
+1755	10	263
+1756	4	263
+1757	50	263
+1758	35	263
+1759	51	263
+1760	52	263
+1761	53	263
+1762	54	263
+1763	55	263
+1764	30	264
+1765	46	264
+1766	40	264
+1767	6	264
+1768	39	264
+1769	42	264
+1770	47	264
+1771	48	264
+1772	41	264
+1773	49	264
+1774	10	264
+1775	4	264
+1776	50	264
+1777	35	264
+1778	51	264
+1779	52	264
+1780	53	264
+1781	54	264
+1782	55	264
+1783	30	265
+1784	46	265
+1785	40	265
+1786	6	265
+1787	39	265
+1788	42	265
+1789	47	265
+1790	48	265
+1791	41	265
+1792	49	265
+1793	10	265
+1794	4	265
+1795	50	265
+1796	35	265
+1797	51	265
+1798	52	265
+1799	53	265
+1800	54	265
+1801	55	265
+1802	30	266
+1803	46	266
+1804	40	266
+1805	6	266
+1806	39	266
+1807	42	266
+1808	47	266
+1809	48	266
+1810	41	266
+1811	49	266
+1812	10	266
+1813	4	266
+1814	50	266
+1815	35	266
+1816	51	266
+1817	52	266
+1818	53	266
+1819	54	266
+1820	55	266
+1821	30	267
+1822	46	267
+1823	40	267
+1824	6	267
+1825	39	267
+1826	42	267
+1827	47	267
+1828	48	267
+1829	41	267
+1830	49	267
+1831	10	267
+1832	4	267
+1833	50	267
+1834	35	267
+1835	51	267
+1836	52	267
+1837	53	267
+1838	54	267
+1839	55	267
+1840	30	268
+1841	46	268
+1842	40	268
+1843	6	268
+1844	39	268
+1845	42	268
+1846	47	268
+1847	48	268
+1848	41	268
+1849	49	268
+1850	10	268
+1851	4	268
+1852	50	268
+1853	35	268
+1854	51	268
+1855	52	268
+1856	53	268
+1857	54	268
+1858	55	268
+1859	30	269
+1860	46	269
+1861	40	269
+1862	6	269
+1863	39	269
+1864	42	269
+1865	47	269
+1866	48	269
+1867	41	269
+1868	49	269
+1869	10	269
+1870	4	269
+1871	50	269
+1872	35	269
+1873	51	269
+1874	52	269
+1875	53	269
+1876	54	269
+1877	55	269
+1878	30	270
+1879	46	270
+1880	40	270
+1881	6	270
+1882	39	270
+1883	42	270
+1884	47	270
+1885	48	270
+1886	41	270
+1887	49	270
+1888	10	270
+1889	4	270
+1890	50	270
+1891	35	270
+1892	51	270
+1893	52	270
+1894	53	270
+1895	54	270
+1896	55	270
+1897	30	271
+1898	46	271
+1899	40	271
+1900	6	271
+1901	39	271
+1902	42	271
+1903	47	271
+1904	48	271
+1905	41	271
+1906	49	271
+1907	10	271
+1908	4	271
+1909	50	271
+1910	35	271
+1911	51	271
+1912	52	271
+1913	53	271
+1914	54	271
+1915	55	271
+1916	30	272
+1917	46	272
+1918	40	272
+1919	6	272
+1920	39	272
+1921	42	272
+1922	47	272
+1923	48	272
+1924	41	272
+1925	49	272
+1926	10	272
+1927	4	272
+1928	50	272
+1929	35	272
+1930	51	272
+1931	52	272
+1932	53	272
+1933	54	272
+1934	55	272
+1935	30	273
+1936	46	273
+1937	40	273
+1938	6	273
+1939	39	273
+1940	42	273
+1941	47	273
+1942	48	273
+1943	41	273
+1944	49	273
+1945	10	273
+1946	4	273
+1947	50	273
+1948	35	273
+1949	51	273
+1950	52	273
+1951	53	273
+1952	54	273
+1953	55	273
+1954	30	274
+1955	46	274
+1956	40	274
+1957	6	274
+1958	39	274
+1959	42	274
+1960	47	274
+1961	48	274
+1962	41	274
+1963	49	274
+1964	10	274
+1965	4	274
+1966	50	274
+1967	35	274
+1968	51	274
+1969	52	274
+1970	53	274
+1971	54	274
+1972	55	274
+1973	30	275
+1974	46	275
+1975	40	275
+1976	6	275
+1977	39	275
+1978	42	275
+1979	47	275
+1980	48	275
+1981	41	275
+1982	49	275
+1983	10	275
+1984	4	275
+1985	50	275
+1986	35	275
+1987	51	275
+1988	52	275
+1989	53	275
+1990	54	275
+1991	55	275
+1992	30	276
+1993	46	276
+1994	40	276
+1995	6	276
+1996	39	276
+1997	42	276
+1998	47	276
+1999	48	276
+2000	41	276
+2001	49	276
+2002	10	276
+2003	4	276
+2004	50	276
+2005	35	276
+2006	51	276
+2007	52	276
+2008	53	276
+2009	54	276
+2010	55	276
+2011	30	277
+2012	46	277
+2013	40	277
+2014	6	277
+2015	39	277
+2016	42	277
+2017	47	277
+2018	48	277
+2019	41	277
+2020	49	277
+2021	10	277
+2022	4	277
+2023	50	277
+2024	35	277
+2025	51	277
+2026	52	277
+2027	53	277
+2028	54	277
+2029	55	277
+2030	30	278
+2031	46	278
+2032	40	278
+2033	6	278
+2034	39	278
+2035	42	278
+2036	47	278
+2037	48	278
+2038	41	278
+2039	49	278
+2040	10	278
+2041	4	278
+2042	50	278
+2043	35	278
+2044	51	278
+2045	52	278
+2046	53	278
+2047	54	278
+2048	55	278
+2049	30	279
+2050	46	279
+2051	40	279
+2052	6	279
+2053	39	279
+2054	42	279
+2055	47	279
+2056	48	279
+2057	41	279
+2058	49	279
+2059	10	279
+2060	4	279
+2061	50	279
+2062	35	279
+2063	51	279
+2064	52	279
+2065	53	279
+2066	54	279
+2067	55	279
+2068	30	280
+2069	46	280
+2070	40	280
+2071	6	280
+2072	39	280
+2073	42	280
+2074	47	280
+2075	48	280
+2076	41	280
+2077	49	280
+2078	10	280
+2079	4	280
+2080	50	280
+2081	35	280
+2082	51	280
+2083	52	280
+2084	53	280
+2085	54	280
+2086	55	280
+2087	30	281
+2088	46	281
+2089	40	281
+2090	6	281
+2091	39	281
+2092	42	281
+2093	47	281
+2094	48	281
+2095	41	281
+2096	49	281
+2097	10	281
+2098	4	281
+2099	50	281
+2100	35	281
+2101	51	281
+2102	52	281
+2103	53	281
+2104	54	281
+2105	55	281
+2106	30	282
+2107	46	282
+2108	40	282
+2109	6	282
+2110	39	282
+2111	42	282
+2112	47	282
+2113	48	282
+2114	41	282
+2115	49	282
+2116	10	282
+2117	4	282
+2118	50	282
+2119	35	282
+2120	51	282
+2121	52	282
+2122	53	282
+2123	54	282
+2124	55	282
+2125	30	283
+2126	46	283
+2127	40	283
+2128	6	283
+2129	39	283
+2130	42	283
+2131	47	283
+2132	48	283
+2133	41	283
+2134	49	283
+2135	10	283
+2136	4	283
+2137	50	283
+2138	35	283
+2139	51	283
+2140	52	283
+2141	53	283
+2142	54	283
+2143	55	283
+2144	30	284
+2145	46	284
+2146	40	284
+2147	6	284
+2148	39	284
+2149	42	284
+2150	47	284
+2151	48	284
+2152	41	284
+2153	49	284
+2154	10	284
+2155	4	284
+2156	50	284
+2157	35	284
+2158	51	284
+2159	52	284
+2160	53	284
+2161	54	284
+2162	55	284
+2163	30	285
+2164	46	285
+2165	40	285
+2166	6	285
+2167	39	285
+2168	42	285
+2169	47	285
+2170	48	285
+2171	41	285
+2172	49	285
+2173	10	285
+2174	4	285
+2175	50	285
+2176	35	285
+2177	51	285
+2178	52	285
+2179	53	285
+2180	54	285
+2181	55	285
+2182	30	286
+2183	46	286
+2184	40	286
+2185	6	286
+2186	39	286
+2187	42	286
+2188	47	286
+2189	48	286
+2190	41	286
+2191	49	286
+2192	10	286
+2193	4	286
+2194	50	286
+2195	35	286
+2196	51	286
+2197	52	286
+2198	53	286
+2199	54	286
+2200	55	286
+2201	30	287
+2202	46	287
+2203	40	287
+2204	6	287
+2205	39	287
+2206	42	287
+2207	47	287
+2208	48	287
+2209	41	287
+2210	49	287
+2211	10	287
+2212	4	287
+2213	50	287
+2214	35	287
+2215	51	287
+2216	52	287
+2217	53	287
+2218	54	287
+2219	55	287
+2220	30	288
+2221	46	288
+2222	40	288
+2223	6	288
+2224	39	288
+2225	42	288
+2226	47	288
+2227	48	288
+2228	41	288
+2229	49	288
+2230	10	288
+2231	4	288
+2232	50	288
+2233	35	288
+2234	51	288
+2235	52	288
+2236	53	288
+2237	54	288
+2238	55	288
+2239	30	289
+2240	46	289
+2241	40	289
+2242	6	289
+2243	39	289
+2244	42	289
+2245	47	289
+2246	48	289
+2247	41	289
+2248	49	289
+2249	10	289
+2250	4	289
+2251	50	289
+2252	35	289
+2253	51	289
+2254	52	289
+2255	53	289
+2256	54	289
+2257	55	289
+2258	30	290
+2259	46	290
+2260	40	290
+2261	6	290
+2262	39	290
+2263	42	290
+2264	47	290
+2265	48	290
+2266	41	290
+2267	49	290
+2268	10	290
+2269	4	290
+2270	50	290
+2271	35	290
+2272	51	290
+2273	52	290
+2274	53	290
+2275	54	290
+2276	55	290
+2277	30	291
+2278	46	291
+2279	40	291
+2280	6	291
+2281	39	291
+2282	42	291
+2283	47	291
+2284	48	291
+2285	41	291
+2286	49	291
+2287	10	291
+2288	4	291
+2289	50	291
+2290	35	291
+2291	51	291
+2292	52	291
+2293	53	291
+2294	54	291
+2295	55	291
+2296	30	292
+2297	46	292
+2298	40	292
+2299	6	292
+2300	39	292
+2301	42	292
+2302	47	292
+2303	48	292
+2304	41	292
+2305	49	292
+2306	10	292
+2307	4	292
+2308	50	292
+2309	35	292
+2310	51	292
+2311	52	292
+2312	53	292
+2313	54	292
+2314	55	292
+2315	30	293
+2316	46	293
+2317	40	293
+2318	6	293
+2319	39	293
+2320	42	293
+2321	47	293
+2322	48	293
+2323	41	293
+2324	49	293
+2325	10	293
+2326	4	293
+2327	50	293
+2328	35	293
+2329	51	293
+2330	52	293
+2331	53	293
+2332	54	293
+2333	55	293
+2334	30	294
+2335	46	294
+2336	40	294
+2337	6	294
+2338	39	294
+2339	42	294
+2340	47	294
+2341	48	294
+2342	41	294
+2343	49	294
+2344	10	294
+2345	4	294
+2346	50	294
+2347	35	294
+2348	51	294
+2349	52	294
+2350	53	294
+2351	54	294
+2352	55	294
+2353	30	295
+2354	46	295
+2355	40	295
+2356	6	295
+2357	39	295
+2358	42	295
+2359	47	295
+2360	48	295
+2361	41	295
+2362	49	295
+2363	10	295
+2364	4	295
+2365	50	295
+2366	35	295
+2367	51	295
+2368	52	295
+2369	53	295
+2370	54	295
+2371	55	295
+2372	30	296
+2373	46	296
+2374	40	296
+2375	6	296
+2376	39	296
+2377	42	296
+2378	47	296
+2379	48	296
+2380	41	296
+2381	49	296
+2382	10	296
+2383	4	296
+2384	50	296
+2385	35	296
+2386	51	296
+2387	52	296
+2388	53	296
+2389	54	296
+2390	55	296
+2391	30	297
+2392	46	297
+2393	40	297
+2394	6	297
+2395	39	297
+2396	42	297
+2397	47	297
+2398	48	297
+2399	41	297
+2400	49	297
+2401	10	297
+2402	4	297
+2403	50	297
+2404	35	297
+2405	51	297
+2406	52	297
+2407	53	297
+2408	54	297
+2409	55	297
+2410	30	298
+2411	46	298
+2412	40	298
+2413	6	298
+2414	39	298
+2415	42	298
+2416	47	298
+2417	48	298
+2418	41	298
+2419	49	298
+2420	10	298
+2421	4	298
+2422	50	298
+2423	35	298
+2424	51	298
+2425	52	298
+2426	53	298
+2427	54	298
+2428	55	298
+2429	30	299
+2430	46	299
+2431	40	299
+2432	6	299
+2433	39	299
+2434	42	299
+2435	47	299
+2436	48	299
+2437	41	299
+2438	49	299
+2439	10	299
+2440	4	299
+2441	50	299
+2442	35	299
+2443	51	299
+2444	52	299
+2445	53	299
+2446	54	299
+2447	55	299
+2448	30	300
+2449	46	300
+2450	40	300
+2451	6	300
+2452	39	300
+2453	42	300
+2454	47	300
+2455	48	300
+2456	41	300
+2457	49	300
+2458	10	300
+2459	4	300
+2460	50	300
+2461	35	300
+2462	51	300
+2463	52	300
+2464	53	300
+2465	54	300
+2466	55	300
+2467	30	301
+2468	46	301
+2469	40	301
+2470	6	301
+2471	39	301
+2472	42	301
+2473	47	301
+2474	48	301
+2475	41	301
+2476	49	301
+2477	10	301
+2478	4	301
+2479	50	301
+2480	35	301
+2481	51	301
+2482	52	301
+2483	53	301
+2484	54	301
+2485	55	301
+2486	30	302
+2487	46	302
+2488	40	302
+2489	6	302
+2490	39	302
+2491	42	302
+2492	47	302
+2493	48	302
+2494	41	302
+2495	49	302
+2496	10	302
+2497	4	302
+2498	50	302
+2499	35	302
+2500	51	302
+2501	52	302
+2502	53	302
+2503	54	302
+2504	55	302
+2505	30	303
+2506	46	303
+2507	40	303
+2508	6	303
+2509	39	303
+2510	42	303
+2511	47	303
+2512	48	303
+2513	41	303
+2514	49	303
+2515	10	303
+2516	4	303
+2517	50	303
+2518	35	303
+2519	51	303
+2520	52	303
+2521	53	303
+2522	54	303
+2523	55	303
+2524	30	304
+2525	46	304
+2526	40	304
+2527	6	304
+2528	39	304
+2529	42	304
+2530	47	304
+2531	48	304
+2532	41	304
+2533	49	304
+2534	10	304
+2535	4	304
+2536	50	304
+2537	35	304
+2538	51	304
+2539	52	304
+2540	53	304
+2541	54	304
+2542	55	304
+2543	30	305
+2544	46	305
+2545	40	305
+2546	6	305
+2547	39	305
+2548	42	305
+2549	47	305
+2550	48	305
+2551	41	305
+2552	49	305
+2553	10	305
+2554	4	305
+2555	50	305
+2556	35	305
+2557	51	305
+2558	52	305
+2559	53	305
+2560	54	305
+2561	55	305
+2562	30	306
+2563	46	306
+2564	40	306
+2565	6	306
+2566	39	306
+2567	42	306
+2568	47	306
+2569	48	306
+2570	41	306
+2571	49	306
+2572	10	306
+2573	4	306
+2574	50	306
+2575	35	306
+2576	51	306
+2577	52	306
+2578	53	306
+2579	54	306
+2580	55	306
+2581	30	307
+2582	46	307
+2583	40	307
+2584	6	307
+2585	39	307
+2586	42	307
+2587	47	307
+2588	48	307
+2589	41	307
+2590	49	307
+2591	10	307
+2592	4	307
+2593	50	307
+2594	35	307
+2595	51	307
+2596	52	307
+2597	53	307
+2598	54	307
+2599	55	307
+2600	30	308
+2601	46	308
+2602	40	308
+2603	6	308
+2604	39	308
+2605	42	308
+2606	47	308
+2607	48	308
+2608	41	308
+2609	49	308
+2610	10	308
+2611	4	308
+2612	50	308
+2613	35	308
+2614	51	308
+2615	52	308
+2616	53	308
+2617	54	308
+2618	55	308
+2619	30	309
+2620	46	309
+2621	40	309
+2622	6	309
+2623	39	309
+2624	42	309
+2625	47	309
+2626	48	309
+2627	41	309
+2628	49	309
+2629	10	309
+2630	4	309
+2631	50	309
+2632	35	309
+2633	51	309
+2634	52	309
+2635	53	309
+2636	54	309
+2637	55	309
+2638	30	310
+2639	46	310
+2640	40	310
+2641	6	310
+2642	39	310
+2643	42	310
+2644	47	310
+2645	48	310
+2646	41	310
+2647	49	310
+2648	10	310
+2649	4	310
+2650	50	310
+2651	35	310
+2652	51	310
+2653	52	310
+2654	53	310
+2655	54	310
+2656	55	310
+2657	30	311
+2658	46	311
+2659	40	311
+2660	6	311
+2661	39	311
+2662	42	311
+2663	47	311
+2664	48	311
+2665	41	311
+2666	49	311
+2667	10	311
+2668	4	311
+2669	50	311
+2670	35	311
+2671	51	311
+2672	52	311
+2673	53	311
+2674	54	311
+2675	55	311
+2676	30	312
+2677	46	312
+2678	40	312
+2679	6	312
+2680	39	312
+2681	42	312
+2682	47	312
+2683	48	312
+2684	41	312
+2685	49	312
+2686	10	312
+2687	4	312
+2688	50	312
+2689	35	312
+2690	51	312
+2691	52	312
+2692	53	312
+2693	54	312
+2694	55	312
+2695	30	313
+2696	46	313
+2697	40	313
+2698	6	313
+2699	39	313
+2700	42	313
+2701	47	313
+2702	48	313
+2703	41	313
+2704	49	313
+2705	10	313
+2706	4	313
+2707	50	313
+2708	35	313
+2709	51	313
+2710	52	313
+2711	53	313
+2712	54	313
+2713	55	313
+2714	30	314
+2715	46	314
+2716	40	314
+2717	6	314
+2718	39	314
+2719	42	314
+2720	47	314
+2721	48	314
+2722	41	314
+2723	49	314
+2724	10	314
+2725	4	314
+2726	50	314
+2727	35	314
+2728	51	314
+2729	52	314
+2730	53	314
+2731	54	314
+2732	55	314
+2733	30	315
+2734	46	315
+2735	40	315
+2736	6	315
+2737	39	315
+2738	42	315
+2739	47	315
+2740	48	315
+2741	41	315
+2742	49	315
+2743	10	315
+2744	4	315
+2745	50	315
+2746	35	315
+2747	51	315
+2748	52	315
+2749	53	315
+2750	54	315
+2751	55	315
+2752	30	316
+2753	46	316
+2754	40	316
+2755	6	316
+2756	39	316
+2757	42	316
+2758	47	316
+2759	48	316
+2760	41	316
+2761	49	316
+2762	10	316
+2763	4	316
+2764	50	316
+2765	35	316
+2766	51	316
+2767	52	316
+2768	53	316
+2769	54	316
+2770	55	316
+2771	30	317
+2772	46	317
+2773	40	317
+2774	6	317
+2775	39	317
+2776	42	317
+2777	47	317
+2778	48	317
+2779	41	317
+2780	49	317
+2781	10	317
+2782	4	317
+2783	50	317
+2784	35	317
+2785	51	317
+2786	52	317
+2787	53	317
+2788	54	317
+2789	55	317
+2790	30	318
+2791	46	318
+2792	40	318
+2793	6	318
+2794	39	318
+2795	42	318
+2796	47	318
+2797	48	318
+2798	41	318
+2799	49	318
+2800	10	318
+2801	4	318
+2802	50	318
+2803	35	318
+2804	51	318
+2805	52	318
+2806	53	318
+2807	54	318
+2808	55	318
+2809	30	319
+2810	46	319
+2811	40	319
+2812	6	319
+2813	39	319
+2814	42	319
+2815	47	319
+2816	48	319
+2817	41	319
+2818	49	319
+2819	10	319
+2820	4	319
+2821	50	319
+2822	35	319
+2823	51	319
+2824	52	319
+2825	53	319
+2826	54	319
+2827	55	319
+2828	30	320
+2829	46	320
+2830	40	320
+2831	6	320
+2832	39	320
+2833	42	320
+2834	47	320
+2835	48	320
+2836	41	320
+2837	49	320
+2838	10	320
+2839	4	320
+2840	50	320
+2841	35	320
+2842	51	320
+2843	52	320
+2844	53	320
+2845	54	320
+2846	55	320
+2847	30	321
+2848	46	321
+2849	40	321
+2850	6	321
+2851	39	321
+2852	42	321
+2853	47	321
+2854	48	321
+2855	41	321
+2856	49	321
+2857	10	321
+2858	4	321
+2859	50	321
+2860	35	321
+2861	51	321
+2862	52	321
+2863	53	321
+2864	54	321
+2865	55	321
+2866	30	322
+2867	46	322
+2868	40	322
+2869	6	322
+2870	39	322
+2871	42	322
+2872	47	322
+2873	48	322
+2874	41	322
+2875	49	322
+2876	10	322
+2877	4	322
+2878	50	322
+2879	35	322
+2880	51	322
+2881	52	322
+2882	53	322
+2883	54	322
+2884	55	322
+2885	30	323
+2886	46	323
+2887	40	323
+2888	6	323
+2889	39	323
+2890	42	323
+2891	47	323
+2892	48	323
+2893	41	323
+2894	49	323
+2895	10	323
+2896	4	323
+2897	50	323
+2898	35	323
+2899	51	323
+2900	52	323
+2901	53	323
+2902	54	323
+2903	55	323
+2904	30	324
+2905	46	324
+2906	40	324
+2907	6	324
+2908	39	324
+2909	42	324
+2910	47	324
+2911	48	324
+2912	41	324
+2913	49	324
+2914	10	324
+2915	4	324
+2916	50	324
+2917	35	324
+2918	51	324
+2919	52	324
+2920	53	324
+2921	54	324
+2922	55	324
+2923	30	325
+2924	46	325
+2925	40	325
+2926	6	325
+2927	39	325
+2928	42	325
+2929	47	325
+2930	48	325
+2931	41	325
+2932	49	325
+2933	10	325
+2934	4	325
+2935	50	325
+2936	35	325
+2937	51	325
+2938	52	325
+2939	53	325
+2940	54	325
+2941	55	325
+2942	30	326
+2943	46	326
+2944	40	326
+2945	6	326
+2946	39	326
+2947	42	326
+2948	47	326
+2949	48	326
+2950	41	326
+2951	49	326
+2952	10	326
+2953	4	326
+2954	50	326
+2955	35	326
+2956	51	326
+2957	52	326
+2958	53	326
+2959	54	326
+2960	55	326
+2961	30	327
+2962	46	327
+2963	40	327
+2964	6	327
+2965	39	327
+2966	42	327
+2967	47	327
+2968	48	327
+2969	41	327
+2970	49	327
+2971	10	327
+2972	4	327
+2973	50	327
+2974	35	327
+2975	51	327
+2976	52	327
+2977	53	327
+2978	54	327
+2979	55	327
+2980	30	328
+2981	46	328
+2982	40	328
+2983	6	328
+2984	39	328
+2985	42	328
+2986	47	328
+2987	48	328
+2988	41	328
+2989	49	328
+2990	10	328
+2991	4	328
+2992	50	328
+2993	35	328
+2994	51	328
+2995	52	328
+2996	53	328
+2997	54	328
+2998	55	328
+2999	30	329
+3000	46	329
+3001	40	329
+3002	6	329
+3003	39	329
+3004	42	329
+3005	47	329
+3006	48	329
+3007	41	329
+3008	49	329
+3009	10	329
+3010	4	329
+3011	50	329
+3012	35	329
+3013	51	329
+3014	52	329
+3015	53	329
+3016	54	329
+3017	55	329
+3018	30	330
+3019	46	330
+3020	40	330
+3021	6	330
+3022	39	330
+3023	42	330
+3024	47	330
+3025	48	330
+3026	41	330
+3027	49	330
+3028	10	330
+3029	4	330
+3030	50	330
+3031	35	330
+3032	51	330
+3033	52	330
+3034	53	330
+3035	54	330
+3036	55	330
+3037	30	331
+3038	46	331
+3039	40	331
+3040	6	331
+3041	39	331
+3042	42	331
+3043	47	331
+3044	48	331
+3045	41	331
+3046	49	331
+3047	10	331
+3048	4	331
+3049	50	331
+3050	35	331
+3051	51	331
+3052	52	331
+3053	53	331
+3054	54	331
+3055	55	331
+3056	30	332
+3057	46	332
+3058	40	332
+3059	6	332
+3060	39	332
+3061	42	332
+3062	47	332
+3063	48	332
+3064	41	332
+3065	49	332
+3066	10	332
+3067	4	332
+3068	50	332
+3069	35	332
+3070	51	332
+3071	52	332
+3072	53	332
+3073	54	332
+3074	55	332
+3075	30	333
+3076	46	333
+3077	40	333
+3078	6	333
+3079	39	333
+3080	42	333
+3081	47	333
+3082	48	333
+3083	41	333
+3084	49	333
+3085	10	333
+3086	4	333
+3087	50	333
+3088	35	333
+3089	51	333
+3090	52	333
+3091	53	333
+3092	54	333
+3093	55	333
+3094	30	334
+3095	46	334
+3096	40	334
+3097	6	334
+3098	39	334
+3099	42	334
+3100	47	334
+3101	48	334
+3102	41	334
+3103	49	334
+3104	10	334
+3105	4	334
+3106	50	334
+3107	35	334
+3108	51	334
+3109	52	334
+3110	53	334
+3111	54	334
+3112	55	334
+3113	30	335
+3114	46	335
+3115	40	335
+3116	6	335
+3117	39	335
+3118	42	335
+3119	47	335
+3120	48	335
+3121	41	335
+3122	49	335
+3123	10	335
+3124	4	335
+3125	50	335
+3126	35	335
+3127	51	335
+3128	52	335
+3129	53	335
+3130	54	335
+3131	55	335
+3132	30	336
+3133	46	336
+3134	40	336
+3135	6	336
+3136	39	336
+3137	42	336
+3138	47	336
+3139	48	336
+3140	41	336
+3141	49	336
+3142	10	336
+3143	4	336
+3144	50	336
+3145	35	336
+3146	51	336
+3147	52	336
+3148	53	336
+3149	54	336
+3150	55	336
+3151	30	337
+3152	46	337
+3153	40	337
+3154	6	337
+3155	39	337
+3156	42	337
+3157	47	337
+3158	48	337
+3159	41	337
+3160	49	337
+3161	10	337
+3162	4	337
+3163	50	337
+3164	35	337
+3165	51	337
+3166	52	337
+3167	53	337
+3168	54	337
+3169	55	337
+3170	30	338
+3171	46	338
+3172	40	338
+3173	6	338
+3174	39	338
+3175	42	338
+3176	47	338
+3177	48	338
+3178	41	338
+3179	49	338
+3180	10	338
+3181	4	338
+3182	50	338
+3183	35	338
+3184	51	338
+3185	52	338
+3186	53	338
+3187	54	338
+3188	55	338
+3189	30	339
+3190	46	339
+3191	40	339
+3192	6	339
+3193	39	339
+3194	42	339
+3195	47	339
+3196	48	339
+3197	41	339
+3198	49	339
+3199	10	339
+3200	4	339
+3201	50	339
+3202	35	339
+3203	51	339
+3204	52	339
+3205	53	339
+3206	54	339
+3207	55	339
+3208	30	340
+3209	46	340
+3210	40	340
+3211	6	340
+3212	39	340
+3213	42	340
+3214	47	340
+3215	48	340
+3216	41	340
+3217	49	340
+3218	10	340
+3219	4	340
+3220	50	340
+3221	35	340
+3222	51	340
+3223	52	340
+3224	53	340
+3225	54	340
+3226	55	340
+3227	30	341
+3228	46	341
+3229	40	341
+3230	6	341
+3231	39	341
+3232	42	341
+3233	47	341
+3234	48	341
+3235	41	341
+3236	49	341
+3237	10	341
+3238	4	341
+3239	50	341
+3240	35	341
+3241	51	341
+3242	52	341
+3243	53	341
+3244	54	341
+3245	55	341
+3246	30	342
+3247	46	342
+3248	40	342
+3249	6	342
+3250	39	342
+3251	42	342
+3252	47	342
+3253	48	342
+3254	41	342
+3255	49	342
+3256	10	342
+3257	4	342
+3258	50	342
+3259	35	342
+3260	51	342
+3261	52	342
+3262	53	342
+3263	54	342
+3264	55	342
+3265	30	343
+3266	46	343
+3267	40	343
+3268	6	343
+3269	39	343
+3270	42	343
+3271	47	343
+3272	48	343
+3273	41	343
+3274	49	343
+3275	10	343
+3276	4	343
+3277	50	343
+3278	35	343
+3279	51	343
+3280	52	343
+3281	53	343
+3282	54	343
+3283	55	343
+3284	30	344
+3285	46	344
+3286	40	344
+3287	6	344
+3288	39	344
+3289	42	344
+3290	47	344
+3291	48	344
+3292	41	344
+3293	49	344
+3294	10	344
+3295	4	344
+3296	50	344
+3297	35	344
+3298	51	344
+3299	52	344
+3300	53	344
+3301	54	344
+3302	55	344
+3303	30	345
+3304	46	345
+3305	40	345
+3306	6	345
+3307	39	345
+3308	42	345
+3309	47	345
+3310	48	345
+3311	41	345
+3312	49	345
+3313	10	345
+3314	4	345
+3315	50	345
+3316	35	345
+3317	51	345
+3318	52	345
+3319	53	345
+3320	54	345
+3321	55	345
+3322	30	346
+3323	46	346
+3324	40	346
+3325	6	346
+3326	39	346
+3327	42	346
+3328	47	346
+3329	48	346
+3330	41	346
+3331	49	346
+3332	10	346
+3333	4	346
+3334	50	346
+3335	35	346
+3336	51	346
+3337	52	346
+3338	53	346
+3339	54	346
+3340	55	346
+3341	30	347
+3342	46	347
+3343	40	347
+3344	6	347
+3345	39	347
+3346	42	347
+3347	47	347
+3348	48	347
+3349	41	347
+3350	49	347
+3351	10	347
+3352	4	347
+3353	50	347
+3354	35	347
+3355	51	347
+3356	52	347
+3357	53	347
+3358	54	347
+3359	55	347
+3360	30	348
+3361	46	348
+3362	40	348
+3363	6	348
+3364	39	348
+3365	42	348
+3366	47	348
+3367	48	348
+3368	41	348
+3369	49	348
+3370	10	348
+3371	4	348
+3372	50	348
+3373	35	348
+3374	51	348
+3375	52	348
+3376	53	348
+3377	54	348
+3378	55	348
+3379	30	349
+3380	46	349
+3381	40	349
+3382	6	349
+3383	39	349
+3384	42	349
+3385	47	349
+3386	48	349
+3387	41	349
+3388	49	349
+3389	10	349
+3390	4	349
+3391	50	349
+3392	35	349
+3393	51	349
+3394	52	349
+3395	53	349
+3396	54	349
+3397	55	349
+3398	30	350
+3399	46	350
+3400	40	350
+3401	6	350
+3402	39	350
+3403	42	350
+3404	47	350
+3405	48	350
+3406	41	350
+3407	49	350
+3408	10	350
+3409	4	350
+3410	50	350
+3411	35	350
+3412	51	350
+3413	52	350
+3414	53	350
+3415	54	350
+3416	55	350
+3417	30	351
+3418	46	351
+3419	40	351
+3420	6	351
+3421	39	351
+3422	42	351
+3423	47	351
+3424	48	351
+3425	41	351
+3426	49	351
+3427	10	351
+3428	4	351
+3429	50	351
+3430	35	351
+3431	51	351
+3432	52	351
+3433	53	351
+3434	54	351
+3435	55	351
+3436	30	352
+3437	46	352
+3438	40	352
+3439	6	352
+3440	39	352
+3441	42	352
+3442	47	352
+3443	48	352
+3444	41	352
+3445	49	352
+3446	10	352
+3447	4	352
+3448	50	352
+3449	35	352
+3450	51	352
+3451	52	352
+3452	53	352
+3453	54	352
+3454	55	352
+3455	30	353
+3456	46	353
+3457	40	353
+3458	6	353
+3459	39	353
+3460	42	353
+3461	47	353
+3462	48	353
+3463	41	353
+3464	49	353
+3465	10	353
+3466	4	353
+3467	50	353
+3468	35	353
+3469	51	353
+3470	52	353
+3471	53	353
+3472	54	353
+3473	55	353
+3474	30	354
+3475	46	354
+3476	40	354
+3477	6	354
+3478	39	354
+3479	42	354
+3480	47	354
+3481	48	354
+3482	41	354
+3483	49	354
+3484	10	354
+3485	4	354
+3486	50	354
+3487	35	354
+3488	51	354
+3489	52	354
+3490	53	354
+3491	54	354
+3492	55	354
+3493	30	355
+3494	46	355
+3495	40	355
+3496	6	355
+3497	39	355
+3498	42	355
+3499	47	355
+3500	48	355
+3501	41	355
+3502	49	355
+3503	10	355
+3504	4	355
+3505	50	355
+3506	35	355
+3507	51	355
+3508	52	355
+3509	53	355
+3510	54	355
+3511	55	355
+3512	30	356
+3513	46	356
+3514	40	356
+3515	6	356
+3516	39	356
+3517	42	356
+3518	47	356
+3519	48	356
+3520	41	356
+3521	49	356
+3522	10	356
+3523	4	356
+3524	50	356
+3525	35	356
+3526	51	356
+3527	52	356
+3528	53	356
+3529	54	356
+3530	55	356
+3531	30	357
+3532	46	357
+3533	40	357
+3534	6	357
+3535	39	357
+3536	42	357
+3537	47	357
+3538	48	357
+3539	41	357
+3540	49	357
+3541	10	357
+3542	4	357
+3543	50	357
+3544	35	357
+3545	51	357
+3546	52	357
+3547	53	357
+3548	54	357
+3549	55	357
+3550	30	358
+3551	46	358
+3552	40	358
+3553	6	358
+3554	39	358
+3555	42	358
+3556	47	358
+3557	48	358
+3558	41	358
+3559	49	358
+3560	10	358
+3561	4	358
+3562	50	358
+3563	35	358
+3564	51	358
+3565	52	358
+3566	53	358
+3567	54	358
+3568	55	358
+3569	30	359
+3570	46	359
+3571	40	359
+3572	6	359
+3573	39	359
+3574	42	359
+3575	47	359
+3576	48	359
+3577	41	359
+3578	49	359
+3579	10	359
+3580	4	359
+3581	50	359
+3582	35	359
+3583	51	359
+3584	52	359
+3585	53	359
+3586	54	359
+3587	55	359
+3588	30	360
+3589	46	360
+3590	40	360
+3591	6	360
+3592	39	360
+3593	42	360
+3594	47	360
+3595	48	360
+3596	41	360
+3597	49	360
+3598	10	360
+3599	4	360
+3600	50	360
+3601	35	360
+3602	51	360
+3603	52	360
+3604	53	360
+3605	54	360
+3606	55	360
+3607	30	361
+3608	46	361
+3609	40	361
+3610	6	361
+3611	39	361
+3612	42	361
+3613	47	361
+3614	48	361
+3615	41	361
+3616	49	361
+3617	10	361
+3618	4	361
+3619	50	361
+3620	35	361
+3621	51	361
+3622	52	361
+3623	53	361
+3624	54	361
+3625	55	361
+3626	30	362
+3627	46	362
+3628	40	362
+3629	6	362
+3630	39	362
+3631	42	362
+3632	47	362
+3633	48	362
+3634	41	362
+3635	49	362
+3636	10	362
+3637	4	362
+3638	50	362
+3639	35	362
+3640	51	362
+3641	52	362
+3642	53	362
+3643	54	362
+3644	55	362
+3645	30	363
+3646	46	363
+3647	40	363
+3648	6	363
+3649	39	363
+3650	42	363
+3651	47	363
+3652	48	363
+3653	41	363
+3654	49	363
+3655	10	363
+3656	4	363
+3657	50	363
+3658	35	363
+3659	51	363
+3660	52	363
+3661	53	363
+3662	54	363
+3663	55	363
+3664	30	364
+3665	46	364
+3666	40	364
+3667	6	364
+3668	39	364
+3669	42	364
+3670	47	364
+3671	48	364
+3672	41	364
+3673	49	364
+3674	10	364
+3675	4	364
+3676	50	364
+3677	35	364
+3678	51	364
+3679	52	364
+3680	53	364
+3681	54	364
+3682	55	364
+3683	30	365
+3684	46	365
+3685	40	365
+3686	6	365
+3687	39	365
+3688	42	365
+3689	47	365
+3690	48	365
+3691	41	365
+3692	49	365
+3693	10	365
+3694	4	365
+3695	50	365
+3696	35	365
+3697	51	365
+3698	52	365
+3699	53	365
+3700	54	365
+3701	55	365
+3702	30	366
+3703	46	366
+3704	40	366
+3705	6	366
+3706	39	366
+3707	42	366
+3708	47	366
+3709	48	366
+3710	41	366
+3711	49	366
+3712	10	366
+3713	4	366
+3714	50	366
+3715	35	366
+3716	51	366
+3717	52	366
+3718	53	366
+3719	54	366
+3720	55	366
+3721	30	367
+3722	46	367
+3723	40	367
+3724	6	367
+3725	39	367
+3726	42	367
+3727	47	367
+3728	48	367
+3729	41	367
+3730	49	367
+3731	10	367
+3732	4	367
+3733	50	367
+3734	35	367
+3735	51	367
+3736	52	367
+3737	53	367
+3738	54	367
+3739	55	367
+3740	30	368
+3741	46	368
+3742	40	368
+3743	6	368
+3744	39	368
+3745	42	368
+3746	47	368
+3747	48	368
+3748	41	368
+3749	49	368
+3750	10	368
+3751	4	368
+3752	50	368
+3753	35	368
+3754	51	368
+3755	52	368
+3756	53	368
+3757	54	368
+3758	55	368
+3759	30	369
+3760	46	369
+3761	40	369
+3762	6	369
+3763	39	369
+3764	42	369
+3765	47	369
+3766	48	369
+3767	41	369
+3768	49	369
+3769	10	369
+3770	4	369
+3771	50	369
+3772	35	369
+3773	51	369
+3774	52	369
+3775	53	369
+3776	54	369
+3777	55	369
+3778	30	370
+3779	46	370
+3780	40	370
+3781	6	370
+3782	39	370
+3783	42	370
+3784	47	370
+3785	48	370
+3786	41	370
+3787	49	370
+3788	10	370
+3789	4	370
+3790	50	370
+3791	35	370
+3792	51	370
+3793	52	370
+3794	53	370
+3795	54	370
+3796	55	370
+3797	30	371
+3798	46	371
+3799	40	371
+3800	6	371
+3801	39	371
+3802	42	371
+3803	47	371
+3804	48	371
+3805	41	371
+3806	49	371
+3807	10	371
+3808	4	371
+3809	50	371
+3810	35	371
+3811	51	371
+3812	52	371
+3813	53	371
+3814	54	371
+3815	55	371
+3816	30	372
+3817	46	372
+3818	40	372
+3819	6	372
+3820	39	372
+3821	42	372
+3822	47	372
+3823	48	372
+3824	41	372
+3825	49	372
+3826	10	372
+3827	4	372
+3828	50	372
+3829	35	372
+3830	51	372
+3831	52	372
+3832	53	372
+3833	54	372
+3834	55	372
+3835	30	373
+3836	46	373
+3837	40	373
+3838	6	373
+3839	39	373
+3840	42	373
+3841	47	373
+3842	48	373
+3843	41	373
+3844	49	373
+3845	10	373
+3846	4	373
+3847	50	373
+3848	35	373
+3849	51	373
+3850	52	373
+3851	53	373
+3852	54	373
+3853	55	373
+3854	30	374
+3855	46	374
+3856	40	374
+3857	6	374
+3858	39	374
+3859	42	374
+3860	47	374
+3861	48	374
+3862	41	374
+3863	49	374
+3864	10	374
+3865	4	374
+3866	50	374
+3867	35	374
+3868	51	374
+3869	52	374
+3870	53	374
+3871	54	374
+3872	55	374
+3873	30	375
+3874	46	375
+3875	40	375
+3876	6	375
+3877	39	375
+3878	42	375
+3879	47	375
+3880	48	375
+3881	41	375
+3882	49	375
+3883	10	375
+3884	4	375
+3885	50	375
+3886	35	375
+3887	51	375
+3888	52	375
+3889	53	375
+3890	54	375
+3891	55	375
+3892	30	376
+3893	46	376
+3894	40	376
+3895	6	376
+3896	39	376
+3897	42	376
+3898	47	376
+3899	48	376
+3900	41	376
+3901	49	376
+3902	10	376
+3903	4	376
+3904	50	376
+3905	35	376
+3906	51	376
+3907	52	376
+3908	53	376
+3909	54	376
+3910	55	376
+3911	30	377
+3912	46	377
+3913	40	377
+3914	6	377
+3915	39	377
+3916	42	377
+3917	47	377
+3918	48	377
+3919	41	377
+3920	49	377
+3921	10	377
+3922	4	377
+3923	50	377
+3924	35	377
+3925	51	377
+3926	52	377
+3927	53	377
+3928	54	377
+3929	55	377
+3930	30	378
+3931	46	378
+3932	40	378
+3933	6	378
+3934	39	378
+3935	42	378
+3936	47	378
+3937	48	378
+3938	41	378
+3939	49	378
+3940	10	378
+3941	4	378
+3942	50	378
+3943	35	378
+3944	51	378
+3945	52	378
+3946	53	378
+3947	54	378
+3948	55	378
+3949	30	379
+3950	46	379
+3951	40	379
+3952	6	379
+3953	39	379
+3954	42	379
+3955	47	379
+3956	48	379
+3957	41	379
+3958	49	379
+3959	10	379
+3960	4	379
+3961	50	379
+3962	35	379
+3963	51	379
+3964	52	379
+3965	53	379
+3966	54	379
+3967	55	379
+3968	30	380
+3969	46	380
+3970	40	380
+3971	6	380
+3972	39	380
+3973	42	380
+3974	47	380
+3975	48	380
+3976	41	380
+3977	49	380
+3978	10	380
+3979	4	380
+3980	50	380
+3981	35	380
+3982	51	380
+3983	52	380
+3984	53	380
+3985	54	380
+3986	55	380
+3987	30	381
+3988	46	381
+3989	40	381
+3990	6	381
+3991	39	381
+3992	42	381
+3993	47	381
+3994	48	381
+3995	41	381
+3996	49	381
+3997	10	381
+3998	4	381
+3999	50	381
+4000	35	381
+4001	51	381
+4002	52	381
+4003	53	381
+4004	54	381
+4005	55	381
+4006	30	382
+4007	46	382
+4008	40	382
+4009	6	382
+4010	39	382
+4011	42	382
+4012	47	382
+4013	48	382
+4014	41	382
+4015	49	382
+4016	10	382
+4017	4	382
+4018	50	382
+4019	35	382
+4020	51	382
+4021	52	382
+4022	53	382
+4023	54	382
+4024	55	382
+4025	30	383
+4026	46	383
+4027	40	383
+4028	6	383
+4029	39	383
+4030	42	383
+4031	47	383
+4032	48	383
+4033	41	383
+4034	49	383
+4035	10	383
+4036	4	383
+4037	50	383
+4038	35	383
+4039	51	383
+4040	52	383
+4041	53	383
+4042	54	383
+4043	55	383
+4044	30	384
+4045	46	384
+4046	40	384
+4047	6	384
+4048	39	384
+4049	42	384
+4050	47	384
+4051	48	384
+4052	41	384
+4053	49	384
+4054	10	384
+4055	4	384
+4056	50	384
+4057	35	384
+4058	51	384
+4059	52	384
+4060	53	384
+4061	54	384
+4062	55	384
+4063	30	385
+4064	46	385
+4065	40	385
+4066	6	385
+4067	39	385
+4068	42	385
+4069	47	385
+4070	48	385
+4071	41	385
+4072	49	385
+4073	10	385
+4074	4	385
+4075	50	385
+4076	35	385
+4077	51	385
+4078	52	385
+4079	53	385
+4080	54	385
+4081	55	385
+4082	30	386
+4083	46	386
+4084	40	386
+4085	6	386
+4086	39	386
+4087	42	386
+4088	47	386
+4089	48	386
+4090	41	386
+4091	49	386
+4092	10	386
+4093	4	386
+4094	50	386
+4095	35	386
+4096	51	386
+4097	52	386
+4098	53	386
+4099	54	386
+4100	55	386
+4101	30	387
+4102	46	387
+4103	40	387
+4104	6	387
+4105	39	387
+4106	42	387
+4107	47	387
+4108	48	387
+4109	41	387
+4110	49	387
+4111	10	387
+4112	4	387
+4113	50	387
+4114	35	387
+4115	51	387
+4116	52	387
+4117	53	387
+4118	54	387
+4119	55	387
+4120	30	388
+4121	46	388
+4122	40	388
+4123	6	388
+4124	39	388
+4125	42	388
+4126	47	388
+4127	48	388
+4128	41	388
+4129	49	388
+4130	10	388
+4131	4	388
+4132	50	388
+4133	35	388
+4134	51	388
+4135	52	388
+4136	53	388
+4137	54	388
+4138	55	388
+4139	30	389
+4140	46	389
+4141	40	389
+4142	6	389
+4143	39	389
+4144	42	389
+4145	47	389
+4146	48	389
+4147	41	389
+4148	49	389
+4149	10	389
+4150	4	389
+4151	50	389
+4152	35	389
+4153	51	389
+4154	52	389
+4155	53	389
+4156	54	389
+4157	55	389
+4158	30	390
+4159	46	390
+4160	40	390
+4161	6	390
+4162	39	390
+4163	42	390
+4164	47	390
+4165	48	390
+4166	41	390
+4167	49	390
+4168	10	390
+4169	4	390
+4170	50	390
+4171	35	390
+4172	51	390
+4173	52	390
+4174	53	390
+4175	54	390
+4176	55	390
+4177	30	391
+4178	46	391
+4179	40	391
+4180	6	391
+4181	39	391
+4182	42	391
+4183	47	391
+4184	48	391
+4185	41	391
+4186	49	391
+4187	10	391
+4188	4	391
+4189	50	391
+4190	35	391
+4191	51	391
+4192	52	391
+4193	53	391
+4194	54	391
+4195	55	391
+4196	30	392
+4197	46	392
+4198	40	392
+4199	6	392
+4200	39	392
+4201	42	392
+4202	47	392
+4203	48	392
+4204	41	392
+4205	49	392
+4206	10	392
+4207	4	392
+4208	50	392
+4209	35	392
+4210	51	392
+4211	52	392
+4212	53	392
+4213	54	392
+4214	55	392
+4215	30	393
+4216	46	393
+4217	40	393
+4218	6	393
+4219	39	393
+4220	42	393
+4221	47	393
+4222	48	393
+4223	41	393
+4224	49	393
+4225	10	393
+4226	4	393
+4227	50	393
+4228	35	393
+4229	51	393
+4230	52	393
+4231	53	393
+4232	54	393
+4233	55	393
+4234	30	394
+4235	46	394
+4236	40	394
+4237	6	394
+4238	39	394
+4239	42	394
+4240	47	394
+4241	48	394
+4242	41	394
+4243	49	394
+4244	10	394
+4245	4	394
+4246	50	394
+4247	35	394
+4248	51	394
+4249	52	394
+4250	53	394
+4251	54	394
+4252	55	394
+4253	30	395
+4254	46	395
+4255	40	395
+4256	6	395
+4257	39	395
+4258	42	395
+4259	47	395
+4260	48	395
+4261	41	395
+4262	49	395
+4263	10	395
+4264	4	395
+4265	50	395
+4266	35	395
+4267	51	395
+4268	52	395
+4269	53	395
+4270	54	395
+4271	55	395
+4272	30	396
+4273	46	396
+4274	40	396
+4275	6	396
+4276	39	396
+4277	42	396
+4278	47	396
+4279	48	396
+4280	41	396
+4281	49	396
+4282	10	396
+4283	4	396
+4284	50	396
+4285	35	396
+4286	51	396
+4287	52	396
+4288	53	396
+4289	54	396
+4290	55	396
+4291	30	397
+4292	46	397
+4293	40	397
+4294	6	397
+4295	39	397
+4296	42	397
+4297	47	397
+4298	48	397
+4299	41	397
+4300	49	397
+4301	10	397
+4302	4	397
+4303	50	397
+4304	35	397
+4305	51	397
+4306	52	397
+4307	53	397
+4308	54	397
+4309	55	397
+4310	30	398
+4311	46	398
+4312	40	398
+4313	6	398
+4314	39	398
+4315	42	398
+4316	47	398
+4317	48	398
+4318	41	398
+4319	49	398
+4320	10	398
+4321	4	398
+4322	50	398
+4323	35	398
+4324	51	398
+4325	52	398
+4326	53	398
+4327	54	398
+4328	55	398
+4329	30	399
+4330	46	399
+4331	40	399
+4332	6	399
+4333	39	399
+4334	42	399
+4335	47	399
+4336	48	399
+4337	41	399
+4338	49	399
+4339	10	399
+4340	4	399
+4341	50	399
+4342	35	399
+4343	51	399
+4344	52	399
+4345	53	399
+4346	54	399
+4347	55	399
+4348	30	400
+4349	46	400
+4350	40	400
+4351	6	400
+4352	39	400
+4353	42	400
+4354	47	400
+4355	48	400
+4356	41	400
+4357	49	400
+4358	10	400
+4359	4	400
+4360	50	400
+4361	35	400
+4362	51	400
+4363	52	400
+4364	53	400
+4365	54	400
+4366	55	400
+4367	30	401
+4368	46	401
+4369	40	401
+4370	6	401
+4371	39	401
+4372	42	401
+4373	47	401
+4374	48	401
+4375	41	401
+4376	49	401
+4377	10	401
+4378	4	401
+4379	50	401
+4380	35	401
+4381	51	401
+4382	52	401
+4383	53	401
+4384	54	401
+4385	55	401
+4386	30	402
+4387	46	402
+4388	40	402
+4389	6	402
+4390	39	402
+4391	42	402
+4392	47	402
+4393	48	402
+4394	41	402
+4395	49	402
+4396	10	402
+4397	4	402
+4398	50	402
+4399	35	402
+4400	51	402
+4401	52	402
+4402	53	402
+4403	54	402
+4404	55	402
+4405	30	403
+4406	46	403
+4407	40	403
+4408	6	403
+4409	39	403
+4410	42	403
+4411	47	403
+4412	48	403
+4413	41	403
+4414	49	403
+4415	10	403
+4416	4	403
+4417	50	403
+4418	35	403
+4419	51	403
+4420	52	403
+4421	53	403
+4422	54	403
+4423	55	403
+4424	30	404
+4425	46	404
+4426	40	404
+4427	6	404
+4428	39	404
+4429	42	404
+4430	47	404
+4431	48	404
+4432	41	404
+4433	49	404
+4434	10	404
+4435	4	404
+4436	50	404
+4437	35	404
+4438	51	404
+4439	52	404
+4440	53	404
+4441	54	404
+4442	55	404
+4443	30	405
+4444	46	405
+4445	40	405
+4446	6	405
+4447	39	405
+4448	42	405
+4449	47	405
+4450	48	405
+4451	41	405
+4452	49	405
+4453	10	405
+4454	4	405
+4455	50	405
+4456	35	405
+4457	51	405
+4458	52	405
+4459	53	405
+4460	54	405
+4461	55	405
+4462	30	406
+4463	46	406
+4464	40	406
+4465	6	406
+4466	39	406
+4467	42	406
+4468	47	406
+4469	48	406
+4470	41	406
+4471	49	406
+4472	10	406
+4473	4	406
+4474	50	406
+4475	35	406
+4476	51	406
+4477	52	406
+4478	53	406
+4479	54	406
+4480	55	406
+4481	30	407
+4482	46	407
+4483	40	407
+4484	6	407
+4485	39	407
+4486	42	407
+4487	47	407
+4488	48	407
+4489	41	407
+4490	49	407
+4491	10	407
+4492	4	407
+4493	50	407
+4494	35	407
+4495	51	407
+4496	52	407
+4497	53	407
+4498	54	407
+4499	55	407
+4500	30	408
+4501	46	408
+4502	40	408
+4503	6	408
+4504	39	408
+4505	42	408
+4506	47	408
+4507	48	408
+4508	41	408
+4509	49	408
+4510	10	408
+4511	4	408
+4512	50	408
+4513	35	408
+4514	51	408
+4515	52	408
+4516	53	408
+4517	54	408
+4518	55	408
+4519	30	409
+4520	46	409
+4521	40	409
+4522	6	409
+4523	39	409
+4524	42	409
+4525	47	409
+4526	48	409
+4527	41	409
+4528	49	409
+4529	10	409
+4530	4	409
+4531	50	409
+4532	35	409
+4533	51	409
+4534	52	409
+4535	53	409
+4536	54	409
+4537	55	409
+4538	30	410
+4539	46	410
+4540	40	410
+4541	6	410
+4542	39	410
+4543	42	410
+4544	47	410
+4545	48	410
+4546	41	410
+4547	49	410
+4548	10	410
+4549	4	410
+4550	50	410
+4551	35	410
+4552	51	410
+4553	52	410
+4554	53	410
+4555	54	410
+4556	55	410
+4557	30	411
+4558	46	411
+4559	40	411
+4560	6	411
+4561	39	411
+4562	42	411
+4563	47	411
+4564	48	411
+4565	41	411
+4566	49	411
+4567	10	411
+4568	4	411
+4569	50	411
+4570	35	411
+4571	51	411
+4572	52	411
+4573	53	411
+4574	54	411
+4575	55	411
+4576	30	412
+4577	46	412
+4578	40	412
+4579	6	412
+4580	39	412
+4581	42	412
+4582	47	412
+4583	48	412
+4584	41	412
+4585	49	412
+4586	10	412
+4587	4	412
+4588	50	412
+4589	35	412
+4590	51	412
+4591	52	412
+4592	53	412
+4593	54	412
+4594	55	412
+4595	30	413
+4596	46	413
+4597	40	413
+4598	6	413
+4599	39	413
+4600	42	413
+4601	47	413
+4602	48	413
+4603	41	413
+4604	49	413
+4605	10	413
+4606	4	413
+4607	50	413
+4608	35	413
+4609	51	413
+4610	52	413
+4611	53	413
+4612	54	413
+4613	55	413
+4614	30	414
+4615	46	414
+4616	40	414
+4617	6	414
+4618	39	414
+4619	42	414
+4620	47	414
+4621	48	414
+4622	41	414
+4623	49	414
+4624	10	414
+4625	4	414
+4626	50	414
+4627	35	414
+4628	51	414
+4629	52	414
+4630	53	414
+4631	54	414
+4632	55	414
+4633	30	415
+4634	46	415
+4635	40	415
+4636	6	415
+4637	39	415
+4638	42	415
+4639	47	415
+4640	48	415
+4641	41	415
+4642	49	415
+4643	10	415
+4644	4	415
+4645	50	415
+4646	35	415
+4647	51	415
+4648	52	415
+4649	53	415
+4650	54	415
+4651	55	415
+4652	30	416
+4653	46	416
+4654	40	416
+4655	6	416
+4656	39	416
+4657	42	416
+4658	47	416
+4659	48	416
+4660	41	416
+4661	49	416
+4662	10	416
+4663	4	416
+4664	50	416
+4665	35	416
+4666	51	416
+4667	52	416
+4668	53	416
+4669	54	416
+4670	55	416
+4671	30	417
+4672	46	417
+4673	40	417
+4674	6	417
+4675	39	417
+4676	42	417
+4677	47	417
+4678	48	417
+4679	41	417
+4680	49	417
+4681	10	417
+4682	4	417
+4683	50	417
+4684	35	417
+4685	51	417
+4686	52	417
+4687	53	417
+4688	54	417
+4689	55	417
+4690	30	418
+4691	46	418
+4692	40	418
+4693	6	418
+4694	39	418
+4695	42	418
+4696	47	418
+4697	48	418
+4698	41	418
+4699	49	418
+4700	10	418
+4701	4	418
+4702	50	418
+4703	35	418
+4704	51	418
+4705	52	418
+4706	53	418
+4707	54	418
+4708	55	418
+4709	30	419
+4710	46	419
+4711	40	419
+4712	6	419
+4713	39	419
+4714	42	419
+4715	47	419
+4716	48	419
+4717	41	419
+4718	49	419
+4719	10	419
+4720	4	419
+4721	50	419
+4722	35	419
+4723	51	419
+4724	52	419
+4725	53	419
+4726	54	419
+4727	55	419
+4728	30	420
+4729	46	420
+4730	40	420
+4731	6	420
+4732	39	420
+4733	42	420
+4734	47	420
+4735	48	420
+4736	41	420
+4737	49	420
+4738	10	420
+4739	4	420
+4740	50	420
+4741	35	420
+4742	51	420
+4743	52	420
+4744	53	420
+4745	54	420
+4746	55	420
+4747	30	421
+4748	46	421
+4749	40	421
+4750	6	421
+4751	39	421
+4752	42	421
+4753	47	421
+4754	48	421
+4755	41	421
+4756	49	421
+4757	10	421
+4758	4	421
+4759	50	421
+4760	35	421
+4761	51	421
+4762	52	421
+4763	53	421
+4764	54	421
+4765	55	421
+4766	30	422
+4767	46	422
+4768	40	422
+4769	6	422
+4770	39	422
+4771	42	422
+4772	47	422
+4773	48	422
+4774	41	422
+4775	49	422
+4776	10	422
+4777	4	422
+4778	50	422
+4779	35	422
+4780	51	422
+4781	52	422
+4782	53	422
+4783	54	422
+4784	55	422
+4785	30	423
+4786	46	423
+4787	40	423
+4788	6	423
+4789	39	423
+4790	42	423
+4791	47	423
+4792	48	423
+4793	41	423
+4794	49	423
+4795	10	423
+4796	4	423
+4797	50	423
+4798	35	423
+4799	51	423
+4800	52	423
+4801	53	423
+4802	54	423
+4803	55	423
+4804	30	424
+4805	46	424
+4806	40	424
+4807	6	424
+4808	39	424
+4809	42	424
+4810	47	424
+4811	48	424
+4812	41	424
+4813	49	424
+4814	10	424
+4815	4	424
+4816	50	424
+4817	35	424
+4818	51	424
+4819	52	424
+4820	53	424
+4821	54	424
+4822	55	424
+4823	30	425
+4824	46	425
+4825	40	425
+4826	6	425
+4827	39	425
+4828	42	425
+4829	47	425
+4830	48	425
+4831	41	425
+4832	49	425
+4833	10	425
+4834	4	425
+4835	50	425
+4836	35	425
+4837	51	425
+4838	52	425
+4839	53	425
+4840	54	425
+4841	55	425
+4842	30	426
+4843	46	426
+4844	40	426
+4845	6	426
+4846	39	426
+4847	42	426
+4848	47	426
+4849	48	426
+4850	41	426
+4851	49	426
+4852	10	426
+4853	4	426
+4854	50	426
+4855	35	426
+4856	51	426
+4857	52	426
+4858	53	426
+4859	54	426
+4860	55	426
+4861	30	427
+4862	46	427
+4863	40	427
+4864	6	427
+4865	39	427
+4866	42	427
+4867	47	427
+4868	48	427
+4869	41	427
+4870	49	427
+4871	10	427
+4872	4	427
+4873	50	427
+4874	35	427
+4875	51	427
+4876	52	427
+4877	53	427
+4878	54	427
+4879	55	427
+4880	30	428
+4881	46	428
+4882	40	428
+4883	6	428
+4884	39	428
+4885	42	428
+4886	47	428
+4887	48	428
+4888	41	428
+4889	49	428
+4890	10	428
+4891	4	428
+4892	50	428
+4893	35	428
+4894	51	428
+4895	52	428
+4896	53	428
+4897	54	428
+4898	55	428
+4899	30	429
+4900	46	429
+4901	40	429
+4902	6	429
+4903	39	429
+4904	42	429
+4905	47	429
+4906	48	429
+4907	41	429
+4908	49	429
+4909	10	429
+4910	4	429
+4911	50	429
+4912	35	429
+4913	51	429
+4914	52	429
+4915	53	429
+4916	54	429
+4917	55	429
+4918	30	430
+4919	46	430
+4920	40	430
+4921	6	430
+4922	39	430
+4923	42	430
+4924	47	430
+4925	48	430
+4926	41	430
+4927	49	430
+4928	10	430
+4929	4	430
+4930	50	430
+4931	35	430
+4932	51	430
+4933	52	430
+4934	53	430
+4935	54	430
+4936	55	430
+4937	30	431
+4938	46	431
+4939	40	431
+4940	6	431
+4941	39	431
+4942	42	431
+4943	47	431
+4944	48	431
+4945	41	431
+4946	49	431
+4947	10	431
+4948	4	431
+4949	50	431
+4950	35	431
+4951	51	431
+4952	52	431
+4953	53	431
+4954	54	431
+4955	55	431
+4956	30	432
+4957	46	432
+4958	40	432
+4959	6	432
+4960	39	432
+4961	42	432
+4962	47	432
+4963	48	432
+4964	41	432
+4965	49	432
+4966	10	432
+4967	4	432
+4968	50	432
+4969	35	432
+4970	51	432
+4971	52	432
+4972	53	432
+4973	54	432
+4974	55	432
+4975	30	433
+4976	46	433
+4977	40	433
+4978	6	433
+4979	39	433
+4980	42	433
+4981	47	433
+4982	48	433
+4983	41	433
+4984	49	433
+4985	10	433
+4986	4	433
+4987	50	433
+4988	35	433
+4989	51	433
+4990	52	433
+4991	53	433
+4992	54	433
+4993	55	433
+4994	30	434
+4995	46	434
+4996	40	434
+4997	6	434
+4998	39	434
+4999	42	434
+5000	47	434
+5001	48	434
+5002	41	434
+5003	49	434
+5004	10	434
+5005	4	434
+5006	50	434
+5007	35	434
+5008	51	434
+5009	52	434
+5010	53	434
+5011	54	434
+5012	55	434
+5013	30	435
+5014	46	435
+5015	40	435
+5016	6	435
+5017	39	435
+5018	42	435
+5019	47	435
+5020	48	435
+5021	41	435
+5022	49	435
+5023	10	435
+5024	4	435
+5025	50	435
+5026	35	435
+5027	51	435
+5028	52	435
+5029	53	435
+5030	54	435
+5031	55	435
+5032	30	436
+5033	46	436
+5034	40	436
+5035	6	436
+5036	39	436
+5037	42	436
+5038	47	436
+5039	48	436
+5040	41	436
+5041	49	436
+5042	10	436
+5043	4	436
+5044	50	436
+5045	35	436
+5046	51	436
+5047	52	436
+5048	53	436
+5049	54	436
+5050	55	436
+5051	30	437
+5052	46	437
+5053	40	437
+5054	6	437
+5055	39	437
+5056	42	437
+5057	47	437
+5058	48	437
+5059	41	437
+5060	49	437
+5061	10	437
+5062	4	437
+5063	50	437
+5064	35	437
+5065	51	437
+5066	52	437
+5067	53	437
+5068	54	437
+5069	55	437
+5070	30	438
+5071	46	438
+5072	40	438
+5073	6	438
+5074	39	438
+5075	42	438
+5076	47	438
+5077	48	438
+5078	41	438
+5079	49	438
+5080	10	438
+5081	4	438
+5082	50	438
+5083	35	438
+5084	51	438
+5085	52	438
+5086	53	438
+5087	54	438
+5088	55	438
+5089	30	439
+5090	46	439
+5091	40	439
+5092	6	439
+5093	39	439
+5094	42	439
+5095	47	439
+5096	48	439
+5097	41	439
+5098	49	439
+5099	10	439
+5100	4	439
+5101	50	439
+5102	35	439
+5103	51	439
+5104	52	439
+5105	53	439
+5106	54	439
+5107	55	439
+5108	30	440
+5109	46	440
+5110	40	440
+5111	6	440
+5112	39	440
+5113	42	440
+5114	47	440
+5115	48	440
+5116	41	440
+5117	49	440
+5118	10	440
+5119	4	440
+5120	50	440
+5121	35	440
+5122	51	440
+5123	52	440
+5124	53	440
+5125	54	440
+5126	55	440
+5127	30	441
+5128	46	441
+5129	40	441
+5130	6	441
+5131	39	441
+5132	42	441
+5133	47	441
+5134	48	441
+5135	41	441
+5136	49	441
+5137	10	441
+5138	4	441
+5139	50	441
+5140	35	441
+5141	51	441
+5142	52	441
+5143	53	441
+5144	54	441
+5145	55	441
+5146	30	442
+5147	46	442
+5148	40	442
+5149	6	442
+5150	39	442
+5151	42	442
+5152	47	442
+5153	48	442
+5154	41	442
+5155	49	442
+5156	10	442
+5157	4	442
+5158	50	442
+5159	35	442
+5160	51	442
+5161	52	442
+5162	53	442
+5163	54	442
+5164	55	442
+5165	30	443
+5166	46	443
+5167	40	443
+5168	6	443
+5169	39	443
+5170	42	443
+5171	47	443
+5172	48	443
+5173	41	443
+5174	49	443
+5175	10	443
+5176	4	443
+5177	50	443
+5178	35	443
+5179	51	443
+5180	52	443
+5181	53	443
+5182	54	443
+5183	55	443
+5184	30	444
+5185	46	444
+5186	40	444
+5187	6	444
+5188	39	444
+5189	42	444
+5190	47	444
+5191	48	444
+5192	41	444
+5193	49	444
+5194	10	444
+5195	4	444
+5196	50	444
+5197	35	444
+5198	51	444
+5199	52	444
+5200	53	444
+5201	54	444
+5202	55	444
+5203	30	445
+5204	46	445
+5205	40	445
+5206	6	445
+5207	39	445
+5208	42	445
+5209	47	445
+5210	48	445
+5211	41	445
+5212	49	445
+5213	10	445
+5214	4	445
+5215	50	445
+5216	35	445
+5217	51	445
+5218	52	445
+5219	53	445
+5220	54	445
+5221	55	445
+5222	30	446
+5223	46	446
+5224	40	446
+5225	6	446
+5226	39	446
+5227	42	446
+5228	47	446
+5229	48	446
+5230	41	446
+5231	49	446
+5232	10	446
+5233	4	446
+5234	50	446
+5235	35	446
+5236	51	446
+5237	52	446
+5238	53	446
+5239	54	446
+5240	55	446
+5241	30	447
+5242	46	447
+5243	40	447
+5244	6	447
+5245	39	447
+5246	42	447
+5247	47	447
+5248	48	447
+5249	41	447
+5250	49	447
+5251	10	447
+5252	4	447
+5253	50	447
+5254	35	447
+5255	51	447
+5256	52	447
+5257	53	447
+5258	54	447
+5259	55	447
+5260	30	448
+5261	46	448
+5262	40	448
+5263	6	448
+5264	39	448
+5265	42	448
+5266	47	448
+5267	48	448
+5268	41	448
+5269	49	448
+5270	10	448
+5271	4	448
+5272	50	448
+5273	35	448
+5274	51	448
+5275	52	448
+5276	53	448
+5277	54	448
+5278	55	448
+5279	30	449
+5280	46	449
+5281	40	449
+5282	6	449
+5283	39	449
+5284	42	449
+5285	47	449
+5286	48	449
+5287	41	449
+5288	49	449
+5289	10	449
+5290	4	449
+5291	50	449
+5292	35	449
+5293	51	449
+5294	52	449
+5295	53	449
+5296	54	449
+5297	55	449
+5298	30	450
+5299	46	450
+5300	40	450
+5301	6	450
+5302	39	450
+5303	42	450
+5304	47	450
+5305	48	450
+5306	41	450
+5307	49	450
+5308	10	450
+5309	4	450
+5310	50	450
+5311	35	450
+5312	51	450
+5313	52	450
+5314	53	450
+5315	54	450
+5316	55	450
+5317	30	451
+5318	46	451
+5319	40	451
+5320	6	451
+5321	39	451
+5322	42	451
+5323	47	451
+5324	48	451
+5325	41	451
+5326	49	451
+5327	10	451
+5328	4	451
+5329	50	451
+5330	35	451
+5331	51	451
+5332	52	451
+5333	53	451
+5334	54	451
+5335	55	451
+5336	30	452
+5337	46	452
+5338	40	452
+5339	6	452
+5340	39	452
+5341	42	452
+5342	47	452
+5343	48	452
+5344	41	452
+5345	49	452
+5346	10	452
+5347	4	452
+5348	50	452
+5349	35	452
+5350	51	452
+5351	52	452
+5352	53	452
+5353	54	452
+5354	55	452
+5355	30	453
+5356	46	453
+5357	40	453
+5358	6	453
+5359	39	453
+5360	42	453
+5361	47	453
+5362	48	453
+5363	41	453
+5364	49	453
+5365	10	453
+5366	4	453
+5367	50	453
+5368	35	453
+5369	51	453
+5370	52	453
+5371	53	453
+5372	54	453
+5373	55	453
+5374	30	454
+5375	46	454
+5376	40	454
+5377	6	454
+5378	39	454
+5379	42	454
+5380	47	454
+5381	48	454
+5382	41	454
+5383	49	454
+5384	10	454
+5385	4	454
+5386	50	454
+5387	35	454
+5388	51	454
+5389	52	454
+5390	53	454
+5391	54	454
+5392	55	454
+5393	30	455
+5394	46	455
+5395	40	455
+5396	6	455
+5397	39	455
+5398	42	455
+5399	47	455
+5400	48	455
+5401	41	455
+5402	49	455
+5403	10	455
+5404	4	455
+5405	50	455
+5406	35	455
+5407	51	455
+5408	52	455
+5409	53	455
+5410	54	455
+5411	55	455
+5412	30	456
+5413	46	456
+5414	40	456
+5415	6	456
+5416	39	456
+5417	42	456
+5418	47	456
+5419	48	456
+5420	41	456
+5421	49	456
+5422	10	456
+5423	4	456
+5424	50	456
+5425	35	456
+5426	51	456
+5427	52	456
+5428	53	456
+5429	54	456
+5430	55	456
+5431	30	457
+5432	46	457
+5433	40	457
+5434	6	457
+5435	39	457
+5436	42	457
+5437	47	457
+5438	48	457
+5439	41	457
+5440	49	457
+5441	10	457
+5442	4	457
+5443	50	457
+5444	35	457
+5445	51	457
+5446	52	457
+5447	53	457
+5448	54	457
+5449	55	457
+5450	30	458
+5451	46	458
+5452	40	458
+5453	6	458
+5454	39	458
+5455	42	458
+5456	47	458
+5457	48	458
+5458	41	458
+5459	49	458
+5460	10	458
+5461	4	458
+5462	50	458
+5463	35	458
+5464	51	458
+5465	52	458
+5466	53	458
+5467	54	458
+5468	55	458
+5469	30	459
+5470	46	459
+5471	40	459
+5472	6	459
+5473	39	459
+5474	42	459
+5475	47	459
+5476	48	459
+5477	41	459
+5478	49	459
+5479	10	459
+5480	4	459
+5481	50	459
+5482	35	459
+5483	51	459
+5484	52	459
+5485	53	459
+5486	54	459
+5487	55	459
+5488	30	460
+5489	46	460
+5490	40	460
+5491	6	460
+5492	39	460
+5493	42	460
+5494	47	460
+5495	48	460
+5496	41	460
+5497	49	460
+5498	10	460
+5499	4	460
+5500	50	460
+5501	35	460
+5502	51	460
+5503	52	460
+5504	53	460
+5505	54	460
+5506	55	460
+5507	45	472
+5508	45	483
+5509	45	485
+5510	56	486
+5511	57	487
+5512	14	490
+5513	4	490
+5514	14	491
+5515	4	491
+5516	30	492
+5517	58	492
+5518	59	492
+5519	60	492
+5520	61	492
+5521	39	492
+5522	47	492
+5523	62	492
+5524	63	492
+5525	64	492
+5526	8	492
+5527	65	492
+5528	66	492
+5529	67	492
+5530	68	492
+5531	69	492
+5532	30	493
+5533	58	493
+5534	59	493
+5535	60	493
+5536	61	493
+5537	39	493
+5538	47	493
+5539	62	493
+5540	63	493
+5541	64	493
+5542	8	493
+5543	65	493
+5544	66	493
+5545	67	493
+5546	68	493
+5547	69	493
+5548	30	494
+5549	58	494
+5550	59	494
+5551	60	494
+5552	61	494
+5553	39	494
+5554	47	494
+5555	62	494
+5556	63	494
+5557	64	494
+5558	8	494
+5559	65	494
+5560	66	494
+5561	67	494
+5562	68	494
+5563	69	494
+5564	30	495
+5565	58	495
+5566	59	495
+5567	60	495
+5568	61	495
+5569	39	495
+5570	47	495
+5571	62	495
+5572	63	495
+5573	64	495
+5574	8	495
+5575	65	495
+5576	66	495
+5577	67	495
+5578	68	495
+5579	69	495
+5580	30	496
+5581	58	496
+5582	59	496
+5583	60	496
+5584	61	496
+5585	39	496
+5586	47	496
+5587	62	496
+5588	63	496
+5589	64	496
+5590	8	496
+5591	65	496
+5592	66	496
+5593	67	496
+5594	68	496
+5595	69	496
+5596	30	497
+5597	58	497
+5598	59	497
+5599	60	497
+5600	61	497
+5601	39	497
+5602	47	497
+5603	62	497
+5604	63	497
+5605	64	497
+5606	8	497
+5607	65	497
+5608	66	497
+5609	67	497
+5610	68	497
+5611	69	497
+5612	30	498
+5613	58	498
+5614	59	498
+5615	60	498
+5616	61	498
+5617	39	498
+5618	47	498
+5619	62	498
+5620	63	498
+5621	64	498
+5622	8	498
+5623	65	498
+5624	66	498
+5625	67	498
+5626	68	498
+5627	69	498
+5628	30	499
+5629	58	499
+5630	59	499
+5631	60	499
+5632	61	499
+5633	39	499
+5634	47	499
+5635	62	499
+5636	63	499
+5637	64	499
+5638	8	499
+5639	65	499
+5640	66	499
+5641	67	499
+5642	68	499
+5643	69	499
+5644	30	500
+5645	58	500
+5646	59	500
+5647	60	500
+5648	61	500
+5649	39	500
+5650	47	500
+5651	62	500
+5652	63	500
+5653	64	500
+5654	8	500
+5655	65	500
+5656	66	500
+5657	67	500
+5658	68	500
+5659	69	500
+5660	30	501
+5661	58	501
+5662	59	501
+5663	60	501
+5664	61	501
+5665	39	501
+5666	47	501
+5667	62	501
+5668	63	501
+5669	64	501
+5670	8	501
+5671	65	501
+5672	66	501
+5673	67	501
+5674	68	501
+5675	69	501
+5676	30	502
+5677	58	502
+5678	59	502
+5679	60	502
+5680	61	502
+5681	39	502
+5682	47	502
+5683	62	502
+5684	63	502
+5685	64	502
+5686	8	502
+5687	65	502
+5688	66	502
+5689	67	502
+5690	68	502
+5691	69	502
+5692	30	503
+5693	58	503
+5694	59	503
+5695	60	503
+5696	61	503
+5697	39	503
+5698	47	503
+5699	62	503
+5700	63	503
+5701	64	503
+5702	8	503
+5703	65	503
+5704	66	503
+5705	67	503
+5706	68	503
+5707	69	503
+5708	30	504
+5709	58	504
+5710	59	504
+5711	60	504
+5712	61	504
+5713	39	504
+5714	47	504
+5715	62	504
+5716	63	504
+5717	64	504
+5718	8	504
+5719	65	504
+5720	66	504
+5721	67	504
+5722	68	504
+5723	69	504
+5724	30	505
+5725	58	505
+5726	59	505
+5727	60	505
+5728	61	505
+5729	39	505
+5730	47	505
+5731	62	505
+5732	63	505
+5733	64	505
+5734	8	505
+5735	65	505
+5736	66	505
+5737	67	505
+5738	68	505
+5739	69	505
+5740	30	506
+5741	58	506
+5742	59	506
+5743	60	506
+5744	61	506
+5745	39	506
+5746	47	506
+5747	62	506
+5748	63	506
+5749	64	506
+5750	8	506
+5751	65	506
+5752	66	506
+5753	67	506
+5754	68	506
+5755	69	506
+5756	30	507
+5757	58	507
+5758	59	507
+5759	60	507
+5760	61	507
+5761	39	507
+5762	47	507
+5763	62	507
+5764	63	507
+5765	64	507
+5766	8	507
+5767	65	507
+5768	66	507
+5769	67	507
+5770	68	507
+5771	69	507
+5772	30	508
+5773	58	508
+5774	59	508
+5775	60	508
+5776	61	508
+5777	39	508
+5778	47	508
+5779	62	508
+5780	63	508
+5781	64	508
+5782	8	508
+5783	65	508
+5784	66	508
+5785	67	508
+5786	68	508
+5787	69	508
+5788	30	509
+5789	58	509
+5790	59	509
+5791	60	509
+5792	61	509
+5793	39	509
+5794	47	509
+5795	62	509
+5796	63	509
+5797	64	509
+5798	8	509
+5799	65	509
+5800	66	509
+5801	67	509
+5802	68	509
+5803	69	509
+5804	30	510
+5805	58	510
+5806	59	510
+5807	60	510
+5808	61	510
+5809	39	510
+5810	47	510
+5811	62	510
+5812	63	510
+5813	64	510
+5814	8	510
+5815	65	510
+5816	66	510
+5817	67	510
+5818	68	510
+5819	69	510
+5820	30	511
+5821	58	511
+5822	59	511
+5823	60	511
+5824	61	511
+5825	39	511
+5826	47	511
+5827	62	511
+5828	63	511
+5829	64	511
+5830	8	511
+5831	65	511
+5832	66	511
+5833	67	511
+5834	68	511
+5835	69	511
+5836	30	512
+5837	58	512
+5838	59	512
+5839	60	512
+5840	61	512
+5841	39	512
+5842	47	512
+5843	62	512
+5844	63	512
+5845	64	512
+5846	8	512
+5847	65	512
+5848	66	512
+5849	67	512
+5850	68	512
+5851	69	512
+5852	30	513
+5853	58	513
+5854	59	513
+5855	60	513
+5856	61	513
+5857	39	513
+5858	47	513
+5859	62	513
+5860	63	513
+5861	64	513
+5862	8	513
+5863	65	513
+5864	66	513
+5865	67	513
+5866	68	513
+5867	69	513
+5868	30	514
+5869	58	514
+5870	59	514
+5871	60	514
+5872	61	514
+5873	39	514
+5874	47	514
+5875	62	514
+5876	63	514
+5877	64	514
+5878	8	514
+5879	65	514
+5880	66	514
+5881	67	514
+5882	68	514
+5883	69	514
+5884	30	515
+5885	58	515
+5886	59	515
+5887	60	515
+5888	61	515
+5889	39	515
+5890	47	515
+5891	62	515
+5892	63	515
+5893	64	515
+5894	8	515
+5895	65	515
+5896	66	515
+5897	67	515
+5898	68	515
+5899	69	515
+5900	30	516
+5901	58	516
+5902	59	516
+5903	60	516
+5904	61	516
+5905	39	516
+5906	47	516
+5907	62	516
+5908	63	516
+5909	64	516
+5910	8	516
+5911	65	516
+5912	66	516
+5913	67	516
+5914	68	516
+5915	69	516
+5916	30	517
+5917	58	517
+5918	59	517
+5919	60	517
+5920	61	517
+5921	39	517
+5922	47	517
+5923	62	517
+5924	63	517
+5925	64	517
+5926	8	517
+5927	65	517
+5928	66	517
+5929	67	517
+5930	68	517
+5931	69	517
+5932	30	518
+5933	58	518
+5934	59	518
+5935	60	518
+5936	61	518
+5937	39	518
+5938	47	518
+5939	62	518
+5940	63	518
+5941	64	518
+5942	8	518
+5943	65	518
+5944	66	518
+5945	67	518
+5946	68	518
+5947	69	518
+5948	30	519
+5949	58	519
+5950	59	519
+5951	60	519
+5952	61	519
+5953	39	519
+5954	47	519
+5955	62	519
+5956	63	519
+5957	64	519
+5958	8	519
+5959	65	519
+5960	66	519
+5961	67	519
+5962	68	519
+5963	69	519
+5964	30	520
+5965	58	520
+5966	59	520
+5967	60	520
+5968	61	520
+5969	39	520
+5970	47	520
+5971	62	520
+5972	63	520
+5973	64	520
+5974	8	520
+5975	65	520
+5976	66	520
+5977	67	520
+5978	68	520
+5979	69	520
+5980	30	521
+5981	58	521
+5982	59	521
+5983	60	521
+5984	61	521
+5985	39	521
+5986	47	521
+5987	62	521
+5988	63	521
+5989	64	521
+5990	8	521
+5991	65	521
+5992	66	521
+5993	67	521
+5994	68	521
+5995	69	521
+5996	30	522
+5997	58	522
+5998	59	522
+5999	60	522
+6000	61	522
+6001	39	522
+6002	47	522
+6003	62	522
+6004	63	522
+6005	64	522
+6006	8	522
+6007	65	522
+6008	66	522
+6009	67	522
+6010	68	522
+6011	69	522
+6012	30	523
+6013	58	523
+6014	59	523
+6015	60	523
+6016	61	523
+6017	39	523
+6018	47	523
+6019	62	523
+6020	63	523
+6021	64	523
+6022	8	523
+6023	65	523
+6024	66	523
+6025	67	523
+6026	68	523
+6027	69	523
+6028	30	524
+6029	58	524
+6030	59	524
+6031	60	524
+6032	61	524
+6033	39	524
+6034	47	524
+6035	62	524
+6036	63	524
+6037	64	524
+6038	8	524
+6039	65	524
+6040	66	524
+6041	67	524
+6042	68	524
+6043	69	524
+6044	30	525
+6045	58	525
+6046	59	525
+6047	60	525
+6048	61	525
+6049	39	525
+6050	47	525
+6051	62	525
+6052	63	525
+6053	64	525
+6054	8	525
+6055	65	525
+6056	66	525
+6057	67	525
+6058	68	525
+6059	69	525
+6060	30	526
+6061	58	526
+6062	59	526
+6063	60	526
+6064	61	526
+6065	39	526
+6066	47	526
+6067	62	526
+6068	63	526
+6069	64	526
+6070	8	526
+6071	65	526
+6072	66	526
+6073	67	526
+6074	68	526
+6075	69	526
+6076	30	527
+6077	58	527
+6078	59	527
+6079	60	527
+6080	61	527
+6081	39	527
+6082	47	527
+6083	62	527
+6084	63	527
+6085	64	527
+6086	8	527
+6087	65	527
+6088	66	527
+6089	67	527
+6090	68	527
+6091	69	527
+6092	30	528
+6093	58	528
+6094	59	528
+6095	60	528
+6096	61	528
+6097	39	528
+6098	47	528
+6099	62	528
+6100	63	528
+6101	64	528
+6102	8	528
+6103	65	528
+6104	66	528
+6105	67	528
+6106	68	528
+6107	69	528
+6108	30	529
+6109	58	529
+6110	59	529
+6111	60	529
+6112	61	529
+6113	39	529
+6114	47	529
+6115	62	529
+6116	63	529
+6117	64	529
+6118	8	529
+6119	65	529
+6120	66	529
+6121	67	529
+6122	68	529
+6123	69	529
+6124	30	530
+6125	58	530
+6126	59	530
+6127	60	530
+6128	61	530
+6129	39	530
+6130	47	530
+6131	62	530
+6132	63	530
+6133	64	530
+6134	8	530
+6135	65	530
+6136	66	530
+6137	67	530
+6138	68	530
+6139	69	530
+6140	30	531
+6141	58	531
+6142	59	531
+6143	60	531
+6144	61	531
+6145	39	531
+6146	47	531
+6147	62	531
+6148	63	531
+6149	64	531
+6150	8	531
+6151	65	531
+6152	66	531
+6153	67	531
+6154	68	531
+6155	69	531
+6156	30	532
+6157	58	532
+6158	59	532
+6159	60	532
+6160	61	532
+6161	39	532
+6162	47	532
+6163	62	532
+6164	63	532
+6165	64	532
+6166	8	532
+6167	65	532
+6168	66	532
+6169	67	532
+6170	68	532
+6171	69	532
+6172	30	533
+6173	58	533
+6174	59	533
+6175	60	533
+6176	61	533
+6177	39	533
+6178	47	533
+6179	62	533
+6180	63	533
+6181	64	533
+6182	8	533
+6183	65	533
+6184	66	533
+6185	67	533
+6186	68	533
+6187	69	533
+6188	30	534
+6189	58	534
+6190	59	534
+6191	60	534
+6192	61	534
+6193	39	534
+6194	47	534
+6195	62	534
+6196	63	534
+6197	64	534
+6198	8	534
+6199	65	534
+6200	66	534
+6201	67	534
+6202	68	534
+6203	69	534
+6204	30	535
+6205	58	535
+6206	59	535
+6207	60	535
+6208	61	535
+6209	39	535
+6210	47	535
+6211	62	535
+6212	63	535
+6213	64	535
+6214	8	535
+6215	65	535
+6216	66	535
+6217	67	535
+6218	68	535
+6219	69	535
+6220	30	536
+6221	58	536
+6222	59	536
+6223	60	536
+6224	61	536
+6225	39	536
+6226	47	536
+6227	62	536
+6228	63	536
+6229	64	536
+6230	8	536
+6231	65	536
+6232	66	536
+6233	67	536
+6234	68	536
+6235	69	536
+6236	30	537
+6237	58	537
+6238	59	537
+6239	60	537
+6240	61	537
+6241	39	537
+6242	47	537
+6243	62	537
+6244	63	537
+6245	64	537
+6246	8	537
+6247	65	537
+6248	66	537
+6249	67	537
+6250	68	537
+6251	69	537
+6252	30	538
+6253	58	538
+6254	59	538
+6255	60	538
+6256	61	538
+6257	39	538
+6258	47	538
+6259	62	538
+6260	63	538
+6261	64	538
+6262	8	538
+6263	65	538
+6264	66	538
+6265	67	538
+6266	68	538
+6267	69	538
+6268	30	539
+6269	58	539
+6270	59	539
+6271	60	539
+6272	61	539
+6273	39	539
+6274	47	539
+6275	62	539
+6276	63	539
+6277	64	539
+6278	8	539
+6279	65	539
+6280	66	539
+6281	67	539
+6282	68	539
+6283	69	539
+6284	30	540
+6285	58	540
+6286	59	540
+6287	60	540
+6288	61	540
+6289	39	540
+6290	47	540
+6291	62	540
+6292	63	540
+6293	64	540
+6294	8	540
+6295	65	540
+6296	66	540
+6297	67	540
+6298	68	540
+6299	69	540
+6300	30	541
+6301	58	541
+6302	59	541
+6303	60	541
+6304	61	541
+6305	39	541
+6306	47	541
+6307	62	541
+6308	63	541
+6309	64	541
+6310	8	541
+6311	65	541
+6312	66	541
+6313	67	541
+6314	68	541
+6315	69	541
+6316	30	542
+6317	58	542
+6318	59	542
+6319	60	542
+6320	61	542
+6321	39	542
+6322	47	542
+6323	62	542
+6324	63	542
+6325	64	542
+6326	8	542
+6327	65	542
+6328	66	542
+6329	67	542
+6330	68	542
+6331	69	542
+6332	30	543
+6333	58	543
+6334	59	543
+6335	60	543
+6336	61	543
+6337	39	543
+6338	47	543
+6339	62	543
+6340	63	543
+6341	64	543
+6342	8	543
+6343	65	543
+6344	66	543
+6345	67	543
+6346	68	543
+6347	69	543
+6348	30	544
+6349	58	544
+6350	59	544
+6351	60	544
+6352	61	544
+6353	39	544
+6354	47	544
+6355	62	544
+6356	63	544
+6357	64	544
+6358	8	544
+6359	65	544
+6360	66	544
+6361	67	544
+6362	68	544
+6363	69	544
+6364	30	545
+6365	58	545
+6366	59	545
+6367	60	545
+6368	61	545
+6369	39	545
+6370	47	545
+6371	62	545
+6372	63	545
+6373	64	545
+6374	8	545
+6375	65	545
+6376	66	545
+6377	67	545
+6378	68	545
+6379	69	545
+6380	30	546
+6381	58	546
+6382	59	546
+6383	60	546
+6384	61	546
+6385	39	546
+6386	47	546
+6387	62	546
+6388	63	546
+6389	64	546
+6390	8	546
+6391	65	546
+6392	66	546
+6393	67	546
+6394	68	546
+6395	69	546
+6396	30	547
+6397	58	547
+6398	59	547
+6399	60	547
+6400	61	547
+6401	39	547
+6402	47	547
+6403	62	547
+6404	63	547
+6405	64	547
+6406	8	547
+6407	65	547
+6408	66	547
+6409	67	547
+6410	68	547
+6411	69	547
+6412	30	548
+6413	58	548
+6414	59	548
+6415	60	548
+6416	61	548
+6417	39	548
+6418	47	548
+6419	62	548
+6420	63	548
+6421	64	548
+6422	8	548
+6423	65	548
+6424	66	548
+6425	67	548
+6426	68	548
+6427	69	548
+6428	30	549
+6429	58	549
+6430	59	549
+6431	60	549
+6432	61	549
+6433	39	549
+6434	47	549
+6435	62	549
+6436	63	549
+6437	64	549
+6438	8	549
+6439	65	549
+6440	66	549
+6441	67	549
+6442	68	549
+6443	69	549
+6444	30	550
+6445	58	550
+6446	59	550
+6447	60	550
+6448	61	550
+6449	39	550
+6450	47	550
+6451	62	550
+6452	63	550
+6453	64	550
+6454	8	550
+6455	65	550
+6456	66	550
+6457	67	550
+6458	68	550
+6459	69	550
+6460	30	551
+6461	58	551
+6462	59	551
+6463	60	551
+6464	61	551
+6465	39	551
+6466	47	551
+6467	62	551
+6468	63	551
+6469	64	551
+6470	8	551
+6471	65	551
+6472	66	551
+6473	67	551
+6474	68	551
+6475	69	551
+6476	30	552
+6477	58	552
+6478	59	552
+6479	60	552
+6480	61	552
+6481	39	552
+6482	47	552
+6483	62	552
+6484	63	552
+6485	64	552
+6486	8	552
+6487	65	552
+6488	66	552
+6489	67	552
+6490	68	552
+6491	69	552
+6492	30	553
+6493	58	553
+6494	59	553
+6495	60	553
+6496	61	553
+6497	39	553
+6498	47	553
+6499	62	553
+6500	63	553
+6501	64	553
+6502	8	553
+6503	65	553
+6504	66	553
+6505	67	553
+6506	68	553
+6507	69	553
+6508	30	554
+6509	58	554
+6510	59	554
+6511	60	554
+6512	61	554
+6513	39	554
+6514	47	554
+6515	62	554
+6516	63	554
+6517	64	554
+6518	8	554
+6519	65	554
+6520	66	554
+6521	67	554
+6522	68	554
+6523	69	554
+6524	30	555
+6525	58	555
+6526	59	555
+6527	60	555
+6528	61	555
+6529	39	555
+6530	47	555
+6531	62	555
+6532	63	555
+6533	64	555
+6534	8	555
+6535	65	555
+6536	66	555
+6537	67	555
+6538	68	555
+6539	69	555
+6540	30	556
+6541	58	556
+6542	59	556
+6543	60	556
+6544	61	556
+6545	39	556
+6546	47	556
+6547	62	556
+6548	63	556
+6549	64	556
+6550	8	556
+6551	65	556
+6552	66	556
+6553	67	556
+6554	68	556
+6555	69	556
+6556	30	557
+6557	58	557
+6558	59	557
+6559	60	557
+6560	61	557
+6561	39	557
+6562	47	557
+6563	62	557
+6564	63	557
+6565	64	557
+6566	8	557
+6567	65	557
+6568	66	557
+6569	67	557
+6570	68	557
+6571	69	557
+6572	30	558
+6573	58	558
+6574	59	558
+6575	60	558
+6576	61	558
+6577	39	558
+6578	47	558
+6579	62	558
+6580	63	558
+6581	64	558
+6582	8	558
+6583	65	558
+6584	66	558
+6585	67	558
+6586	68	558
+6587	69	558
+6588	30	559
+6589	58	559
+6590	59	559
+6591	60	559
+6592	61	559
+6593	39	559
+6594	47	559
+6595	62	559
+6596	63	559
+6597	64	559
+6598	8	559
+6599	65	559
+6600	66	559
+6601	67	559
+6602	68	559
+6603	69	559
+6604	30	560
+6605	58	560
+6606	59	560
+6607	60	560
+6608	61	560
+6609	39	560
+6610	47	560
+6611	62	560
+6612	63	560
+6613	64	560
+6614	8	560
+6615	65	560
+6616	66	560
+6617	67	560
+6618	68	560
+6619	69	560
+6620	30	561
+6621	58	561
+6622	59	561
+6623	60	561
+6624	61	561
+6625	39	561
+6626	47	561
+6627	62	561
+6628	63	561
+6629	64	561
+6630	8	561
+6631	65	561
+6632	66	561
+6633	67	561
+6634	68	561
+6635	69	561
+6636	30	562
+6637	58	562
+6638	59	562
+6639	60	562
+6640	61	562
+6641	39	562
+6642	47	562
+6643	62	562
+6644	63	562
+6645	64	562
+6646	8	562
+6647	65	562
+6648	66	562
+6649	67	562
+6650	68	562
+6651	69	562
+6652	30	563
+6653	58	563
+6654	59	563
+6655	60	563
+6656	61	563
+6657	39	563
+6658	47	563
+6659	62	563
+6660	63	563
+6661	64	563
+6662	8	563
+6663	65	563
+6664	66	563
+6665	67	563
+6666	68	563
+6667	69	563
+6668	30	564
+6669	58	564
+6670	59	564
+6671	60	564
+6672	61	564
+6673	39	564
+6674	47	564
+6675	62	564
+6676	63	564
+6677	64	564
+6678	8	564
+6679	65	564
+6680	66	564
+6681	67	564
+6682	68	564
+6683	69	564
+6684	30	565
+6685	58	565
+6686	59	565
+6687	60	565
+6688	61	565
+6689	39	565
+6690	47	565
+6691	62	565
+6692	63	565
+6693	64	565
+6694	8	565
+6695	65	565
+6696	66	565
+6697	67	565
+6698	68	565
+6699	69	565
+6700	30	566
+6701	58	566
+6702	59	566
+6703	60	566
+6704	61	566
+6705	39	566
+6706	47	566
+6707	62	566
+6708	63	566
+6709	64	566
+6710	8	566
+6711	65	566
+6712	66	566
+6713	67	566
+6714	68	566
+6715	69	566
+6716	30	567
+6717	58	567
+6718	59	567
+6719	60	567
+6720	61	567
+6721	39	567
+6722	47	567
+6723	62	567
+6724	63	567
+6725	64	567
+6726	8	567
+6727	65	567
+6728	66	567
+6729	67	567
+6730	68	567
+6731	69	567
+6732	30	568
+6733	58	568
+6734	59	568
+6735	60	568
+6736	61	568
+6737	39	568
+6738	47	568
+6739	62	568
+6740	63	568
+6741	64	568
+6742	8	568
+6743	65	568
+6744	66	568
+6745	67	568
+6746	68	568
+6747	69	568
+6748	30	569
+6749	58	569
+6750	59	569
+6751	60	569
+6752	61	569
+6753	39	569
+6754	47	569
+6755	62	569
+6756	63	569
+6757	64	569
+6758	8	569
+6759	65	569
+6760	66	569
+6761	67	569
+6762	68	569
+6763	69	569
+6764	30	570
+6765	58	570
+6766	59	570
+6767	60	570
+6768	61	570
+6769	39	570
+6770	47	570
+6771	62	570
+6772	63	570
+6773	64	570
+6774	8	570
+6775	65	570
+6776	66	570
+6777	67	570
+6778	68	570
+6779	69	570
+6780	30	571
+6781	58	571
+6782	59	571
+6783	60	571
+6784	61	571
+6785	39	571
+6786	47	571
+6787	62	571
+6788	63	571
+6789	64	571
+6790	8	571
+6791	65	571
+6792	66	571
+6793	67	571
+6794	68	571
+6795	69	571
+6796	30	572
+6797	58	572
+6798	59	572
+6799	60	572
+6800	61	572
+6801	39	572
+6802	47	572
+6803	62	572
+6804	63	572
+6805	64	572
+6806	8	572
+6807	65	572
+6808	66	572
+6809	67	572
+6810	68	572
+6811	69	572
+6812	30	573
+6813	58	573
+6814	59	573
+6815	60	573
+6816	61	573
+6817	39	573
+6818	47	573
+6819	62	573
+6820	63	573
+6821	64	573
+6822	8	573
+6823	65	573
+6824	66	573
+6825	67	573
+6826	68	573
+6827	69	573
+6828	30	574
+6829	58	574
+6830	59	574
+6831	60	574
+6832	61	574
+6833	39	574
+6834	47	574
+6835	62	574
+6836	63	574
+6837	64	574
+6838	8	574
+6839	65	574
+6840	66	574
+6841	67	574
+6842	68	574
+6843	69	574
+6844	30	575
+6845	58	575
+6846	59	575
+6847	60	575
+6848	61	575
+6849	39	575
+6850	47	575
+6851	62	575
+6852	63	575
+6853	64	575
+6854	8	575
+6855	65	575
+6856	66	575
+6857	67	575
+6858	68	575
+6859	69	575
+6860	30	576
+6861	58	576
+6862	59	576
+6863	60	576
+6864	61	576
+6865	39	576
+6866	47	576
+6867	62	576
+6868	63	576
+6869	64	576
+6870	8	576
+6871	65	576
+6872	66	576
+6873	67	576
+6874	68	576
+6875	69	576
+6876	30	577
+6877	58	577
+6878	59	577
+6879	60	577
+6880	61	577
+6881	39	577
+6882	47	577
+6883	62	577
+6884	63	577
+6885	64	577
+6886	8	577
+6887	65	577
+6888	66	577
+6889	67	577
+6890	68	577
+6891	69	577
+6892	30	578
+6893	58	578
+6894	59	578
+6895	60	578
+6896	61	578
+6897	39	578
+6898	47	578
+6899	62	578
+6900	63	578
+6901	64	578
+6902	8	578
+6903	65	578
+6904	66	578
+6905	67	578
+6906	68	578
+6907	69	578
+6908	30	579
+6909	58	579
+6910	59	579
+6911	60	579
+6912	61	579
+6913	39	579
+6914	47	579
+6915	62	579
+6916	63	579
+6917	64	579
+6918	8	579
+6919	65	579
+6920	66	579
+6921	67	579
+6922	68	579
+6923	69	579
+6924	30	580
+6925	58	580
+6926	59	580
+6927	60	580
+6928	61	580
+6929	39	580
+6930	47	580
+6931	62	580
+6932	63	580
+6933	64	580
+6934	8	580
+6935	65	580
+6936	66	580
+6937	67	580
+6938	68	580
+6939	69	580
+6940	30	581
+6941	58	581
+6942	59	581
+6943	60	581
+6944	61	581
+6945	39	581
+6946	47	581
+6947	62	581
+6948	63	581
+6949	64	581
+6950	8	581
+6951	65	581
+6952	66	581
+6953	67	581
+6954	68	581
+6955	69	581
+6956	30	582
+6957	58	582
+6958	59	582
+6959	60	582
+6960	61	582
+6961	39	582
+6962	47	582
+6963	62	582
+6964	63	582
+6965	64	582
+6966	8	582
+6967	65	582
+6968	66	582
+6969	67	582
+6970	68	582
+6971	69	582
+6972	30	583
+6973	58	583
+6974	59	583
+6975	60	583
+6976	61	583
+6977	39	583
+6978	47	583
+6979	62	583
+6980	63	583
+6981	64	583
+6982	8	583
+6983	65	583
+6984	66	583
+6985	67	583
+6986	68	583
+6987	69	583
+6988	30	584
+6989	58	584
+6990	59	584
+6991	60	584
+6992	61	584
+6993	39	584
+6994	47	584
+6995	62	584
+6996	63	584
+6997	64	584
+6998	8	584
+6999	65	584
+7000	66	584
+7001	67	584
+7002	68	584
+7003	69	584
+7004	30	585
+7005	58	585
+7006	59	585
+7007	60	585
+7008	61	585
+7009	39	585
+7010	47	585
+7011	62	585
+7012	63	585
+7013	64	585
+7014	8	585
+7015	65	585
+7016	66	585
+7017	67	585
+7018	68	585
+7019	69	585
+7020	30	586
+7021	58	586
+7022	59	586
+7023	60	586
+7024	61	586
+7025	39	586
+7026	47	586
+7027	62	586
+7028	63	586
+7029	64	586
+7030	8	586
+7031	65	586
+7032	66	586
+7033	67	586
+7034	68	586
+7035	69	586
+7036	30	587
+7037	58	587
+7038	59	587
+7039	60	587
+7040	61	587
+7041	39	587
+7042	47	587
+7043	62	587
+7044	63	587
+7045	64	587
+7046	8	587
+7047	65	587
+7048	66	587
+7049	67	587
+7050	68	587
+7051	69	587
+7052	30	588
+7053	58	588
+7054	59	588
+7055	60	588
+7056	61	588
+7057	39	588
+7058	47	588
+7059	62	588
+7060	63	588
+7061	64	588
+7062	8	588
+7063	65	588
+7064	66	588
+7065	67	588
+7066	68	588
+7067	69	588
+7068	30	589
+7069	58	589
+7070	59	589
+7071	60	589
+7072	61	589
+7073	39	589
+7074	47	589
+7075	62	589
+7076	63	589
+7077	64	589
+7078	8	589
+7079	65	589
+7080	66	589
+7081	67	589
+7082	68	589
+7083	69	589
+7084	30	590
+7085	58	590
+7086	59	590
+7087	60	590
+7088	61	590
+7089	39	590
+7090	47	590
+7091	62	590
+7092	63	590
+7093	64	590
+7094	8	590
+7095	65	590
+7096	66	590
+7097	67	590
+7098	68	590
+7099	69	590
+7100	30	591
+7101	58	591
+7102	59	591
+7103	60	591
+7104	61	591
+7105	39	591
+7106	47	591
+7107	62	591
+7108	63	591
+7109	64	591
+7110	8	591
+7111	65	591
+7112	66	591
+7113	67	591
+7114	68	591
+7115	69	591
+7116	30	592
+7117	58	592
+7118	59	592
+7119	60	592
+7120	61	592
+7121	39	592
+7122	47	592
+7123	62	592
+7124	63	592
+7125	64	592
+7126	8	592
+7127	65	592
+7128	66	592
+7129	67	592
+7130	68	592
+7131	69	592
+7132	30	593
+7133	58	593
+7134	59	593
+7135	60	593
+7136	61	593
+7137	39	593
+7138	47	593
+7139	62	593
+7140	63	593
+7141	64	593
+7142	8	593
+7143	65	593
+7144	66	593
+7145	67	593
+7146	68	593
+7147	69	593
+7148	30	594
+7149	58	594
+7150	59	594
+7151	60	594
+7152	61	594
+7153	39	594
+7154	47	594
+7155	62	594
+7156	63	594
+7157	64	594
+7158	8	594
+7159	65	594
+7160	66	594
+7161	67	594
+7162	68	594
+7163	69	594
+7164	30	595
+7165	58	595
+7166	59	595
+7167	60	595
+7168	61	595
+7169	39	595
+7170	47	595
+7171	62	595
+7172	63	595
+7173	64	595
+7174	8	595
+7175	65	595
+7176	66	595
+7177	67	595
+7178	68	595
+7179	69	595
+7180	30	596
+7181	58	596
+7182	59	596
+7183	60	596
+7184	61	596
+7185	39	596
+7186	47	596
+7187	62	596
+7188	63	596
+7189	64	596
+7190	8	596
+7191	65	596
+7192	66	596
+7193	67	596
+7194	68	596
+7195	69	596
+7196	30	597
+7197	58	597
+7198	59	597
+7199	60	597
+7200	61	597
+7201	39	597
+7202	47	597
+7203	62	597
+7204	63	597
+7205	64	597
+7206	8	597
+7207	65	597
+7208	66	597
+7209	67	597
+7210	68	597
+7211	69	597
+7212	30	598
+7213	58	598
+7214	59	598
+7215	60	598
+7216	61	598
+7217	39	598
+7218	47	598
+7219	62	598
+7220	63	598
+7221	64	598
+7222	8	598
+7223	65	598
+7224	66	598
+7225	67	598
+7226	68	598
+7227	69	598
+7228	30	599
+7229	58	599
+7230	59	599
+7231	60	599
+7232	61	599
+7233	39	599
+7234	47	599
+7235	62	599
+7236	63	599
+7237	64	599
+7238	8	599
+7239	65	599
+7240	66	599
+7241	67	599
+7242	68	599
+7243	69	599
+7244	30	600
+7245	58	600
+7246	59	600
+7247	60	600
+7248	61	600
+7249	39	600
+7250	47	600
+7251	62	600
+7252	63	600
+7253	64	600
+7254	8	600
+7255	65	600
+7256	66	600
+7257	67	600
+7258	68	600
+7259	69	600
+7260	30	601
+7261	58	601
+7262	59	601
+7263	60	601
+7264	61	601
+7265	39	601
+7266	47	601
+7267	62	601
+7268	63	601
+7269	64	601
+7270	8	601
+7271	65	601
+7272	66	601
+7273	67	601
+7274	68	601
+7275	69	601
+7276	30	602
+7277	58	602
+7278	59	602
+7279	60	602
+7280	61	602
+7281	39	602
+7282	47	602
+7283	62	602
+7284	63	602
+7285	64	602
+7286	8	602
+7287	65	602
+7288	66	602
+7289	67	602
+7290	68	602
+7291	69	602
+7292	30	603
+7293	58	603
+7294	59	603
+7295	60	603
+7296	61	603
+7297	39	603
+7298	47	603
+7299	62	603
+7300	63	603
+7301	64	603
+7302	8	603
+7303	65	603
+7304	66	603
+7305	67	603
+7306	68	603
+7307	69	603
+7308	30	604
+7309	58	604
+7310	59	604
+7311	60	604
+7312	61	604
+7313	39	604
+7314	47	604
+7315	62	604
+7316	63	604
+7317	64	604
+7318	8	604
+7319	65	604
+7320	66	604
+7321	67	604
+7322	68	604
+7323	69	604
+7324	30	605
+7325	58	605
+7326	59	605
+7327	60	605
+7328	61	605
+7329	39	605
+7330	47	605
+7331	62	605
+7332	63	605
+7333	64	605
+7334	8	605
+7335	65	605
+7336	66	605
+7337	67	605
+7338	68	605
+7339	69	605
+7340	30	606
+7341	58	606
+7342	59	606
+7343	60	606
+7344	61	606
+7345	39	606
+7346	47	606
+7347	62	606
+7348	63	606
+7349	64	606
+7350	8	606
+7351	65	606
+7352	66	606
+7353	67	606
+7354	68	606
+7355	69	606
+7356	30	607
+7357	58	607
+7358	59	607
+7359	60	607
+7360	61	607
+7361	39	607
+7362	47	607
+7363	62	607
+7364	63	607
+7365	64	607
+7366	8	607
+7367	65	607
+7368	66	607
+7369	67	607
+7370	68	607
+7371	69	607
+7372	30	608
+7373	58	608
+7374	59	608
+7375	60	608
+7376	61	608
+7377	39	608
+7378	47	608
+7379	62	608
+7380	63	608
+7381	64	608
+7382	8	608
+7383	65	608
+7384	66	608
+7385	67	608
+7386	68	608
+7387	69	608
+7388	30	609
+7389	58	609
+7390	59	609
+7391	60	609
+7392	61	609
+7393	39	609
+7394	47	609
+7395	62	609
+7396	63	609
+7397	64	609
+7398	8	609
+7399	65	609
+7400	66	609
+7401	67	609
+7402	68	609
+7403	69	609
+7404	30	610
+7405	58	610
+7406	59	610
+7407	60	610
+7408	61	610
+7409	39	610
+7410	47	610
+7411	62	610
+7412	63	610
+7413	64	610
+7414	8	610
+7415	65	610
+7416	66	610
+7417	67	610
+7418	68	610
+7419	69	610
+7420	30	611
+7421	58	611
+7422	59	611
+7423	60	611
+7424	61	611
+7425	39	611
+7426	47	611
+7427	62	611
+7428	63	611
+7429	64	611
+7430	8	611
+7431	65	611
+7432	66	611
+7433	67	611
+7434	68	611
+7435	69	611
+7436	30	612
+7437	58	612
+7438	59	612
+7439	60	612
+7440	61	612
+7441	39	612
+7442	47	612
+7443	62	612
+7444	63	612
+7445	64	612
+7446	8	612
+7447	65	612
+7448	66	612
+7449	67	612
+7450	68	612
+7451	69	612
+7452	30	613
+7453	58	613
+7454	59	613
+7455	60	613
+7456	61	613
+7457	39	613
+7458	47	613
+7459	62	613
+7460	63	613
+7461	64	613
+7462	8	613
+7463	65	613
+7464	66	613
+7465	67	613
+7466	68	613
+7467	69	613
+7468	30	614
+7469	58	614
+7470	59	614
+7471	60	614
+7472	61	614
+7473	39	614
+7474	47	614
+7475	62	614
+7476	63	614
+7477	64	614
+7478	8	614
+7479	65	614
+7480	66	614
+7481	67	614
+7482	68	614
+7483	69	614
+7484	30	615
+7485	58	615
+7486	59	615
+7487	60	615
+7488	61	615
+7489	39	615
+7490	47	615
+7491	62	615
+7492	63	615
+7493	64	615
+7494	8	615
+7495	65	615
+7496	66	615
+7497	67	615
+7498	68	615
+7499	69	615
+7500	30	616
+7501	58	616
+7502	59	616
+7503	60	616
+7504	61	616
+7505	39	616
+7506	47	616
+7507	62	616
+7508	63	616
+7509	64	616
+7510	8	616
+7511	65	616
+7512	66	616
+7513	67	616
+7514	68	616
+7515	69	616
+7516	30	617
+7517	58	617
+7518	59	617
+7519	60	617
+7520	61	617
+7521	39	617
+7522	47	617
+7523	62	617
+7524	63	617
+7525	64	617
+7526	8	617
+7527	65	617
+7528	66	617
+7529	67	617
+7530	68	617
+7531	69	617
+7532	30	618
+7533	58	618
+7534	59	618
+7535	60	618
+7536	61	618
+7537	39	618
+7538	47	618
+7539	62	618
+7540	63	618
+7541	64	618
+7542	8	618
+7543	65	618
+7544	66	618
+7545	67	618
+7546	68	618
+7547	69	618
+7548	30	619
+7549	58	619
+7550	59	619
+7551	60	619
+7552	61	619
+7553	39	619
+7554	47	619
+7555	62	619
+7556	63	619
+7557	64	619
+7558	8	619
+7559	65	619
+7560	66	619
+7561	67	619
+7562	68	619
+7563	69	619
+7564	30	620
+7565	58	620
+7566	59	620
+7567	60	620
+7568	61	620
+7569	39	620
+7570	47	620
+7571	62	620
+7572	63	620
+7573	64	620
+7574	8	620
+7575	65	620
+7576	66	620
+7577	67	620
+7578	68	620
+7579	69	620
+7580	30	621
+7581	58	621
+7582	59	621
+7583	60	621
+7584	61	621
+7585	39	621
+7586	47	621
+7587	62	621
+7588	63	621
+7589	64	621
+7590	8	621
+7591	65	621
+7592	66	621
+7593	67	621
+7594	68	621
+7595	69	621
+7596	30	622
+7597	58	622
+7598	59	622
+7599	60	622
+7600	61	622
+7601	39	622
+7602	47	622
+7603	62	622
+7604	63	622
+7605	64	622
+7606	8	622
+7607	65	622
+7608	66	622
+7609	67	622
+7610	68	622
+7611	69	622
+7612	30	623
+7613	58	623
+7614	59	623
+7615	60	623
+7616	61	623
+7617	39	623
+7618	47	623
+7619	62	623
+7620	63	623
+7621	64	623
+7622	8	623
+7623	65	623
+7624	66	623
+7625	67	623
+7626	68	623
+7627	69	623
+7628	30	624
+7629	58	624
+7630	59	624
+7631	60	624
+7632	61	624
+7633	39	624
+7634	47	624
+7635	62	624
+7636	63	624
+7637	64	624
+7638	8	624
+7639	65	624
+7640	66	624
+7641	67	624
+7642	68	624
+7643	69	624
+7644	30	625
+7645	58	625
+7646	59	625
+7647	60	625
+7648	61	625
+7649	39	625
+7650	47	625
+7651	62	625
+7652	63	625
+7653	64	625
+7654	8	625
+7655	65	625
+7656	66	625
+7657	67	625
+7658	68	625
+7659	69	625
+7660	30	626
+7661	58	626
+7662	59	626
+7663	60	626
+7664	61	626
+7665	39	626
+7666	47	626
+7667	62	626
+7668	63	626
+7669	64	626
+7670	8	626
+7671	65	626
+7672	66	626
+7673	67	626
+7674	68	626
+7675	69	626
+7676	30	627
+7677	58	627
+7678	59	627
+7679	60	627
+7680	61	627
+7681	39	627
+7682	47	627
+7683	62	627
+7684	63	627
+7685	64	627
+7686	8	627
+7687	65	627
+7688	66	627
+7689	67	627
+7690	68	627
+7691	69	627
+7692	30	628
+7693	58	628
+7694	59	628
+7695	60	628
+7696	61	628
+7697	39	628
+7698	47	628
+7699	62	628
+7700	63	628
+7701	64	628
+7702	8	628
+7703	65	628
+7704	66	628
+7705	67	628
+7706	68	628
+7707	69	628
+7708	30	629
+7709	58	629
+7710	59	629
+7711	60	629
+7712	61	629
+7713	39	629
+7714	47	629
+7715	62	629
+7716	63	629
+7717	64	629
+7718	8	629
+7719	65	629
+7720	66	629
+7721	67	629
+7722	68	629
+7723	69	629
+7724	30	630
+7725	58	630
+7726	59	630
+7727	60	630
+7728	61	630
+7729	39	630
+7730	47	630
+7731	62	630
+7732	63	630
+7733	64	630
+7734	8	630
+7735	65	630
+7736	66	630
+7737	67	630
+7738	68	630
+7739	69	630
+7740	30	631
+7741	58	631
+7742	59	631
+7743	60	631
+7744	61	631
+7745	39	631
+7746	47	631
+7747	62	631
+7748	63	631
+7749	64	631
+7750	8	631
+7751	65	631
+7752	66	631
+7753	67	631
+7754	68	631
+7755	69	631
+7756	30	632
+7757	58	632
+7758	59	632
+7759	60	632
+7760	61	632
+7761	39	632
+7762	47	632
+7763	62	632
+7764	63	632
+7765	64	632
+7766	8	632
+7767	65	632
+7768	66	632
+7769	67	632
+7770	68	632
+7771	69	632
+7772	30	633
+7773	58	633
+7774	59	633
+7775	60	633
+7776	61	633
+7777	39	633
+7778	47	633
+7779	62	633
+7780	63	633
+7781	64	633
+7782	8	633
+7783	65	633
+7784	66	633
+7785	67	633
+7786	68	633
+7787	69	633
+7788	30	634
+7789	58	634
+7790	59	634
+7791	60	634
+7792	61	634
+7793	39	634
+7794	47	634
+7795	62	634
+7796	63	634
+7797	64	634
+7798	8	634
+7799	65	634
+7800	66	634
+7801	67	634
+7802	68	634
+7803	69	634
+7804	30	635
+7805	58	635
+7806	59	635
+7807	60	635
+7808	61	635
+7809	39	635
+7810	47	635
+7811	62	635
+7812	63	635
+7813	64	635
+7814	8	635
+7815	65	635
+7816	66	635
+7817	67	635
+7818	68	635
+7819	69	635
+7820	30	636
+7821	58	636
+7822	59	636
+7823	60	636
+7824	61	636
+7825	39	636
+7826	47	636
+7827	62	636
+7828	63	636
+7829	64	636
+7830	8	636
+7831	65	636
+7832	66	636
+7833	67	636
+7834	68	636
+7835	69	636
+7836	30	637
+7837	58	637
+7838	59	637
+7839	60	637
+7840	61	637
+7841	39	637
+7842	47	637
+7843	62	637
+7844	63	637
+7845	64	637
+7846	8	637
+7847	65	637
+7848	66	637
+7849	67	637
+7850	68	637
+7851	69	637
+7852	30	638
+7853	58	638
+7854	59	638
+7855	60	638
+7856	61	638
+7857	39	638
+7858	47	638
+7859	62	638
+7860	63	638
+7861	64	638
+7862	8	638
+7863	65	638
+7864	66	638
+7865	67	638
+7866	68	638
+7867	69	638
+7868	30	639
+7869	58	639
+7870	59	639
+7871	60	639
+7872	61	639
+7873	39	639
+7874	47	639
+7875	62	639
+7876	63	639
+7877	64	639
+7878	8	639
+7879	65	639
+7880	66	639
+7881	67	639
+7882	68	639
+7883	69	639
+7884	30	640
+7885	58	640
+7886	59	640
+7887	60	640
+7888	61	640
+7889	39	640
+7890	47	640
+7891	62	640
+7892	63	640
+7893	64	640
+7894	8	640
+7895	65	640
+7896	66	640
+7897	67	640
+7898	68	640
+7899	69	640
+7900	30	641
+7901	58	641
+7902	59	641
+7903	60	641
+7904	61	641
+7905	39	641
+7906	47	641
+7907	62	641
+7908	63	641
+7909	64	641
+7910	8	641
+7911	65	641
+7912	66	641
+7913	67	641
+7914	68	641
+7915	69	641
+7916	30	642
+7917	58	642
+7918	59	642
+7919	60	642
+7920	61	642
+7921	39	642
+7922	47	642
+7923	62	642
+7924	63	642
+7925	64	642
+7926	8	642
+7927	65	642
+7928	66	642
+7929	67	642
+7930	68	642
+7931	69	642
+7932	30	643
+7933	58	643
+7934	59	643
+7935	60	643
+7936	61	643
+7937	39	643
+7938	47	643
+7939	62	643
+7940	63	643
+7941	64	643
+7942	8	643
+7943	65	643
+7944	66	643
+7945	67	643
+7946	68	643
+7947	69	643
+7948	30	644
+7949	58	644
+7950	59	644
+7951	60	644
+7952	61	644
+7953	39	644
+7954	47	644
+7955	62	644
+7956	63	644
+7957	64	644
+7958	8	644
+7959	65	644
+7960	66	644
+7961	67	644
+7962	68	644
+7963	69	644
+7964	30	645
+7965	58	645
+7966	59	645
+7967	60	645
+7968	61	645
+7969	39	645
+7970	47	645
+7971	62	645
+7972	63	645
+7973	64	645
+7974	8	645
+7975	65	645
+7976	66	645
+7977	67	645
+7978	68	645
+7979	69	645
+7980	30	646
+7981	58	646
+7982	59	646
+7983	60	646
+7984	61	646
+7985	39	646
+7986	47	646
+7987	62	646
+7988	63	646
+7989	64	646
+7990	8	646
+7991	65	646
+7992	66	646
+7993	67	646
+7994	68	646
+7995	69	646
+7996	30	647
+7997	58	647
+7998	59	647
+7999	60	647
+8000	61	647
+8001	39	647
+8002	47	647
+8003	62	647
+8004	63	647
+8005	64	647
+8006	8	647
+8007	65	647
+8008	66	647
+8009	67	647
+8010	68	647
+8011	69	647
+8012	30	648
+8013	58	648
+8014	59	648
+8015	60	648
+8016	61	648
+8017	39	648
+8018	47	648
+8019	62	648
+8020	63	648
+8021	64	648
+8022	8	648
+8023	65	648
+8024	66	648
+8025	67	648
+8026	68	648
+8027	69	648
+8028	30	649
+8029	58	649
+8030	59	649
+8031	60	649
+8032	61	649
+8033	39	649
+8034	47	649
+8035	62	649
+8036	63	649
+8037	64	649
+8038	8	649
+8039	65	649
+8040	66	649
+8041	67	649
+8042	68	649
+8043	69	649
+8044	30	650
+8045	58	650
+8046	59	650
+8047	60	650
+8048	61	650
+8049	39	650
+8050	47	650
+8051	62	650
+8052	63	650
+8053	64	650
+8054	8	650
+8055	65	650
+8056	66	650
+8057	67	650
+8058	68	650
+8059	69	650
+8060	30	651
+8061	58	651
+8062	59	651
+8063	60	651
+8064	61	651
+8065	39	651
+8066	47	651
+8067	62	651
+8068	63	651
+8069	64	651
+8070	8	651
+8071	65	651
+8072	66	651
+8073	67	651
+8074	68	651
+8075	69	651
+8076	30	652
+8077	58	652
+8078	59	652
+8079	60	652
+8080	61	652
+8081	39	652
+8082	47	652
+8083	62	652
+8084	63	652
+8085	64	652
+8086	8	652
+8087	65	652
+8088	66	652
+8089	67	652
+8090	68	652
+8091	69	652
+8092	30	653
+8093	58	653
+8094	59	653
+8095	60	653
+8096	61	653
+8097	39	653
+8098	47	653
+8099	62	653
+8100	63	653
+8101	64	653
+8102	8	653
+8103	65	653
+8104	66	653
+8105	67	653
+8106	68	653
+8107	69	653
+8108	30	654
+8109	58	654
+8110	59	654
+8111	60	654
+8112	61	654
+8113	39	654
+8114	47	654
+8115	62	654
+8116	63	654
+8117	64	654
+8118	8	654
+8119	65	654
+8120	66	654
+8121	67	654
+8122	68	654
+8123	69	654
+8124	30	655
+8125	58	655
+8126	59	655
+8127	60	655
+8128	61	655
+8129	39	655
+8130	47	655
+8131	62	655
+8132	63	655
+8133	64	655
+8134	8	655
+8135	65	655
+8136	66	655
+8137	67	655
+8138	68	655
+8139	69	655
+8140	30	656
+8141	58	656
+8142	59	656
+8143	60	656
+8144	61	656
+8145	39	656
+8146	47	656
+8147	62	656
+8148	63	656
+8149	64	656
+8150	8	656
+8151	65	656
+8152	66	656
+8153	67	656
+8154	68	656
+8155	69	656
+8156	30	657
+8157	58	657
+8158	59	657
+8159	60	657
+8160	61	657
+8161	39	657
+8162	47	657
+8163	62	657
+8164	63	657
+8165	64	657
+8166	8	657
+8167	65	657
+8168	66	657
+8169	67	657
+8170	68	657
+8171	69	657
+8172	30	658
+8173	58	658
+8174	59	658
+8175	60	658
+8176	61	658
+8177	39	658
+8178	47	658
+8179	62	658
+8180	63	658
+8181	64	658
+8182	8	658
+8183	65	658
+8184	66	658
+8185	67	658
+8186	68	658
+8187	69	658
+8188	30	659
+8189	58	659
+8190	59	659
+8191	60	659
+8192	61	659
+8193	39	659
+8194	47	659
+8195	62	659
+8196	63	659
+8197	64	659
+8198	8	659
+8199	65	659
+8200	66	659
+8201	67	659
+8202	68	659
+8203	69	659
+8204	30	660
+8205	58	660
+8206	59	660
+8207	60	660
+8208	61	660
+8209	39	660
+8210	47	660
+8211	62	660
+8212	63	660
+8213	64	660
+8214	8	660
+8215	65	660
+8216	66	660
+8217	67	660
+8218	68	660
+8219	69	660
+8220	30	661
+8221	58	661
+8222	59	661
+8223	60	661
+8224	61	661
+8225	39	661
+8226	47	661
+8227	62	661
+8228	63	661
+8229	64	661
+8230	8	661
+8231	65	661
+8232	66	661
+8233	67	661
+8234	68	661
+8235	69	661
+8236	30	662
+8237	58	662
+8238	59	662
+8239	60	662
+8240	61	662
+8241	39	662
+8242	47	662
+8243	62	662
+8244	63	662
+8245	64	662
+8246	8	662
+8247	65	662
+8248	66	662
+8249	67	662
+8250	68	662
+8251	69	662
+8252	30	663
+8253	58	663
+8254	59	663
+8255	60	663
+8256	61	663
+8257	39	663
+8258	47	663
+8259	62	663
+8260	63	663
+8261	64	663
+8262	8	663
+8263	65	663
+8264	66	663
+8265	67	663
+8266	68	663
+8267	69	663
+8268	30	664
+8269	58	664
+8270	59	664
+8271	60	664
+8272	61	664
+8273	39	664
+8274	47	664
+8275	62	664
+8276	63	664
+8277	64	664
+8278	8	664
+8279	65	664
+8280	66	664
+8281	67	664
+8282	68	664
+8283	69	664
+8284	30	665
+8285	58	665
+8286	59	665
+8287	60	665
+8288	61	665
+8289	39	665
+8290	47	665
+8291	62	665
+8292	63	665
+8293	64	665
+8294	8	665
+8295	65	665
+8296	66	665
+8297	67	665
+8298	68	665
+8299	69	665
+8300	30	666
+8301	58	666
+8302	59	666
+8303	60	666
+8304	61	666
+8305	39	666
+8306	47	666
+8307	62	666
+8308	63	666
+8309	64	666
+8310	8	666
+8311	65	666
+8312	66	666
+8313	67	666
+8314	68	666
+8315	69	666
+8316	30	667
+8317	58	667
+8318	59	667
+8319	60	667
+8320	61	667
+8321	39	667
+8322	47	667
+8323	62	667
+8324	63	667
+8325	64	667
+8326	8	667
+8327	65	667
+8328	66	667
+8329	67	667
+8330	68	667
+8331	69	667
+8332	30	668
+8333	58	668
+8334	59	668
+8335	60	668
+8336	61	668
+8337	39	668
+8338	47	668
+8339	62	668
+8340	63	668
+8341	64	668
+8342	8	668
+8343	65	668
+8344	66	668
+8345	67	668
+8346	68	668
+8347	69	668
+8348	30	669
+8349	58	669
+8350	59	669
+8351	60	669
+8352	61	669
+8353	39	669
+8354	47	669
+8355	62	669
+8356	63	669
+8357	64	669
+8358	8	669
+8359	65	669
+8360	66	669
+8361	67	669
+8362	68	669
+8363	69	669
+8364	30	670
+8365	58	670
+8366	59	670
+8367	60	670
+8368	61	670
+8369	39	670
+8370	47	670
+8371	62	670
+8372	63	670
+8373	64	670
+8374	8	670
+8375	65	670
+8376	66	670
+8377	67	670
+8378	68	670
+8379	69	670
+8380	30	671
+8381	58	671
+8382	59	671
+8383	60	671
+8384	61	671
+8385	39	671
+8386	47	671
+8387	62	671
+8388	63	671
+8389	64	671
+8390	8	671
+8391	65	671
+8392	66	671
+8393	67	671
+8394	68	671
+8395	69	671
+8396	30	672
+8397	58	672
+8398	59	672
+8399	60	672
+8400	61	672
+8401	39	672
+8402	47	672
+8403	62	672
+8404	63	672
+8405	64	672
+8406	8	672
+8407	65	672
+8408	66	672
+8409	67	672
+8410	68	672
+8411	69	672
+8412	30	673
+8413	58	673
+8414	59	673
+8415	60	673
+8416	61	673
+8417	39	673
+8418	47	673
+8419	62	673
+8420	63	673
+8421	64	673
+8422	8	673
+8423	65	673
+8424	66	673
+8425	67	673
+8426	68	673
+8427	69	673
+8428	30	674
+8429	58	674
+8430	59	674
+8431	60	674
+8432	61	674
+8433	39	674
+8434	47	674
+8435	62	674
+8436	63	674
+8437	64	674
+8438	8	674
+8439	65	674
+8440	66	674
+8441	67	674
+8442	68	674
+8443	69	674
+8444	30	675
+8445	58	675
+8446	59	675
+8447	60	675
+8448	61	675
+8449	39	675
+8450	47	675
+8451	62	675
+8452	63	675
+8453	64	675
+8454	8	675
+8455	65	675
+8456	66	675
+8457	67	675
+8458	68	675
+8459	69	675
+8460	30	676
+8461	58	676
+8462	59	676
+8463	60	676
+8464	61	676
+8465	39	676
+8466	47	676
+8467	62	676
+8468	63	676
+8469	64	676
+8470	8	676
+8471	65	676
+8472	66	676
+8473	67	676
+8474	68	676
+8475	69	676
+8476	30	677
+8477	58	677
+8478	59	677
+8479	60	677
+8480	61	677
+8481	39	677
+8482	47	677
+8483	62	677
+8484	63	677
+8485	64	677
+8486	8	677
+8487	65	677
+8488	66	677
+8489	67	677
+8490	68	677
+8491	69	677
+8492	30	678
+8493	58	678
+8494	59	678
+8495	60	678
+8496	61	678
+8497	39	678
+8498	47	678
+8499	62	678
+8500	63	678
+8501	64	678
+8502	8	678
+8503	65	678
+8504	66	678
+8505	67	678
+8506	68	678
+8507	69	678
+8508	30	679
+8509	58	679
+8510	59	679
+8511	60	679
+8512	61	679
+8513	39	679
+8514	47	679
+8515	62	679
+8516	63	679
+8517	64	679
+8518	8	679
+8519	65	679
+8520	66	679
+8521	67	679
+8522	68	679
+8523	69	679
+8524	30	680
+8525	58	680
+8526	59	680
+8527	60	680
+8528	61	680
+8529	39	680
+8530	47	680
+8531	62	680
+8532	63	680
+8533	64	680
+8534	8	680
+8535	65	680
+8536	66	680
+8537	67	680
+8538	68	680
+8539	69	680
+8540	30	681
+8541	58	681
+8542	59	681
+8543	60	681
+8544	61	681
+8545	39	681
+8546	47	681
+8547	62	681
+8548	63	681
+8549	64	681
+8550	8	681
+8551	65	681
+8552	66	681
+8553	67	681
+8554	68	681
+8555	69	681
+8556	30	682
+8557	58	682
+8558	59	682
+8559	60	682
+8560	61	682
+8561	39	682
+8562	47	682
+8563	62	682
+8564	63	682
+8565	64	682
+8566	8	682
+8567	65	682
+8568	66	682
+8569	67	682
+8570	68	682
+8571	69	682
+8572	30	683
+8573	58	683
+8574	59	683
+8575	60	683
+8576	61	683
+8577	39	683
+8578	47	683
+8579	62	683
+8580	63	683
+8581	64	683
+8582	8	683
+8583	65	683
+8584	66	683
+8585	67	683
+8586	68	683
+8587	69	683
+8588	30	684
+8589	58	684
+8590	59	684
+8591	60	684
+8592	61	684
+8593	39	684
+8594	47	684
+8595	62	684
+8596	63	684
+8597	64	684
+8598	8	684
+8599	65	684
+8600	66	684
+8601	67	684
+8602	68	684
+8603	69	684
+8604	30	685
+8605	58	685
+8606	59	685
+8607	60	685
+8608	61	685
+8609	39	685
+8610	47	685
+8611	62	685
+8612	63	685
+8613	64	685
+8614	8	685
+8615	65	685
+8616	66	685
+8617	67	685
+8618	68	685
+8619	69	685
+8620	30	686
+8621	58	686
+8622	59	686
+8623	60	686
+8624	61	686
+8625	39	686
+8626	47	686
+8627	62	686
+8628	63	686
+8629	64	686
+8630	8	686
+8631	65	686
+8632	66	686
+8633	67	686
+8634	68	686
+8635	69	686
+8636	30	687
+8637	58	687
+8638	59	687
+8639	60	687
+8640	61	687
+8641	39	687
+8642	47	687
+8643	62	687
+8644	63	687
+8645	64	687
+8646	8	687
+8647	65	687
+8648	66	687
+8649	67	687
+8650	68	687
+8651	69	687
+8652	30	688
+8653	58	688
+8654	59	688
+8655	60	688
+8656	61	688
+8657	39	688
+8658	47	688
+8659	62	688
+8660	63	688
+8661	64	688
+8662	8	688
+8663	65	688
+8664	66	688
+8665	67	688
+8666	68	688
+8667	69	688
+8668	30	689
+8669	58	689
+8670	59	689
+8671	60	689
+8672	61	689
+8673	39	689
+8674	47	689
+8675	62	689
+8676	63	689
+8677	64	689
+8678	8	689
+8679	65	689
+8680	66	689
+8681	67	689
+8682	68	689
+8683	69	689
+8684	30	690
+8685	58	690
+8686	59	690
+8687	60	690
+8688	61	690
+8689	39	690
+8690	47	690
+8691	62	690
+8692	63	690
+8693	64	690
+8694	8	690
+8695	65	690
+8696	66	690
+8697	67	690
+8698	68	690
+8699	69	690
+8700	30	691
+8701	58	691
+8702	59	691
+8703	60	691
+8704	61	691
+8705	39	691
+8706	47	691
+8707	62	691
+8708	63	691
+8709	64	691
+8710	8	691
+8711	65	691
+8712	66	691
+8713	67	691
+8714	68	691
+8715	69	691
+8716	30	692
+8717	58	692
+8718	59	692
+8719	60	692
+8720	61	692
+8721	39	692
+8722	47	692
+8723	62	692
+8724	63	692
+8725	64	692
+8726	8	692
+8727	65	692
+8728	66	692
+8729	67	692
+8730	68	692
+8731	69	692
+8732	30	693
+8733	58	693
+8734	59	693
+8735	60	693
+8736	61	693
+8737	39	693
+8738	47	693
+8739	62	693
+8740	63	693
+8741	64	693
+8742	8	693
+8743	65	693
+8744	66	693
+8745	67	693
+8746	68	693
+8747	69	693
+8748	30	694
+8749	58	694
+8750	59	694
+8751	60	694
+8752	61	694
+8753	39	694
+8754	47	694
+8755	62	694
+8756	63	694
+8757	64	694
+8758	8	694
+8759	65	694
+8760	66	694
+8761	67	694
+8762	68	694
+8763	69	694
+8764	30	695
+8765	58	695
+8766	59	695
+8767	60	695
+8768	61	695
+8769	39	695
+8770	47	695
+8771	62	695
+8772	63	695
+8773	64	695
+8774	8	695
+8775	65	695
+8776	66	695
+8777	67	695
+8778	68	695
+8779	69	695
+8780	30	696
+8781	58	696
+8782	59	696
+8783	60	696
+8784	61	696
+8785	39	696
+8786	47	696
+8787	62	696
+8788	63	696
+8789	64	696
+8790	8	696
+8791	65	696
+8792	66	696
+8793	67	696
+8794	68	696
+8795	69	696
+8796	30	697
+8797	58	697
+8798	59	697
+8799	60	697
+8800	61	697
+8801	39	697
+8802	47	697
+8803	62	697
+8804	63	697
+8805	64	697
+8806	8	697
+8807	65	697
+8808	66	697
+8809	67	697
+8810	68	697
+8811	69	697
+8812	30	698
+8813	58	698
+8814	59	698
+8815	60	698
+8816	61	698
+8817	39	698
+8818	47	698
+8819	62	698
+8820	63	698
+8821	64	698
+8822	8	698
+8823	65	698
+8824	66	698
+8825	67	698
+8826	68	698
+8827	69	698
+8828	30	699
+8829	58	699
+8830	59	699
+8831	60	699
+8832	61	699
+8833	39	699
+8834	47	699
+8835	62	699
+8836	63	699
+8837	64	699
+8838	8	699
+8839	65	699
+8840	66	699
+8841	67	699
+8842	68	699
+8843	69	699
+8844	30	700
+8845	58	700
+8846	59	700
+8847	60	700
+8848	61	700
+8849	39	700
+8850	47	700
+8851	62	700
+8852	63	700
+8853	64	700
+8854	8	700
+8855	65	700
+8856	66	700
+8857	67	700
+8858	68	700
+8859	69	700
+8860	30	701
+8861	58	701
+8862	59	701
+8863	60	701
+8864	61	701
+8865	39	701
+8866	47	701
+8867	62	701
+8868	63	701
+8869	64	701
+8870	8	701
+8871	65	701
+8872	66	701
+8873	67	701
+8874	68	701
+8875	69	701
+8876	30	702
+8877	58	702
+8878	59	702
+8879	60	702
+8880	61	702
+8881	39	702
+8882	47	702
+8883	62	702
+8884	63	702
+8885	64	702
+8886	8	702
+8887	65	702
+8888	66	702
+8889	67	702
+8890	68	702
+8891	69	702
+8892	30	703
+8893	58	703
+8894	59	703
+8895	60	703
+8896	61	703
+8897	39	703
+8898	47	703
+8899	62	703
+8900	63	703
+8901	64	703
+8902	8	703
+8903	65	703
+8904	66	703
+8905	67	703
+8906	68	703
+8907	69	703
+8908	30	704
+8909	58	704
+8910	59	704
+8911	60	704
+8912	61	704
+8913	39	704
+8914	47	704
+8915	62	704
+8916	63	704
+8917	64	704
+8918	8	704
+8919	65	704
+8920	66	704
+8921	67	704
+8922	68	704
+8923	69	704
+8924	30	705
+8925	58	705
+8926	59	705
+8927	60	705
+8928	61	705
+8929	39	705
+8930	47	705
+8931	62	705
+8932	63	705
+8933	64	705
+8934	8	705
+8935	65	705
+8936	66	705
+8937	67	705
+8938	68	705
+8939	69	705
+8940	30	706
+8941	58	706
+8942	59	706
+8943	60	706
+8944	61	706
+8945	39	706
+8946	47	706
+8947	62	706
+8948	63	706
+8949	64	706
+8950	8	706
+8951	65	706
+8952	66	706
+8953	67	706
+8954	68	706
+8955	69	706
+8956	30	707
+8957	58	707
+8958	59	707
+8959	60	707
+8960	61	707
+8961	39	707
+8962	47	707
+8963	62	707
+8964	63	707
+8965	64	707
+8966	8	707
+8967	65	707
+8968	66	707
+8969	67	707
+8970	68	707
+8971	69	707
+8972	30	708
+8973	58	708
+8974	59	708
+8975	60	708
+8976	61	708
+8977	39	708
+8978	47	708
+8979	62	708
+8980	63	708
+8981	64	708
+8982	8	708
+8983	65	708
+8984	66	708
+8985	67	708
+8986	68	708
+8987	69	708
+8988	30	709
+8989	58	709
+8990	59	709
+8991	60	709
+8992	61	709
+8993	39	709
+8994	47	709
+8995	62	709
+8996	63	709
+8997	64	709
+8998	8	709
+8999	65	709
+9000	66	709
+9001	67	709
+9002	68	709
+9003	69	709
+9004	30	710
+9005	58	710
+9006	59	710
+9007	60	710
+9008	61	710
+9009	39	710
+9010	47	710
+9011	62	710
+9012	63	710
+9013	64	710
+9014	8	710
+9015	65	710
+9016	66	710
+9017	67	710
+9018	68	710
+9019	69	710
+9020	30	711
+9021	58	711
+9022	59	711
+9023	60	711
+9024	61	711
+9025	39	711
+9026	47	711
+9027	62	711
+9028	63	711
+9029	64	711
+9030	8	711
+9031	65	711
+9032	66	711
+9033	67	711
+9034	68	711
+9035	69	711
+9036	30	712
+9037	58	712
+9038	59	712
+9039	60	712
+9040	61	712
+9041	39	712
+9042	47	712
+9043	62	712
+9044	63	712
+9045	64	712
+9046	8	712
+9047	65	712
+9048	66	712
+9049	67	712
+9050	68	712
+9051	69	712
+9052	30	713
+9053	58	713
+9054	59	713
+9055	60	713
+9056	61	713
+9057	39	713
+9058	47	713
+9059	62	713
+9060	63	713
+9061	64	713
+9062	8	713
+9063	65	713
+9064	66	713
+9065	67	713
+9066	68	713
+9067	69	713
+9068	30	714
+9069	58	714
+9070	59	714
+9071	60	714
+9072	61	714
+9073	39	714
+9074	47	714
+9075	62	714
+9076	63	714
+9077	64	714
+9078	8	714
+9079	65	714
+9080	66	714
+9081	67	714
+9082	68	714
+9083	69	714
+9084	30	715
+9085	58	715
+9086	59	715
+9087	60	715
+9088	61	715
+9089	39	715
+9090	47	715
+9091	62	715
+9092	63	715
+9093	64	715
+9094	8	715
+9095	65	715
+9096	66	715
+9097	67	715
+9098	68	715
+9099	69	715
+9100	30	716
+9101	58	716
+9102	59	716
+9103	60	716
+9104	61	716
+9105	39	716
+9106	47	716
+9107	62	716
+9108	63	716
+9109	64	716
+9110	8	716
+9111	65	716
+9112	66	716
+9113	67	716
+9114	68	716
+9115	69	716
+9116	30	717
+9117	58	717
+9118	59	717
+9119	60	717
+9120	61	717
+9121	39	717
+9122	47	717
+9123	62	717
+9124	63	717
+9125	64	717
+9126	8	717
+9127	65	717
+9128	66	717
+9129	67	717
+9130	68	717
+9131	69	717
+9132	30	718
+9133	58	718
+9134	59	718
+9135	60	718
+9136	61	718
+9137	39	718
+9138	47	718
+9139	62	718
+9140	63	718
+9141	64	718
+9142	8	718
+9143	65	718
+9144	66	718
+9145	67	718
+9146	68	718
+9147	69	718
+9148	30	719
+9149	58	719
+9150	59	719
+9151	60	719
+9152	61	719
+9153	39	719
+9154	47	719
+9155	62	719
+9156	63	719
+9157	64	719
+9158	8	719
+9159	65	719
+9160	66	719
+9161	67	719
+9162	68	719
+9163	69	719
+9164	30	720
+9165	58	720
+9166	59	720
+9167	60	720
+9168	61	720
+9169	39	720
+9170	47	720
+9171	62	720
+9172	63	720
+9173	64	720
+9174	8	720
+9175	65	720
+9176	66	720
+9177	67	720
+9178	68	720
+9179	69	720
+9180	30	721
+9181	58	721
+9182	59	721
+9183	60	721
+9184	61	721
+9185	39	721
+9186	47	721
+9187	62	721
+9188	63	721
+9189	64	721
+9190	8	721
+9191	65	721
+9192	66	721
+9193	67	721
+9194	68	721
+9195	69	721
+9196	30	722
+9197	58	722
+9198	59	722
+9199	60	722
+9200	61	722
+9201	39	722
+9202	47	722
+9203	62	722
+9204	63	722
+9205	64	722
+9206	8	722
+9207	65	722
+9208	66	722
+9209	67	722
+9210	68	722
+9211	69	722
+9212	30	723
+9213	58	723
+9214	59	723
+9215	60	723
+9216	61	723
+9217	39	723
+9218	47	723
+9219	62	723
+9220	63	723
+9221	64	723
+9222	8	723
+9223	65	723
+9224	66	723
+9225	67	723
+9226	68	723
+9227	69	723
+9228	30	724
+9229	58	724
+9230	59	724
+9231	60	724
+9232	61	724
+9233	39	724
+9234	47	724
+9235	62	724
+9236	63	724
+9237	64	724
+9238	8	724
+9239	65	724
+9240	66	724
+9241	67	724
+9242	68	724
+9243	69	724
+9244	30	725
+9245	58	725
+9246	59	725
+9247	60	725
+9248	61	725
+9249	39	725
+9250	47	725
+9251	62	725
+9252	63	725
+9253	64	725
+9254	8	725
+9255	65	725
+9256	66	725
+9257	67	725
+9258	68	725
+9259	69	725
+9260	30	726
+9261	58	726
+9262	59	726
+9263	60	726
+9264	61	726
+9265	39	726
+9266	47	726
+9267	62	726
+9268	63	726
+9269	64	726
+9270	8	726
+9271	65	726
+9272	66	726
+9273	67	726
+9274	68	726
+9275	69	726
+9276	30	727
+9277	58	727
+9278	59	727
+9279	60	727
+9280	61	727
+9281	39	727
+9282	47	727
+9283	62	727
+9284	63	727
+9285	64	727
+9286	8	727
+9287	65	727
+9288	66	727
+9289	67	727
+9290	68	727
+9291	69	727
+9292	30	728
+9293	58	728
+9294	59	728
+9295	60	728
+9296	61	728
+9297	39	728
+9298	47	728
+9299	62	728
+9300	63	728
+9301	64	728
+9302	8	728
+9303	65	728
+9304	66	728
+9305	67	728
+9306	68	728
+9307	69	728
+9308	30	729
+9309	58	729
+9310	59	729
+9311	60	729
+9312	61	729
+9313	39	729
+9314	47	729
+9315	62	729
+9316	63	729
+9317	64	729
+9318	8	729
+9319	65	729
+9320	66	729
+9321	67	729
+9322	68	729
+9323	69	729
+9324	30	730
+9325	58	730
+9326	59	730
+9327	60	730
+9328	61	730
+9329	39	730
+9330	47	730
+9331	62	730
+9332	63	730
+9333	64	730
+9334	8	730
+9335	65	730
+9336	66	730
+9337	67	730
+9338	68	730
+9339	69	730
+9340	30	731
+9341	58	731
+9342	59	731
+9343	60	731
+9344	61	731
+9345	39	731
+9346	47	731
+9347	62	731
+9348	63	731
+9349	64	731
+9350	8	731
+9351	65	731
+9352	66	731
+9353	67	731
+9354	68	731
+9355	69	731
+9356	30	732
+9357	58	732
+9358	59	732
+9359	60	732
+9360	61	732
+9361	39	732
+9362	47	732
+9363	62	732
+9364	63	732
+9365	64	732
+9366	8	732
+9367	65	732
+9368	66	732
+9369	67	732
+9370	68	732
+9371	69	732
+9372	30	733
+9373	58	733
+9374	59	733
+9375	60	733
+9376	61	733
+9377	39	733
+9378	47	733
+9379	62	733
+9380	63	733
+9381	64	733
+9382	8	733
+9383	65	733
+9384	66	733
+9385	67	733
+9386	68	733
+9387	69	733
+9388	30	734
+9389	58	734
+9390	59	734
+9391	60	734
+9392	61	734
+9393	39	734
+9394	47	734
+9395	62	734
+9396	63	734
+9397	64	734
+9398	8	734
+9399	65	734
+9400	66	734
+9401	67	734
+9402	68	734
+9403	69	734
+9404	30	735
+9405	58	735
+9406	59	735
+9407	60	735
+9408	61	735
+9409	39	735
+9410	47	735
+9411	62	735
+9412	63	735
+9413	64	735
+9414	8	735
+9415	65	735
+9416	66	735
+9417	67	735
+9418	68	735
+9419	69	735
+9420	30	736
+9421	58	736
+9422	59	736
+9423	60	736
+9424	61	736
+9425	39	736
+9426	47	736
+9427	62	736
+9428	63	736
+9429	64	736
+9430	8	736
+9431	65	736
+9432	66	736
+9433	67	736
+9434	68	736
+9435	69	736
+9436	30	737
+9437	58	737
+9438	59	737
+9439	60	737
+9440	61	737
+9441	39	737
+9442	47	737
+9443	62	737
+9444	63	737
+9445	64	737
+9446	8	737
+9447	65	737
+9448	66	737
+9449	67	737
+9450	68	737
+9451	69	737
+9452	30	738
+9453	58	738
+9454	59	738
+9455	60	738
+9456	61	738
+9457	39	738
+9458	47	738
+9459	62	738
+9460	63	738
+9461	64	738
+9462	8	738
+9463	65	738
+9464	66	738
+9465	67	738
+9466	68	738
+9467	69	738
+9468	30	739
+9469	58	739
+9470	59	739
+9471	60	739
+9472	61	739
+9473	39	739
+9474	47	739
+9475	62	739
+9476	63	739
+9477	64	739
+9478	8	739
+9479	65	739
+9480	66	739
+9481	67	739
+9482	68	739
+9483	69	739
+9484	30	740
+9485	58	740
+9486	59	740
+9487	60	740
+9488	61	740
+9489	39	740
+9490	47	740
+9491	62	740
+9492	63	740
+9493	64	740
+9494	8	740
+9495	65	740
+9496	66	740
+9497	67	740
+9498	68	740
+9499	69	740
+9500	30	741
+9501	58	741
+9502	59	741
+9503	60	741
+9504	61	741
+9505	39	741
+9506	47	741
+9507	62	741
+9508	63	741
+9509	64	741
+9510	8	741
+9511	65	741
+9512	66	741
+9513	67	741
+9514	68	741
+9515	69	741
+9516	30	742
+9517	58	742
+9518	59	742
+9519	60	742
+9520	61	742
+9521	39	742
+9522	47	742
+9523	62	742
+9524	63	742
+9525	64	742
+9526	8	742
+9527	65	742
+9528	66	742
+9529	67	742
+9530	68	742
+9531	69	742
+9532	30	743
+9533	58	743
+9534	59	743
+9535	60	743
+9536	61	743
+9537	39	743
+9538	47	743
+9539	62	743
+9540	63	743
+9541	64	743
+9542	8	743
+9543	65	743
+9544	66	743
+9545	67	743
+9546	68	743
+9547	69	743
+9548	30	744
+9549	58	744
+9550	59	744
+9551	60	744
+9552	61	744
+9553	39	744
+9554	47	744
+9555	62	744
+9556	63	744
+9557	64	744
+9558	8	744
+9559	65	744
+9560	66	744
+9561	67	744
+9562	68	744
+9563	69	744
+9564	30	745
+9565	58	745
+9566	59	745
+9567	60	745
+9568	61	745
+9569	39	745
+9570	47	745
+9571	62	745
+9572	63	745
+9573	64	745
+9574	8	745
+9575	65	745
+9576	66	745
+9577	67	745
+9578	68	745
+9579	69	745
+9580	30	746
+9581	58	746
+9582	59	746
+9583	60	746
+9584	61	746
+9585	39	746
+9586	47	746
+9587	62	746
+9588	63	746
+9589	64	746
+9590	8	746
+9591	65	746
+9592	66	746
+9593	67	746
+9594	68	746
+9595	69	746
+9596	30	747
+9597	58	747
+9598	59	747
+9599	60	747
+9600	61	747
+9601	39	747
+9602	47	747
+9603	62	747
+9604	63	747
+9605	64	747
+9606	8	747
+9607	65	747
+9608	66	747
+9609	67	747
+9610	68	747
+9611	69	747
+9612	30	748
+9613	58	748
+9614	59	748
+9615	60	748
+9616	61	748
+9617	39	748
+9618	47	748
+9619	62	748
+9620	63	748
+9621	64	748
+9622	8	748
+9623	65	748
+9624	66	748
+9625	67	748
+9626	68	748
+9627	69	748
+9628	30	749
+9629	58	749
+9630	59	749
+9631	60	749
+9632	61	749
+9633	39	749
+9634	47	749
+9635	62	749
+9636	63	749
+9637	64	749
+9638	8	749
+9639	65	749
+9640	66	749
+9641	67	749
+9642	68	749
+9643	69	749
+9644	30	750
+9645	58	750
+9646	59	750
+9647	60	750
+9648	61	750
+9649	39	750
+9650	47	750
+9651	62	750
+9652	63	750
+9653	64	750
+9654	8	750
+9655	65	750
+9656	66	750
+9657	67	750
+9658	68	750
+9659	69	750
+9660	30	751
+9661	58	751
+9662	59	751
+9663	60	751
+9664	61	751
+9665	39	751
+9666	47	751
+9667	62	751
+9668	63	751
+9669	64	751
+9670	8	751
+9671	65	751
+9672	66	751
+9673	67	751
+9674	68	751
+9675	69	751
+9676	30	752
+9677	58	752
+9678	59	752
+9679	60	752
+9680	61	752
+9681	39	752
+9682	47	752
+9683	62	752
+9684	63	752
+9685	64	752
+9686	8	752
+9687	65	752
+9688	66	752
+9689	67	752
+9690	68	752
+9691	69	752
+9692	30	753
+9693	58	753
+9694	59	753
+9695	60	753
+9696	61	753
+9697	39	753
+9698	47	753
+9699	62	753
+9700	63	753
+9701	64	753
+9702	8	753
+9703	65	753
+9704	66	753
+9705	67	753
+9706	68	753
+9707	69	753
+9708	30	754
+9709	58	754
+9710	59	754
+9711	60	754
+9712	61	754
+9713	39	754
+9714	47	754
+9715	62	754
+9716	63	754
+9717	64	754
+9718	8	754
+9719	65	754
+9720	66	754
+9721	67	754
+9722	68	754
+9723	69	754
+9724	30	755
+9725	58	755
+9726	59	755
+9727	60	755
+9728	61	755
+9729	39	755
+9730	47	755
+9731	62	755
+9732	63	755
+9733	64	755
+9734	8	755
+9735	65	755
+9736	66	755
+9737	67	755
+9738	68	755
+9739	69	755
+9740	30	756
+9741	58	756
+9742	59	756
+9743	60	756
+9744	61	756
+9745	39	756
+9746	47	756
+9747	62	756
+9748	63	756
+9749	64	756
+9750	8	756
+9751	65	756
+9752	66	756
+9753	67	756
+9754	68	756
+9755	69	756
+9756	30	757
+9757	58	757
+9758	59	757
+9759	60	757
+9760	61	757
+9761	39	757
+9762	47	757
+9763	62	757
+9764	63	757
+9765	64	757
+9766	8	757
+9767	65	757
+9768	66	757
+9769	67	757
+9770	68	757
+9771	69	757
+9772	30	758
+9773	58	758
+9774	59	758
+9775	60	758
+9776	61	758
+9777	39	758
+9778	47	758
+9779	62	758
+9780	63	758
+9781	64	758
+9782	8	758
+9783	65	758
+9784	66	758
+9785	67	758
+9786	68	758
+9787	69	758
+9788	30	759
+9789	58	759
+9790	59	759
+9791	60	759
+9792	61	759
+9793	39	759
+9794	47	759
+9795	62	759
+9796	63	759
+9797	64	759
+9798	8	759
+9799	65	759
+9800	66	759
+9801	67	759
+9802	68	759
+9803	69	759
+9804	30	760
+9805	58	760
+9806	59	760
+9807	60	760
+9808	61	760
+9809	39	760
+9810	47	760
+9811	62	760
+9812	63	760
+9813	64	760
+9814	8	760
+9815	65	760
+9816	66	760
+9817	67	760
+9818	68	760
+9819	69	760
+9820	30	761
+9821	58	761
+9822	59	761
+9823	60	761
+9824	61	761
+9825	39	761
+9826	47	761
+9827	62	761
+9828	63	761
+9829	64	761
+9830	8	761
+9831	65	761
+9832	66	761
+9833	67	761
+9834	68	761
+9835	69	761
+9836	30	762
+9837	58	762
+9838	59	762
+9839	60	762
+9840	61	762
+9841	39	762
+9842	47	762
+9843	62	762
+9844	63	762
+9845	64	762
+9846	8	762
+9847	65	762
+9848	66	762
+9849	67	762
+9850	68	762
+9851	69	762
+9852	30	763
+9853	58	763
+9854	59	763
+9855	60	763
+9856	61	763
+9857	39	763
+9858	47	763
+9859	62	763
+9860	63	763
+9861	64	763
+9862	8	763
+9863	65	763
+9864	66	763
+9865	67	763
+9866	68	763
+9867	69	763
+9868	30	764
+9869	58	764
+9870	59	764
+9871	60	764
+9872	61	764
+9873	39	764
+9874	47	764
+9875	62	764
+9876	63	764
+9877	64	764
+9878	8	764
+9879	65	764
+9880	66	764
+9881	67	764
+9882	68	764
+9883	69	764
+9884	30	765
+9885	58	765
+9886	59	765
+9887	60	765
+9888	61	765
+9889	39	765
+9890	47	765
+9891	62	765
+9892	63	765
+9893	64	765
+9894	8	765
+9895	65	765
+9896	66	765
+9897	67	765
+9898	68	765
+9899	69	765
+9900	30	766
+9901	58	766
+9902	59	766
+9903	60	766
+9904	61	766
+9905	39	766
+9906	47	766
+9907	62	766
+9908	63	766
+9909	64	766
+9910	8	766
+9911	65	766
+9912	66	766
+9913	67	766
+9914	68	766
+9915	69	766
+9916	30	767
+9917	58	767
+9918	59	767
+9919	60	767
+9920	61	767
+9921	39	767
+9922	47	767
+9923	62	767
+9924	63	767
+9925	64	767
+9926	8	767
+9927	65	767
+9928	66	767
+9929	67	767
+9930	68	767
+9931	69	767
+9932	30	768
+9933	58	768
+9934	59	768
+9935	60	768
+9936	61	768
+9937	39	768
+9938	47	768
+9939	62	768
+9940	63	768
+9941	64	768
+9942	8	768
+9943	65	768
+9944	66	768
+9945	67	768
+9946	68	768
+9947	69	768
+9948	30	769
+9949	58	769
+9950	59	769
+9951	60	769
+9952	61	769
+9953	39	769
+9954	47	769
+9955	62	769
+9956	63	769
+9957	64	769
+9958	8	769
+9959	65	769
+9960	66	769
+9961	67	769
+9962	68	769
+9963	69	769
+9964	30	770
+9965	58	770
+9966	59	770
+9967	60	770
+9968	61	770
+9969	39	770
+9970	47	770
+9971	62	770
+9972	63	770
+9973	64	770
+9974	8	770
+9975	65	770
+9976	66	770
+9977	67	770
+9978	68	770
+9979	69	770
+9980	30	771
+9981	58	771
+9982	59	771
+9983	60	771
+9984	61	771
+9985	39	771
+9986	47	771
+9987	62	771
+9988	63	771
+9989	64	771
+9990	8	771
+9991	65	771
+9992	66	771
+9993	67	771
+9994	68	771
+9995	69	771
+9996	30	772
+9997	58	772
+9998	59	772
+9999	60	772
+10000	61	772
+10001	39	772
+10002	47	772
+10003	62	772
+10004	63	772
+10005	64	772
+10006	8	772
+10007	65	772
+10008	66	772
+10009	67	772
+10010	68	772
+10011	69	772
+10012	30	773
+10013	58	773
+10014	59	773
+10015	60	773
+10016	61	773
+10017	39	773
+10018	47	773
+10019	62	773
+10020	63	773
+10021	64	773
+10022	8	773
+10023	65	773
+10024	66	773
+10025	67	773
+10026	68	773
+10027	69	773
+10028	30	774
+10029	58	774
+10030	59	774
+10031	60	774
+10032	61	774
+10033	39	774
+10034	47	774
+10035	62	774
+10036	63	774
+10037	64	774
+10038	8	774
+10039	65	774
+10040	66	774
+10041	67	774
+10042	68	774
+10043	69	774
+10044	30	775
+10045	58	775
+10046	59	775
+10047	60	775
+10048	61	775
+10049	39	775
+10050	47	775
+10051	62	775
+10052	63	775
+10053	64	775
+10054	8	775
+10055	65	775
+10056	66	775
+10057	67	775
+10058	68	775
+10059	69	775
+10060	30	776
+10061	58	776
+10062	59	776
+10063	60	776
+10064	61	776
+10065	39	776
+10066	47	776
+10067	62	776
+10068	63	776
+10069	64	776
+10070	8	776
+10071	65	776
+10072	66	776
+10073	67	776
+10074	68	776
+10075	69	776
+10076	30	777
+10077	58	777
+10078	59	777
+10079	60	777
+10080	61	777
+10081	39	777
+10082	47	777
+10083	62	777
+10084	63	777
+10085	64	777
+10086	8	777
+10087	65	777
+10088	66	777
+10089	67	777
+10090	68	777
+10091	69	777
+10092	30	778
+10093	58	778
+10094	59	778
+10095	60	778
+10096	61	778
+10097	39	778
+10098	47	778
+10099	62	778
+10100	63	778
+10101	64	778
+10102	8	778
+10103	65	778
+10104	66	778
+10105	67	778
+10106	68	778
+10107	69	778
+10108	30	779
+10109	58	779
+10110	59	779
+10111	60	779
+10112	61	779
+10113	39	779
+10114	47	779
+10115	62	779
+10116	63	779
+10117	64	779
+10118	8	779
+10119	65	779
+10120	66	779
+10121	67	779
+10122	68	779
+10123	69	779
+10124	30	780
+10125	58	780
+10126	59	780
+10127	60	780
+10128	61	780
+10129	39	780
+10130	47	780
+10131	62	780
+10132	63	780
+10133	64	780
+10134	8	780
+10135	65	780
+10136	66	780
+10137	67	780
+10138	68	780
+10139	69	780
+10140	30	781
+10141	58	781
+10142	59	781
+10143	60	781
+10144	61	781
+10145	39	781
+10146	47	781
+10147	62	781
+10148	63	781
+10149	64	781
+10150	8	781
+10151	65	781
+10152	66	781
+10153	67	781
+10154	68	781
+10155	69	781
+10156	30	782
+10157	58	782
+10158	59	782
+10159	60	782
+10160	61	782
+10161	39	782
+10162	47	782
+10163	62	782
+10164	63	782
+10165	64	782
+10166	8	782
+10167	65	782
+10168	66	782
+10169	67	782
+10170	68	782
+10171	69	782
+10172	30	783
+10173	58	783
+10174	59	783
+10175	60	783
+10176	61	783
+10177	39	783
+10178	47	783
+10179	62	783
+10180	63	783
+10181	64	783
+10182	8	783
+10183	65	783
+10184	66	783
+10185	67	783
+10186	68	783
+10187	69	783
+10188	30	784
+10189	58	784
+10190	59	784
+10191	60	784
+10192	61	784
+10193	39	784
+10194	47	784
+10195	62	784
+10196	63	784
+10197	64	784
+10198	8	784
+10199	65	784
+10200	66	784
+10201	67	784
+10202	68	784
+10203	69	784
+10204	30	785
+10205	58	785
+10206	59	785
+10207	60	785
+10208	61	785
+10209	39	785
+10210	47	785
+10211	62	785
+10212	63	785
+10213	64	785
+10214	8	785
+10215	65	785
+10216	66	785
+10217	67	785
+10218	68	785
+10219	69	785
+10220	30	786
+10221	58	786
+10222	59	786
+10223	60	786
+10224	61	786
+10225	39	786
+10226	47	786
+10227	62	786
+10228	63	786
+10229	64	786
+10230	8	786
+10231	65	786
+10232	66	786
+10233	67	786
+10234	68	786
+10235	69	786
+10236	30	787
+10237	58	787
+10238	59	787
+10239	60	787
+10240	61	787
+10241	39	787
+10242	47	787
+10243	62	787
+10244	63	787
+10245	64	787
+10246	8	787
+10247	65	787
+10248	66	787
+10249	67	787
+10250	68	787
+10251	69	787
+10252	30	788
+10253	58	788
+10254	59	788
+10255	60	788
+10256	61	788
+10257	39	788
+10258	47	788
+10259	62	788
+10260	63	788
+10261	64	788
+10262	8	788
+10263	65	788
+10264	66	788
+10265	67	788
+10266	68	788
+10267	69	788
+10268	30	789
+10269	58	789
+10270	59	789
+10271	60	789
+10272	61	789
+10273	39	789
+10274	47	789
+10275	62	789
+10276	63	789
+10277	64	789
+10278	8	789
+10279	65	789
+10280	66	789
+10281	67	789
+10282	68	789
+10283	69	789
+10284	30	790
+10285	58	790
+10286	59	790
+10287	60	790
+10288	61	790
+10289	39	790
+10290	47	790
+10291	62	790
+10292	63	790
+10293	64	790
+10294	8	790
+10295	65	790
+10296	66	790
+10297	67	790
+10298	68	790
+10299	69	790
+10300	30	791
+10301	58	791
+10302	59	791
+10303	60	791
+10304	61	791
+10305	39	791
+10306	47	791
+10307	62	791
+10308	63	791
+10309	64	791
+10310	8	791
+10311	65	791
+10312	66	791
+10313	67	791
+10314	68	791
+10315	69	791
+10316	30	792
+10317	58	792
+10318	59	792
+10319	60	792
+10320	61	792
+10321	39	792
+10322	47	792
+10323	62	792
+10324	63	792
+10325	64	792
+10326	8	792
+10327	65	792
+10328	66	792
+10329	67	792
+10330	68	792
+10331	69	792
+10332	30	793
+10333	58	793
+10334	59	793
+10335	60	793
+10336	61	793
+10337	39	793
+10338	47	793
+10339	62	793
+10340	63	793
+10341	64	793
+10342	8	793
+10343	65	793
+10344	66	793
+10345	67	793
+10346	68	793
+10347	69	793
+10348	30	794
+10349	58	794
+10350	59	794
+10351	60	794
+10352	61	794
+10353	39	794
+10354	47	794
+10355	62	794
+10356	63	794
+10357	64	794
+10358	8	794
+10359	65	794
+10360	66	794
+10361	67	794
+10362	68	794
+10363	69	794
+10364	30	795
+10365	58	795
+10366	59	795
+10367	60	795
+10368	61	795
+10369	39	795
+10370	47	795
+10371	62	795
+10372	63	795
+10373	64	795
+10374	8	795
+10375	65	795
+10376	66	795
+10377	67	795
+10378	68	795
+10379	69	795
+10380	30	796
+10381	58	796
+10382	59	796
+10383	60	796
+10384	61	796
+10385	39	796
+10386	47	796
+10387	62	796
+10388	63	796
+10389	64	796
+10390	8	796
+10391	65	796
+10392	66	796
+10393	67	796
+10394	68	796
+10395	69	796
+10396	30	797
+10397	58	797
+10398	59	797
+10399	60	797
+10400	61	797
+10401	39	797
+10402	47	797
+10403	62	797
+10404	63	797
+10405	64	797
+10406	8	797
+10407	65	797
+10408	66	797
+10409	67	797
+10410	68	797
+10411	69	797
+10412	30	798
+10413	58	798
+10414	59	798
+10415	60	798
+10416	61	798
+10417	39	798
+10418	47	798
+10419	62	798
+10420	63	798
+10421	64	798
+10422	8	798
+10423	65	798
+10424	66	798
+10425	67	798
+10426	68	798
+10427	69	798
+10428	30	799
+10429	58	799
+10430	59	799
+10431	60	799
+10432	61	799
+10433	39	799
+10434	47	799
+10435	62	799
+10436	63	799
+10437	64	799
+10438	8	799
+10439	65	799
+10440	66	799
+10441	67	799
+10442	68	799
+10443	69	799
+10444	30	800
+10445	58	800
+10446	59	800
+10447	60	800
+10448	61	800
+10449	39	800
+10450	47	800
+10451	62	800
+10452	63	800
+10453	64	800
+10454	8	800
+10455	65	800
+10456	66	800
+10457	67	800
+10458	68	800
+10459	69	800
+10460	30	801
+10461	58	801
+10462	59	801
+10463	60	801
+10464	61	801
+10465	39	801
+10466	47	801
+10467	62	801
+10468	63	801
+10469	64	801
+10470	8	801
+10471	65	801
+10472	66	801
+10473	67	801
+10474	68	801
+10475	69	801
+10476	30	802
+10477	58	802
+10478	59	802
+10479	60	802
+10480	61	802
+10481	39	802
+10482	47	802
+10483	62	802
+10484	63	802
+10485	64	802
+10486	8	802
+10487	65	802
+10488	66	802
+10489	67	802
+10490	68	802
+10491	69	802
+10492	30	803
+10493	58	803
+10494	59	803
+10495	60	803
+10496	61	803
+10497	39	803
+10498	47	803
+10499	62	803
+10500	63	803
+10501	64	803
+10502	8	803
+10503	65	803
+10504	66	803
+10505	67	803
+10506	68	803
+10507	69	803
+10508	30	804
+10509	58	804
+10510	59	804
+10511	60	804
+10512	61	804
+10513	39	804
+10514	47	804
+10515	62	804
+10516	63	804
+10517	64	804
+10518	8	804
+10519	65	804
+10520	66	804
+10521	67	804
+10522	68	804
+10523	69	804
+10524	30	805
+10525	58	805
+10526	59	805
+10527	60	805
+10528	61	805
+10529	39	805
+10530	47	805
+10531	62	805
+10532	63	805
+10533	64	805
+10534	8	805
+10535	65	805
+10536	66	805
+10537	67	805
+10538	68	805
+10539	69	805
+10540	30	806
+10541	58	806
+10542	59	806
+10543	60	806
+10544	61	806
+10545	39	806
+10546	47	806
+10547	62	806
+10548	63	806
+10549	64	806
+10550	8	806
+10551	65	806
+10552	66	806
+10553	67	806
+10554	68	806
+10555	69	806
+10556	30	807
+10557	58	807
+10558	59	807
+10559	60	807
+10560	61	807
+10561	39	807
+10562	47	807
+10563	62	807
+10564	63	807
+10565	64	807
+10566	8	807
+10567	65	807
+10568	66	807
+10569	67	807
+10570	68	807
+10571	69	807
+10572	30	808
+10573	58	808
+10574	59	808
+10575	60	808
+10576	61	808
+10577	39	808
+10578	47	808
+10579	62	808
+10580	63	808
+10581	64	808
+10582	8	808
+10583	65	808
+10584	66	808
+10585	67	808
+10586	68	808
+10587	69	808
+10588	30	809
+10589	58	809
+10590	59	809
+10591	60	809
+10592	61	809
+10593	39	809
+10594	47	809
+10595	62	809
+10596	63	809
+10597	64	809
+10598	8	809
+10599	65	809
+10600	66	809
+10601	67	809
+10602	68	809
+10603	69	809
+10604	30	810
+10605	58	810
+10606	59	810
+10607	60	810
+10608	61	810
+10609	39	810
+10610	47	810
+10611	62	810
+10612	63	810
+10613	64	810
+10614	8	810
+10615	65	810
+10616	66	810
+10617	67	810
+10618	68	810
+10619	69	810
+10620	30	811
+10621	58	811
+10622	59	811
+10623	60	811
+10624	61	811
+10625	39	811
+10626	47	811
+10627	62	811
+10628	63	811
+10629	64	811
+10630	8	811
+10631	65	811
+10632	66	811
+10633	67	811
+10634	68	811
+10635	69	811
+10636	30	812
+10637	58	812
+10638	59	812
+10639	60	812
+10640	61	812
+10641	39	812
+10642	47	812
+10643	62	812
+10644	63	812
+10645	64	812
+10646	8	812
+10647	65	812
+10648	66	812
+10649	67	812
+10650	68	812
+10651	69	812
+10652	30	813
+10653	58	813
+10654	59	813
+10655	60	813
+10656	61	813
+10657	39	813
+10658	47	813
+10659	62	813
+10660	63	813
+10661	64	813
+10662	8	813
+10663	65	813
+10664	66	813
+10665	67	813
+10666	68	813
+10667	69	813
+10668	30	814
+10669	58	814
+10670	59	814
+10671	60	814
+10672	61	814
+10673	39	814
+10674	47	814
+10675	62	814
+10676	63	814
+10677	64	814
+10678	8	814
+10679	65	814
+10680	66	814
+10681	67	814
+10682	68	814
+10683	69	814
+10684	30	815
+10685	58	815
+10686	59	815
+10687	60	815
+10688	61	815
+10689	39	815
+10690	47	815
+10691	62	815
+10692	63	815
+10693	64	815
+10694	8	815
+10695	65	815
+10696	66	815
+10697	67	815
+10698	68	815
+10699	69	815
+10700	30	816
+10701	58	816
+10702	59	816
+10703	60	816
+10704	61	816
+10705	39	816
+10706	47	816
+10707	62	816
+10708	63	816
+10709	64	816
+10710	8	816
+10711	65	816
+10712	66	816
+10713	67	816
+10714	68	816
+10715	69	816
+10716	30	817
+10717	58	817
+10718	59	817
+10719	60	817
+10720	61	817
+10721	39	817
+10722	47	817
+10723	62	817
+10724	63	817
+10725	64	817
+10726	8	817
+10727	65	817
+10728	66	817
+10729	67	817
+10730	68	817
+10731	69	817
+10732	30	818
+10733	58	818
+10734	59	818
+10735	60	818
+10736	61	818
+10737	39	818
+10738	47	818
+10739	62	818
+10740	63	818
+10741	64	818
+10742	8	818
+10743	65	818
+10744	66	818
+10745	67	818
+10746	68	818
+10747	69	818
+10748	30	819
+10749	58	819
+10750	59	819
+10751	60	819
+10752	61	819
+10753	39	819
+10754	47	819
+10755	62	819
+10756	63	819
+10757	64	819
+10758	8	819
+10759	65	819
+10760	66	819
+10761	67	819
+10762	68	819
+10763	69	819
+10764	30	820
+10765	58	820
+10766	59	820
+10767	60	820
+10768	61	820
+10769	39	820
+10770	47	820
+10771	62	820
+10772	63	820
+10773	64	820
+10774	8	820
+10775	65	820
+10776	66	820
+10777	67	820
+10778	68	820
+10779	69	820
+10780	30	821
+10781	58	821
+10782	59	821
+10783	60	821
+10784	61	821
+10785	39	821
+10786	47	821
+10787	62	821
+10788	63	821
+10789	64	821
+10790	8	821
+10791	65	821
+10792	66	821
+10793	67	821
+10794	68	821
+10795	69	821
+10796	30	822
+10797	58	822
+10798	59	822
+10799	60	822
+10800	61	822
+10801	39	822
+10802	47	822
+10803	62	822
+10804	63	822
+10805	64	822
+10806	8	822
+10807	65	822
+10808	66	822
+10809	67	822
+10810	68	822
+10811	69	822
+10812	30	823
+10813	58	823
+10814	59	823
+10815	60	823
+10816	61	823
+10817	39	823
+10818	47	823
+10819	62	823
+10820	63	823
+10821	64	823
+10822	8	823
+10823	65	823
+10824	66	823
+10825	67	823
+10826	68	823
+10827	69	823
+10828	30	824
+10829	58	824
+10830	59	824
+10831	60	824
+10832	61	824
+10833	39	824
+10834	47	824
+10835	62	824
+10836	63	824
+10837	64	824
+10838	8	824
+10839	65	824
+10840	66	824
+10841	67	824
+10842	68	824
+10843	69	824
+10844	30	825
+10845	58	825
+10846	59	825
+10847	60	825
+10848	61	825
+10849	39	825
+10850	47	825
+10851	62	825
+10852	63	825
+10853	64	825
+10854	8	825
+10855	65	825
+10856	66	825
+10857	67	825
+10858	68	825
+10859	69	825
+10860	30	826
+10861	58	826
+10862	59	826
+10863	60	826
+10864	61	826
+10865	39	826
+10866	47	826
+10867	62	826
+10868	63	826
+10869	64	826
+10870	8	826
+10871	65	826
+10872	66	826
+10873	67	826
+10874	68	826
+10875	69	826
+10876	30	827
+10877	58	827
+10878	59	827
+10879	60	827
+10880	61	827
+10881	39	827
+10882	47	827
+10883	62	827
+10884	63	827
+10885	64	827
+10886	8	827
+10887	65	827
+10888	66	827
+10889	67	827
+10890	68	827
+10891	69	827
+10892	30	828
+10893	58	828
+10894	59	828
+10895	60	828
+10896	61	828
+10897	39	828
+10898	47	828
+10899	62	828
+10900	63	828
+10901	64	828
+10902	8	828
+10903	65	828
+10904	66	828
+10905	67	828
+10906	68	828
+10907	69	828
+10908	30	829
+10909	58	829
+10910	59	829
+10911	60	829
+10912	61	829
+10913	39	829
+10914	47	829
+10915	62	829
+10916	63	829
+10917	64	829
+10918	8	829
+10919	65	829
+10920	66	829
+10921	67	829
+10922	68	829
+10923	69	829
+10924	30	830
+10925	58	830
+10926	59	830
+10927	60	830
+10928	61	830
+10929	39	830
+10930	47	830
+10931	62	830
+10932	63	830
+10933	64	830
+10934	8	830
+10935	65	830
+10936	66	830
+10937	67	830
+10938	68	830
+10939	69	830
+10940	30	831
+10941	58	831
+10942	59	831
+10943	60	831
+10944	61	831
+10945	39	831
+10946	47	831
+10947	62	831
+10948	63	831
+10949	64	831
+10950	8	831
+10951	65	831
+10952	66	831
+10953	67	831
+10954	68	831
+10955	69	831
+10956	30	832
+10957	58	832
+10958	59	832
+10959	60	832
+10960	61	832
+10961	39	832
+10962	47	832
+10963	62	832
+10964	63	832
+10965	64	832
+10966	8	832
+10967	65	832
+10968	66	832
+10969	67	832
+10970	68	832
+10971	69	832
+10972	30	833
+10973	58	833
+10974	59	833
+10975	60	833
+10976	61	833
+10977	39	833
+10978	47	833
+10979	62	833
+10980	63	833
+10981	64	833
+10982	8	833
+10983	65	833
+10984	66	833
+10985	67	833
+10986	68	833
+10987	69	833
+10988	30	834
+10989	58	834
+10990	59	834
+10991	60	834
+10992	61	834
+10993	39	834
+10994	47	834
+10995	62	834
+10996	63	834
+10997	64	834
+10998	8	834
+10999	65	834
+11000	66	834
+11001	67	834
+11002	68	834
+11003	69	834
+11004	30	835
+11005	58	835
+11006	59	835
+11007	60	835
+11008	61	835
+11009	39	835
+11010	47	835
+11011	62	835
+11012	63	835
+11013	64	835
+11014	8	835
+11015	65	835
+11016	66	835
+11017	67	835
+11018	68	835
+11019	69	835
+11020	30	836
+11021	58	836
+11022	59	836
+11023	60	836
+11024	61	836
+11025	39	836
+11026	47	836
+11027	62	836
+11028	63	836
+11029	64	836
+11030	8	836
+11031	65	836
+11032	66	836
+11033	67	836
+11034	68	836
+11035	69	836
+11036	30	837
+11037	58	837
+11038	59	837
+11039	60	837
+11040	61	837
+11041	39	837
+11042	47	837
+11043	62	837
+11044	63	837
+11045	64	837
+11046	8	837
+11047	65	837
+11048	66	837
+11049	67	837
+11050	68	837
+11051	69	837
+11052	30	838
+11053	58	838
+11054	59	838
+11055	60	838
+11056	61	838
+11057	39	838
+11058	47	838
+11059	62	838
+11060	63	838
+11061	64	838
+11062	8	838
+11063	65	838
+11064	66	838
+11065	67	838
+11066	68	838
+11067	69	838
+11068	30	839
+11069	58	839
+11070	59	839
+11071	60	839
+11072	61	839
+11073	39	839
+11074	47	839
+11075	62	839
+11076	63	839
+11077	64	839
+11078	8	839
+11079	65	839
+11080	66	839
+11081	67	839
+11082	68	839
+11083	69	839
+11084	30	840
+11085	58	840
+11086	59	840
+11087	60	840
+11088	61	840
+11089	39	840
+11090	47	840
+11091	62	840
+11092	63	840
+11093	64	840
+11094	8	840
+11095	65	840
+11096	66	840
+11097	67	840
+11098	68	840
+11099	69	840
+11100	30	841
+11101	58	841
+11102	59	841
+11103	60	841
+11104	61	841
+11105	39	841
+11106	47	841
+11107	62	841
+11108	63	841
+11109	64	841
+11110	8	841
+11111	65	841
+11112	66	841
+11113	67	841
+11114	68	841
+11115	69	841
+11116	30	842
+11117	58	842
+11118	59	842
+11119	60	842
+11120	61	842
+11121	39	842
+11122	47	842
+11123	62	842
+11124	63	842
+11125	64	842
+11126	8	842
+11127	65	842
+11128	66	842
+11129	67	842
+11130	68	842
+11131	69	842
+11132	30	843
+11133	58	843
+11134	59	843
+11135	60	843
+11136	61	843
+11137	39	843
+11138	47	843
+11139	62	843
+11140	63	843
+11141	64	843
+11142	8	843
+11143	65	843
+11144	66	843
+11145	67	843
+11146	68	843
+11147	69	843
+11148	30	844
+11149	58	844
+11150	59	844
+11151	60	844
+11152	61	844
+11153	39	844
+11154	47	844
+11155	62	844
+11156	63	844
+11157	64	844
+11158	8	844
+11159	65	844
+11160	66	844
+11161	67	844
+11162	68	844
+11163	69	844
+11164	30	845
+11165	58	845
+11166	59	845
+11167	60	845
+11168	61	845
+11169	39	845
+11170	47	845
+11171	62	845
+11172	63	845
+11173	64	845
+11174	8	845
+11175	65	845
+11176	66	845
+11177	67	845
+11178	68	845
+11179	69	845
+11180	30	846
+11181	58	846
+11182	59	846
+11183	60	846
+11184	61	846
+11185	39	846
+11186	47	846
+11187	62	846
+11188	63	846
+11189	64	846
+11190	8	846
+11191	65	846
+11192	66	846
+11193	67	846
+11194	68	846
+11195	69	846
+11196	30	847
+11197	58	847
+11198	59	847
+11199	60	847
+11200	61	847
+11201	39	847
+11202	47	847
+11203	62	847
+11204	63	847
+11205	64	847
+11206	8	847
+11207	65	847
+11208	66	847
+11209	67	847
+11210	68	847
+11211	69	847
+11212	30	848
+11213	58	848
+11214	59	848
+11215	60	848
+11216	61	848
+11217	39	848
+11218	47	848
+11219	62	848
+11220	63	848
+11221	64	848
+11222	8	848
+11223	65	848
+11224	66	848
+11225	67	848
+11226	68	848
+11227	69	848
+11228	30	849
+11229	58	849
+11230	59	849
+11231	60	849
+11232	61	849
+11233	39	849
+11234	47	849
+11235	62	849
+11236	63	849
+11237	64	849
+11238	8	849
+11239	65	849
+11240	66	849
+11241	67	849
+11242	68	849
+11243	69	849
+11244	30	850
+11245	58	850
+11246	59	850
+11247	60	850
+11248	61	850
+11249	39	850
+11250	47	850
+11251	62	850
+11252	63	850
+11253	64	850
+11254	8	850
+11255	65	850
+11256	66	850
+11257	67	850
+11258	68	850
+11259	69	850
+11260	30	851
+11261	58	851
+11262	59	851
+11263	60	851
+11264	61	851
+11265	39	851
+11266	47	851
+11267	62	851
+11268	63	851
+11269	64	851
+11270	8	851
+11271	65	851
+11272	66	851
+11273	67	851
+11274	68	851
+11275	69	851
+11276	30	852
+11277	58	852
+11278	59	852
+11279	60	852
+11280	61	852
+11281	39	852
+11282	47	852
+11283	62	852
+11284	63	852
+11285	64	852
+11286	8	852
+11287	65	852
+11288	66	852
+11289	67	852
+11290	68	852
+11291	69	852
+11292	30	853
+11293	58	853
+11294	59	853
+11295	60	853
+11296	61	853
+11297	39	853
+11298	47	853
+11299	62	853
+11300	63	853
+11301	64	853
+11302	8	853
+11303	65	853
+11304	66	853
+11305	67	853
+11306	68	853
+11307	69	853
+11308	30	854
+11309	58	854
+11310	59	854
+11311	60	854
+11312	61	854
+11313	39	854
+11314	47	854
+11315	62	854
+11316	63	854
+11317	64	854
+11318	8	854
+11319	65	854
+11320	66	854
+11321	67	854
+11322	68	854
+11323	69	854
+11324	30	855
+11325	58	855
+11326	59	855
+11327	60	855
+11328	61	855
+11329	39	855
+11330	47	855
+11331	62	855
+11332	63	855
+11333	64	855
+11334	8	855
+11335	65	855
+11336	66	855
+11337	67	855
+11338	68	855
+11339	69	855
+11340	30	856
+11341	58	856
+11342	59	856
+11343	60	856
+11344	61	856
+11345	39	856
+11346	47	856
+11347	62	856
+11348	63	856
+11349	64	856
+11350	8	856
+11351	65	856
+11352	66	856
+11353	67	856
+11354	68	856
+11355	69	856
+11356	30	857
+11357	58	857
+11358	59	857
+11359	60	857
+11360	61	857
+11361	39	857
+11362	47	857
+11363	62	857
+11364	63	857
+11365	64	857
+11366	8	857
+11367	65	857
+11368	66	857
+11369	67	857
+11370	68	857
+11371	69	857
+11372	30	858
+11373	58	858
+11374	59	858
+11375	60	858
+11376	61	858
+11377	39	858
+11378	47	858
+11379	62	858
+11380	63	858
+11381	64	858
+11382	8	858
+11383	65	858
+11384	66	858
+11385	67	858
+11386	68	858
+11387	69	858
+11388	30	859
+11389	58	859
+11390	59	859
+11391	60	859
+11392	61	859
+11393	39	859
+11394	47	859
+11395	62	859
+11396	63	859
+11397	64	859
+11398	8	859
+11399	65	859
+11400	66	859
+11401	67	859
+11402	68	859
+11403	69	859
+11404	30	860
+11405	58	860
+11406	59	860
+11407	60	860
+11408	61	860
+11409	39	860
+11410	47	860
+11411	62	860
+11412	63	860
+11413	64	860
+11414	8	860
+11415	65	860
+11416	66	860
+11417	67	860
+11418	68	860
+11419	69	860
+11420	30	861
+11421	58	861
+11422	59	861
+11423	60	861
+11424	61	861
+11425	39	861
+11426	47	861
+11427	62	861
+11428	63	861
+11429	64	861
+11430	8	861
+11431	65	861
+11432	66	861
+11433	67	861
+11434	68	861
+11435	69	861
+11436	30	862
+11437	58	862
+11438	59	862
+11439	60	862
+11440	61	862
+11441	39	862
+11442	47	862
+11443	62	862
+11444	63	862
+11445	64	862
+11446	8	862
+11447	65	862
+11448	66	862
+11449	67	862
+11450	68	862
+11451	69	862
 \.
 
 
@@ -6882,6 +19517,7 @@ COPY public.giftcard_giftcard (id, code, created, start_date, end_date, last_use
 
 COPY public.invoice_invoice (id, private_metadata, metadata, status, created_at, updated_at, number, created, external_url, invoice_file, order_id, message) FROM stdin;
 1	{}	{}	success	2021-07-21 19:21:12.407852+00	2021-07-21 19:21:13.126818+00	1/07/2021	2021-07-21 19:21:12.41899+00	\N	invoices/invoice-1/07/2021-order-5-4108c3ac-034b-4a48-b488-b6f5fd59f840.pdf	5	\N
+2	{}	{}	success	2021-11-03 20:41:39.672804+00	2021-11-03 20:41:40.222425+00	1/11/2021	2021-11-03 20:41:39.770788+00	\N	invoices/invoice-1/11/2021-order-469-b51a51f5-849d-4e70-bf80-b39bf771ab3d.pdf	469	\N
 \.
 
 
@@ -6891,6 +19527,7 @@ COPY public.invoice_invoice (id, private_metadata, metadata, status, created_at,
 
 COPY public.invoice_invoiceevent (id, date, type, parameters, invoice_id, order_id, user_id) FROM stdin;
 1	2021-07-21 19:21:13.131455+00	requested	{"number": null}	\N	5	1
+2	2021-11-03 20:41:40.22871+00	requested	{"number": null}	\N	469	1
 \.
 
 
@@ -6927,6 +19564,8 @@ COPY public.menu_menuitemtranslation (id, language_code, name, menu_item_id) FRO
 
 COPY public.order_fulfillment (id, tracking_number, created, order_id, fulfillment_order, status, metadata, private_metadata) FROM stdin;
 1	123456789	2021-07-21 19:12:15.218151+00	5	1	fulfilled	{}	{}
+2		2021-11-03 20:51:24.130734+00	470	1	fulfilled	{}	{}
+3		2021-11-05 15:53:26.792718+00	471	1	fulfilled	{}	{}
 \.
 
 
@@ -6935,8 +19574,10 @@ COPY public.order_fulfillment (id, tracking_number, created, order_id, fulfillme
 --
 
 COPY public.order_fulfillmentline (id, order_line_id, quantity, fulfillment_id, stock_id) FROM stdin;
-1	6	2	1	4
-2	7	1	1	1
+2	7	1	1	\N
+1	6	2	1	\N
+3	425	1	2	33
+4	426	36	3	42
 \.
 
 
@@ -6947,8 +19588,6 @@ COPY public.order_fulfillmentline (id, order_line_id, quantity, fulfillment_id, 
 COPY public.order_order (id, created, tracking_client_id, user_email, token, billing_address_id, shipping_address_id, user_id, total_net_amount, discount_amount, discount_name, voucher_id, language_code, shipping_price_gross_amount, total_gross_amount, shipping_price_net_amount, status, shipping_method_name, shipping_method_id, display_gross_prices, translated_discount_name, customer_note, weight, checkout_token, currency, metadata, private_metadata) FROM stdin;
 3	2021-07-21 18:48:54.307413+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	422ff6c0-26fe-4eda-aeba-9227fda9b2c9	15	14	5	530.000	0.000	\N	\N	en	5.000	530.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	6965ca16-f1f7-4615-8609-d1988fb8ba8e	USD	{}	{}
 4	2021-07-21 18:52:46.735885+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	8e0f31a0-45ed-4255-864f-e4036d17b914	18	17	5	1807.230	0.000	\N	\N	en	5.000	1807.230	5.000	unfulfilled	Standard Shipping	1	t	\N		7000	fad92e57-ff95-4336-a7d0-c67f89580dbb	USD	{}	{}
-2	2021-05-20 19:23:01.715304+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	4c74ec7f-6816-40a0-b94b-37265e00304c	10	9	\N	5.000	0.000	\N	\N	en	5.000	5.000	5.000	canceled	Standard Shipping	1	t	\N		1000	8119b6a4-10cd-48f5-9545-eb6ef8ad5d53	USD	{}	{}
-1	2021-05-20 19:21:22.134618+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	9acbd85f-69da-423c-a39f-a483c0cd9379	7	6	\N	6.000	0.000	\N	\N	en	5.000	6.000	5.000	canceled	Standard Shipping	1	t	\N		1000	cdae3fcd-f2fb-43a2-a39e-cce170c3717b	USD	{}	{}
 6	2021-08-11 15:44:18.285462+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	bb6cb082-bb77-4f76-b013-70799631c5e8	25	24	5	215.000	0.000	\N	\N	en	5.000	215.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	0b0c5853-8d9f-4488-b73d-a3efd0ba0012	USD	{}	{}
 5	2021-07-21 18:55:54.124946+00	8cf6e81f-4afd-567d-945b-d7bcb03a46fc	customer@example.com	ab05fd3c-fb05-4e61-97cb-f4c74f262a8e	21	20	5	2606.510	0.000	\N	\N	en	5.000	2606.510	5.000	fulfilled	Standard Shipping	1	t	\N		9000	0862744c-1506-4e13-a8ee-0c2a01b73ba7	USD	{}	{}
 7	2021-08-11 17:04:55.654122+00	eee26949-bf47-59b3-8b31-8cf723650d1c	customer@example.com	e0179759-67ee-4e26-8167-6c46a846fd65	28	27	5	101.000	0.000	\N	\N	en	5.000	101.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	b2d0af70-6bc9-4e2f-964a-291dbf702d85	USD	{}	{}
@@ -7182,6 +19821,242 @@ COPY public.order_order (id, created, tracking_client_id, user_email, token, bil
 235	2021-10-06 14:00:02.202039+00			418556b7-0b62-4920-9ce4-b988d07884c6	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
 236	2021-10-06 15:00:02.334655+00			c7c4a073-df1c-4b0c-8fd8-b9a740cc9988	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
 237	2021-10-06 16:00:01.541377+00			ef9c2746-2b4a-46aa-9e74-e34ac2d013b1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+238	2021-10-06 17:00:01.576858+00			b5dcc01f-3190-462a-bc5f-76b8c7e82987	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+239	2021-10-06 18:00:02.084989+00			93fb7a2e-05dd-43f0-88ad-5c66d4715267	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+240	2021-10-06 19:00:01.398715+00			afde74e7-acb4-4cd7-bfc5-ffc6f7971c9f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+241	2021-10-06 20:00:05.887256+00			ef33dfad-9d40-4850-a167-c64366ebe423	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+242	2021-10-06 21:00:06.036911+00			89375584-f18f-4494-bb8a-bc0ca99f56e0	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+243	2021-10-06 21:05:32.474367+00			ff6b77d1-23e2-479c-9c71-5edcd6d66de3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+244	2021-10-06 22:00:02.287643+00			a8ed37bf-695d-4abb-9deb-998756110da7	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+245	2021-10-06 23:00:01.399725+00			61f6db6c-3208-41ea-96d0-1a438ed47a74	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+246	2021-10-07 00:00:01.540561+00			7d59b546-b07d-4928-9282-513cd47d9f75	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+247	2021-10-07 01:00:01.935368+00			a0714575-81d2-45a3-8650-8bc0c124a1f5	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+248	2021-10-07 02:00:02.075347+00			e2062942-1c9a-4196-aa1c-3872e7b2a788	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+249	2021-10-07 03:00:02.85229+00			158f07bf-eb8c-4a1f-9938-87307ee1db74	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+250	2021-10-07 04:00:01.951743+00			5d153a35-ba56-4a94-8759-c6391b74a95f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+251	2021-10-07 05:00:02.066555+00			c8d00cf5-89a0-4e63-b3c9-653b3b45e52a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+252	2021-10-07 06:00:01.46881+00			c7a6f3e6-e33a-4588-aa72-3a704d28b774	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+253	2021-10-07 07:00:01.48123+00			1a3f6163-1b0b-443f-84e5-6bc8675a7b8f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+254	2021-10-07 08:00:01.673279+00			b95fa6cb-fc11-49d1-9bc9-1df6c7f15bb3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+255	2021-10-07 09:00:01.840018+00			cae8e5c3-d655-4af8-9e04-d7b4af30b772	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+256	2021-10-07 10:00:02.133731+00			931b33e3-e615-445b-9d99-856184b9f88d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+257	2021-10-07 11:00:02.853905+00			6938ae61-b565-4f33-aae1-c02adba40a77	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+258	2021-10-07 12:00:02.296965+00			0fdba5f7-2867-4c40-b06f-b0a0e8f47cbb	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+259	2021-10-07 13:00:02.355025+00			78cf6924-1ac4-4984-b999-8fa758ca3c4a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+260	2021-10-07 14:00:01.642199+00			d933a00d-4ee0-47d0-b00a-520cf42dfd82	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+261	2021-10-07 15:00:02.192054+00			58f45072-6bc7-46c5-bce4-b8d45fdb22f7	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+262	2021-10-07 16:00:02.638852+00			e91e4db1-5166-4e50-a336-29b1d9364ca3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+263	2021-10-07 17:00:01.943377+00			1a0dcad7-ad5c-4961-a67e-a1ab34172441	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+264	2021-10-07 18:00:02.238137+00			b3e714be-1308-4443-8481-883d801920c1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+265	2021-10-07 19:00:06.238512+00			c8acf3c7-a3b7-4773-b2ab-2e4218ef9403	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+266	2021-10-07 20:00:02.370203+00			332d4126-36a5-4a7b-a9f3-2c86a84c2800	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+267	2021-10-07 21:00:01.88379+00			3b67cc7f-84cd-4326-9f43-a8f9f65a0903	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+268	2021-10-07 22:00:02.030541+00			aac889b7-f46f-4d67-b4df-bdd57036affa	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+269	2021-10-07 23:00:01.99308+00			997fb6a8-269d-4d9a-ae82-1016862dc979	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+270	2021-10-08 00:00:02.366707+00			f2d1a852-ff80-4f44-a7ae-91700b515efb	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+271	2021-10-08 01:00:01.628549+00			b9a1cd8e-2317-416d-8278-0a8c7bb8cc69	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+272	2021-10-08 02:00:01.75348+00			b408d355-b5f5-40df-817f-11cddb9cb195	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+273	2021-10-08 03:00:01.87722+00			d4832d23-d148-4ef2-9539-23f99d2589d0	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+274	2021-10-08 04:00:02.200433+00			09d4489a-f02f-4eee-a383-556c227354f4	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+275	2021-10-08 05:00:02.353234+00			7325a125-0cd9-4e3e-ab67-ca519204e8a1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+276	2021-10-08 06:00:01.690463+00			8af20ba2-5226-4f45-bbf2-5c804c8c526f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+277	2021-10-08 07:00:02.105832+00			def8e38b-ac78-486c-aef3-7576e01e4556	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+278	2021-10-08 08:00:02.362079+00			5469b42b-3861-4d72-858c-c94d708ff5d8	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+279	2021-10-08 09:00:01.766425+00			0d23d898-930a-495f-bb2b-c85430a85d6f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+280	2021-10-08 10:00:02.151158+00			a595d866-19a4-4f78-b959-8d3a2e71d0cd	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+281	2021-10-08 11:00:02.454314+00			f2415361-10c5-4c10-98b3-47c52ea4948e	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+282	2021-10-08 12:00:01.519267+00			f33df16c-3896-4a9c-b9be-5d85d9f5a226	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+283	2021-10-08 13:00:02.428722+00			5496fee0-a2f5-4d5f-9532-341e4844d2ee	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+284	2021-10-08 14:00:01.429771+00			a7e937b8-aa5b-4923-8c6e-25ed88b6ff3f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+285	2021-10-08 15:00:01.547712+00			5b2f7667-98a6-4a5a-a058-fc623e69c6b2	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+286	2021-10-08 16:00:01.483419+00			052981c8-a584-416f-9558-d5beec448493	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+287	2021-10-08 17:00:01.515243+00			1a98b5a8-e96a-4ba5-a95a-696193cc9f34	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+288	2021-10-08 18:00:01.547969+00			4bee8f75-bdeb-4103-bcd6-9b065b74e368	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+289	2021-10-08 19:00:01.625082+00			24468512-fb4d-40b6-bb64-df6e77a2fb66	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+290	2021-10-08 20:00:01.953191+00			5d8c485c-051c-4e4a-bfcc-d8f76a3b8348	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+291	2021-10-08 21:00:02.36828+00			0a491958-0693-4b60-a9be-81d4073a8cc1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+292	2021-10-08 22:00:01.715495+00			c2b18afb-cc55-48fc-aef3-979db13fdfa1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+293	2021-10-08 23:00:02.156852+00			5b095352-4c6d-4a5c-893e-70e96ff53157	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+294	2021-10-09 00:00:02.534223+00			4b8eb53c-dfb0-4e22-9da3-4efa0fa8dd45	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+295	2021-10-09 01:00:01.626865+00			1779544e-c243-448e-a953-e40b18fd5fed	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+296	2021-10-09 02:00:02.253566+00			f6b63fb8-d9f3-4a66-ae37-fa5b721b5f0a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+297	2021-10-09 03:00:01.828089+00			9f384262-278e-42bc-b61e-5f87a0539f2d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+298	2021-10-09 04:00:02.057477+00			f50549ec-67f8-44e1-9865-dfe07d2ebc98	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+299	2021-10-09 05:00:02.276204+00			68c5bad0-f3e1-4cb7-afe3-049578b9f43a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+300	2021-10-09 06:00:02.413083+00			bb8c39e2-96df-4b41-8fe2-d4da2819b7da	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+301	2021-10-09 07:00:01.670807+00			bddfa866-79fe-4a65-bbf6-e9fc9e186a36	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+302	2021-10-09 08:00:01.829176+00			2a69487e-6204-4755-a2d7-fe008450304c	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+303	2021-10-09 09:00:01.850811+00			cb195e50-3777-4e48-a95f-03f4602fdaa6	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+304	2021-10-09 10:00:01.856487+00			19764f32-af9f-4e1d-91c9-ccbd2ea5a54b	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+305	2021-10-09 11:00:02.080201+00			0a49be4c-5b02-4d5e-80a1-7ce7b3e7859b	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+306	2021-10-09 12:00:02.568739+00			9714aef4-30af-423e-a302-b4025f0b0e5f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+307	2021-10-09 13:00:01.841403+00			d5aa5e84-44a5-4f7b-9a85-95fedcf032d3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+308	2021-10-09 14:00:01.966127+00			6bc42723-f502-4c00-bb71-3b63d8d35c14	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+309	2021-10-09 15:00:02.364848+00			01ac76f0-877d-42c7-bd9c-38494e4d9f31	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+310	2021-10-09 16:00:01.516866+00			c44b1741-efef-4854-86b2-24a35c918492	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+311	2021-10-09 17:00:01.454602+00			ef84a818-d70f-4a80-9434-00008122f2a4	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+312	2021-10-09 18:00:01.581729+00			3d686b06-f8d6-4009-97f7-72defa13eb64	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+313	2021-10-09 19:00:01.856093+00			360e629f-0b67-41cb-8c7b-9b08cbf058ce	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+314	2021-10-09 20:00:02.116399+00			e7e6cadd-0dec-438b-87e0-0335a0cc22c2	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+315	2021-10-09 21:00:02.360939+00			f8a9b35a-0f81-4e66-8917-6ede90610553	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+316	2021-10-09 22:00:01.564504+00			f1aa419d-906b-498c-bafd-6286dd7977be	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+317	2021-10-09 23:00:01.940855+00			aa5d32ed-7b15-49fd-a001-fba969e7d132	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+318	2021-10-10 00:00:02.113186+00			b98ede35-d695-4638-b565-e84e14e83c3d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+319	2021-10-10 01:00:02.369466+00			288e4fd7-1f6c-41f7-940c-5153eddc6efd	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+320	2021-10-10 02:00:01.517762+00			03aa34a8-35c4-4266-9d9c-c775d16d7d7d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+321	2021-10-10 03:00:01.663742+00			8ee59559-8591-4310-9a69-672cc30bb902	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+322	2021-10-10 04:00:01.772639+00			45640b8f-9f80-45d4-9245-3038bbfd621a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+323	2021-10-10 05:00:02.189004+00			c419723c-1189-4bf0-95e1-845e051b4f5d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+324	2021-10-10 06:00:02.550958+00			621861f9-b204-4079-8401-7f5acac9104f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+325	2021-10-10 07:00:01.613078+00			fc59c780-3b7b-49fa-b2ca-3c7e159b84ea	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+326	2021-10-10 08:00:02.078126+00			88b188dd-8dc7-41d8-9ff8-c8bf007e1ea6	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+327	2021-10-10 09:00:02.146917+00			34297053-6f92-4d64-8bfc-ca267140e1d1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+328	2021-10-10 10:00:02.276307+00			4884b589-7e47-440d-9005-0539589c9425	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+329	2021-10-10 11:00:01.373828+00			31365108-71ce-43e6-8fa5-468456c1ccf8	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+330	2021-10-10 12:00:02.614809+00			e1f86b10-887e-4343-a6e0-6b851be4fde9	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+331	2021-10-10 13:00:01.831375+00			094c83f3-37a4-4cdc-8f90-88732ae9cb4f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+332	2021-10-10 14:00:02.429198+00			a3e94ab9-4549-4501-815f-c17ce862e882	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+333	2021-10-10 15:00:01.570142+00			8cbb957f-3cdf-45e5-8293-3b38bd5601c1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+334	2021-10-10 16:00:01.554086+00			4f03f320-02da-442c-bd9d-c069e0bd9eba	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+335	2021-10-10 17:00:01.70252+00			1aba0d2c-5b50-4a19-9b7d-9ac9bbd33ef1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+336	2021-10-10 18:00:01.966571+00			203c6fdc-b7fc-4bdf-aa21-4380ca204917	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+337	2021-10-10 19:00:01.954246+00			2fb3d2d0-790a-442d-920e-002d22e81e8d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+338	2021-10-10 20:00:02.316584+00			0ca8d993-097e-44d9-86e5-c5b01fc550d2	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+339	2021-10-10 21:00:01.516054+00			34c2368d-d689-4f9b-a291-e3fea605f1ea	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+340	2021-10-10 22:00:01.551+00			b9807cfd-8eb8-4a9d-8c2e-7dacc6f7d514	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+341	2021-10-10 23:00:02.094931+00			91fab970-1121-4b50-bc72-ae46f59de7d3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+342	2021-10-11 00:00:02.442557+00			7beb2dd7-095b-4c63-8528-b6f5cdd1b948	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+343	2021-10-11 01:00:02.048439+00			7cc9b629-6196-4b6d-8a90-cfe2a8aec06d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+344	2021-10-11 02:00:02.153225+00			adde1a84-d11d-442b-8b54-ecc9dc1b1574	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+345	2021-10-11 03:00:02.163244+00			4e0a2fa5-9b5a-4e88-968b-87f8e9b5476f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+346	2021-10-11 04:00:01.469177+00			048c25a2-a936-4eb1-bdc4-f7e783471eaf	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+347	2021-10-11 05:00:01.726067+00			47ea4924-0bf9-4bac-bb96-b3de7b154051	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+348	2021-10-11 06:00:01.958998+00			a556733d-625b-40f1-b96e-76ace757c1e5	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+349	2021-10-11 07:00:02.320831+00			63352edd-9351-4689-8397-185789de25fb	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+350	2021-10-11 08:00:02.262782+00			bb4edf22-9abc-4550-9f93-a048f448269e	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+351	2021-10-11 09:00:02.476053+00			eb2d4eaa-d69a-4584-85e2-2946a840a3df	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+352	2021-10-11 10:00:01.860536+00			64e12eab-a6dd-4588-a6f4-6a4b5f107c21	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+353	2021-10-11 11:00:02.252049+00			45e4753c-d099-4f11-a7c8-71e319d05894	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+354	2021-10-11 12:00:01.541645+00			e7158486-7803-4ea9-a9cf-1d21e507a5db	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+355	2021-10-11 13:00:02.125446+00			f65b6d1a-76a1-4567-b8e4-f2bb2da1fa3e	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+356	2021-10-11 14:00:02.44293+00			7fef62a3-7757-4bbc-9b63-db283ca86e15	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+357	2021-10-11 15:00:02.14492+00			bd519f9d-6d2e-4343-a76a-bfeb0ec1fd13	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+358	2021-10-11 16:00:02.431393+00			5bbf8968-fb3a-493e-89d8-c3cfefbfa340	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+359	2021-10-11 17:00:02.046771+00			7fcd0137-732a-4fe2-ad14-68586971b029	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+360	2021-10-11 18:00:02.478372+00			b981c5f9-5ba8-433d-a300-433b10474de3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+361	2021-10-11 19:00:01.552177+00			58ab4c0b-6b2f-4893-bef4-14c3084902c9	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+362	2021-10-11 20:00:01.865592+00			4ddd0759-e784-4f94-9eea-90a83ea8f29a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+363	2021-10-11 21:00:02.148918+00			c1e561af-c2d6-408f-8d72-b0402cc39739	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+364	2021-10-11 22:00:02.378381+00			4e595443-c431-4ea7-aea9-d62951a3fc33	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+365	2021-10-11 23:00:01.560758+00			ffb5835a-9268-4369-a5f0-3ffee42fe0be	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+366	2021-10-12 00:00:02.134067+00			9839afa2-6830-4214-9d2b-ec0068cd0492	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+367	2021-10-12 01:00:01.514951+00			4da81d1b-d4a3-4e20-a9ff-5427d0baa924	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+368	2021-10-12 02:00:01.752717+00			ff33b978-6a2d-4301-a201-a87673699895	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+369	2021-10-12 03:00:02.056263+00			2d540cd6-e616-4bc6-8e6f-18329e2beede	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+370	2021-10-12 04:00:02.242289+00			5c7f36b7-d767-41d2-92f0-ad1ebd62a18f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+371	2021-10-12 05:00:01.496174+00			eee2bcb2-d563-4163-9a11-2757ce5a5b70	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+372	2021-10-12 06:00:01.631991+00			770b45e3-15cc-451b-b4d3-72ce7ed509f0	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+373	2021-10-12 07:00:01.839221+00			61c94e94-e572-4864-a6af-3d4534fa0267	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+374	2021-10-12 08:00:02.154089+00			30c72ee1-b058-4b2a-93b6-53b464ee6920	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+375	2021-10-12 09:00:02.400285+00			68bbc5dc-a5bf-43a3-bb1b-7ba5b600d0b3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+376	2021-10-12 10:00:01.699035+00			ee238321-cb1e-4ba3-890b-a797e666d230	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+377	2021-10-12 11:00:01.926229+00			31e90039-9495-4d7b-b8ed-58b130f954ca	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+378	2021-10-12 12:00:02.138155+00			38ef6cc5-5d1c-4f39-84fc-8c3f43d85da5	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+379	2021-10-12 13:00:02.323029+00			bf33795e-480e-46c3-868b-d9812bf73b50	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+380	2021-10-12 14:00:01.3662+00			e32f7fe3-46ce-454d-8227-23cc57cf465f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+381	2021-10-12 15:00:01.46816+00			0872118e-ffb6-4e9e-ba44-a85ebdf6a156	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+382	2021-10-12 16:00:01.789226+00			011051ef-fcf1-4eb6-8c08-09441cc35f68	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+383	2021-10-12 17:00:02.135619+00			55134864-c200-44b1-bdc9-993889601e8b	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+384	2021-10-12 18:00:02.544779+00			181cc7d6-f8ff-470d-9e6e-fa7ab86fb100	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+385	2021-10-12 18:56:34.649692+00			24b20ae9-462f-4747-8061-ac9a76c152ff	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+386	2021-10-12 19:00:01.734553+00			4e178a5c-c758-4649-9697-2cdf4a666df3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+387	2021-10-12 20:00:02.017882+00			87e0c0ab-dff6-4a8a-a5c7-142e7107f8bb	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+388	2021-10-12 21:00:02.377963+00			34198afa-ab0c-46d4-94cf-992de6cd999c	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+389	2021-10-12 22:00:01.523291+00			6e605c7c-3326-42de-9eba-2e425d39ef95	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+390	2021-10-12 23:00:01.716643+00			9ad8ebb8-eee1-42f8-a5b2-a30783d5714d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+391	2021-10-13 00:00:02.054307+00			eaa50f17-fee9-4a95-b604-2afbe27badd7	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+392	2021-10-13 01:00:02.254762+00			ab92a8a9-d3ee-42df-8dbc-945cff2d3aad	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+393	2021-10-13 02:00:02.376238+00			a65d69d2-9b78-40a3-9745-b61f33b63977	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+394	2021-10-13 03:00:01.475507+00			3e2e4059-f1ac-47e5-a70e-451145a5fd72	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+395	2021-10-13 04:00:01.604974+00			8afaf25b-1633-4aa0-a68b-d28f78739532	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+396	2021-10-13 05:00:01.728269+00			4ad7300f-fac0-4267-b616-c4bb6877664e	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+397	2021-10-13 06:00:01.69127+00			12018938-f3ce-4916-8c2a-21d771237193	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+398	2021-10-13 07:00:01.86107+00			124230b8-c193-4603-85ed-752ddd363a76	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+399	2021-10-13 08:00:02.146642+00			bf833072-1bd4-445d-bcef-6af225d1ff7f	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+400	2021-10-13 09:00:02.462929+00			f0f3814b-8122-467a-b6ab-e6d1a924d1d0	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+401	2021-10-13 10:00:01.555853+00			b228e353-8a1d-4609-b736-9cd789a0b437	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+402	2021-10-13 11:00:01.714223+00			0a82a54f-830e-4b74-a697-5f746cb70651	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+403	2021-10-13 12:00:01.961923+00			34160f16-cb3d-4a91-9bf5-e41e9e610efe	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+404	2021-10-13 13:00:02.215682+00			950b6c47-19d8-445a-adfe-475921155b69	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+405	2021-10-13 14:00:02.413456+00			43566e89-5d07-45cc-bce4-08ad5188743d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+406	2021-10-13 15:00:01.566208+00			aeec23ed-9a74-4f32-96a2-b7bb97aac080	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+407	2021-10-13 16:00:01.591062+00			015a6b05-2d46-47ea-9f9a-548ed3b9eb43	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+408	2021-10-13 17:00:01.956399+00			72aa42aa-c369-4042-86b0-f9ade1bd6a4d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+409	2021-10-13 18:00:02.213059+00			e3d652af-6936-49bd-82f7-c899799c7565	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+410	2021-10-13 19:00:02.404705+00			fddd1e2d-508c-457a-bcf1-d80a76fd813d	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+411	2021-10-13 20:00:01.562285+00			7931aa5b-9064-4beb-9ffd-39d79d105288	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+412	2021-10-13 21:00:01.834262+00			b5f2367a-b459-4b30-bedc-5bd874dd4c76	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+413	2021-10-13 22:00:01.956416+00			6b4529da-b401-4b4e-94a1-5a6dcb26c672	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+414	2021-10-13 23:00:02.228887+00			7ebf6650-9111-494c-9a52-852bb76c03ff	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+415	2021-10-14 00:00:02.528897+00			3975d3a4-668d-4a5a-8bbb-8543fa6785df	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+416	2021-10-14 01:00:01.748528+00			7710c9fa-b5df-419c-b04b-59f295624c56	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+417	2021-10-14 02:00:02.021461+00			5f912a00-fc2d-46f3-b703-481efba980e3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+418	2021-10-14 03:00:02.444015+00			82cb696b-eeb5-424c-88ba-6199da3daf2c	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+419	2021-10-14 04:00:01.570972+00			daf67f12-0464-400d-8f0d-b2a8f142f563	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+420	2021-10-14 05:00:01.652025+00			b1830672-724a-4adc-9b5c-0d3f5864bd50	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+421	2021-10-14 06:00:01.919412+00			697b15b8-6d30-4ccc-817d-f6b1a6c3fd10	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+422	2021-10-14 07:00:02.224324+00			c45120d3-4e91-457a-9277-adf46c383d54	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+423	2021-10-14 08:00:02.351392+00			705138c4-4ea1-4100-ae0f-ffea8af90525	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+424	2021-10-14 09:00:02.456202+00			631405e9-88c1-44d9-8d12-9801303a4902	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+425	2021-10-14 10:00:01.592331+00			4a4ff5c5-0671-440a-8161-67e44bcfd9bc	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+426	2021-10-14 11:00:01.619582+00			f8b1ee5d-029b-4fba-b969-05ec6624d9f3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+427	2021-10-14 12:00:01.692957+00			d439c56d-cc84-4b4a-a1fb-04de2b6ae395	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+428	2021-10-14 13:00:02.052975+00			41f0aaac-dafd-4f1c-abb2-b335b72f50c9	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+429	2021-10-14 14:00:02.346116+00			d6a34957-60f8-420f-889b-6ebde94cf7b9	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+430	2021-10-14 15:00:01.797975+00			2a015dfb-3cae-418d-8564-9a3c541c86ad	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+431	2021-10-14 16:00:02.148031+00			47b7b363-c2a8-4d47-aa19-93fa947cae66	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+432	2021-10-14 17:00:02.253014+00			9103c945-a201-4651-84a5-6f4f90a15d74	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+433	2021-10-14 18:00:02.557894+00			f51d6f42-c44d-4d13-afee-7200c0c58f9e	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+434	2021-10-14 19:00:01.762613+00			dc5693e5-79e2-4f45-99d6-8a33924b4447	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+435	2021-10-14 20:00:01.770234+00			2a4152ff-7f14-4b63-96f8-3fedeae50283	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+436	2021-10-14 21:00:01.861946+00			c25e97a8-16da-4736-b49c-57a5b2431a46	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+437	2021-10-14 22:00:01.975815+00			fb4847b7-7aa9-4094-b09b-7dec7ed36100	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+438	2021-10-14 23:00:02.223599+00			738c08b6-4036-40ff-bad0-b8f21a539cd1	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+439	2021-10-15 00:00:02.555091+00			ded7b415-99b5-47ff-b2e0-627f35e319e9	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+440	2021-10-15 01:00:01.960928+00			e1e0b45f-0ec6-41cd-95cc-a1e00b10ba71	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+441	2021-10-15 02:00:02.141289+00			ade57981-f366-42a4-a7a2-2bd64824dc2a	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+442	2021-10-15 03:00:02.396016+00			1f233a8b-d042-4568-8ce3-4330466f3966	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+443	2021-10-15 04:00:01.579015+00			1815cb44-8f97-4786-b957-7c973c5a46f3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+444	2021-10-15 05:00:01.658788+00			74f23bc0-91f2-45f7-8bd2-c66409c7a837	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+445	2021-10-15 06:00:01.763053+00			53239ef8-9d78-4760-b58c-b5d8e22d0cc5	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+446	2021-10-15 07:00:01.756821+00			7746b616-da15-454f-9078-82f9800db9b0	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+447	2021-10-15 08:00:01.816924+00			32f7a575-b97d-4e8c-aaff-221e030861a3	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+448	2021-10-15 09:00:02.10681+00			8c618d74-d680-43e3-bcfa-a21b9c7f2e6b	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+449	2021-10-15 10:00:02.313566+00			7f270682-1f25-432f-9dd4-9623d8f9d8bd	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+450	2021-10-15 11:00:02.42015+00			f385fd37-ee74-401d-8445-9a128b838706	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+451	2021-10-15 12:00:02.462958+00			cd33d558-3f2d-493e-b65a-2140e66c76ee	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+452	2021-10-15 13:00:01.946319+00			0695478d-7811-4bea-8223-cc311058d7d6	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+453	2021-10-15 14:00:02.129216+00			18c390c1-d670-4f07-bf85-8ece8112c410	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+454	2021-10-15 15:00:02.501083+00			c1bb1951-b34c-4457-8293-4fe40b309f78	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+455	2021-10-15 16:00:01.773704+00			4f5aeaf8-ad96-4265-8e02-915769fa6a5c	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+456	2021-10-15 17:00:02.043465+00			3e419c7a-4233-4f4c-9178-6134bdfe9f93	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+457	2021-10-15 18:00:02.149149+00			d956ec4f-b65f-4a55-bd77-7ea889880c43	\N	79	\N	0.000	0.000	\N	\N	en	0.000	0.000	0.000	unfulfilled	\N	\N	t	\N		0		USD	{}	{"due_date": 1634270400000, "fo_payment_status": "PREPAID", "customer_purchase_order_num": "109"}
+2	2021-05-20 19:23:01.715304+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	4c74ec7f-6816-40a0-b94b-37265e00304c	10	9	38	5.000	0.000	\N	\N	en	5.000	5.000	5.000	canceled	Standard Shipping	1	t	\N		1000	8119b6a4-10cd-48f5-9545-eb6ef8ad5d53	USD	{}	{}
+1	2021-05-20 19:21:22.134618+00	ff1da619-a593-5b8d-8586-2198e0970640	maeghan.m.provencher@gmail.com	9acbd85f-69da-423c-a39f-a483c0cd9379	7	6	38	6.000	0.000	\N	\N	en	5.000	6.000	5.000	canceled	Standard Shipping	1	t	\N		1000	cdae3fcd-f2fb-43a2-a39e-cce170c3717b	USD	{}	{}
+458	2021-10-28 19:42:13.176966+00	d76dc4ba-0af7-5544-9d5e-199fef309191	customer@example.com	9d79e5d9-cb9e-4a2a-8bf8-9fb82b81016f	31	30	5	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	5f124ec1-5932-4fec-bc2d-1797e5defc42	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+459	2021-10-29 12:23:28.592499+00	a3656da9-2422-5bda-941f-c65196675bd2	customer@example.com	cfefdee4-5d39-4d79-9ca6-d198156a0eff	114	113	5	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	c06053c1-6138-4641-abfc-f764b0eea7e8	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+460	2021-10-29 13:46:11.183303+00	158fd769-8f52-51d6-bebe-3099922342a0	kynand+rcsandbox1@gmail.com	9e5b70c9-53f6-48e9-a1ab-a33cca992ae9	115	104	39	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	3d006b32-abb7-4c95-80ce-dad471c650d3	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+461	2021-10-29 13:56:34.810197+00	e26fd638-b9fb-5fba-b3e5-4c0542ece96e	kynand+rcsandbox2@gmail.com	4a3560eb-982a-4365-971c-bbf5056c3402	118	107	41	1605.000	0.000	\N	\N	en	5.000	1605.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	5b57bf3d-6cb2-4a52-8f35-86f3c2bdce9c	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+462	2021-10-29 15:56:14.898457+00	c32daead-47b2-5250-af5f-daf49b2b046f	kynand+rcsandbox2@gmail.com	81db1ac3-3ff7-47f6-8dcf-fd6021d4963d	131	130	41	2405.000	0.000	\N	\N	en	5.000	2405.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	f7aa007b-1c54-407f-a5f0-0dcf884c809d	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+463	2021-10-29 16:05:44.873581+00	c32daead-47b2-5250-af5f-daf49b2b046f	kynand+rcsandbox3@gmail.com	461587ef-9434-4862-8724-c10a90257351	136	135	43	1754.990	0.000	\N	\N	en	5.000	1754.990	5.000	unfulfilled	Standard Shipping	1	t	\N		0	806971b1-f99a-448a-8938-913c41cdceb9	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+469	2021-11-02 17:46:51.437122+00	b4a3470c-c038-590b-a446-b707786c1306	avicinus+friday@gmail.com	b7ebf2ad-f4e1-40a8-9a1c-3eadbf54610a	153	152	42	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	cc9c99e6-9ed6-46e9-9d07-62c1dd4b46dd	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+464	2021-10-29 16:28:09.284774+00	c32daead-47b2-5250-af5f-daf49b2b046f	kynand+rcsandbox4@gmail.com	a3203dc4-1bd9-4c09-a08b-1d7e03d58860	141	140	44	1750.000	0.000	\N	\N	en	5.000	1750.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	56a216bc-e989-4a02-8446-d5ba05c2c4b5	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+465	2021-10-29 16:32:56.43418+00	c32daead-47b2-5250-af5f-daf49b2b046f	kynand+rcsandbox4@gmail.com	e866b219-291e-4c6e-855a-b590638778e3	145	144	44	3205.000	0.000	\N	\N	en	5.000	3205.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	02606d49-2bb3-43a2-bc6d-37ec6215baa8	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+466	2021-10-29 18:04:39.507353+00	bb417dc2-0b1f-5cde-9982-5e806a5e1080	kynand+rcsandbox1@gmail.com	14ee355e-20e7-4859-ac49-e3682673e30b	125	124	39	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	51d3e15b-b9b5-4a63-8252-7d7fc7f2aaf7	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+467	2021-10-29 19:01:28.61778+00	b861347b-ff5b-5270-8695-e24995ba8039	avicinus+friday@gmail.com	07ad2204-3f43-48d9-a632-b092ffeba736	146	111	42	805.000	0.000	\N	\N	en	5.000	805.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	dbb63541-9829-47dd-80db-9985273a0fca	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+470	2021-11-03 20:46:41.83544+00	de25fbb4-d2fa-5b84-8ab2-a619c1c21a13	avicinus+friday@gmail.com	d77a88f3-ac6e-4f54-a8c6-f2a41bdccb27	159	158	42	805.000	0.000	\N	\N	en	5.000	805.000	5.000	fulfilled	Standard Shipping	1	t	\N		0	210125b4-df7b-43e0-b380-f21ec1c89a37	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+468	2021-11-02 10:08:16.01114+00	9a6b392e-073d-504e-ad14-8a6a2686d015	rc-admin-sandbox@36creative.com	d5ab0c5e-a679-49c0-98d9-a29f3981916b	128	127	1	3205.000	0.000	\N	\N	en	5.000	3205.000	5.000	unfulfilled	Standard Shipping	1	t	\N		0	e22d635a-9d48-4ae3-a7f7-d7b97fc44e06	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
+471	2021-11-05 15:45:50.803849+00	6acab840-e42e-55ab-b633-7ad52c267bb9	avicinus+friday@gmail.com	f3240dd3-1376-456e-8bc6-35b3eab4c09d	163	162	42	32405.000	0.000	\N	\N	en	5.000	32405.000	5.000	fulfilled	Standard Shipping	1	t	\N		0	cf09396b-1ae4-47d1-b526-85e40d269f3b	USD	{}	{"due_date": 1631797705359, "fo_payment_status": "PREPAID", "customer_purchase_order_num": 123}
 \.
 
 
@@ -7239,6 +20114,69 @@ COPY public.order_orderevent (id, date, type, order_id, user_id, parameters) FRO
 39	2021-08-27 15:27:01.321188+00	email_sent	5	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
 40	2021-08-27 15:27:02.877517+00	email_sent	6	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
 41	2021-08-27 15:27:03.060306+00	email_sent	7	5	{"email": "customer@example.com", "email_type": "order_confirmation"}
+42	2021-10-28 19:42:13.221247+00	placed	458	5	{}
+43	2021-10-28 19:42:13.393572+00	payment_captured	458	5	{"amount": "805.000", "payment_id": "pm_1JpeU1GwGY8wmB3DnK40abBw", "payment_gateway": "mirumee.payments.stripe"}
+44	2021-10-28 19:42:13.411477+00	order_fully_paid	458	5	{}
+45	2021-10-28 19:42:13.414392+00	email_sent	458	5	{"email": "customer@example.com", "email_type": "payment_confirmation"}
+46	2021-10-29 12:23:28.634755+00	placed	459	5	{}
+47	2021-10-29 12:23:28.76196+00	payment_captured	459	5	{"amount": "805.000", "payment_id": "pm_1JpeU1GwGY8wmB3DnK40abBw", "payment_gateway": "mirumee.payments.stripe"}
+48	2021-10-29 12:23:28.78563+00	order_fully_paid	459	5	{}
+49	2021-10-29 12:23:28.788956+00	email_sent	459	5	{"email": "customer@example.com", "email_type": "payment_confirmation"}
+50	2021-10-29 13:46:11.227815+00	placed	460	39	{}
+51	2021-10-29 13:46:11.374162+00	payment_captured	460	39	{"amount": "805.000", "payment_id": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "payment_gateway": "mirumee.payments.stripe"}
+52	2021-10-29 13:46:11.397222+00	order_fully_paid	460	39	{}
+53	2021-10-29 13:46:11.399514+00	email_sent	460	39	{"email": "kynand+rcsandbox1@gmail.com", "email_type": "payment_confirmation"}
+54	2021-10-29 13:56:34.849678+00	placed	461	41	{}
+55	2021-10-29 13:56:35.04989+00	payment_captured	461	41	{"amount": "1605.000", "payment_id": "pm_1JpvYkGwGY8wmB3D8pGbqiBQ", "payment_gateway": "mirumee.payments.stripe"}
+56	2021-10-29 13:56:35.085705+00	order_fully_paid	461	41	{}
+57	2021-10-29 13:56:35.089314+00	email_sent	461	41	{"email": "kynand+rcsandbox2@gmail.com", "email_type": "payment_confirmation"}
+58	2021-10-29 15:56:14.944802+00	placed	462	41	{}
+59	2021-10-29 15:56:15.095295+00	payment_captured	462	41	{"amount": "2405.000", "payment_id": "pm_1JpxPoGwGY8wmB3DXNXZNXS3", "payment_gateway": "mirumee.payments.stripe"}
+60	2021-10-29 15:56:15.12646+00	order_fully_paid	462	41	{}
+61	2021-10-29 15:56:15.129572+00	email_sent	462	41	{"email": "kynand+rcsandbox2@gmail.com", "email_type": "payment_confirmation"}
+62	2021-10-29 16:05:44.918041+00	placed	463	43	{}
+63	2021-10-29 16:05:45.547296+00	payment_captured	463	43	{"amount": "1754.990", "payment_id": "pm_1JpxWvGwGY8wmB3DVGyCqNwM", "payment_gateway": "mirumee.payments.stripe"}
+64	2021-10-29 16:05:45.564903+00	order_fully_paid	463	43	{}
+65	2021-10-29 16:05:45.567165+00	email_sent	463	43	{"email": "kynand+rcsandbox3@gmail.com", "email_type": "payment_confirmation"}
+66	2021-10-29 16:28:09.337211+00	placed	464	44	{}
+67	2021-10-29 16:28:09.531439+00	payment_captured	464	44	{"amount": "1750.000", "payment_id": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "payment_gateway": "mirumee.payments.stripe"}
+68	2021-10-29 16:28:09.558089+00	order_fully_paid	464	44	{}
+69	2021-10-29 16:28:09.561439+00	email_sent	464	44	{"email": "kynand+rcsandbox4@gmail.com", "email_type": "payment_confirmation"}
+70	2021-10-29 16:32:56.462844+00	placed	465	44	{}
+71	2021-10-29 16:32:56.546067+00	payment_captured	465	44	{"amount": "3205.000", "payment_id": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "payment_gateway": "mirumee.payments.stripe"}
+72	2021-10-29 16:32:56.560148+00	order_fully_paid	465	44	{}
+73	2021-10-29 16:32:56.562219+00	email_sent	465	44	{"email": "kynand+rcsandbox4@gmail.com", "email_type": "payment_confirmation"}
+74	2021-10-29 18:04:39.542404+00	placed	466	39	{}
+75	2021-10-29 18:04:39.639304+00	payment_captured	466	39	{"amount": "805.000", "payment_id": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "payment_gateway": "mirumee.payments.stripe"}
+76	2021-10-29 18:04:39.670924+00	order_fully_paid	466	39	{}
+77	2021-10-29 18:04:39.673248+00	email_sent	466	39	{"email": "kynand+rcsandbox1@gmail.com", "email_type": "payment_confirmation"}
+78	2021-10-29 19:01:28.654986+00	placed	467	42	{}
+79	2021-10-29 19:01:28.756934+00	payment_captured	467	42	{"amount": "805.000", "payment_id": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "payment_gateway": "mirumee.payments.stripe"}
+80	2021-10-29 19:01:28.77356+00	order_fully_paid	467	42	{}
+81	2021-10-29 19:01:28.775958+00	email_sent	467	42	{"email": "avicinus+friday@gmail.com", "email_type": "payment_confirmation"}
+82	2021-11-02 10:08:16.042097+00	placed	468	1	{}
+83	2021-11-02 10:08:16.187751+00	payment_captured	468	1	{"amount": "3205.000", "payment_id": "pm_1JpeFoGwGY8wmB3DSt3GA2lO", "payment_gateway": "mirumee.payments.stripe"}
+84	2021-11-02 10:08:16.20161+00	order_fully_paid	468	1	{}
+85	2021-11-02 10:08:16.203934+00	email_sent	468	1	{"email": "rc-admin-sandbox@36creative.com", "email_type": "payment_confirmation"}
+86	2021-11-02 17:46:51.465061+00	placed	469	42	{}
+87	2021-11-02 17:46:51.544403+00	payment_captured	469	42	{"amount": "805.000", "payment_id": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "payment_gateway": "mirumee.payments.stripe"}
+88	2021-11-02 17:46:51.558585+00	order_fully_paid	469	42	{}
+89	2021-11-02 17:46:51.56052+00	email_sent	469	42	{"email": "avicinus+friday@gmail.com", "email_type": "payment_confirmation"}
+90	2021-11-02 20:33:25.591667+00	note_added	469	1	{"message": "Test note"}
+91	2021-11-02 20:33:50.066757+00	note_added	469	1	{"message": "Test note 2"}
+92	2021-11-03 20:41:40.225247+00	invoice_generated	469	1	{"invoice_number": "1/11/2021"}
+93	2021-11-03 20:46:42.244676+00	placed	470	42	{}
+94	2021-11-03 20:46:42.442795+00	payment_captured	470	42	{"amount": "805.000", "payment_id": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "payment_gateway": "mirumee.payments.stripe"}
+95	2021-11-03 20:46:42.4625+00	order_fully_paid	470	42	{}
+96	2021-11-03 20:46:42.465543+00	email_sent	470	42	{"email": "avicinus+friday@gmail.com", "email_type": "payment_confirmation"}
+97	2021-11-03 20:51:24.164811+00	fulfillment_fulfilled_items	470	1	{"fulfilled_items": [3]}
+98	2021-11-03 20:51:26.332171+00	email_sent	470	1	{"email": "avicinus+friday@gmail.com", "email_type": "fulfillment_confirmation"}
+99	2021-11-05 15:45:51.374783+00	placed	471	42	{}
+100	2021-11-05 15:45:51.546536+00	payment_captured	471	42	{"amount": "32405.000", "payment_id": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "payment_gateway": "mirumee.payments.stripe"}
+101	2021-11-05 15:45:51.566072+00	order_fully_paid	471	42	{}
+102	2021-11-05 15:45:51.56823+00	email_sent	471	42	{"email": "avicinus+friday@gmail.com", "email_type": "payment_confirmation"}
+103	2021-11-05 15:53:26.836721+00	fulfillment_fulfilled_items	471	1	{"fulfilled_items": [4]}
+104	2021-11-05 15:53:26.920057+00	email_sent	471	1	{"email": "avicinus+friday@gmail.com", "email_type": "fulfillment_confirmation"}
 \.
 
 
@@ -7249,210 +20187,422 @@ COPY public.order_orderevent (id, date, type, order_id, user_id, parameters) FRO
 COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price_net_amount, unit_price_gross_amount, is_shipping_required, order_id, quantity_fulfilled, variant_id, tax_rate, translated_product_name, currency, translated_variant_name, variant_name) FROM stdin;
 1	Intel Pentium Gold 7505 Processor A	1234	1	1.000	1.000	t	1	0	\N	0.00		USD		1234
 2	Intel Pentium Gold 7505 Processor C	12345	1	0.000	0.000	t	2	0	\N	0.00		USD		12345
-3	Intel® Celeron® Processor N3010	12345	5	105.000	105.000	t	3	0	7	0.00		USD		12345
-4	Intel® Core™ i3-8100 Processor	1234	3	200.590	200.590	t	4	0	6	0.00		USD		1 day / 1
-5	Intel® Xeon® Gold 6130T Processor	123456	1	1200.460	1200.460	t	4	0	8	0.00		USD		123456
-6	Intel® Xeon® Gold 6130T Processor	123456	2	1200.460	1200.460	t	5	2	8	0.00		USD		123456
-7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	6	0.00		USD		1 day / 1
-8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	7	0.00		USD		4
-9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	18	0.00		USD		4
-18			1	50.000	50.000	t	33	0	63	0.00		USD		
-19			1	50.000	50.000	t	34	0	63	0.00		USD		
-20			1	50.000	50.000	t	35	0	63	0.00		USD		
-21			1	50.000	50.000	t	36	0	63	0.00		USD		
-22			1	50.000	50.000	t	37	0	63	0.00		USD		
-23			1	50.000	50.000	t	38	0	63	0.00		USD		
-24			1	50.000	50.000	t	39	0	63	0.00		USD		
-25			1	50.000	50.000	t	40	0	63	0.00		USD		
-26			1	50.000	50.000	t	41	0	63	0.00		USD		
-27			1	50.000	50.000	t	42	0	63	0.00		USD		
-28			1	50.000	50.000	t	43	0	63	0.00		USD		
-29			1	50.000	50.000	t	44	0	63	0.00		USD		
-30			1	50.000	50.000	t	45	0	63	0.00		USD		
-31			1	50.000	50.000	t	46	0	63	0.00		USD		
-32			1	50.000	50.000	t	47	0	63	0.00		USD		
-33			1	50.000	50.000	t	48	0	63	0.00		USD		
-34			1	50.000	50.000	t	49	0	63	0.00		USD		
-35			1	50.000	50.000	t	50	0	63	0.00		USD		
-36			1	50.000	50.000	t	51	0	63	0.00		USD		
-37			1	50.000	50.000	t	52	0	63	0.00		USD		
-38			1	50.000	50.000	t	55	0	63	0.00		USD		
-39			1	50.000	50.000	t	56	0	63	0.00		USD		
-40			1	50.000	50.000	t	57	0	63	0.00		USD		
-41			1	50.000	50.000	t	58	0	63	0.00		USD		
-42			1	50.000	50.000	t	59	0	63	0.00		USD		
-43			1	50.000	50.000	t	63	0	63	0.00		USD		
-44			1	50.000	50.000	t	64	0	63	0.00		USD		
-45			1	50.000	50.000	t	65	0	63	0.00		USD		
-46			1	50.000	50.000	t	66	0	63	0.00		USD		
-47			1	50.000	50.000	t	67	0	63	0.00		USD		
-48			1	50.000	50.000	t	68	0	63	0.00		USD		
-49			1	50.000	50.000	t	69	0	63	0.00		USD		
-50			1	50.000	50.000	t	70	0	63	0.00		USD		
-51			1	50.000	50.000	t	71	0	63	0.00		USD		
-52			10	50.000	50.000	t	72	0	63	0.00		USD		
-53			10	50.000	50.000	t	73	0	63	0.00		USD		
-54			10	50.000	50.000	t	74	0	63	0.00		USD		
-55			1	50.000	50.000	t	75	0	63	0.00		USD		
-56			1	50.000	50.000	t	76	0	63	0.00		USD		
-57			1	50.000	50.000	t	77	0	63	0.00		USD		
-58			1	50.000	50.000	t	78	0	63	0.00		USD		
-59			1	50.000	50.000	t	79	0	63	0.00		USD		
-60			1	50.000	50.000	t	80	0	63	0.00		USD		
-61			1	50.000	50.000	t	81	0	63	0.00		USD		
-62			1	50.000	50.000	t	82	0	63	0.00		USD		
-63			1	50.000	50.000	t	83	0	63	0.00		USD		
-64			1	50.000	50.000	t	84	0	63	0.00		USD		
-65			1	50.000	50.000	t	85	0	63	0.00		USD		
-66			1	50.000	50.000	t	86	0	63	0.00		USD		
-67			1	50.000	50.000	t	87	0	63	0.00		USD		
-68			1	50.000	50.000	t	88	0	63	0.00		USD		
-69			1	50.000	50.000	t	89	0	63	0.00		USD		
-70			1	50.000	50.000	t	93	0	63	0.00		USD		
-71			1	50.000	50.000	t	94	0	63	0.00		USD		
-72			1	50.000	50.000	t	95	0	63	0.00		USD		
-73			1	50.000	50.000	t	96	0	63	0.00		USD		
-74			1	50.000	50.000	t	97	0	63	0.00		USD		
-75			1	50.000	50.000	t	98	0	63	0.00		USD		
-76			1	50.000	50.000	t	99	0	63	0.00		USD		
-77			1	50.000	50.000	t	100	0	63	0.00		USD		
-78			1	50.000	50.000	t	101	0	63	0.00		USD		
-79			1	50.000	50.000	t	102	0	63	0.00		USD		
-80			1	50.000	50.000	t	103	0	63	0.00		USD		
-81			1	50.000	50.000	t	104	0	63	0.00		USD		
-82			1	50.000	50.000	t	105	0	63	0.00		USD		
-83			1	50.000	50.000	t	106	0	63	0.00		USD		
-84			1	50.000	50.000	t	107	0	63	0.00		USD		
-85			1	50.000	50.000	t	108	0	63	0.00		USD		
-86			1	50.000	50.000	t	109	0	63	0.00		USD		
-87			1	50.000	50.000	t	110	0	63	0.00		USD		
-88			1	50.000	50.000	t	111	0	63	0.00		USD		
-89			1	50.000	50.000	t	112	0	63	0.00		USD		
-90			1	50.000	50.000	t	113	0	63	0.00		USD		
-91			1	50.000	50.000	t	114	0	63	0.00		USD		
-92			1	50.000	50.000	t	115	0	63	0.00		USD		
-93			1	50.000	50.000	t	116	0	63	0.00		USD		
-94			1	50.000	50.000	t	117	0	63	0.00		USD		
-95			1	50.000	50.000	t	118	0	63	0.00		USD		
-96			1	50.000	50.000	t	119	0	63	0.00		USD		
-97			1	50.000	50.000	t	120	0	63	0.00		USD		
-98			1	50.000	50.000	t	121	0	63	0.00		USD		
-99			1	50.000	50.000	t	122	0	63	0.00		USD		
-100			1	50.000	50.000	t	123	0	63	0.00		USD		
-101			1	50.000	50.000	t	124	0	63	0.00		USD		
-102			1	50.000	50.000	t	125	0	63	0.00		USD		
-103			1	50.000	50.000	t	126	0	63	0.00		USD		
-104			1	50.000	50.000	t	127	0	63	0.00		USD		
-105			1	50.000	50.000	t	128	0	63	0.00		USD		
-106			1	50.000	50.000	t	129	0	63	0.00		USD		
-107			1	50.000	50.000	t	130	0	63	0.00		USD		
-108			1	50.000	50.000	t	131	0	63	0.00		USD		
-109			1	50.000	50.000	t	132	0	63	0.00		USD		
-110			1	50.000	50.000	t	133	0	63	0.00		USD		
-111			1	50.000	50.000	t	134	0	63	0.00		USD		
-112			1	50.000	50.000	t	135	0	63	0.00		USD		
-113			1	50.000	50.000	t	136	0	63	0.00		USD		
-114			1	50.000	50.000	t	137	0	63	0.00		USD		
-115			1	50.000	50.000	t	138	0	63	0.00		USD		
-116			1	50.000	50.000	t	139	0	63	0.00		USD		
-117			1	50.000	50.000	t	140	0	63	0.00		USD		
-118			1	50.000	50.000	t	141	0	63	0.00		USD		
-119			1	50.000	50.000	t	142	0	63	0.00		USD		
-120			1	50.000	50.000	t	143	0	63	0.00		USD		
-121			1	50.000	50.000	t	144	0	63	0.00		USD		
-122			1	50.000	50.000	t	145	0	63	0.00		USD		
-123			1	50.000	50.000	t	146	0	63	0.00		USD		
-124			1	50.000	50.000	t	147	0	63	0.00		USD		
-125			1	50.000	50.000	t	148	0	63	0.00		USD		
-126			1	50.000	50.000	t	149	0	63	0.00		USD		
-127			1	50.000	50.000	t	150	0	63	0.00		USD		
-128			1	50.000	50.000	t	151	0	63	0.00		USD		
-129			1	50.000	50.000	t	152	0	63	0.00		USD		
-130			1	50.000	50.000	t	153	0	63	0.00		USD		
-131			1	50.000	50.000	t	154	0	63	0.00		USD		
-132			1	50.000	50.000	t	155	0	63	0.00		USD		
-133			1	50.000	50.000	t	156	0	63	0.00		USD		
-134			1	50.000	50.000	t	157	0	63	0.00		USD		
-135			1	50.000	50.000	t	158	0	63	0.00		USD		
-136			1	50.000	50.000	t	159	0	63	0.00		USD		
-137			1	50.000	50.000	t	160	0	63	0.00		USD		
-138			1	50.000	50.000	t	161	0	63	0.00		USD		
-139			1	50.000	50.000	t	162	0	63	0.00		USD		
-140			1	50.000	50.000	t	163	0	63	0.00		USD		
-141			1	50.000	50.000	t	164	0	63	0.00		USD		
-142			1	50.000	50.000	t	165	0	63	0.00		USD		
-143			1	50.000	50.000	t	166	0	63	0.00		USD		
-144			1	50.000	50.000	t	167	0	63	0.00		USD		
-145			1	50.000	50.000	t	168	0	63	0.00		USD		
-146			1	50.000	50.000	t	169	0	63	0.00		USD		
-147			1	50.000	50.000	t	170	0	63	0.00		USD		
-148			1	50.000	50.000	t	171	0	63	0.00		USD		
-149			1	50.000	50.000	t	172	0	63	0.00		USD		
-150			1	50.000	50.000	t	173	0	63	0.00		USD		
-151			1	50.000	50.000	t	174	0	63	0.00		USD		
-152			1	50.000	50.000	t	175	0	63	0.00		USD		
-153			1	50.000	50.000	t	176	0	63	0.00		USD		
-154			1	50.000	50.000	t	177	0	63	0.00		USD		
-155			1	50.000	50.000	t	178	0	63	0.00		USD		
-156			1	50.000	50.000	t	179	0	63	0.00		USD		
-157			1	50.000	50.000	t	180	0	63	0.00		USD		
-158			1	50.000	50.000	t	181	0	63	0.00		USD		
-159			1	50.000	50.000	t	182	0	63	0.00		USD		
-160			1	50.000	50.000	t	183	0	63	0.00		USD		
-161			1	50.000	50.000	t	184	0	63	0.00		USD		
-162			1	50.000	50.000	t	185	0	63	0.00		USD		
-163			1	50.000	50.000	t	186	0	63	0.00		USD		
-164			1	50.000	50.000	t	187	0	63	0.00		USD		
-165			1	50.000	50.000	t	188	0	63	0.00		USD		
-166			1	50.000	50.000	t	189	0	63	0.00		USD		
-167			1	50.000	50.000	t	190	0	63	0.00		USD		
-168			1	50.000	50.000	t	191	0	63	0.00		USD		
-169			1	50.000	50.000	t	192	0	63	0.00		USD		
-170			1	50.000	50.000	t	193	0	63	0.00		USD		
-171			1	50.000	50.000	t	194	0	63	0.00		USD		
-172			1	50.000	50.000	t	195	0	63	0.00		USD		
-173			1	50.000	50.000	t	196	0	63	0.00		USD		
-174			1	50.000	50.000	t	197	0	63	0.00		USD		
-175			1	50.000	50.000	t	198	0	63	0.00		USD		
-176			1	50.000	50.000	t	199	0	63	0.00		USD		
-177			1	50.000	50.000	t	200	0	63	0.00		USD		
-178			1	50.000	50.000	t	201	0	63	0.00		USD		
-179			1	50.000	50.000	t	202	0	63	0.00		USD		
-180			1	50.000	50.000	t	203	0	63	0.00		USD		
-181			1	50.000	50.000	t	204	0	63	0.00		USD		
-182			1	50.000	50.000	t	205	0	63	0.00		USD		
-183			1	50.000	50.000	t	206	0	63	0.00		USD		
-184			1	50.000	50.000	t	207	0	63	0.00		USD		
-185			1	50.000	50.000	t	208	0	63	0.00		USD		
-186			1	50.000	50.000	t	209	0	63	0.00		USD		
-187			1	50.000	50.000	t	210	0	63	0.00		USD		
-188			1	50.000	50.000	t	211	0	63	0.00		USD		
-189			1	50.000	50.000	t	212	0	63	0.00		USD		
-190			1	50.000	50.000	t	213	0	63	0.00		USD		
-191			1	50.000	50.000	t	214	0	63	0.00		USD		
-192			1	50.000	50.000	t	215	0	63	0.00		USD		
-193			1	50.000	50.000	t	216	0	63	0.00		USD		
-194			1	50.000	50.000	t	217	0	63	0.00		USD		
-195			1	50.000	50.000	t	218	0	63	0.00		USD		
-196			1	50.000	50.000	t	219	0	63	0.00		USD		
-197			1	50.000	50.000	t	220	0	63	0.00		USD		
-198			1	50.000	50.000	t	221	0	63	0.00		USD		
-199			1	50.000	50.000	t	222	0	63	0.00		USD		
-200			1	50.000	50.000	t	223	0	63	0.00		USD		
-201			1	50.000	50.000	t	224	0	63	0.00		USD		
-202			1	50.000	50.000	t	225	0	63	0.00		USD		
-203			1	50.000	50.000	t	226	0	63	0.00		USD		
-204			1	50.000	50.000	t	227	0	63	0.00		USD		
-205			1	50.000	50.000	t	228	0	63	0.00		USD		
-206			1	50.000	50.000	t	229	0	63	0.00		USD		
-207			1	50.000	50.000	t	230	0	63	0.00		USD		
-208			1	50.000	50.000	t	231	0	63	0.00		USD		
-209			1	50.000	50.000	t	232	0	63	0.00		USD		
-210			1	50.000	50.000	t	233	0	63	0.00		USD		
-211			1	50.000	50.000	t	234	0	63	0.00		USD		
-212			1	50.000	50.000	t	235	0	63	0.00		USD		
-213			1	50.000	50.000	t	236	0	63	0.00		USD		
-214			1	50.000	50.000	t	237	0	63	0.00		USD		
+411	INTEL SR3GH	209588881	1	800.000	800.000	t	458	0	67	0.00		USD		209588881
+416	INTEL SR3GH	209588881	2	800.000	800.000	t	463	0	67	0.00		USD		209588881
+417	INTEL SR3N5	209640538	1	149.990	149.990	t	463	0	69	0.00		USD		209640538
+423	INTEL SR3GH	209588881	4	800.000	800.000	t	468	0	67	0.00		USD		209588881
+5	Intel® Xeon® Gold 6130T Processor	123456	1	1200.460	1200.460	t	4	0	\N	0.00		USD		123456
+6	Intel® Xeon® Gold 6130T Processor	123456	2	1200.460	1200.460	t	5	2	\N	0.00		USD		123456
+18			1	50.000	50.000	t	33	0	\N	0.00		USD		
+19			1	50.000	50.000	t	34	0	\N	0.00		USD		
+20			1	50.000	50.000	t	35	0	\N	0.00		USD		
+21			1	50.000	50.000	t	36	0	\N	0.00		USD		
+412	INTEL SR3GH	209588881	1	800.000	800.000	t	459	0	67	0.00		USD		209588881
+418	INTEL SR3GH	209588881	2	800.000	800.000	t	464	0	67	0.00		USD		209588881
+419	INTEL SR3N5	209654653	1	145.000	145.000	t	464	0	70	0.00		USD		209654653
+424	INTEL SR3GH	209588881	1	800.000	800.000	t	469	0	67	0.00		USD		209588881
+413	INTEL SR3GH	209588881	1	800.000	800.000	t	460	0	67	0.00		USD		209588881
+420	INTEL SR3GH	209588881	4	800.000	800.000	t	465	0	67	0.00		USD		209588881
+425	INTEL SR3GH	209588881	1	800.000	800.000	t	470	1	67	0.00		USD		209588881
+414	INTEL SR3GH	209588881	2	800.000	800.000	t	461	0	67	0.00		USD		209588881
+421	INTEL SR3GH	209588881	1	800.000	800.000	t	466	0	67	0.00		USD		209588881
+426	Intel Xeon® Silver 4215R Processor	210588654	36	900.000	900.000	t	471	36	76	0.00		USD		210588654
+3	Intel® Celeron® Processor N3010	12345	5	105.000	105.000	t	3	0	\N	0.00		USD		12345
+4	Intel® Core™ i3-8100 Processor	1234	3	200.590	200.590	t	4	0	\N	0.00		USD		1 day / 1
+7	Intel® Core™ i3-8100 Processor	1234	1	200.590	200.590	t	5	1	\N	0.00		USD		1 day / 1
+8	Intel® Celeron® Processor N3010	12345	2	105.000	105.000	t	6	0	\N	0.00		USD		4
+9	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition	432432	2	48.000	48.000	t	7	0	\N	0.00		USD		4
+22			1	50.000	50.000	t	37	0	\N	0.00		USD		
+23			1	50.000	50.000	t	38	0	\N	0.00		USD		
+24			1	50.000	50.000	t	39	0	\N	0.00		USD		
+25			1	50.000	50.000	t	40	0	\N	0.00		USD		
+26			1	50.000	50.000	t	41	0	\N	0.00		USD		
+27			1	50.000	50.000	t	42	0	\N	0.00		USD		
+28			1	50.000	50.000	t	43	0	\N	0.00		USD		
+29			1	50.000	50.000	t	44	0	\N	0.00		USD		
+30			1	50.000	50.000	t	45	0	\N	0.00		USD		
+31			1	50.000	50.000	t	46	0	\N	0.00		USD		
+32			1	50.000	50.000	t	47	0	\N	0.00		USD		
+33			1	50.000	50.000	t	48	0	\N	0.00		USD		
+34			1	50.000	50.000	t	49	0	\N	0.00		USD		
+35			1	50.000	50.000	t	50	0	\N	0.00		USD		
+36			1	50.000	50.000	t	51	0	\N	0.00		USD		
+37			1	50.000	50.000	t	52	0	\N	0.00		USD		
+38			1	50.000	50.000	t	55	0	\N	0.00		USD		
+39			1	50.000	50.000	t	56	0	\N	0.00		USD		
+40			1	50.000	50.000	t	57	0	\N	0.00		USD		
+41			1	50.000	50.000	t	58	0	\N	0.00		USD		
+42			1	50.000	50.000	t	59	0	\N	0.00		USD		
+43			1	50.000	50.000	t	63	0	\N	0.00		USD		
+44			1	50.000	50.000	t	64	0	\N	0.00		USD		
+45			1	50.000	50.000	t	65	0	\N	0.00		USD		
+46			1	50.000	50.000	t	66	0	\N	0.00		USD		
+47			1	50.000	50.000	t	67	0	\N	0.00		USD		
+48			1	50.000	50.000	t	68	0	\N	0.00		USD		
+49			1	50.000	50.000	t	69	0	\N	0.00		USD		
+50			1	50.000	50.000	t	70	0	\N	0.00		USD		
+51			1	50.000	50.000	t	71	0	\N	0.00		USD		
+52			10	50.000	50.000	t	72	0	\N	0.00		USD		
+53			10	50.000	50.000	t	73	0	\N	0.00		USD		
+54			10	50.000	50.000	t	74	0	\N	0.00		USD		
+55			1	50.000	50.000	t	75	0	\N	0.00		USD		
+56			1	50.000	50.000	t	76	0	\N	0.00		USD		
+57			1	50.000	50.000	t	77	0	\N	0.00		USD		
+58			1	50.000	50.000	t	78	0	\N	0.00		USD		
+59			1	50.000	50.000	t	79	0	\N	0.00		USD		
+60			1	50.000	50.000	t	80	0	\N	0.00		USD		
+61			1	50.000	50.000	t	81	0	\N	0.00		USD		
+62			1	50.000	50.000	t	82	0	\N	0.00		USD		
+63			1	50.000	50.000	t	83	0	\N	0.00		USD		
+64			1	50.000	50.000	t	84	0	\N	0.00		USD		
+65			1	50.000	50.000	t	85	0	\N	0.00		USD		
+66			1	50.000	50.000	t	86	0	\N	0.00		USD		
+67			1	50.000	50.000	t	87	0	\N	0.00		USD		
+68			1	50.000	50.000	t	88	0	\N	0.00		USD		
+69			1	50.000	50.000	t	89	0	\N	0.00		USD		
+70			1	50.000	50.000	t	93	0	\N	0.00		USD		
+71			1	50.000	50.000	t	94	0	\N	0.00		USD		
+72			1	50.000	50.000	t	95	0	\N	0.00		USD		
+73			1	50.000	50.000	t	96	0	\N	0.00		USD		
+74			1	50.000	50.000	t	97	0	\N	0.00		USD		
+75			1	50.000	50.000	t	98	0	\N	0.00		USD		
+76			1	50.000	50.000	t	99	0	\N	0.00		USD		
+77			1	50.000	50.000	t	100	0	\N	0.00		USD		
+78			1	50.000	50.000	t	101	0	\N	0.00		USD		
+79			1	50.000	50.000	t	102	0	\N	0.00		USD		
+80			1	50.000	50.000	t	103	0	\N	0.00		USD		
+81			1	50.000	50.000	t	104	0	\N	0.00		USD		
+82			1	50.000	50.000	t	105	0	\N	0.00		USD		
+83			1	50.000	50.000	t	106	0	\N	0.00		USD		
+84			1	50.000	50.000	t	107	0	\N	0.00		USD		
+85			1	50.000	50.000	t	108	0	\N	0.00		USD		
+86			1	50.000	50.000	t	109	0	\N	0.00		USD		
+87			1	50.000	50.000	t	110	0	\N	0.00		USD		
+88			1	50.000	50.000	t	111	0	\N	0.00		USD		
+89			1	50.000	50.000	t	112	0	\N	0.00		USD		
+90			1	50.000	50.000	t	113	0	\N	0.00		USD		
+91			1	50.000	50.000	t	114	0	\N	0.00		USD		
+92			1	50.000	50.000	t	115	0	\N	0.00		USD		
+93			1	50.000	50.000	t	116	0	\N	0.00		USD		
+94			1	50.000	50.000	t	117	0	\N	0.00		USD		
+95			1	50.000	50.000	t	118	0	\N	0.00		USD		
+96			1	50.000	50.000	t	119	0	\N	0.00		USD		
+97			1	50.000	50.000	t	120	0	\N	0.00		USD		
+98			1	50.000	50.000	t	121	0	\N	0.00		USD		
+99			1	50.000	50.000	t	122	0	\N	0.00		USD		
+100			1	50.000	50.000	t	123	0	\N	0.00		USD		
+101			1	50.000	50.000	t	124	0	\N	0.00		USD		
+102			1	50.000	50.000	t	125	0	\N	0.00		USD		
+103			1	50.000	50.000	t	126	0	\N	0.00		USD		
+104			1	50.000	50.000	t	127	0	\N	0.00		USD		
+105			1	50.000	50.000	t	128	0	\N	0.00		USD		
+106			1	50.000	50.000	t	129	0	\N	0.00		USD		
+107			1	50.000	50.000	t	130	0	\N	0.00		USD		
+108			1	50.000	50.000	t	131	0	\N	0.00		USD		
+109			1	50.000	50.000	t	132	0	\N	0.00		USD		
+110			1	50.000	50.000	t	133	0	\N	0.00		USD		
+111			1	50.000	50.000	t	134	0	\N	0.00		USD		
+112			1	50.000	50.000	t	135	0	\N	0.00		USD		
+113			1	50.000	50.000	t	136	0	\N	0.00		USD		
+114			1	50.000	50.000	t	137	0	\N	0.00		USD		
+115			1	50.000	50.000	t	138	0	\N	0.00		USD		
+116			1	50.000	50.000	t	139	0	\N	0.00		USD		
+117			1	50.000	50.000	t	140	0	\N	0.00		USD		
+118			1	50.000	50.000	t	141	0	\N	0.00		USD		
+119			1	50.000	50.000	t	142	0	\N	0.00		USD		
+120			1	50.000	50.000	t	143	0	\N	0.00		USD		
+121			1	50.000	50.000	t	144	0	\N	0.00		USD		
+122			1	50.000	50.000	t	145	0	\N	0.00		USD		
+123			1	50.000	50.000	t	146	0	\N	0.00		USD		
+124			1	50.000	50.000	t	147	0	\N	0.00		USD		
+125			1	50.000	50.000	t	148	0	\N	0.00		USD		
+126			1	50.000	50.000	t	149	0	\N	0.00		USD		
+127			1	50.000	50.000	t	150	0	\N	0.00		USD		
+128			1	50.000	50.000	t	151	0	\N	0.00		USD		
+129			1	50.000	50.000	t	152	0	\N	0.00		USD		
+130			1	50.000	50.000	t	153	0	\N	0.00		USD		
+131			1	50.000	50.000	t	154	0	\N	0.00		USD		
+132			1	50.000	50.000	t	155	0	\N	0.00		USD		
+133			1	50.000	50.000	t	156	0	\N	0.00		USD		
+134			1	50.000	50.000	t	157	0	\N	0.00		USD		
+135			1	50.000	50.000	t	158	0	\N	0.00		USD		
+136			1	50.000	50.000	t	159	0	\N	0.00		USD		
+137			1	50.000	50.000	t	160	0	\N	0.00		USD		
+138			1	50.000	50.000	t	161	0	\N	0.00		USD		
+139			1	50.000	50.000	t	162	0	\N	0.00		USD		
+140			1	50.000	50.000	t	163	0	\N	0.00		USD		
+141			1	50.000	50.000	t	164	0	\N	0.00		USD		
+142			1	50.000	50.000	t	165	0	\N	0.00		USD		
+143			1	50.000	50.000	t	166	0	\N	0.00		USD		
+144			1	50.000	50.000	t	167	0	\N	0.00		USD		
+145			1	50.000	50.000	t	168	0	\N	0.00		USD		
+146			1	50.000	50.000	t	169	0	\N	0.00		USD		
+147			1	50.000	50.000	t	170	0	\N	0.00		USD		
+148			1	50.000	50.000	t	171	0	\N	0.00		USD		
+149			1	50.000	50.000	t	172	0	\N	0.00		USD		
+150			1	50.000	50.000	t	173	0	\N	0.00		USD		
+151			1	50.000	50.000	t	174	0	\N	0.00		USD		
+152			1	50.000	50.000	t	175	0	\N	0.00		USD		
+153			1	50.000	50.000	t	176	0	\N	0.00		USD		
+154			1	50.000	50.000	t	177	0	\N	0.00		USD		
+155			1	50.000	50.000	t	178	0	\N	0.00		USD		
+156			1	50.000	50.000	t	179	0	\N	0.00		USD		
+157			1	50.000	50.000	t	180	0	\N	0.00		USD		
+158			1	50.000	50.000	t	181	0	\N	0.00		USD		
+159			1	50.000	50.000	t	182	0	\N	0.00		USD		
+160			1	50.000	50.000	t	183	0	\N	0.00		USD		
+161			1	50.000	50.000	t	184	0	\N	0.00		USD		
+162			1	50.000	50.000	t	185	0	\N	0.00		USD		
+163			1	50.000	50.000	t	186	0	\N	0.00		USD		
+164			1	50.000	50.000	t	187	0	\N	0.00		USD		
+165			1	50.000	50.000	t	188	0	\N	0.00		USD		
+166			1	50.000	50.000	t	189	0	\N	0.00		USD		
+167			1	50.000	50.000	t	190	0	\N	0.00		USD		
+168			1	50.000	50.000	t	191	0	\N	0.00		USD		
+169			1	50.000	50.000	t	192	0	\N	0.00		USD		
+170			1	50.000	50.000	t	193	0	\N	0.00		USD		
+171			1	50.000	50.000	t	194	0	\N	0.00		USD		
+172			1	50.000	50.000	t	195	0	\N	0.00		USD		
+173			1	50.000	50.000	t	196	0	\N	0.00		USD		
+174			1	50.000	50.000	t	197	0	\N	0.00		USD		
+175			1	50.000	50.000	t	198	0	\N	0.00		USD		
+176			1	50.000	50.000	t	199	0	\N	0.00		USD		
+177			1	50.000	50.000	t	200	0	\N	0.00		USD		
+178			1	50.000	50.000	t	201	0	\N	0.00		USD		
+179			1	50.000	50.000	t	202	0	\N	0.00		USD		
+180			1	50.000	50.000	t	203	0	\N	0.00		USD		
+181			1	50.000	50.000	t	204	0	\N	0.00		USD		
+182			1	50.000	50.000	t	205	0	\N	0.00		USD		
+183			1	50.000	50.000	t	206	0	\N	0.00		USD		
+184			1	50.000	50.000	t	207	0	\N	0.00		USD		
+185			1	50.000	50.000	t	208	0	\N	0.00		USD		
+186			1	50.000	50.000	t	209	0	\N	0.00		USD		
+187			1	50.000	50.000	t	210	0	\N	0.00		USD		
+188			1	50.000	50.000	t	211	0	\N	0.00		USD		
+189			1	50.000	50.000	t	212	0	\N	0.00		USD		
+190			1	50.000	50.000	t	213	0	\N	0.00		USD		
+191			1	50.000	50.000	t	214	0	\N	0.00		USD		
+192			1	50.000	50.000	t	215	0	\N	0.00		USD		
+193			1	50.000	50.000	t	216	0	\N	0.00		USD		
+194			1	50.000	50.000	t	217	0	\N	0.00		USD		
+195			1	50.000	50.000	t	218	0	\N	0.00		USD		
+196			1	50.000	50.000	t	219	0	\N	0.00		USD		
+197			1	50.000	50.000	t	220	0	\N	0.00		USD		
+198			1	50.000	50.000	t	221	0	\N	0.00		USD		
+199			1	50.000	50.000	t	222	0	\N	0.00		USD		
+200			1	50.000	50.000	t	223	0	\N	0.00		USD		
+201			1	50.000	50.000	t	224	0	\N	0.00		USD		
+202			1	50.000	50.000	t	225	0	\N	0.00		USD		
+203			1	50.000	50.000	t	226	0	\N	0.00		USD		
+204			1	50.000	50.000	t	227	0	\N	0.00		USD		
+205			1	50.000	50.000	t	228	0	\N	0.00		USD		
+206			1	50.000	50.000	t	229	0	\N	0.00		USD		
+207			1	50.000	50.000	t	230	0	\N	0.00		USD		
+208			1	50.000	50.000	t	231	0	\N	0.00		USD		
+209			1	50.000	50.000	t	232	0	\N	0.00		USD		
+210			1	50.000	50.000	t	233	0	\N	0.00		USD		
+211			1	50.000	50.000	t	234	0	\N	0.00		USD		
+212			1	50.000	50.000	t	235	0	\N	0.00		USD		
+213			1	50.000	50.000	t	236	0	\N	0.00		USD		
+214			1	50.000	50.000	t	237	0	\N	0.00		USD		
+215			1	50.000	50.000	t	238	0	\N	0.00		USD		
+216			1	50.000	50.000	t	239	0	\N	0.00		USD		
+217			1	50.000	50.000	t	240	0	\N	0.00		USD		
+218			1	50.000	50.000	t	241	0	\N	0.00		USD		
+219			1	50.000	50.000	t	242	0	\N	0.00		USD		
+220			1	50.000	50.000	t	243	0	\N	0.00		USD		
+221			1	50.000	50.000	t	244	0	\N	0.00		USD		
+222			1	50.000	50.000	t	245	0	\N	0.00		USD		
+223			1	50.000	50.000	t	246	0	\N	0.00		USD		
+224			1	50.000	50.000	t	247	0	\N	0.00		USD		
+225			1	50.000	50.000	t	248	0	\N	0.00		USD		
+226			1	50.000	50.000	t	249	0	\N	0.00		USD		
+227			1	50.000	50.000	t	250	0	\N	0.00		USD		
+228			1	50.000	50.000	t	251	0	\N	0.00		USD		
+229			1	50.000	50.000	t	252	0	\N	0.00		USD		
+230			1	50.000	50.000	t	253	0	\N	0.00		USD		
+231			1	50.000	50.000	t	254	0	\N	0.00		USD		
+232			1	50.000	50.000	t	255	0	\N	0.00		USD		
+233			1	50.000	50.000	t	256	0	\N	0.00		USD		
+234			1	50.000	50.000	t	257	0	\N	0.00		USD		
+235			1	50.000	50.000	t	258	0	\N	0.00		USD		
+236			1	50.000	50.000	t	259	0	\N	0.00		USD		
+237			1	50.000	50.000	t	260	0	\N	0.00		USD		
+238			1	50.000	50.000	t	261	0	\N	0.00		USD		
+239			1	50.000	50.000	t	262	0	\N	0.00		USD		
+240			1	50.000	50.000	t	263	0	\N	0.00		USD		
+241			1	50.000	50.000	t	264	0	\N	0.00		USD		
+242			1	50.000	50.000	t	265	0	\N	0.00		USD		
+243			1	50.000	50.000	t	266	0	\N	0.00		USD		
+244			1	50.000	50.000	t	267	0	\N	0.00		USD		
+245			1	50.000	50.000	t	268	0	\N	0.00		USD		
+246			1	50.000	50.000	t	269	0	\N	0.00		USD		
+247			1	50.000	50.000	t	270	0	\N	0.00		USD		
+248			1	50.000	50.000	t	271	0	\N	0.00		USD		
+249			1	50.000	50.000	t	272	0	\N	0.00		USD		
+250			1	50.000	50.000	t	273	0	\N	0.00		USD		
+251			1	50.000	50.000	t	274	0	\N	0.00		USD		
+252			1	50.000	50.000	t	275	0	\N	0.00		USD		
+253			1	50.000	50.000	t	276	0	\N	0.00		USD		
+254			1	50.000	50.000	t	277	0	\N	0.00		USD		
+255			1	50.000	50.000	t	278	0	\N	0.00		USD		
+256			1	50.000	50.000	t	279	0	\N	0.00		USD		
+257			1	50.000	50.000	t	280	0	\N	0.00		USD		
+258			1	50.000	50.000	t	281	0	\N	0.00		USD		
+259			1	50.000	50.000	t	282	0	\N	0.00		USD		
+260			1	50.000	50.000	t	283	0	\N	0.00		USD		
+261			1	50.000	50.000	t	284	0	\N	0.00		USD		
+262			1	50.000	50.000	t	285	0	\N	0.00		USD		
+263			1	50.000	50.000	t	286	0	\N	0.00		USD		
+264			1	50.000	50.000	t	287	0	\N	0.00		USD		
+265			1	50.000	50.000	t	288	0	\N	0.00		USD		
+266			1	50.000	50.000	t	289	0	\N	0.00		USD		
+267			1	50.000	50.000	t	290	0	\N	0.00		USD		
+268			1	50.000	50.000	t	291	0	\N	0.00		USD		
+269			1	50.000	50.000	t	292	0	\N	0.00		USD		
+270			1	50.000	50.000	t	293	0	\N	0.00		USD		
+271			1	50.000	50.000	t	294	0	\N	0.00		USD		
+272			1	50.000	50.000	t	295	0	\N	0.00		USD		
+273			1	50.000	50.000	t	296	0	\N	0.00		USD		
+274			1	50.000	50.000	t	297	0	\N	0.00		USD		
+275			1	50.000	50.000	t	298	0	\N	0.00		USD		
+276			1	50.000	50.000	t	299	0	\N	0.00		USD		
+277			1	50.000	50.000	t	300	0	\N	0.00		USD		
+278			1	50.000	50.000	t	301	0	\N	0.00		USD		
+279			1	50.000	50.000	t	302	0	\N	0.00		USD		
+280			1	50.000	50.000	t	303	0	\N	0.00		USD		
+281			1	50.000	50.000	t	304	0	\N	0.00		USD		
+282			1	50.000	50.000	t	305	0	\N	0.00		USD		
+283			1	50.000	50.000	t	306	0	\N	0.00		USD		
+284			1	50.000	50.000	t	307	0	\N	0.00		USD		
+285			1	50.000	50.000	t	308	0	\N	0.00		USD		
+286			1	50.000	50.000	t	309	0	\N	0.00		USD		
+287			1	50.000	50.000	t	310	0	\N	0.00		USD		
+288			1	50.000	50.000	t	311	0	\N	0.00		USD		
+289			1	50.000	50.000	t	312	0	\N	0.00		USD		
+290			1	50.000	50.000	t	313	0	\N	0.00		USD		
+291			1	50.000	50.000	t	314	0	\N	0.00		USD		
+292			1	50.000	50.000	t	315	0	\N	0.00		USD		
+293			1	50.000	50.000	t	316	0	\N	0.00		USD		
+294			1	50.000	50.000	t	317	0	\N	0.00		USD		
+295			1	50.000	50.000	t	318	0	\N	0.00		USD		
+296			1	50.000	50.000	t	319	0	\N	0.00		USD		
+297			1	50.000	50.000	t	320	0	\N	0.00		USD		
+298			1	50.000	50.000	t	321	0	\N	0.00		USD		
+299			1	50.000	50.000	t	322	0	\N	0.00		USD		
+300			1	50.000	50.000	t	323	0	\N	0.00		USD		
+301			1	50.000	50.000	t	324	0	\N	0.00		USD		
+302			1	50.000	50.000	t	325	0	\N	0.00		USD		
+303			1	50.000	50.000	t	326	0	\N	0.00		USD		
+304			1	50.000	50.000	t	327	0	\N	0.00		USD		
+305			1	50.000	50.000	t	328	0	\N	0.00		USD		
+306			1	50.000	50.000	t	329	0	\N	0.00		USD		
+307			1	50.000	50.000	t	330	0	\N	0.00		USD		
+308			1	50.000	50.000	t	331	0	\N	0.00		USD		
+309			1	50.000	50.000	t	332	0	\N	0.00		USD		
+310			1	50.000	50.000	t	333	0	\N	0.00		USD		
+311			1	50.000	50.000	t	334	0	\N	0.00		USD		
+312			1	50.000	50.000	t	335	0	\N	0.00		USD		
+313			1	50.000	50.000	t	336	0	\N	0.00		USD		
+314			1	50.000	50.000	t	337	0	\N	0.00		USD		
+315			1	50.000	50.000	t	338	0	\N	0.00		USD		
+316			1	50.000	50.000	t	339	0	\N	0.00		USD		
+317			1	50.000	50.000	t	340	0	\N	0.00		USD		
+318			1	50.000	50.000	t	341	0	\N	0.00		USD		
+319			1	50.000	50.000	t	342	0	\N	0.00		USD		
+320			1	50.000	50.000	t	343	0	\N	0.00		USD		
+321			1	50.000	50.000	t	344	0	\N	0.00		USD		
+322			1	50.000	50.000	t	345	0	\N	0.00		USD		
+323			1	50.000	50.000	t	346	0	\N	0.00		USD		
+324			1	50.000	50.000	t	347	0	\N	0.00		USD		
+325			1	50.000	50.000	t	348	0	\N	0.00		USD		
+326			1	50.000	50.000	t	349	0	\N	0.00		USD		
+327			1	50.000	50.000	t	350	0	\N	0.00		USD		
+328			1	50.000	50.000	t	351	0	\N	0.00		USD		
+329			1	50.000	50.000	t	352	0	\N	0.00		USD		
+330			1	50.000	50.000	t	353	0	\N	0.00		USD		
+331			1	50.000	50.000	t	354	0	\N	0.00		USD		
+332			1	50.000	50.000	t	355	0	\N	0.00		USD		
+333			1	50.000	50.000	t	356	0	\N	0.00		USD		
+334			1	50.000	50.000	t	357	0	\N	0.00		USD		
+335			1	50.000	50.000	t	358	0	\N	0.00		USD		
+336			1	50.000	50.000	t	359	0	\N	0.00		USD		
+337			1	50.000	50.000	t	360	0	\N	0.00		USD		
+338			1	50.000	50.000	t	361	0	\N	0.00		USD		
+339			1	50.000	50.000	t	362	0	\N	0.00		USD		
+340			1	50.000	50.000	t	363	0	\N	0.00		USD		
+341			1	50.000	50.000	t	364	0	\N	0.00		USD		
+342			1	50.000	50.000	t	365	0	\N	0.00		USD		
+343			1	50.000	50.000	t	366	0	\N	0.00		USD		
+344			1	50.000	50.000	t	367	0	\N	0.00		USD		
+345			1	50.000	50.000	t	368	0	\N	0.00		USD		
+346			1	50.000	50.000	t	369	0	\N	0.00		USD		
+347			1	50.000	50.000	t	370	0	\N	0.00		USD		
+348			1	50.000	50.000	t	371	0	\N	0.00		USD		
+349			1	50.000	50.000	t	372	0	\N	0.00		USD		
+350			1	50.000	50.000	t	373	0	\N	0.00		USD		
+351			1	50.000	50.000	t	374	0	\N	0.00		USD		
+352			1	50.000	50.000	t	375	0	\N	0.00		USD		
+353			1	50.000	50.000	t	376	0	\N	0.00		USD		
+354			1	50.000	50.000	t	377	0	\N	0.00		USD		
+355			1	50.000	50.000	t	378	0	\N	0.00		USD		
+356			1	50.000	50.000	t	379	0	\N	0.00		USD		
+357			1	50.000	50.000	t	380	0	\N	0.00		USD		
+358			1	50.000	50.000	t	381	0	\N	0.00		USD		
+359			1	50.000	50.000	t	382	0	\N	0.00		USD		
+360			1	50.000	50.000	t	383	0	\N	0.00		USD		
+361			1	50.000	50.000	t	384	0	\N	0.00		USD		
+362			1	50.000	50.000	t	385	0	\N	0.00		USD		
+363			1	50.000	50.000	t	386	0	\N	0.00		USD		
+364			1	50.000	50.000	t	387	0	\N	0.00		USD		
+365			1	50.000	50.000	t	388	0	\N	0.00		USD		
+366			1	50.000	50.000	t	389	0	\N	0.00		USD		
+367			1	50.000	50.000	t	390	0	\N	0.00		USD		
+368			1	50.000	50.000	t	391	0	\N	0.00		USD		
+369			1	50.000	50.000	t	392	0	\N	0.00		USD		
+370			1	50.000	50.000	t	393	0	\N	0.00		USD		
+371			1	50.000	50.000	t	394	0	\N	0.00		USD		
+372			1	50.000	50.000	t	395	0	\N	0.00		USD		
+373			1	50.000	50.000	t	396	0	\N	0.00		USD		
+374			1	50.000	50.000	t	397	0	\N	0.00		USD		
+375			1	50.000	50.000	t	398	0	\N	0.00		USD		
+376			1	50.000	50.000	t	399	0	\N	0.00		USD		
+377			1	50.000	50.000	t	400	0	\N	0.00		USD		
+378			1	50.000	50.000	t	401	0	\N	0.00		USD		
+379			1	50.000	50.000	t	402	0	\N	0.00		USD		
+380			1	50.000	50.000	t	403	0	\N	0.00		USD		
+381			1	50.000	50.000	t	404	0	\N	0.00		USD		
+382			1	50.000	50.000	t	405	0	\N	0.00		USD		
+383			1	50.000	50.000	t	406	0	\N	0.00		USD		
+384			1	50.000	50.000	t	407	0	\N	0.00		USD		
+385			1	50.000	50.000	t	408	0	\N	0.00		USD		
+386			1	50.000	50.000	t	409	0	\N	0.00		USD		
+387			1	50.000	50.000	t	410	0	\N	0.00		USD		
+388			1	50.000	50.000	t	411	0	\N	0.00		USD		
+389			1	50.000	50.000	t	412	0	\N	0.00		USD		
+390			1	50.000	50.000	t	413	0	\N	0.00		USD		
+391			1	50.000	50.000	t	414	0	\N	0.00		USD		
+392			1	50.000	50.000	t	415	0	\N	0.00		USD		
+393			1	50.000	50.000	t	416	0	\N	0.00		USD		
+394			1	50.000	50.000	t	417	0	\N	0.00		USD		
+395			1	50.000	50.000	t	418	0	\N	0.00		USD		
+396			1	50.000	50.000	t	419	0	\N	0.00		USD		
+397			1	50.000	50.000	t	420	0	\N	0.00		USD		
+398			1	50.000	50.000	t	421	0	\N	0.00		USD		
+399			1	50.000	50.000	t	422	0	\N	0.00		USD		
+400			1	50.000	50.000	t	423	0	\N	0.00		USD		
+401			1	50.000	50.000	t	424	0	\N	0.00		USD		
+402			1	50.000	50.000	t	425	0	\N	0.00		USD		
+403			1	50.000	50.000	t	426	0	\N	0.00		USD		
+404			1	50.000	50.000	t	427	0	\N	0.00		USD		
+405			1	50.000	50.000	t	428	0	\N	0.00		USD		
+406			1	50.000	50.000	t	429	0	\N	0.00		USD		
+407			1	50.000	50.000	t	430	0	\N	0.00		USD		
+408			1	50.000	50.000	t	431	0	\N	0.00		USD		
+409			1	50.000	50.000	t	432	0	\N	0.00		USD		
+410			1	50.000	50.000	t	433	0	\N	0.00		USD		
+415	INTEL SR3GH	209588881	3	800.000	800.000	t	462	0	67	0.00		USD		209588881
+422	INTEL SR3GH	209588881	1	800.000	800.000	t	467	0	67	0.00		USD		209588881
 \.
 
 
@@ -7461,6 +20611,7 @@ COPY public.order_orderline (id, product_name, product_sku, quantity, unit_price
 --
 
 COPY public.page_page (id, slug, title, content, created, is_published, publication_date, seo_description, seo_title, content_json, metadata, private_metadata) FROM stdin;
+1	privacy	Privacy		2021-10-13 15:49:34.695871+00	t	2021-10-13			{"blocks": [{"key": "50g7e", "data": {}, "text": "Privacy Policy", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -7476,14 +20627,28 @@ COPY public.page_pagetranslation (id, seo_title, seo_description, language_code,
 -- Data for Name: payment_payment; Type: TABLE DATA; Schema: public; Owner: saleor
 --
 
-COPY public.payment_payment (id, gateway, is_active, created, modified, charge_status, billing_first_name, billing_last_name, billing_company_name, billing_address_1, billing_address_2, billing_city, billing_city_area, billing_postal_code, billing_country_code, billing_country_area, billing_email, customer_ip_address, cc_brand, cc_exp_month, cc_exp_year, cc_first_digits, cc_last_digits, extra_data, token, currency, total, captured_amount, checkout_id, order_id, to_confirm, payment_method_type, return_url) FROM stdin;
-4	mirumee.payments.dummy	t	2021-07-21 18:52:40.960778+00	2021-07-21 18:52:46.7262+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	1807.230	1807.230	\N	4	f	card	http://localhost:9001/checkout/payment-confirm
-1	mirumee.payments.dummy	t	2021-05-20 19:21:16.563078+00	2021-05-20 19:21:22.125879+00	fully-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	charged	USD	6.000	6.000	\N	1	f	card	http://localhost:9001/checkout/payment-confirm
-2	mirumee.payments.dummy	t	2021-05-20 19:22:59.277875+00	2021-05-20 19:22:59.27791+00	not-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	not-charged	USD	5.000	0.000	\N	2	f	card	http://localhost:9001/checkout/payment-confirm
-6	mirumee.payments.dummy	t	2021-08-11 15:44:10.468941+00	2021-08-11 15:44:18.261527+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	215.000	215.000	\N	6	f	card	http://localhost:9001/checkout/payment-confirm
-3	mirumee.payments.dummy	t	2021-07-21 18:48:52.041741+00	2021-07-21 18:48:54.296482+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	530.000	530.000	\N	3	f	card	http://localhost:9001/checkout/payment-confirm
-5	mirumee.payments.dummy	t	2021-07-21 18:55:51.387928+00	2021-07-21 18:55:54.117043+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	2606.510	2606.510	\N	5	f	card	http://localhost:9001/checkout/payment-confirm
-7	mirumee.payments.dummy	t	2021-08-11 17:03:33.454599+00	2021-08-11 17:04:55.645954+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	101.000	101.000	\N	7	f	card	http://localhost:9001/checkout/payment-confirm
+COPY public.payment_payment (id, gateway, is_active, created, modified, charge_status, billing_first_name, billing_last_name, billing_company_name, billing_address_1, billing_address_2, billing_city, billing_city_area, billing_postal_code, billing_country_code, billing_country_area, billing_email, customer_ip_address, cc_brand, cc_exp_month, cc_exp_year, cc_first_digits, cc_last_digits, extra_data, token, currency, total, captured_amount, checkout_id, order_id, to_confirm, payment_method_type, return_url, customer_id) FROM stdin;
+4	mirumee.payments.dummy	t	2021-07-21 18:52:40.960778+00	2021-07-21 18:52:46.7262+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	1807.230	1807.230	\N	4	f	card	http://localhost:9001/checkout/payment-confirm	
+1	mirumee.payments.dummy	t	2021-05-20 19:21:16.563078+00	2021-05-20 19:21:22.125879+00	fully-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	charged	USD	6.000	6.000	\N	1	f	card	http://localhost:9001/checkout/payment-confirm	
+2	mirumee.payments.dummy	t	2021-05-20 19:22:59.277875+00	2021-05-20 19:22:59.27791+00	not-charged	Maeghan	Provencher		191 Maverick St.	Apt. 1L	BOSTON		02128	US	MA	maeghan.m.provencher@gmail.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}	not-charged	USD	5.000	0.000	\N	2	f	card	http://localhost:9001/checkout/payment-confirm	
+6	mirumee.payments.dummy	t	2021-08-11 15:44:10.468941+00	2021-08-11 15:44:18.261527+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	215.000	215.000	\N	6	f	card	http://localhost:9001/checkout/payment-confirm	
+3	mirumee.payments.dummy	t	2021-07-21 18:48:52.041741+00	2021-07-21 18:48:54.296482+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	530.000	530.000	\N	3	f	card	http://localhost:9001/checkout/payment-confirm	
+5	mirumee.payments.dummy	t	2021-07-21 18:55:51.387928+00	2021-07-21 18:55:54.117043+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36"}	charged	USD	2606.510	2606.510	\N	5	f	card	http://localhost:9001/checkout/payment-confirm	
+7	mirumee.payments.dummy	t	2021-08-11 17:03:33.454599+00	2021-08-11 17:04:55.645954+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	172.19.0.1	dummy_visa	12	2222		1234	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36"}	charged	USD	101.000	101.000	\N	7	f	card	http://localhost:9001/checkout/payment-confirm	
+8	mirumee.payments.stripe	t	2021-10-28 19:42:07.700274+00	2021-10-28 19:42:13.162346+00	fully-charged	Jane	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	70.131.190.236	visa	12	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"}	pm_1JpeU1GwGY8wmB3DnK40abBw	USD	805.000	805.000	\N	458	f	card	\N	cus_KUdQLpKc8Gu7wN
+10	mirumee.payments.stripe	t	2021-10-29 13:46:01.109455+00	2021-10-29 13:46:11.172216+00	fully-charged	Kynan	Delorey		180 NE 29th St	Apt 1904	MIAMI		33137	US	FL	kynand+rcsandbox1@gmail.com	70.131.190.236	visa	12	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"}	pm_1JpuNdGwGY8wmB3DgNnWmjrr	USD	805.000	805.000	\N	460	f	card	\N	cus_KUdYHBDOZZKmdi
+9	mirumee.payments.stripe	t	2021-10-29 12:23:21.750255+00	2021-10-29 12:23:28.577136+00	fully-charged	jim	Doe	ACME	123 Main St.		BOSTON		02124	US	MA	customer@example.com	70.131.190.236	visa	12	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"}	pm_1JpeU1GwGY8wmB3DnK40abBw	USD	805.000	805.000	\N	459	f	card	\N	cus_KUdQLpKc8Gu7wN
+11	mirumee.payments.stripe	t	2021-10-29 13:56:29.395462+00	2021-10-29 13:56:34.800424+00	fully-charged	Alice	Customer		44 Test Ln.		PORTSMOUTH		03801	US	NH	kynand+rcsandbox2@gmail.com	66.30.228.141	visa	8	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"}	pm_1JpvYkGwGY8wmB3D8pGbqiBQ	USD	1605.000	1605.000	\N	461	f	card	\N	cus_KUlezc18epzzMY
+12	mirumee.payments.stripe	t	2021-10-29 15:56:03.188072+00	2021-10-29 15:56:14.877279+00	fully-charged	Alice	Customer		9 Test Ln.		PORTSMOUTH		03801	US	NH	kynand+rcsandbox2@gmail.com	66.30.228.141	visa	8	2024		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"}	pm_1JpxPoGwGY8wmB3DXNXZNXS3	USD	2405.000	2405.000	\N	462	f	card	\N	cus_KUlezc18epzzMY
+13	mirumee.payments.stripe	t	2021-10-29 16:05:34.873513+00	2021-10-29 16:05:44.864299+00	fully-charged	Bob	Customer		9 Paper St.		PORTSMOUTH		03801	US	NH	kynand+rcsandbox3@gmail.com	66.30.228.141	visa	9	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"}	pm_1JpxWvGwGY8wmB3DVGyCqNwM	USD	1754.990	1754.990	\N	463	f	card	\N	cus_KUxRaqV8WrHZ8m
+14	mirumee.payments.stripe	t	2021-10-29 16:28:01.105976+00	2021-10-29 16:28:09.271371+00	fully-charged	Dan	Customer		5 Paper St.		PORTSMOUTH		03801	US	NH	kynand+rcsandbox4@gmail.com	66.30.228.141	visa	8	2027		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"}	pm_1JpxuAGwGY8wmB3D0xyKVTaO	USD	1750.000	1750.000	\N	464	f	card	\N	cus_KUxpSQQeky7FZV
+15	mirumee.payments.stripe	t	2021-10-29 16:32:46.41362+00	2021-10-29 16:32:56.42475+00	fully-charged	Dan	Customer		5 Paper St.		PORTSMOUTH		03801	US	NH	kynand+rcsandbox4@gmail.com	66.30.228.141	visa	8	2027		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"}	pm_1JpxuAGwGY8wmB3D0xyKVTaO	USD	3205.000	3205.000	\N	465	f	card	\N	cus_KUxpSQQeky7FZV
+21	mirumee.payments.stripe	t	2021-11-05 15:45:44.957721+00	2021-11-05 15:45:50.792507+00	fully-charged	Adam	Vicinus		13 Falcone Cir		HAMPTON		03842	US	NH	avicinus+friday@gmail.com	75.67.111.81	mastercard	3	2026		4444	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0"}	pm_1Jrn3NGwGY8wmB3DuSDlL6uB	USD	32405.000	32405.000	\N	471	f	card	\N	cus_KUtWYWq5I864Ul
+16	mirumee.payments.stripe	t	2021-10-29 18:04:30.943677+00	2021-10-29 18:04:39.497178+00	fully-charged	Kynan	Delorey		180 NE 29th St	Apt 1904	MIAMI		33137	US	FL	kynand+rcsandbox1@gmail.com	75.67.111.81	visa	12	2025		4242	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"}	pm_1JpuNdGwGY8wmB3DgNnWmjrr	USD	805.000	805.000	\N	466	f	card	\N	cus_KUdYHBDOZZKmdi
+19	mirumee.payments.stripe	t	2021-11-02 17:46:46.576792+00	2021-11-02 17:46:51.427306+00	fully-charged	Adam	Tester		13 Falcone Cir		HAMPTON		03842	US	NH	avicinus+friday@gmail.com	75.67.111.81	visa	3	2026		1111	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"}	pm_1JptjJGwGY8wmB3DoZq5pNY7	USD	805.000	805.000	\N	469	f	card	\N	cus_KUtWYWq5I864Ul
+17	mirumee.payments.stripe	t	2021-10-29 19:01:23.018141+00	2021-10-29 19:01:28.608155+00	fully-charged	Adam	Tester		13 Falcone Cir		HAMPTON		03842	US	NH	avicinus+friday@gmail.com	75.67.111.81	visa	3	2026		1111	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36"}	pm_1JptjJGwGY8wmB3DoZq5pNY7	USD	805.000	805.000	\N	467	f	card	\N	cus_KUtWYWq5I864Ul
+18	mirumee.payments.stripe	t	2021-11-02 10:08:10.459876+00	2021-11-02 10:08:15.994812+00	fully-charged	George	Burton		027 Weaver Isle Suite 892		Hatfieldton		47301	US	IN	rc-admin-sandbox@36creative.com	76.28.46.78	visa	3	2026		1111	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"}	pm_1JpeFoGwGY8wmB3DSt3GA2lO	USD	3205.000	3205.000	\N	468	f	card	\N	cus_KUdWmnwhIThYd3
+20	mirumee.payments.stripe	t	2021-11-03 20:46:34.987382+00	2021-11-03 20:46:41.820601+00	fully-charged	Adam	Vicinus		13 Falcone Cir		HAMPTON		03842	US	NH	avicinus+friday@gmail.com	75.67.111.81	mastercard	3	2026		4444	{"customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0) Gecko/20100101 Firefox/93.0"}	pm_1Jrn3NGwGY8wmB3DuSDlL6uB	USD	805.000	805.000	\N	470	f	card	\N	cus_KUtWYWq5I864Ul
 \.
 
 
@@ -7499,6 +20664,20 @@ COPY public.payment_transaction (id, created, token, kind, is_success, error, cu
 5	2021-07-21 18:55:54.115489+00	charged	capture	t	\N	USD	2606.510	{}	5	\N	f	{}	t	
 6	2021-08-11 15:44:18.256233+00	charged	capture	t	\N	USD	215.000	{}	6	\N	f	{}	t	
 7	2021-08-11 17:04:55.638923+00	charged	capture	t	\N	USD	101.000	{}	7	\N	f	{}	t	
+8	2021-10-28 19:42:13.15627+00	pi_3JpeUJGwGY8wmB3D1unFJQi3	capture	t	\N	USD	805.000	{"id": "pi_3JpeUJGwGY8wmB3D1unFJQi3", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpeUJGwGY8wmB3D1unFJQi3", "data": [{"id": "ch_3JpeUJGwGY8wmB3D1y6FXD3m", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635450132, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 56, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpeUJGwGY8wmB3D1y6FXD3m/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUdQLpKc8Gu7wN", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "jim Doe", "phone": "+18005555555", "address": {"city": "BOSTON", "line1": "123 Main St.", "line2": null, "state": "MA", "country": "United States of America", "postal_code": "02124"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpeUJGwGY8wmB3D1y6FXD3m/rcpt_KUdlL8URd7BYwm63VK5KPRjBPUeKXl0", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpeUJGwGY8wmB3D1unFJQi3", "payment_method": "pm_1JpeU1GwGY8wmB3DnK40abBw", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Alex Vallejo", "email": null, "phone": null, "address": {"city": "Miami", "line1": "180 NE 29th St", "line2": "Apt 1904", "state": "AL", "country": "US", "postal_code": "33137"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpeUJGwGY8wmB3D10zy3NhK", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 12, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635450131, "invoice": null, "currency": "usd", "customer": "cus_KUdQLpKc8Gu7wN", "livemode": false, "metadata": {}, "shipping": {"name": "jim Doe", "phone": "+18005555555", "address": {"city": "BOSTON", "line1": "123 Main St.", "line2": null, "state": "MA", "country": "United States of America", "postal_code": "02124"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpeUJGwGY8wmB3D1unFJQi3_secret_4GyaEX2GGM7R2zai5Zz1tpNxH", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpeU1GwGY8wmB3DnK40abBw", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	8	cus_KUdQLpKc8Gu7wN	f	{}	t	
+9	2021-10-29 12:23:28.572928+00	pi_3Jpu7HGwGY8wmB3D0JeqfhwL	capture	t	\N	USD	805.000	{"id": "pi_3Jpu7HGwGY8wmB3D0JeqfhwL", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3Jpu7HGwGY8wmB3D0JeqfhwL", "data": [{"id": "ch_3Jpu7HGwGY8wmB3D0lBAKiKW", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635510207, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 55, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3Jpu7HGwGY8wmB3D0lBAKiKW/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUdQLpKc8Gu7wN", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "jim Doe", "phone": "+18005555555", "address": {"city": "BOSTON", "line1": "123 Main St.", "line2": null, "state": "MA", "country": "United States of America", "postal_code": "02124"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3Jpu7HGwGY8wmB3D0lBAKiKW/rcpt_KUtvCkJuB1gecDKwHNlUIvZvJRYmyxM", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3Jpu7HGwGY8wmB3D0JeqfhwL", "payment_method": "pm_1JpeU1GwGY8wmB3DnK40abBw", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Alex Vallejo", "email": null, "phone": null, "address": {"city": "Miami", "line1": "180 NE 29th St", "line2": "Apt 1904", "state": "AL", "country": "US", "postal_code": "33137"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3Jpu7HGwGY8wmB3D0iWkPbYV", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 12, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635510207, "invoice": null, "currency": "usd", "customer": "cus_KUdQLpKc8Gu7wN", "livemode": false, "metadata": {}, "shipping": {"name": "jim Doe", "phone": "+18005555555", "address": {"city": "BOSTON", "line1": "123 Main St.", "line2": null, "state": "MA", "country": "United States of America", "postal_code": "02124"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3Jpu7HGwGY8wmB3D0JeqfhwL_secret_h3JfKTeduqxaLR7B3wFehep60", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpeU1GwGY8wmB3DnK40abBw", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	9	cus_KUdQLpKc8Gu7wN	f	{}	t	
+10	2021-10-29 13:46:11.169549+00	pi_3JpvPJGwGY8wmB3D1AbS3KAH	capture	t	\N	USD	805.000	{"id": "pi_3JpvPJGwGY8wmB3D1AbS3KAH", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpvPJGwGY8wmB3D1AbS3KAH", "data": [{"id": "ch_3JpvPJGwGY8wmB3D1lGQq5Qe", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635515170, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 3, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpvPJGwGY8wmB3D1lGQq5Qe/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUdYHBDOZZKmdi", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Kynan Delorey", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "1 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpvPJGwGY8wmB3D1lGQq5Qe/rcpt_KUvFFiGJhNOdDOTwoJ64p7NWk10jHyB", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpvPJGwGY8wmB3D1AbS3KAH", "payment_method": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Kynan Delorey", "email": null, "phone": null, "address": {"city": "Miami", "line1": "180 NE 29th St", "line2": "Apt 1904", "state": "FL", "country": "US", "postal_code": "33137"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpvPJGwGY8wmB3D1Fhk9PxG", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 12, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635515169, "invoice": null, "currency": "usd", "customer": "cus_KUdYHBDOZZKmdi", "livemode": false, "metadata": {}, "shipping": {"name": "Kynan Delorey", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "1 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpvPJGwGY8wmB3D1AbS3KAH_secret_8rNdqu0MGiSgf7at3ESv2JOk2", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	10	cus_KUdYHBDOZZKmdi	f	{}	t	
+11	2021-10-29 13:56:34.797637+00	pi_3JpvZNGwGY8wmB3D0vVZTISs	capture	t	\N	USD	1605.000	{"id": "pi_3JpvZNGwGY8wmB3D0vVZTISs", "amount": 160500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpvZNGwGY8wmB3D0vVZTISs", "data": [{"id": "ch_3JpvZNGwGY8wmB3D0wDLdqTX", "paid": true, "order": null, "amount": 160500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635515793, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 35, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpvZNGwGY8wmB3D0wDLdqTX/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUlezc18epzzMY", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Alice Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "44 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpvZNGwGY8wmB3D0wDLdqTX/rcpt_KUvQOy21xTu2JaL3V7K11zp8z6dHHf3", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpvZNGwGY8wmB3D0vVZTISs", "payment_method": "pm_1JpvYkGwGY8wmB3D8pGbqiBQ", "receipt_number": null, "transfer_group": null, "amount_captured": 160500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Alice Customer", "email": null, "phone": null, "address": {"city": "Portsmouth", "line1": "44 Test Ln.", "line2": "", "state": "NH", "country": "US", "postal_code": "03801"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpvZNGwGY8wmB3D0tU0XllR", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 8, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635515793, "invoice": null, "currency": "usd", "customer": "cus_KUlezc18epzzMY", "livemode": false, "metadata": {}, "shipping": {"name": "Alice Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "44 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpvZNGwGY8wmB3D0vVZTISs_secret_jT5Y5TndLtUd5HtGaVJ0z3Xi2", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpvYkGwGY8wmB3D8pGbqiBQ", "transfer_group": null, "amount_received": 160500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	11	cus_KUlezc18epzzMY	f	{}	t	
+12	2021-10-29 15:56:14.873077+00	pi_3JpxRBGwGY8wmB3D14qKUpNs	capture	t	\N	USD	2405.000	{"id": "pi_3JpxRBGwGY8wmB3D14qKUpNs", "amount": 240500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpxRBGwGY8wmB3D14qKUpNs", "data": [{"id": "ch_3JpxRBGwGY8wmB3D1xCbn332", "paid": true, "order": null, "amount": 240500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635522973, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 10, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpxRBGwGY8wmB3D1xCbn332/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUlezc18epzzMY", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Alice Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "44 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpxRBGwGY8wmB3D1xCbn332/rcpt_KUxLHUyVwMEA1OKObqpWEYJL9RX8tUF", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpxRBGwGY8wmB3D14qKUpNs", "payment_method": "pm_1JpxPoGwGY8wmB3DXNXZNXS3", "receipt_number": null, "transfer_group": null, "amount_captured": 240500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Alice Customer", "email": null, "phone": null, "address": {"city": "Portsmouth", "line1": "9 Test Ln.", "line2": "", "state": "NH", "country": "US", "postal_code": "03801"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpxRBGwGY8wmB3D1CyS37OG", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2024, "exp_month": 8, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635522973, "invoice": null, "currency": "usd", "customer": "cus_KUlezc18epzzMY", "livemode": false, "metadata": {}, "shipping": {"name": "Alice Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "44 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpxRBGwGY8wmB3D14qKUpNs_secret_SbvkA3VcKkG7lOiiclrvJl3w4", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpxPoGwGY8wmB3DXNXZNXS3", "transfer_group": null, "amount_received": 240500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	12	cus_KUlezc18epzzMY	f	{}	t	
+13	2021-10-29 16:05:44.859366+00	pi_3JpxaNGwGY8wmB3D1NzGmNmB	capture	t	\N	USD	1754.990	{"id": "pi_3JpxaNGwGY8wmB3D1NzGmNmB", "amount": 175499, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpxaNGwGY8wmB3D1NzGmNmB", "data": [{"id": "ch_3JpxaNGwGY8wmB3D1l4SENWi", "paid": true, "order": null, "amount": 175499, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635523543, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 22, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpxaNGwGY8wmB3D1l4SENWi/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUxRaqV8WrHZ8m", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Bob Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "9 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpxaNGwGY8wmB3D1l4SENWi/rcpt_KUxVksy0xB7knjQckdLKOO1HtNpaSlV", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpxaNGwGY8wmB3D1NzGmNmB", "payment_method": "pm_1JpxWvGwGY8wmB3DVGyCqNwM", "receipt_number": null, "transfer_group": null, "amount_captured": 175499, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Bob Customer", "email": null, "phone": null, "address": {"city": "Portsmouth", "line1": "9 Paper St.", "line2": "", "state": "NH", "country": "US", "postal_code": "03801"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpxaNGwGY8wmB3D1QGLKQoH", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 9, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635523543, "invoice": null, "currency": "usd", "customer": "cus_KUxRaqV8WrHZ8m", "livemode": false, "metadata": {}, "shipping": {"name": "Bob Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "9 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpxaNGwGY8wmB3D1NzGmNmB_secret_1iYlgH9aFrzaAJzBrQYyufe2I", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpxWvGwGY8wmB3DVGyCqNwM", "transfer_group": null, "amount_received": 175499, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	13	cus_KUxRaqV8WrHZ8m	f	{}	t	
+14	2021-10-29 16:28:09.267842+00	pi_3Jpxw3GwGY8wmB3D1ocUVck0	capture	t	\N	USD	1750.000	{"id": "pi_3Jpxw3GwGY8wmB3D1ocUVck0", "amount": 175000, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3Jpxw3GwGY8wmB3D1ocUVck0", "data": [{"id": "ch_3Jpxw3GwGY8wmB3D1LOenf9a", "paid": true, "order": null, "amount": 175000, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635524888, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 53, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3Jpxw3GwGY8wmB3D1LOenf9a/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUxpSQQeky7FZV", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Dan Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "5 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3Jpxw3GwGY8wmB3D1LOenf9a/rcpt_KUxrm3Hi1sn4mSZH0j1pZmHSoWlSO8r", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3Jpxw3GwGY8wmB3D1ocUVck0", "payment_method": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "receipt_number": null, "transfer_group": null, "amount_captured": 175000, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Dan Customer", "email": null, "phone": null, "address": {"city": "Portsmouth", "line1": "5 Paper St.", "line2": "", "state": "NH", "country": "US", "postal_code": "03801"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3Jpxw3GwGY8wmB3D1BmxTlGZ", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2027, "exp_month": 8, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635524887, "invoice": null, "currency": "usd", "customer": "cus_KUxpSQQeky7FZV", "livemode": false, "metadata": {}, "shipping": {"name": "Dan Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "5 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3Jpxw3GwGY8wmB3D1ocUVck0_secret_yunnBW8e1yxtrgXcoHJcNOujg", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "transfer_group": null, "amount_received": 175000, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	14	cus_KUxpSQQeky7FZV	f	{}	t	
+15	2021-10-29 16:32:56.422168+00	pi_3Jpy0hGwGY8wmB3D0DE4blOo	capture	t	\N	USD	3205.000	{"id": "pi_3Jpy0hGwGY8wmB3D0DE4blOo", "amount": 320500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3Jpy0hGwGY8wmB3D0DE4blOo", "data": [{"id": "ch_3Jpy0hGwGY8wmB3D0M5RTq3b", "paid": true, "order": null, "amount": 320500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635525175, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 50, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3Jpy0hGwGY8wmB3D0M5RTq3b/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUxpSQQeky7FZV", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Dan Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "5 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3Jpy0hGwGY8wmB3D0M5RTq3b/rcpt_KUxwx2nOgR7JKCnA04SFZNbXbp1sBGh", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3Jpy0hGwGY8wmB3D0DE4blOo", "payment_method": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "receipt_number": null, "transfer_group": null, "amount_captured": 320500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Dan Customer", "email": null, "phone": null, "address": {"city": "Portsmouth", "line1": "5 Paper St.", "line2": "", "state": "NH", "country": "US", "postal_code": "03801"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3Jpy0hGwGY8wmB3D0v4DIxz9", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": "pass", "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2027, "exp_month": 8, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635525175, "invoice": null, "currency": "usd", "customer": "cus_KUxpSQQeky7FZV", "livemode": false, "metadata": {}, "shipping": {"name": "Dan Customer", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "5 Paper St.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3Jpy0hGwGY8wmB3D0DE4blOo_secret_gL9ZJoYM74EosyGR5WJfrXjzj", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpxuAGwGY8wmB3D0xyKVTaO", "transfer_group": null, "amount_received": 320500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	15	cus_KUxpSQQeky7FZV	f	{}	t	
+16	2021-10-29 18:04:39.493985+00	pi_3JpzRRGwGY8wmB3D0TYF1mz4	capture	t	\N	USD	805.000	{"id": "pi_3JpzRRGwGY8wmB3D0TYF1mz4", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JpzRRGwGY8wmB3D0TYF1mz4", "data": [{"id": "ch_3JpzRRGwGY8wmB3D0zaWG08U", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635530678, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 51, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JpzRRGwGY8wmB3D0zaWG08U/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUdYHBDOZZKmdi", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Kynan Delorey", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "1 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JpzRRGwGY8wmB3D0zaWG08U/rcpt_KUzQnXBPxYUwRnLTPJuLFke7kboIKTk", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JpzRRGwGY8wmB3D0TYF1mz4", "payment_method": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Kynan Delorey", "email": null, "phone": null, "address": {"city": "Miami", "line1": "180 NE 29th St", "line2": "Apt 1904", "state": "FL", "country": "US", "postal_code": "33137"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JpzRRGwGY8wmB3D0TI4eACb", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2025, "exp_month": 12, "fingerprint": "eSB0kSJDzNTTBF7r", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635530677, "invoice": null, "currency": "usd", "customer": "cus_KUdYHBDOZZKmdi", "livemode": false, "metadata": {}, "shipping": {"name": "Kynan Delorey", "phone": "", "address": {"city": "PORTSMOUTH", "line1": "1 Test Ln.", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03801"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JpzRRGwGY8wmB3D0TYF1mz4_secret_WeqWDajb9DwZVQFp7puyDpNYy", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpuNdGwGY8wmB3DgNnWmjrr", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	16	cus_KUdYHBDOZZKmdi	f	{}	t	
+17	2021-10-29 19:01:28.602887+00	pi_3Jq0KQGwGY8wmB3D1pAjPohz	capture	t	\N	USD	805.000	{"id": "pi_3Jq0KQGwGY8wmB3D1pAjPohz", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3Jq0KQGwGY8wmB3D1pAjPohz", "data": [{"id": "ch_3Jq0KQGwGY8wmB3D1aXF7mmU", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635534087, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 50, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3Jq0KQGwGY8wmB3D1aXF7mmU/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3Jq0KQGwGY8wmB3D1aXF7mmU/rcpt_KV0LtAYOjzhviCwrpi30kI7YFRwORLg", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3Jq0KQGwGY8wmB3D1pAjPohz", "payment_method": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Adam Tester", "email": null, "phone": null, "address": {"city": "Hampton", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "US", "postal_code": "03842"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3Jq0KQGwGY8wmB3D19IFhgNx", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "1111", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2026, "exp_month": 3, "fingerprint": "J23KWw4KrO07xaG2", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635534086, "invoice": null, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "livemode": false, "metadata": {}, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": null, "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3Jq0KQGwGY8wmB3D1pAjPohz_secret_qXs8mk0lrpD3K3FXuFJu0nY4r", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	17	cus_KUtWYWq5I864Ul	f	{}	t	
+18	2021-11-02 10:08:15.991274+00	pi_3JrJucGwGY8wmB3D0YxgOZny	capture	t	\N	USD	3205.000	{"id": "pi_3JrJucGwGY8wmB3D0YxgOZny", "amount": 320500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JrJucGwGY8wmB3D0YxgOZny", "data": [{"id": "ch_3JrJucGwGY8wmB3D0xFj9Ndv", "paid": true, "order": null, "amount": 320500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635847694, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 8, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JrJucGwGY8wmB3D0xFj9Ndv/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUdWmnwhIThYd3", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Gail Smith", "phone": "", "address": {"city": "BOSTON", "line1": "700 Main St.", "line2": "", "state": "MA", "country": "United States of America", "postal_code": "02128"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JrJucGwGY8wmB3D0xFj9Ndv/rcpt_KWMdo2CfoZj19YZHfKO0d4gfOQg7RjI", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JrJucGwGY8wmB3D0YxgOZny", "payment_method": "pm_1JpeFoGwGY8wmB3DSt3GA2lO", "receipt_number": null, "transfer_group": null, "amount_captured": 320500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Adam Vicinus", "email": null, "phone": null, "address": {"city": "Hampton", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "US", "postal_code": "03942"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JrJucGwGY8wmB3D01Nhocsf", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "1111", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2026, "exp_month": 3, "fingerprint": "J23KWw4KrO07xaG2", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635847694, "invoice": null, "currency": "usd", "customer": "cus_KUdWmnwhIThYd3", "livemode": false, "metadata": {}, "shipping": {"name": "Gail Smith", "phone": "", "address": {"city": "BOSTON", "line1": "700 Main St.", "line2": "", "state": "MA", "country": "United States of America", "postal_code": "02128"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JrJucGwGY8wmB3D0YxgOZny_secret_Cj7LG1LzcIv6YvtneTdV4NYaf", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JpeFoGwGY8wmB3DSt3GA2lO", "transfer_group": null, "amount_received": 320500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	18	cus_KUdWmnwhIThYd3	f	{}	t	
+19	2021-11-02 17:46:51.424746+00	pi_3JrR4QGwGY8wmB3D0cIFu20N	capture	t	\N	USD	805.000	{"id": "pi_3JrR4QGwGY8wmB3D0cIFu20N", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JrR4QGwGY8wmB3D0cIFu20N", "data": [{"id": "ch_3JrR4QGwGY8wmB3D0gJUR1De", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635875210, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 24, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JrR4QGwGY8wmB3D0gJUR1De/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JrR4QGwGY8wmB3D0gJUR1De/rcpt_KWU2oDS8N5cbNBUtJw7k6EjfQZdD4o0", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JrR4QGwGY8wmB3D0cIFu20N", "payment_method": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Adam Tester", "email": null, "phone": null, "address": {"city": "Hampton", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "US", "postal_code": "03842"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JrR4QGwGY8wmB3D06pHAN8R", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "visa", "last4": "1111", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "visa", "exp_year": 2026, "exp_month": 3, "fingerprint": "J23KWw4KrO07xaG2", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635875210, "invoice": null, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "livemode": false, "metadata": {}, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JrR4QGwGY8wmB3D0cIFu20N_secret_wu54nN21kOr1yydbJp94HoSYE", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1JptjJGwGY8wmB3DoZq5pNY7", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	19	cus_KUtWYWq5I864Ul	f	{}	t	
+20	2021-11-03 20:46:41.816453+00	pi_3JrqM0GwGY8wmB3D0sETxPAh	capture	t	\N	USD	805.000	{"id": "pi_3JrqM0GwGY8wmB3D0sETxPAh", "amount": 80500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JrqM0GwGY8wmB3D0sETxPAh", "data": [{"id": "ch_3JrqM0GwGY8wmB3D03OQN5eA", "paid": true, "order": null, "amount": 80500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1635972400, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 0, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JrqM0GwGY8wmB3D03OQN5eA/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JrqM0GwGY8wmB3D03OQN5eA/rcpt_KWuA98hPtRyW594w9PPSmkJaEEIpQ19", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JrqM0GwGY8wmB3D0sETxPAh", "payment_method": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "receipt_number": null, "transfer_group": null, "amount_captured": 80500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Adam Vicinus", "email": null, "phone": null, "address": {"city": "Hampton", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "US", "postal_code": "03842"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JrqM0GwGY8wmB3D0wpD9FC2", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "mastercard", "last4": "4444", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "mastercard", "exp_year": 2026, "exp_month": 3, "fingerprint": "vIObpdsjHtmuWvVR", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1635972400, "invoice": null, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "livemode": false, "metadata": {}, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JrqM0GwGY8wmB3D0sETxPAh_secret_DUTwjrAsMMBH8HREoT7tC7mYO", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "transfer_group": null, "amount_received": 80500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	20	cus_KUtWYWq5I864Ul	f	{}	t	
+21	2021-11-05 15:45:50.789737+00	pi_3JsUbxGwGY8wmB3D04sBaztg	capture	t	\N	USD	32405.000	{"id": "pi_3JsUbxGwGY8wmB3D04sBaztg", "amount": 3240500, "object": "payment_intent", "review": null, "source": null, "status": "succeeded", "charges": {"url": "/v1/charges?payment_intent=pi_3JsUbxGwGY8wmB3D04sBaztg", "data": [{"id": "ch_3JsUbxGwGY8wmB3D0vCUW7cx", "paid": true, "order": null, "amount": 3240500, "object": "charge", "review": null, "source": null, "status": "succeeded", "created": 1636127149, "dispute": null, "invoice": null, "outcome": {"type": "authorized", "reason": null, "risk_level": "normal", "risk_score": 2, "network_status": "approved_by_network", "seller_message": "Payment complete."}, "refunds": {"url": "/v1/charges/ch_3JsUbxGwGY8wmB3D0vCUW7cx/refunds", "data": [], "object": "list", "has_more": false, "total_count": 0}, "captured": true, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "disputed": false, "livemode": false, "metadata": {}, "refunded": false, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "description": null, "destination": null, "receipt_url": "https://pay.stripe.com/receipts/acct_1JeloZGwGY8wmB3D/ch_3JsUbxGwGY8wmB3D0vCUW7cx/rcpt_KXZln5OEBcfPu0Q3HnIfpqmMKEBMXul", "failure_code": null, "on_behalf_of": null, "fraud_details": {}, "receipt_email": null, "transfer_data": null, "payment_intent": "pi_3JsUbxGwGY8wmB3D04sBaztg", "payment_method": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "receipt_number": null, "transfer_group": null, "amount_captured": 3240500, "amount_refunded": 0, "application_fee": null, "billing_details": {"name": "Adam Vicinus", "email": null, "phone": null, "address": {"city": "Hampton", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "US", "postal_code": "03842"}}, "failure_message": null, "source_transfer": null, "balance_transaction": "txn_3JsUbxGwGY8wmB3D0ASRatpy", "statement_descriptor": null, "application_fee_amount": null, "payment_method_details": {"card": {"brand": "mastercard", "last4": "4444", "checks": {"cvc_check": null, "address_line1_check": "pass", "address_postal_code_check": "pass"}, "wallet": null, "country": "US", "funding": "credit", "network": "mastercard", "exp_year": 2026, "exp_month": 3, "fingerprint": "vIObpdsjHtmuWvVR", "installments": null, "three_d_secure": null}, "type": "card"}, "statement_descriptor_suffix": null, "calculated_statement_descriptor": "ROCKETCHIPS"}], "object": "list", "has_more": false, "total_count": 1}, "created": 1636127149, "invoice": null, "currency": "usd", "customer": "cus_KUtWYWq5I864Ul", "livemode": false, "metadata": {}, "shipping": {"name": "Adam Billers", "phone": "", "address": {"city": "HAMPTON", "line1": "13 Falcone Cir", "line2": "", "state": "NH", "country": "United States of America", "postal_code": "03842"}, "carrier": null, "tracking_number": null}, "application": null, "canceled_at": null, "description": null, "next_action": null, "on_behalf_of": null, "client_secret": "pi_3JsUbxGwGY8wmB3D04sBaztg_secret_i89tLgMArcpczyxGiH3G5n0Tt", "receipt_email": null, "transfer_data": null, "capture_method": "automatic", "payment_method": "pm_1Jrn3NGwGY8wmB3DuSDlL6uB", "transfer_group": null, "amount_received": 3240500, "amount_capturable": 0, "last_payment_error": null, "setup_future_usage": "on_session", "cancellation_reason": null, "confirmation_method": "manual", "payment_method_types": ["card"], "statement_descriptor": null, "application_fee_amount": null, "payment_method_options": {"card": {"network": null, "installments": null, "request_three_d_secure": "automatic"}}, "statement_descriptor_suffix": null}	21	cus_KUtWYWq5I864Ul	f	{}	t	
 \.
 
 
@@ -7508,6 +20687,7 @@ COPY public.payment_transaction (id, created, token, kind, is_success, error, cu
 
 COPY public.plugins_pluginconfiguration (id, name, description, active, configuration, identifier) FROM stdin;
 1			t	[{"name": "Store customers card", "type": "Boolean", "label": "Store customers card", "value": false, "help_text": "Determines if Saleor should store cards."}, {"name": "Automatic payment capture", "type": "Boolean", "label": "Automatic payment capture", "value": true, "help_text": "Determines if Saleor should automaticaly capture payments."}, {"name": "Supported currencies", "type": "String", "label": "Supported currencies", "value": "USD", "help_text": "Determines currencies supported by gateway. Please enter currency codes separated by a comma."}]	mirumee.payments.dummy_credit_card
+2			t	[{"name": "Public API key", "type": "Secret", "label": "Public API key", "value": "pk_test_51JeloZGwGY8wmB3De8nkDq2Eex3bllEFKymSMsRiqwXUtxShtr4JVAKjLOi9WxHblgppNkcKTFhe69AFFHCMtesP00O09X3PHO", "help_text": "Provide Stripe public API key."}, {"name": "Secret API key", "type": "Secret", "label": "Secret API key", "value": "sk_test_51JeloZGwGY8wmB3Davb45KxrKp6T1DzPe8gWuzY93Gqq7kikOrvOQLhtFjcNPCYKGblGKA8bsoglKsftVEl7tr0v00oOHmHBPW", "help_text": "Provide Stripe secret API key."}, {"name": "Store customers card", "type": "Boolean", "label": "Store customers card", "value": false, "help_text": "Determines if Saleor should store cards on payments in Stripe customer."}, {"name": "Automatic payment capture", "type": "Boolean", "label": "Automatic payment capture", "value": true, "help_text": "Determines if Saleor should automaticaly capture payments."}, {"name": "Supported currencies", "type": "String", "label": "Supported currencies", "value": "", "help_text": "Determines currencies supported by gateway. Please enter currency codes separated by a comma."}]	mirumee.payments.stripe
 \.
 
 
@@ -7516,158 +20696,1919 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_assignedproductattribute (id, product_id, assignment_id) FROM stdin;
-338	120	75
-339	120	77
-340	120	76
-341	120	85
-342	120	81
-343	121	75
-344	121	77
-345	121	76
-346	121	85
-347	121	81
-348	122	75
-349	122	77
-350	122	76
-351	122	85
-168	88	54
-169	88	56
-170	88	55
-171	88	53
-172	88	52
-173	88	57
-21	6	5
-22	6	6
-23	6	7
-24	6	8
-25	7	13
-26	7	14
-27	7	15
-28	7	16
-29	8	9
-30	8	10
-31	8	11
-32	8	12
-33	9	5
-34	9	6
-35	9	7
-36	9	8
-37	7	21
-38	7	22
-39	6	19
-40	6	20
-41	9	19
-42	9	20
-43	8	17
-44	8	18
-174	88	58
-175	89	54
-176	89	56
-177	89	55
-178	89	53
-179	89	52
-51	27	23
-180	89	57
-53	27	24
-54	27	26
-55	28	27
-56	28	28
-57	28	29
-58	28	30
-59	29	27
-60	29	28
-61	29	29
-62	29	30
-63	30	34
-64	30	35
-65	30	33
-66	27	36
-67	27	37
-68	27	41
-69	27	38
-70	27	39
-71	27	40
-72	31	36
-73	31	23
-74	31	37
-75	31	41
-181	89	58
-77	31	26
-78	31	38
-79	31	39
-80	31	40
-81	31	24
-82	32	42
-83	32	43
-84	32	44
-85	32	45
-86	32	47
-87	32	48
-88	32	49
-89	32	50
-90	32	51
-182	89	59
-183	89	60
-184	88	59
-185	88	60
-352	122	81
-353	124	75
-354	124	77
-355	124	76
-356	124	85
-318	116	75
-357	124	81
-358	125	75
-359	125	77
-360	125	76
-361	125	85
-362	125	81
-393	88	82
-394	88	86
-395	120	78
-396	120	79
-397	120	80
-398	89	82
-399	89	86
-319	116	77
-320	116	76
-321	116	78
-322	116	85
-323	116	81
-334	118	78
-335	118	79
-336	118	80
-337	118	85
-363	126	75
-364	126	77
-365	126	76
-366	126	85
-367	126	81
-388	132	75
-389	132	77
-390	132	76
-391	132	85
-392	132	81
-324	117	75
-325	117	77
-326	117	76
-327	117	78
-328	117	85
-329	117	81
-330	118	75
-331	118	77
-332	118	76
-333	118	81
-400	133	62
-401	133	66
-402	133	63
-403	133	64
-404	133	65
-405	133	88
-406	133	83
-407	121	78
-408	121	79
-409	121	80
+456	148	79
+457	148	80
+458	152	79
+459	152	80
+469	147	79
+470	147	80
+475	155	85
+478	155	75
+479	155	76
+480	155	77
+481	155	79
+482	155	80
+520	174	73
+521	174	72
+522	174	74
+523	174	89
+524	174	87
+541	178	72
+542	178	74
+543	178	89
+544	178	87
+545	179	73
+546	179	72
+547	179	74
+548	179	89
+549	179	87
+550	180	73
+551	180	72
+552	180	74
+553	180	89
+554	180	87
+555	181	73
+556	181	72
+557	181	74
+558	181	89
+559	181	87
+560	182	73
+561	182	72
+562	182	74
+563	182	89
+564	182	87
+565	183	73
+566	183	72
+567	183	74
+568	183	89
+569	183	87
+570	184	73
+571	184	72
+572	184	74
+573	184	89
+574	184	87
+575	185	73
+576	185	72
+577	185	74
+578	185	89
+579	185	87
+580	186	73
+581	186	72
+582	186	74
+583	186	89
+584	186	87
+585	187	73
+586	187	72
+587	187	74
+588	187	89
+589	187	87
+590	188	73
+591	188	72
+592	188	74
+593	188	89
+594	188	87
+595	189	73
+596	189	72
+597	189	74
+598	189	89
+599	189	87
+600	190	73
+601	190	72
+602	190	74
+603	190	89
+604	190	87
+605	191	73
+606	191	72
+607	191	74
+608	191	89
+609	191	87
+610	192	73
+611	192	72
+612	192	74
+613	192	89
+614	192	87
+615	193	73
+616	193	72
+617	193	74
+618	193	89
+619	193	87
+620	194	73
+621	194	72
+622	194	74
+623	194	89
+624	194	87
+625	195	73
+626	195	72
+627	195	74
+628	195	89
+629	195	87
+630	196	73
+631	196	72
+632	196	74
+633	196	89
+634	196	87
+635	197	73
+636	197	72
+637	197	74
+638	197	89
+639	197	87
+640	198	73
+641	198	72
+642	198	74
+643	198	89
+644	198	87
+645	199	73
+646	199	72
+647	199	74
+648	199	89
+649	199	87
+650	200	73
+651	200	72
+652	200	74
+653	200	89
+654	200	87
+655	201	73
+656	201	72
+657	201	74
+658	201	89
+659	201	87
+660	202	73
+661	202	72
+662	202	74
+663	202	89
+664	202	87
+665	203	73
+666	203	72
+667	203	74
+668	203	89
+669	203	87
+670	204	73
+411	136	85
+671	204	72
+672	204	74
+673	204	89
+674	204	87
+675	205	73
+676	205	72
+677	205	74
+678	205	89
+679	205	87
+790	228	73
+422	145	75
+423	145	77
+424	145	76
+425	145	85
+791	228	72
+792	228	74
+793	228	89
+794	228	87
+795	229	73
+796	229	72
+432	147	75
+433	147	77
+434	147	76
+435	147	85
+436	148	75
+437	148	77
+438	148	76
+439	148	85
+440	149	75
+441	149	77
+442	149	76
+443	149	85
+444	150	75
+445	150	77
+446	150	76
+447	150	85
+448	151	75
+449	151	77
+450	151	76
+451	151	85
+452	152	75
+453	152	77
+454	152	76
+455	152	85
+460	153	52
+461	153	53
+462	153	54
+463	153	55
+464	153	56
+465	153	57
+466	153	59
+467	153	60
+468	153	86
+471	154	75
+472	154	77
+473	154	76
+474	154	85
+476	157	85
+477	158	85
+483	160	75
+484	160	76
+485	160	77
+486	160	79
+487	160	80
+488	160	85
+516	173	73
+517	173	72
+518	173	74
+519	173	87
+525	175	73
+526	175	72
+527	175	74
+528	175	89
+529	175	87
+530	176	73
+531	176	72
+532	176	74
+533	176	89
+534	176	87
+535	177	73
+536	177	72
+537	177	74
+538	177	89
+539	177	87
+540	178	73
+680	206	73
+681	206	72
+682	206	74
+683	206	89
+684	206	87
+685	207	73
+686	207	72
+687	207	74
+688	207	89
+689	207	87
+690	208	73
+691	208	72
+692	208	74
+693	208	89
+694	208	87
+695	209	73
+696	209	72
+697	209	74
+698	209	89
+699	209	87
+700	210	73
+701	210	72
+702	210	74
+703	210	89
+704	210	87
+705	211	73
+706	211	72
+707	211	74
+708	211	89
+709	211	87
+710	212	73
+711	212	72
+712	212	74
+713	212	89
+714	212	87
+715	213	73
+716	213	72
+717	213	74
+718	213	89
+719	213	87
+720	214	73
+721	214	72
+722	214	74
+723	214	89
+724	214	87
+725	215	73
+726	215	72
+727	215	74
+728	215	89
+729	215	87
+730	216	73
+731	216	72
+732	216	74
+733	216	89
+734	216	87
+735	217	73
+736	217	72
+737	217	74
+738	217	89
+739	217	87
+740	218	73
+741	218	72
+742	218	74
+743	218	89
+744	218	87
+745	219	73
+746	219	72
+747	219	74
+748	219	89
+749	219	87
+750	220	73
+751	220	72
+752	220	74
+753	220	89
+754	220	87
+755	221	73
+756	221	72
+757	221	74
+758	221	89
+759	221	87
+760	222	73
+761	222	72
+762	222	74
+763	222	89
+764	222	87
+765	223	73
+766	223	72
+767	223	74
+768	223	89
+769	223	87
+770	224	73
+771	224	72
+772	224	74
+773	224	89
+774	224	87
+775	225	73
+776	225	72
+777	225	74
+778	225	89
+779	225	87
+780	226	73
+781	226	72
+782	226	74
+783	226	89
+784	226	87
+785	227	73
+786	227	72
+787	227	74
+788	227	89
+789	227	87
+797	229	74
+798	229	89
+799	229	87
+800	230	73
+801	230	72
+802	230	74
+803	230	89
+804	230	87
+805	231	73
+806	231	72
+807	231	74
+808	231	89
+809	231	87
+810	232	73
+811	232	72
+812	232	74
+813	232	89
+814	232	87
+815	233	73
+816	233	72
+817	233	74
+818	233	89
+819	233	87
+820	234	73
+821	234	72
+822	234	74
+823	234	89
+824	234	87
+825	235	73
+826	235	72
+827	235	74
+828	235	89
+829	235	87
+830	236	73
+831	236	72
+832	236	74
+833	236	89
+834	236	87
+835	237	73
+836	237	72
+837	237	74
+838	237	89
+839	237	87
+840	238	73
+841	238	72
+842	238	74
+843	238	89
+844	238	87
+845	239	73
+846	239	72
+847	239	74
+848	239	89
+849	239	87
+850	240	73
+851	240	72
+852	240	74
+853	240	89
+854	240	87
+855	241	73
+856	241	72
+857	241	74
+858	241	89
+859	241	87
+860	242	73
+861	242	72
+862	242	74
+863	242	89
+864	242	87
+865	243	73
+866	243	72
+867	243	74
+868	243	89
+869	243	87
+870	244	73
+871	244	72
+872	244	74
+873	244	89
+874	244	87
+875	245	73
+876	245	72
+877	245	74
+878	245	89
+879	245	87
+880	246	73
+881	246	72
+882	246	74
+883	246	89
+884	246	87
+885	247	73
+886	247	72
+887	247	74
+888	247	89
+889	247	87
+890	248	73
+891	248	72
+892	248	74
+893	248	89
+894	248	87
+895	249	73
+896	249	72
+897	249	74
+898	249	89
+899	249	87
+900	250	73
+901	250	72
+902	250	74
+903	250	89
+904	250	87
+905	251	73
+906	251	72
+907	251	74
+908	251	89
+909	251	87
+910	252	73
+911	252	72
+912	252	74
+913	252	89
+914	252	87
+915	253	73
+916	253	72
+917	253	74
+918	253	89
+919	253	87
+920	254	73
+921	254	72
+922	254	74
+923	254	89
+924	254	87
+925	255	73
+926	255	72
+927	255	74
+928	255	89
+929	255	87
+930	256	73
+931	256	72
+932	256	74
+933	256	89
+934	256	87
+935	257	73
+936	257	72
+937	257	74
+938	257	89
+939	257	87
+940	258	73
+941	258	72
+942	258	74
+943	258	89
+944	258	87
+945	259	73
+946	259	72
+947	259	74
+948	259	89
+949	259	87
+950	260	73
+951	260	72
+952	260	74
+953	260	89
+954	260	87
+955	261	73
+956	261	72
+957	261	74
+958	261	89
+959	261	87
+960	262	73
+961	262	72
+962	262	74
+963	262	89
+964	262	87
+965	263	73
+966	263	72
+967	263	74
+968	263	89
+969	263	87
+970	264	73
+971	264	72
+972	264	74
+973	264	89
+974	264	87
+975	265	73
+976	265	72
+977	265	74
+978	265	89
+979	265	87
+980	266	73
+981	266	72
+982	266	74
+983	266	89
+984	266	87
+985	267	73
+986	267	72
+987	267	74
+988	267	89
+989	267	87
+990	268	73
+991	268	72
+992	268	74
+993	268	89
+994	268	87
+995	269	73
+996	269	72
+997	269	74
+998	269	89
+999	269	87
+1000	270	73
+1001	270	72
+1002	270	74
+1003	270	89
+1004	270	87
+1005	271	73
+1006	271	72
+1007	271	74
+1008	271	89
+1009	271	87
+1010	272	73
+1011	272	72
+1012	272	74
+1013	272	89
+1014	272	87
+1015	273	73
+1016	273	72
+1017	273	74
+1018	273	89
+1019	273	87
+1020	274	73
+1021	274	72
+1022	274	74
+1023	274	89
+1024	274	87
+1025	275	73
+1026	275	72
+1027	275	74
+1028	275	89
+1029	275	87
+1030	276	73
+1031	276	72
+1032	276	74
+1033	276	89
+1034	276	87
+1035	277	73
+1036	277	72
+1037	277	74
+1038	277	89
+1039	277	87
+1040	278	73
+1041	278	72
+1042	278	74
+1043	278	89
+1044	278	87
+1045	279	73
+1046	279	72
+1047	279	74
+1048	279	89
+1049	279	87
+1050	280	73
+1051	280	72
+1052	280	74
+1053	280	89
+1054	280	87
+1055	281	73
+1056	281	72
+1057	281	74
+1058	281	89
+1059	281	87
+1060	282	73
+1061	282	72
+1062	282	74
+1063	282	89
+1064	282	87
+1065	283	73
+1066	283	72
+1067	283	74
+1068	283	89
+1069	283	87
+1070	284	73
+1071	284	72
+1072	284	74
+1073	284	89
+1074	284	87
+1075	285	73
+1076	285	72
+1077	285	74
+1078	285	89
+1079	285	87
+1080	286	73
+1081	286	72
+1082	286	74
+1083	286	89
+1084	286	87
+1085	287	73
+1086	287	72
+1087	287	74
+1088	287	89
+1089	287	87
+1090	288	73
+1091	288	72
+1092	288	74
+1093	288	89
+1094	288	87
+1095	289	73
+1096	289	72
+1097	289	74
+1098	289	89
+1099	289	87
+1100	290	73
+1101	290	72
+1102	290	74
+1103	290	89
+1104	290	87
+1105	291	73
+1106	291	72
+1107	291	74
+1108	291	89
+1109	291	87
+1110	292	73
+1111	292	72
+1112	292	74
+1113	292	89
+1114	292	87
+1115	293	73
+1116	293	72
+1117	293	74
+1118	293	89
+1119	293	87
+1120	294	73
+1121	294	72
+1122	294	74
+1123	294	89
+1124	294	87
+1125	295	73
+1126	295	72
+1127	295	74
+1128	295	89
+1129	295	87
+1130	296	73
+1131	296	72
+1132	296	74
+1133	296	89
+1134	296	87
+1135	297	73
+1136	297	72
+1137	297	74
+1138	297	89
+1139	297	87
+1140	298	73
+1141	298	72
+1142	298	74
+1143	298	89
+1144	298	87
+1145	299	73
+1146	299	72
+1147	299	74
+1148	299	89
+1149	299	87
+1150	300	73
+1151	300	72
+1152	300	74
+1153	300	89
+1154	300	87
+1155	301	73
+1156	301	72
+1157	301	74
+1158	301	89
+1159	301	87
+1160	302	73
+1161	302	72
+1162	302	74
+1163	302	89
+1164	302	87
+1165	303	73
+1166	303	72
+1167	303	74
+1168	303	89
+1169	303	87
+1170	304	73
+1171	304	72
+1172	304	74
+1173	304	89
+1174	304	87
+1175	305	73
+1176	305	72
+1177	305	74
+1178	305	89
+1179	305	87
+1180	306	73
+1181	306	72
+1182	306	74
+1183	306	89
+1184	306	87
+1185	307	73
+1186	307	72
+1187	307	74
+1188	307	89
+1189	307	87
+1190	308	73
+1191	308	72
+1192	308	74
+1193	308	89
+1194	308	87
+1195	309	73
+1196	309	72
+1197	309	74
+1198	309	89
+1199	309	87
+1200	310	73
+1201	310	72
+1202	310	74
+1203	310	89
+1204	310	87
+1205	311	73
+1206	311	72
+1207	311	74
+1208	311	89
+1209	311	87
+1210	312	73
+1211	312	72
+1212	312	74
+1213	312	89
+1214	312	87
+1215	313	73
+1216	313	72
+1217	313	74
+1218	313	89
+1219	313	87
+1220	314	73
+1221	314	72
+1222	314	74
+1223	314	89
+1224	314	87
+1225	315	73
+1226	315	72
+1227	315	74
+1228	315	89
+1229	315	87
+1230	316	73
+1231	316	72
+1232	316	74
+1233	316	89
+1234	316	87
+1235	317	73
+1236	317	72
+1237	317	74
+1238	317	89
+1239	317	87
+1240	318	73
+1241	318	72
+1242	318	74
+1243	318	89
+1244	318	87
+1245	319	73
+1246	319	72
+1247	319	74
+1248	319	89
+1249	319	87
+1250	320	73
+1251	320	72
+1252	320	74
+1253	320	89
+1254	320	87
+1255	321	73
+1256	321	72
+1257	321	74
+1258	321	89
+1259	321	87
+1260	322	73
+1261	322	72
+1262	322	74
+1263	322	89
+1264	322	87
+1265	323	73
+1266	323	72
+1267	323	74
+1268	323	89
+1269	323	87
+1270	324	73
+1271	324	72
+1272	324	74
+1273	324	89
+1274	324	87
+1275	325	73
+1276	325	72
+1277	325	74
+1278	325	89
+1279	325	87
+1280	326	73
+1281	326	72
+1282	326	74
+1283	326	89
+1284	326	87
+1285	327	73
+1286	327	72
+1287	327	74
+1288	327	89
+1289	327	87
+1290	328	73
+1291	328	72
+1292	328	74
+1293	328	89
+1294	328	87
+1295	329	73
+1296	329	72
+1297	329	74
+1298	329	89
+1299	329	87
+1300	330	73
+1301	330	72
+1302	330	74
+1303	330	89
+1304	330	87
+1305	331	73
+1306	331	72
+1307	331	74
+1308	331	89
+1309	331	87
+1310	332	73
+1311	332	72
+1312	332	74
+1313	332	89
+1314	332	87
+1315	333	73
+1316	333	72
+1317	333	74
+1318	333	89
+1319	333	87
+1320	334	73
+1321	334	72
+1322	334	74
+1323	334	89
+1324	334	87
+1325	335	73
+1326	335	72
+1327	335	74
+1328	335	89
+1329	335	87
+1330	336	73
+1331	336	72
+1332	336	74
+1333	336	89
+1334	336	87
+1335	337	73
+1336	337	72
+1337	337	74
+1338	337	89
+1339	337	87
+1340	338	73
+1341	338	72
+1342	338	74
+1343	338	89
+1344	338	87
+1345	339	73
+1346	339	72
+1347	339	74
+1348	339	89
+1349	339	87
+1350	340	73
+1351	340	72
+1352	340	74
+1353	340	89
+1354	340	87
+1355	341	73
+1356	341	72
+1357	341	74
+1358	341	89
+1359	341	87
+1360	342	73
+1361	342	72
+1362	342	74
+1363	342	89
+1364	342	87
+1365	343	73
+1366	343	72
+1367	343	74
+1368	343	89
+1369	343	87
+1370	344	73
+1371	344	72
+1372	344	74
+1373	344	89
+1374	344	87
+1375	345	73
+1376	345	72
+1377	345	74
+1378	345	89
+1379	345	87
+1380	346	73
+1381	346	72
+1382	346	74
+1383	346	89
+1384	346	87
+1385	347	73
+1386	347	72
+1387	347	74
+1388	347	89
+1389	347	87
+1390	348	73
+1391	348	72
+1392	348	74
+1393	348	89
+1394	348	87
+1395	349	73
+1396	349	72
+1397	349	74
+1398	349	89
+1399	349	87
+1400	350	73
+1401	350	72
+1402	350	74
+1403	350	89
+1404	350	87
+1405	351	73
+1406	351	72
+1407	351	74
+1408	351	89
+1409	351	87
+1410	352	73
+1411	352	72
+1412	352	74
+1413	352	89
+1414	352	87
+1415	353	73
+1416	353	72
+1417	353	74
+1418	353	89
+1419	353	87
+1420	354	73
+1421	354	72
+1422	354	74
+1423	354	89
+1424	354	87
+1425	355	73
+1426	355	72
+1427	355	74
+1428	355	89
+1429	355	87
+1430	356	73
+1431	356	72
+1432	356	74
+1433	356	89
+1434	356	87
+1435	357	73
+1436	357	72
+1437	357	74
+1438	357	89
+1439	357	87
+1440	358	73
+1441	358	72
+1442	358	74
+1443	358	89
+1444	358	87
+1445	359	73
+1446	359	72
+1447	359	74
+1448	359	89
+1449	359	87
+1450	360	73
+1451	360	72
+1452	360	74
+1453	360	89
+1454	360	87
+1455	361	73
+1456	361	72
+1457	361	74
+1458	361	89
+1459	361	87
+1460	362	73
+1461	362	72
+1462	362	74
+1463	362	89
+1464	362	87
+1465	363	73
+1466	363	72
+1467	363	74
+1468	363	89
+1469	363	87
+1470	364	73
+1471	364	72
+1472	364	74
+1473	364	89
+1474	364	87
+1475	365	73
+1476	365	72
+1477	365	74
+1478	365	89
+1479	365	87
+1480	366	73
+1481	366	72
+1482	366	74
+1483	366	89
+1484	366	87
+1485	367	73
+1486	367	72
+1487	367	74
+1488	367	89
+1489	367	87
+1490	368	73
+1491	368	72
+1492	368	74
+1493	368	89
+1494	368	87
+1495	369	73
+1496	369	72
+1497	369	74
+1498	369	89
+1499	369	87
+1500	370	73
+1501	370	72
+1502	370	74
+1503	370	89
+1504	370	87
+1505	371	73
+1506	371	72
+1507	371	74
+1508	371	89
+1509	371	87
+1510	372	73
+1511	372	72
+1512	372	74
+1513	372	89
+1514	372	87
+1515	373	73
+1516	373	72
+1517	373	74
+1518	373	89
+1519	373	87
+1520	374	73
+1521	374	72
+1522	374	74
+1523	374	89
+1524	374	87
+1525	375	73
+1526	375	72
+1527	375	74
+1528	375	89
+1529	375	87
+1530	376	73
+1531	376	72
+1532	376	74
+1533	376	89
+1534	376	87
+1535	377	73
+1536	377	72
+1537	377	74
+1538	377	89
+1539	377	87
+1540	378	73
+1541	378	72
+1542	378	74
+1543	378	89
+1544	378	87
+1545	379	73
+1546	379	72
+1547	379	74
+1548	379	89
+1549	379	87
+1550	380	73
+1551	380	72
+1552	380	74
+1553	380	89
+1554	380	87
+1555	381	73
+1556	381	72
+1557	381	74
+1558	381	89
+1559	381	87
+1560	382	73
+1561	382	72
+1562	382	74
+1563	382	89
+1564	382	87
+1565	383	73
+1566	383	72
+1567	383	74
+1568	383	89
+1569	383	87
+1570	384	73
+1571	384	72
+1572	384	74
+1573	384	89
+1574	384	87
+1575	385	73
+1576	385	72
+1577	385	74
+1578	385	89
+1579	385	87
+1580	386	73
+1581	386	72
+1582	386	74
+1583	386	89
+1584	386	87
+1585	387	73
+1586	387	72
+1587	387	74
+1588	387	89
+1589	387	87
+1590	388	73
+1591	388	72
+1592	388	74
+1593	388	89
+1594	388	87
+1595	389	73
+1596	389	72
+1597	389	74
+1598	389	89
+1599	389	87
+1600	390	73
+1601	390	72
+1602	390	74
+1603	390	89
+1604	390	87
+1605	391	73
+1606	391	72
+1607	391	74
+1608	391	89
+1609	391	87
+1610	392	73
+1611	392	72
+1612	392	74
+1613	392	89
+1614	392	87
+1615	393	73
+1616	393	72
+1617	393	74
+1618	393	89
+1619	393	87
+1620	394	73
+1621	394	72
+1622	394	74
+1623	394	89
+1624	394	87
+1625	395	73
+1626	395	72
+1627	395	74
+1628	395	89
+1629	395	87
+1630	396	73
+1631	396	72
+1632	396	74
+1633	396	89
+1634	396	87
+1635	397	73
+1636	397	72
+1637	397	74
+1638	397	89
+1639	397	87
+1640	398	73
+1641	398	72
+1642	398	74
+1643	398	89
+1644	398	87
+1645	399	73
+1646	399	72
+1647	399	74
+1648	399	89
+1649	399	87
+1650	400	73
+1651	400	72
+1652	400	74
+1653	400	89
+1654	400	87
+1655	401	73
+1656	401	72
+1657	401	74
+1658	401	89
+1659	401	87
+1660	402	73
+1661	402	72
+1662	402	74
+1663	402	89
+1664	402	87
+1665	403	73
+1666	403	72
+1667	403	74
+1668	403	89
+1669	403	87
+1670	404	73
+1671	404	72
+1672	404	74
+1673	404	89
+1674	404	87
+1675	405	73
+1676	405	72
+1677	405	74
+1678	405	89
+1679	405	87
+1680	406	73
+1681	406	72
+1682	406	74
+1683	406	89
+1684	406	87
+1685	407	73
+1686	407	72
+1687	407	74
+1688	407	89
+1689	407	87
+1690	408	73
+1691	408	72
+1692	408	74
+1693	408	89
+1694	408	87
+1695	409	73
+1696	409	72
+1697	409	74
+1698	409	89
+1699	409	87
+1700	410	73
+1701	410	72
+1702	410	74
+1703	410	89
+1704	410	87
+1705	411	73
+1706	411	72
+1707	411	74
+1708	411	89
+1709	411	87
+1710	412	73
+1711	412	72
+1712	412	74
+1713	412	89
+1714	412	87
+1715	413	73
+1716	413	72
+1717	413	74
+1718	413	89
+1719	413	87
+1720	414	73
+1721	414	72
+1722	414	74
+1723	414	89
+1724	414	87
+1725	415	73
+1726	415	72
+1727	415	74
+1728	415	89
+1729	415	87
+1730	416	73
+1731	416	72
+1732	416	74
+1733	416	89
+1734	416	87
+1735	417	73
+1736	417	72
+1737	417	74
+1738	417	89
+1739	417	87
+1740	418	73
+1741	418	72
+1742	418	74
+1743	418	89
+1744	418	87
+1745	419	73
+1746	419	72
+1747	419	74
+1748	419	89
+1749	419	87
+1750	420	73
+1751	420	72
+1752	420	74
+1753	420	89
+1754	420	87
+1755	421	73
+1756	421	72
+1757	421	74
+1758	421	89
+1759	421	87
+1760	422	73
+1761	422	72
+1762	422	74
+1763	422	89
+1764	422	87
+1765	423	73
+1766	423	72
+1767	423	74
+1768	423	89
+1769	423	87
+1770	424	73
+1771	424	72
+1772	424	74
+1773	424	89
+1774	424	87
+1775	425	73
+1776	425	72
+1777	425	74
+1778	425	89
+1779	425	87
+1780	426	73
+1781	426	72
+1782	426	74
+1783	426	89
+1784	426	87
+1785	427	73
+1786	427	72
+1787	427	74
+1788	427	89
+1789	427	87
+1790	428	73
+1791	428	72
+1792	428	74
+1793	428	89
+1794	428	87
+1795	429	73
+1796	429	72
+1797	429	74
+1798	429	89
+1799	429	87
+1800	430	73
+1801	430	72
+1802	430	74
+1803	430	89
+1804	430	87
+1805	431	73
+1806	431	72
+1807	431	74
+1808	431	89
+1809	431	87
+1810	432	73
+1811	432	72
+1812	432	74
+1813	432	89
+1814	432	87
+1815	433	73
+1816	433	72
+1817	433	74
+1818	433	89
+1819	433	87
+1820	434	73
+1821	434	72
+1822	434	74
+1823	434	89
+1824	434	87
+1825	435	73
+1826	435	72
+1827	435	74
+1828	435	89
+1829	435	87
+1830	436	73
+1831	436	72
+1832	436	74
+1833	436	89
+1834	436	87
+1835	437	73
+1836	437	72
+1837	437	74
+1838	437	89
+1839	437	87
+1840	438	73
+1841	438	72
+1842	438	74
+1843	438	89
+1844	438	87
+1845	439	73
+1846	439	72
+1847	439	74
+1848	439	89
+1849	439	87
+1850	440	73
+1851	440	72
+1852	440	74
+1853	440	89
+1854	440	87
+1855	441	73
+1856	441	72
+1857	441	74
+1858	441	89
+1859	441	87
+1860	442	73
+1861	442	72
+1862	442	74
+1863	442	89
+1864	442	87
+1865	443	73
+1866	443	72
+1867	443	74
+1868	443	89
+1869	443	87
+1870	444	73
+1871	444	72
+1872	444	74
+1873	444	89
+1874	444	87
+1875	445	73
+1876	445	72
+1877	445	74
+1878	445	89
+1879	445	87
+1880	446	73
+1881	446	72
+1882	446	74
+1883	446	89
+1884	446	87
+1885	447	73
+1886	447	72
+1887	447	74
+1888	447	89
+1889	447	87
+1890	448	73
+1891	448	72
+1892	448	74
+1893	448	89
+1894	448	87
+1895	449	73
+1896	449	72
+1897	449	74
+1898	449	89
+1899	449	87
+1900	450	73
+1901	450	72
+1902	450	74
+1903	450	89
+1904	450	87
+1905	451	73
+1906	451	72
+1907	451	74
+1908	451	89
+1909	451	87
+1910	452	73
+1911	452	72
+1912	452	74
+1913	452	89
+1914	452	87
+1915	453	73
+1916	453	72
+1917	453	74
+1918	453	89
+1919	453	87
+1920	454	73
+1921	454	72
+1922	454	74
+1923	454	89
+1924	454	87
+1925	455	73
+1926	455	72
+1927	455	74
+1928	455	89
+1929	455	87
+1930	456	73
+1931	456	72
+1932	456	74
+1933	456	89
+1934	456	87
+1935	457	73
+1936	457	72
+1937	457	74
+1938	457	89
+1939	457	87
+1940	458	73
+1941	458	72
+1942	458	74
+1943	458	89
+1944	458	87
+1945	459	73
+1946	459	72
+1947	459	74
+1948	459	89
+1949	459	87
+1950	460	73
+1951	460	72
+1952	460	74
+1953	460	89
+1954	460	87
+1955	472	88
+1959	151	79
+1960	151	80
+1961	483	88
+1962	150	79
+1963	150	80
+1964	485	86
+1965	486	88
+1966	487	86
+1967	154	79
+1968	154	80
+1969	149	79
+1970	149	80
+1971	136	75
+1972	136	76
+1973	136	77
+1974	136	79
+1975	136	80
+1976	488	75
+1977	488	76
+1978	488	77
+1979	488	79
+1980	488	80
+1981	488	85
+1982	489	75
+1983	489	76
+1984	489	77
+1985	489	79
+1986	489	80
+1987	489	85
+1988	490	75
+1989	490	77
+1990	490	76
+1991	490	85
+1992	491	75
+1993	491	77
+1994	491	76
+1995	491	85
+1996	490	90
+1997	490	91
+1998	491	90
+1999	492	88
+2000	493	88
+2001	494	88
+2002	495	88
+2003	496	88
+2004	497	88
+2005	498	88
+2006	499	88
+2007	500	88
+2008	501	88
+2009	502	88
+2010	503	88
+2011	504	88
+2012	505	88
+2013	506	88
+2014	507	88
+2015	508	88
+2016	509	88
+2017	510	88
+2018	511	88
+2019	512	88
+2020	513	88
+2021	514	88
+2022	515	88
+2023	516	88
+2024	517	88
+2025	518	88
+2026	519	88
+2027	520	88
+2028	521	88
+2029	522	88
+2030	523	88
+2031	524	88
+2032	525	88
+2033	526	88
+2034	527	88
+2035	528	88
+2036	529	88
+2037	530	88
+2038	531	88
+2039	532	88
+2040	533	88
+2041	534	88
+2042	535	88
+2043	536	88
+2044	537	88
+2045	538	88
+2046	539	88
+2047	540	88
+2048	541	88
+2049	542	88
+2050	543	88
+2051	544	88
+2052	545	88
+2053	546	88
+2054	547	88
+2055	548	88
+2056	549	88
+2057	550	88
+2058	551	88
+2059	552	88
+2060	553	88
+2061	554	88
+2062	555	88
+2063	556	88
+2064	557	88
+2065	558	88
+2066	559	88
+2067	560	88
+2068	561	88
+2069	562	88
+2070	563	88
+2071	564	88
+2072	565	88
+2073	566	88
+2074	567	88
+2075	568	88
+2076	569	88
+2077	570	88
+2078	571	88
+2079	572	88
+2080	573	88
+2081	574	88
+2082	575	88
+2083	576	88
+2084	577	88
+2085	578	88
+2086	579	88
+2087	580	88
+2088	581	88
+2089	582	88
+2090	583	88
+2091	584	88
+2092	585	88
+2093	586	88
+2094	587	88
+2095	588	88
+2096	589	88
+2097	590	88
+2098	591	88
+2099	592	88
+2100	593	88
+2101	594	88
+2102	595	88
+2103	596	88
+2104	597	88
+2105	598	88
+2106	599	88
+2107	600	88
+2108	601	88
+2109	602	88
+2110	603	88
+2111	604	88
+2112	605	88
+2113	606	88
+2114	607	88
+2115	608	88
+2116	609	88
+2117	610	88
+2118	611	88
+2119	612	88
+2120	613	88
+2121	614	88
+2122	615	88
+2123	616	88
+2124	617	88
+2125	618	88
+2126	619	88
+2127	620	88
+2128	621	88
+2129	622	88
+2130	623	88
+2131	624	88
+2132	625	88
+2133	626	88
+2134	627	88
+2135	628	88
+2136	629	88
+2137	630	88
+2138	631	88
+2139	632	88
+2140	633	88
+2141	634	88
+2142	635	88
+2143	636	88
+2144	637	88
+2145	638	88
+2146	639	88
+2147	640	88
+2148	641	88
+2149	642	88
+2150	643	88
+2151	644	88
+2152	645	88
+2153	646	88
+2154	647	88
+2155	648	88
+2156	649	88
+2157	650	88
+2158	651	88
+2159	652	88
+2160	653	88
+2161	654	88
+2162	655	88
+2163	656	88
+2164	657	88
+2165	658	88
+2166	659	88
+2167	660	88
+2168	661	88
+2169	662	88
+2170	663	88
+2171	664	88
+2172	665	88
+2173	666	88
+2174	667	88
+2175	668	88
+2176	669	88
+2177	670	88
+2178	671	88
+2179	672	88
+2180	673	88
+2181	674	88
+2182	675	88
+2183	676	88
+2184	677	88
+2185	678	88
+2186	679	88
+2187	680	88
+2188	681	88
+2189	682	88
+2190	683	88
+2191	684	88
+2192	685	88
+2193	686	88
+2194	687	88
+2195	688	88
+2196	689	88
+2197	690	88
+2198	691	88
+2199	692	88
+2200	693	88
+2201	694	88
+2202	695	88
+2203	696	88
+2204	697	88
+2205	698	88
+2206	699	88
+2207	700	88
+2208	701	88
+2209	702	88
+2210	703	88
+2211	704	88
+2212	705	88
+2213	706	88
+2214	707	88
+2215	708	88
+2216	709	88
+2217	710	88
+2218	711	88
+2219	712	88
+2220	713	88
+2221	714	88
+2222	715	88
+2223	716	88
+2224	717	88
+2225	718	88
+2226	719	88
+2227	720	88
+2228	721	88
+2229	722	88
+2230	723	88
+2231	724	88
+2232	725	88
+2233	726	88
+2234	727	88
+2235	728	88
+2236	729	88
+2237	730	88
+2238	731	88
+2239	732	88
+2240	733	88
+2241	734	88
+2242	735	88
+2243	736	88
+2244	737	88
+2245	738	88
+2246	739	88
+2247	740	88
+2248	741	88
+2249	742	88
+2250	743	88
+2251	744	88
+2252	745	88
+2253	746	88
+2254	747	88
+2255	748	88
+2256	749	88
+2257	750	88
+2258	751	88
+2259	752	88
+2260	753	88
+2261	754	88
+2262	755	88
+2263	756	88
+2264	757	88
+2265	758	88
+2266	759	88
+2267	760	88
+2268	761	88
+2269	762	88
+2270	763	88
+2271	764	88
+2272	765	88
+2273	766	88
+2274	767	88
+2275	768	88
+2276	769	88
+2277	770	88
+2278	771	88
+2279	772	88
+2280	773	88
+2281	774	88
+2282	775	88
+2283	776	88
+2284	777	88
+2285	778	88
+2286	779	88
+2287	780	88
+2288	781	88
+2289	782	88
+2290	783	88
+2291	784	88
+2292	785	88
+2293	786	88
+2294	787	88
+2295	788	88
+2296	789	88
+2297	790	88
+2298	791	88
+2299	792	88
+2300	793	88
+2301	794	88
+2302	795	88
+2303	796	88
+2304	797	88
+2305	798	88
+2306	799	88
+2307	800	88
+2308	801	88
+2309	802	88
+2310	803	88
+2311	804	88
+2312	805	88
+2313	806	88
+2314	807	88
+2315	808	88
+2316	809	88
+2317	810	88
+2318	811	88
+2319	812	88
+2320	813	88
+2321	814	88
+2322	815	88
+2323	816	88
+2324	817	88
+2325	818	88
+2326	819	88
+2327	820	88
+2328	821	88
+2329	822	88
+2330	823	88
+2331	824	88
+2332	825	88
+2333	826	88
+2334	827	88
+2335	828	88
+2336	829	88
+2337	830	88
+2338	831	88
+2339	832	88
+2340	833	88
+2341	834	88
+2342	835	88
+2343	836	88
+2344	837	88
+2345	838	88
+2346	839	88
+2347	840	88
+2348	841	88
+2349	842	88
+2350	843	88
+2351	844	88
+2352	845	88
+2353	846	88
+2354	847	88
+2355	848	88
+2356	849	88
+2357	850	88
+2358	851	88
+2359	852	88
+2360	853	88
+2361	854	88
+2362	855	88
+2363	856	88
+2364	857	88
+2365	858	88
+2366	859	88
+2367	860	88
+2368	861	88
+2369	862	88
 \.
 
 
@@ -7676,233 +22617,1904 @@ COPY public.product_assignedproductattribute (id, product_id, assignment_id) FRO
 --
 
 COPY public.product_assignedproductattribute_values (id, assignedproductattribute_id, attributevalue_id) FROM stdin;
-460	338	6
-461	339	13
-462	340	142
-463	341	140
-464	342	130
-465	342	131
-171	168	72
-172	169	73
-173	170	74
-174	171	75
-175	172	30
-176	173	76
-21	21	13
-22	22	7
-23	23	3
-24	24	16
-25	25	14
-26	26	8
-27	27	3
-28	28	17
-29	29	12
-30	30	6
-31	31	3
-32	32	15
-33	33	13
-34	34	7
-35	35	3
-36	36	16
-37	37	24
-38	38	20
-39	39	22
-40	40	19
-41	41	23
-42	42	19
-43	43	21
-44	44	18
-177	174	66
-178	175	72
-179	176	73
-180	177	74
-181	178	75
-182	179	30
-51	51	30
-183	180	76
-184	181	66
-54	54	33
-55	55	12
-56	56	37
-57	57	34
-58	58	39
-59	59	12
-60	60	38
-61	61	35
-62	62	39
-63	63	42
-64	64	40
-65	65	41
-185	182	21
-186	183	18
-68	68	47
-69	69	55
-70	70	52
-71	71	58
-72	66	61
-73	67	60
-74	53	62
-75	72	61
-76	73	30
-77	74	60
-78	75	43
-187	184	21
-80	77	66
-81	78	53
-82	79	48
-83	80	56
-84	81	63
-85	82	61
-86	83	30
-87	84	60
-88	85	44
-89	86	66
-90	87	54
-91	88	49
-92	89	57
-93	90	64
-188	185	18
-466	342	132
-467	342	133
-468	342	134
-469	342	135
-470	342	136
-471	342	137
-472	342	138
-473	342	139
-474	343	6
-475	344	13
-476	345	142
-477	346	140
-478	347	130
-479	347	131
-480	347	132
-481	347	133
-482	347	134
-483	347	135
-484	347	136
-485	347	137
-486	347	138
-487	347	139
-488	348	6
-489	349	13
-490	350	142
-491	351	140
-492	352	130
-411	318	6
-412	319	13
-413	320	142
-414	321	3
-415	322	140
-416	323	129
-501	353	6
-502	354	13
-503	355	142
-504	356	140
-505	357	130
-506	357	131
-507	357	132
-508	357	133
-509	357	134
-510	357	135
-511	357	136
-512	357	137
-513	357	138
-514	358	6
-515	359	13
-516	360	142
-517	361	140
-518	362	130
-519	362	131
-520	362	132
-521	362	133
-522	362	134
-523	362	135
-524	362	136
-525	362	137
-526	362	138
-573	352	129
-575	393	129
-576	394	140
-577	395	34
-578	396	21
-579	397	18
-580	398	129
-581	399	140
-527	363	6
-528	364	13
-529	365	142
-530	366	140
-531	367	130
-532	367	131
-533	367	132
-534	367	133
-535	367	134
-536	367	135
-537	367	136
-538	367	137
-539	367	138
-560	388	6
-561	389	13
-562	390	142
-563	391	140
-564	392	130
-565	392	131
-574	392	129
-417	323	130
-418	323	131
-419	323	132
-420	323	133
-421	323	134
-422	323	135
-423	323	136
-424	323	137
-425	323	138
-426	323	139
-427	324	6
-428	325	13
-429	326	142
-430	327	3
-431	328	140
-432	329	129
-433	329	130
-434	329	131
-435	329	132
-436	329	133
-437	329	134
-438	329	135
-439	329	136
-440	329	137
-441	329	138
-442	329	139
-443	330	6
-444	331	13
-445	332	142
-446	333	130
-447	333	131
-448	333	132
-449	333	133
-450	333	134
-451	333	135
-452	333	136
-453	333	137
-454	333	138
-455	333	139
-456	334	3
-457	335	21
-458	336	18
-459	337	140
-582	400	150
-583	401	151
-584	402	152
-585	403	153
-586	404	154
-587	405	140
-588	406	155
-589	406	157
-590	407	3
-591	408	21
-592	409	20
+639	456	21
+640	457	18
+641	458	23
+642	459	20
+651	469	21
+652	470	18
+657	475	140
+660	478	6
+661	479	16
+662	480	13
+663	481	21
+664	482	19
+698	520	213
+699	521	214
+700	522	215
+701	523	216
+702	524	140
+720	542	219
+721	543	220
+722	544	140
+723	545	217
+724	546	223
+725	547	219
+726	548	220
+727	549	140
+728	550	217
+729	551	224
+730	552	219
+731	553	220
+732	554	140
+733	555	217
+734	556	225
+735	557	219
+736	558	220
+737	559	140
+738	560	217
+739	561	218
+740	562	219
+741	563	220
+742	564	140
+743	565	217
+744	566	221
+745	567	219
+746	568	220
+747	569	140
+748	570	217
+749	571	222
+750	572	219
+751	573	220
+752	574	140
+753	575	217
+754	576	223
+755	577	219
+756	578	220
+757	579	140
+758	580	217
+759	581	224
+760	582	219
+761	583	220
+762	584	140
+763	585	217
+764	586	225
+765	587	219
+766	588	220
+767	589	140
+768	590	217
+769	591	218
+770	592	219
+771	593	220
+772	594	140
+773	595	217
+774	596	218
+775	597	219
+776	598	220
+777	599	140
+778	600	217
+779	601	221
+780	602	219
+781	603	220
+782	604	140
+783	605	217
+784	606	221
+785	607	219
+786	608	220
+787	609	140
+788	610	217
+789	611	222
+790	612	219
+791	613	220
+792	614	140
+793	615	217
+794	616	223
+795	617	219
+796	618	220
+797	619	140
+798	620	217
+799	621	224
+800	622	219
+801	623	220
+802	624	140
+803	625	217
+804	626	225
+805	627	219
+806	628	220
+807	629	140
+808	630	217
+809	631	221
+810	632	219
+811	633	220
+812	634	140
+813	635	217
+814	636	222
+815	637	219
+816	638	220
+817	639	140
+818	640	217
+819	641	223
+820	642	219
+821	643	220
+822	644	140
+823	645	217
+824	646	224
+825	647	219
+826	648	220
+827	649	140
+828	650	217
+829	651	226
+830	652	227
+831	653	228
+832	654	140
+833	655	217
+834	656	226
+835	657	227
+836	658	228
+837	659	140
+838	660	217
+839	661	226
+840	662	227
+841	663	228
+842	664	140
+843	665	217
+844	666	229
+845	667	227
+846	668	228
+847	669	140
+848	670	217
+849	671	229
+850	672	227
+851	673	228
+852	674	140
+853	675	217
+854	676	230
+855	677	227
+856	678	228
+857	679	140
+956	778	228
+957	779	140
+958	780	217
+959	781	234
+960	782	240
+961	783	228
+962	784	140
+963	785	217
+964	786	233
+965	787	240
+966	788	228
+967	789	140
+968	790	217
+969	791	232
+970	792	240
+971	793	228
+972	794	140
+973	795	217
+974	796	238
+975	797	240
+976	798	228
+977	799	140
+978	800	217
+979	801	225
+643	460	30
+644	461	31
+645	462	72
+646	463	74
+647	464	161
+648	465	165
+649	467	18
+650	468	140
+653	471	176
+654	472	159
+655	473	177
+656	474	140
+658	476	140
+659	477	140
+665	487	178
+666	488	140
+694	516	213
+695	517	214
+696	518	215
+697	519	140
+703	525	217
+704	526	218
+594	411	140
+705	527	219
+706	528	220
+707	529	140
+708	530	217
+709	531	218
+710	532	219
+711	533	220
+712	534	140
+713	535	217
+714	536	221
+605	422	6
+606	423	159
+607	424	160
+608	425	140
+715	537	219
+716	538	220
+717	539	140
+718	540	217
+719	541	222
+858	680	217
+615	432	7
+616	433	166
+617	434	167
+618	435	140
+619	436	6
+620	437	168
+621	438	169
+622	439	140
+623	440	7
+624	441	170
+625	442	171
+626	443	140
+627	444	7
+628	445	172
+629	446	173
+630	447	140
+631	448	7
+632	449	170
+633	450	174
+634	451	140
+635	452	7
+636	453	175
+637	454	16
+638	455	140
+859	681	230
+860	682	227
+861	683	228
+862	684	140
+863	685	217
+864	686	231
+865	687	227
+866	688	228
+867	689	140
+868	690	217
+869	691	232
+870	692	227
+871	693	228
+872	694	140
+873	695	217
+874	696	233
+875	697	227
+876	698	228
+877	699	140
+878	700	217
+879	701	233
+880	702	227
+881	703	228
+882	704	140
+883	705	217
+884	706	234
+885	707	227
+886	708	228
+887	709	140
+888	710	217
+889	711	225
+890	712	227
+891	713	228
+892	714	140
+893	715	217
+894	716	235
+895	717	236
+896	718	228
+897	719	140
+898	720	217
+899	721	235
+900	722	237
+901	723	228
+902	724	140
+903	725	217
+904	726	234
+905	727	227
+906	728	228
+907	729	140
+908	730	217
+909	731	233
+910	732	227
+911	733	228
+912	734	140
+913	735	217
+914	736	232
+915	737	227
+916	738	228
+917	739	140
+918	740	217
+919	741	238
+920	742	227
+921	743	228
+922	744	140
+923	745	217
+924	746	225
+925	747	227
+926	748	228
+927	749	140
+928	750	217
+929	751	224
+930	752	227
+931	753	228
+932	754	140
+933	755	217
+934	756	223
+935	757	227
+936	758	228
+937	759	140
+938	760	217
+939	761	222
+940	762	227
+941	763	228
+942	764	140
+943	765	217
+944	766	224
+945	767	239
+946	768	228
+947	769	140
+948	770	217
+949	771	223
+950	772	239
+951	773	228
+952	774	140
+953	775	217
+954	776	222
+955	777	239
+980	802	240
+981	803	228
+982	804	140
+983	805	217
+984	806	224
+985	807	240
+986	808	228
+987	809	140
+988	810	217
+989	811	223
+990	812	240
+991	813	228
+992	814	140
+993	815	217
+994	816	222
+995	817	240
+996	818	228
+997	819	140
+998	820	217
+999	821	224
+1000	822	219
+1001	823	220
+1002	824	140
+1003	825	217
+1004	826	223
+1005	827	219
+1006	828	220
+1007	829	140
+1008	830	217
+1009	831	222
+1010	832	219
+1011	833	220
+1012	834	140
+1013	835	217
+1014	836	221
+1015	837	219
+1016	838	220
+1017	839	140
+1018	840	217
+1019	841	224
+1020	842	219
+1021	843	220
+1022	844	140
+1023	845	217
+1024	846	223
+1025	847	219
+1026	848	220
+1027	849	140
+1028	850	217
+1029	851	222
+1030	852	219
+1031	853	220
+1032	854	140
+1033	855	217
+1034	856	221
+1035	857	219
+1036	858	220
+1037	859	140
+1038	860	217
+1039	861	224
+1040	862	219
+1041	863	220
+1042	864	140
+1043	865	217
+1044	866	223
+1045	867	219
+1046	868	220
+1047	869	140
+1048	870	217
+1049	871	222
+1050	872	219
+1051	873	220
+1052	874	140
+1053	875	217
+1054	876	221
+1055	877	219
+1056	878	220
+1057	879	140
+1058	880	241
+1059	881	226
+1060	882	242
+1061	883	228
+1062	884	140
+1063	885	241
+1064	886	243
+1065	887	242
+1066	888	228
+1067	889	140
+1068	890	241
+1069	891	244
+1070	892	242
+1071	893	228
+1072	894	140
+1073	895	241
+1074	896	226
+1075	897	242
+1076	898	228
+1077	899	140
+1078	900	241
+1079	901	243
+1080	902	242
+1081	903	228
+1082	904	140
+1083	905	241
+1084	906	244
+1085	907	242
+1086	908	228
+1087	909	140
+1088	910	241
+1089	911	245
+1090	912	242
+1091	913	228
+1092	914	140
+1093	915	241
+1094	916	226
+1095	917	246
+1096	918	228
+1097	919	140
+1098	920	241
+1099	921	243
+1100	922	246
+1101	923	228
+1102	924	140
+1103	925	241
+1104	926	244
+1105	927	246
+1106	928	228
+1107	929	140
+1108	930	241
+1109	931	245
+1110	932	246
+1111	933	228
+1112	934	140
+1113	935	241
+1114	936	226
+1115	937	247
+1116	938	228
+1117	939	140
+1118	940	241
+1119	941	243
+1120	942	247
+1121	943	228
+1122	944	140
+1123	945	241
+1124	946	244
+1125	947	247
+1126	948	228
+1127	949	140
+1128	950	241
+1129	951	245
+1130	952	247
+1131	953	228
+1132	954	140
+1133	955	241
+1134	956	226
+1135	957	242
+1136	958	228
+1137	959	140
+1138	960	241
+1139	961	243
+1140	962	242
+1141	963	228
+1142	964	140
+1143	965	241
+1144	966	244
+1145	967	242
+1146	968	228
+1147	969	140
+1148	970	241
+1149	971	226
+1150	972	242
+1151	973	228
+1152	974	140
+1153	975	241
+1154	976	243
+1155	977	242
+1156	978	228
+1157	979	140
+1158	980	241
+1159	981	244
+1160	982	242
+1161	983	228
+1162	984	140
+1163	985	241
+1164	986	243
+1165	987	246
+1166	988	228
+1167	989	140
+1168	990	241
+1169	991	244
+1170	992	246
+1171	993	228
+1172	994	140
+1173	995	241
+1174	996	243
+1175	997	247
+1176	998	228
+1177	999	140
+1178	1000	241
+1179	1001	244
+1180	1002	247
+1181	1003	228
+1182	1004	140
+1183	1005	241
+1184	1006	243
+1185	1007	242
+1186	1008	248
+1187	1009	140
+1188	1010	241
+1189	1011	226
+1190	1012	242
+1191	1013	248
+1192	1014	140
+1193	1015	241
+1194	1016	249
+1195	1017	242
+1196	1018	248
+1197	1019	140
+1198	1020	241
+1199	1021	226
+1200	1022	242
+1201	1023	248
+1202	1024	140
+1203	1025	241
+1204	1026	250
+1205	1027	242
+1206	1028	248
+1207	1029	140
+1208	1030	241
+1209	1031	249
+1210	1032	242
+1211	1033	248
+1212	1034	140
+1213	1035	241
+1214	1036	226
+1215	1037	242
+1216	1038	248
+1217	1039	140
+1218	1040	241
+1219	1041	229
+1220	1042	242
+1221	1043	248
+1222	1044	140
+1223	1045	241
+1224	1046	244
+1225	1047	219
+1226	1048	220
+1227	1049	140
+1228	1050	241
+1229	1051	243
+1230	1052	219
+1231	1053	220
+1232	1054	140
+1233	1055	241
+1234	1056	226
+1235	1057	219
+1236	1058	220
+1237	1059	140
+1238	1060	241
+1239	1061	229
+1240	1062	219
+1241	1063	220
+1242	1064	140
+1243	1065	241
+1244	1066	230
+1245	1067	219
+1246	1068	220
+1247	1069	140
+1248	1070	241
+1249	1071	250
+1250	1072	219
+1251	1073	220
+1252	1074	140
+1253	1075	241
+1254	1076	249
+1255	1077	219
+1256	1078	220
+1257	1079	140
+1258	1080	241
+1259	1081	226
+1260	1082	219
+1261	1083	220
+1262	1084	140
+1263	1085	241
+1264	1086	229
+1265	1087	219
+1266	1088	220
+1267	1089	140
+1268	1090	241
+1269	1091	230
+1270	1092	219
+1271	1093	220
+1272	1094	140
+1273	1095	241
+1274	1096	250
+1275	1097	242
+1276	1098	220
+1277	1099	140
+1278	1100	241
+1279	1101	249
+1280	1102	242
+1281	1103	220
+1282	1104	140
+1283	1105	241
+1284	1106	226
+1285	1107	242
+1286	1108	220
+1287	1109	140
+1288	1110	241
+1289	1111	229
+1290	1112	242
+1291	1113	220
+1292	1114	140
+1293	1115	241
+1294	1116	226
+1295	1117	219
+1296	1118	220
+1297	1119	140
+1298	1120	241
+1299	1121	229
+1300	1122	219
+1301	1123	220
+1302	1124	140
+1303	1125	241
+1304	1126	230
+1305	1127	219
+1306	1128	220
+1307	1129	140
+1308	1130	241
+1309	1131	231
+1310	1132	219
+1311	1133	220
+1312	1134	140
+1313	1135	241
+1314	1136	250
+1315	1137	219
+1316	1138	220
+1317	1139	140
+1318	1140	241
+1319	1141	249
+1320	1142	219
+1321	1143	220
+1322	1144	140
+1323	1145	241
+1324	1146	226
+1325	1147	219
+1326	1148	220
+1327	1149	140
+1328	1150	241
+1329	1151	229
+1330	1152	219
+1331	1153	220
+1332	1154	140
+1333	1155	241
+1334	1156	230
+1335	1157	219
+1336	1158	220
+1337	1159	140
+1338	1160	241
+1339	1161	250
+1340	1162	242
+1341	1163	251
+1342	1164	140
+1343	1165	241
+1344	1166	249
+1345	1167	242
+1346	1168	251
+1347	1169	140
+1348	1170	241
+1349	1171	226
+1350	1172	242
+1351	1173	251
+1352	1174	140
+1353	1175	241
+1354	1176	229
+1355	1177	242
+1356	1178	251
+1357	1179	140
+1358	1180	217
+1359	1181	222
+1360	1182	219
+1361	1183	220
+1362	1184	140
+1363	1185	217
+1364	1186	223
+1365	1187	219
+1366	1188	220
+1367	1189	140
+1368	1190	217
+1369	1191	224
+1370	1192	219
+1371	1193	220
+1372	1194	140
+1373	1195	217
+1374	1196	218
+1375	1197	219
+1376	1198	220
+1377	1199	140
+1378	1200	217
+1379	1201	221
+1380	1202	219
+1381	1203	220
+1382	1204	140
+1383	1205	217
+1384	1206	222
+1385	1207	219
+1386	1208	220
+1387	1209	140
+1388	1210	217
+1389	1211	223
+1390	1212	219
+1391	1213	220
+1392	1214	140
+1393	1215	217
+1394	1216	224
+1395	1217	219
+1396	1218	220
+1397	1219	140
+1398	1220	217
+1399	1221	225
+1400	1222	219
+1401	1223	220
+1402	1224	140
+1403	1225	217
+1404	1226	218
+1405	1227	219
+1406	1228	220
+1407	1229	140
+1408	1230	217
+1409	1231	221
+1410	1232	219
+1411	1233	220
+1412	1234	140
+1413	1235	217
+1414	1236	222
+1415	1237	219
+1416	1238	220
+1417	1239	140
+1418	1240	217
+1419	1241	223
+1420	1242	219
+1421	1243	220
+1422	1244	140
+1423	1245	217
+1424	1246	224
+1425	1247	219
+1426	1248	220
+1427	1249	140
+1428	1250	217
+1429	1251	222
+1430	1252	219
+1431	1253	252
+1432	1254	140
+1433	1255	217
+1434	1256	223
+1435	1257	219
+1436	1258	252
+1437	1259	140
+1438	1260	217
+1439	1261	224
+1440	1262	219
+1441	1263	252
+1442	1264	140
+1443	1265	217
+1444	1266	221
+1445	1267	242
+1446	1268	253
+1447	1269	140
+1448	1270	217
+1449	1271	222
+1450	1272	242
+1451	1273	253
+1452	1274	140
+1453	1275	241
+1454	1276	244
+1455	1277	242
+1456	1278	252
+1457	1279	140
+1458	1280	241
+1459	1281	243
+1460	1282	242
+1461	1283	252
+1462	1284	140
+1463	1285	241
+1464	1286	226
+1465	1287	242
+1466	1288	252
+1467	1289	140
+1468	1290	241
+1469	1291	229
+1470	1292	242
+1471	1293	252
+1472	1294	140
+1473	1295	241
+1474	1296	245
+1475	1297	242
+1476	1298	248
+1477	1299	140
+1478	1300	241
+1479	1301	244
+1480	1302	242
+1481	1303	248
+1482	1304	140
+1483	1305	241
+1484	1306	243
+1485	1307	242
+1486	1308	248
+1487	1309	140
+1488	1310	241
+1489	1311	226
+1490	1312	242
+1491	1313	248
+1492	1314	140
+1493	1315	241
+1494	1316	245
+1495	1317	242
+1496	1318	248
+1497	1319	140
+1498	1320	241
+1499	1321	244
+1500	1322	242
+1501	1323	248
+1502	1324	140
+1503	1325	241
+1504	1326	243
+1505	1327	242
+1506	1328	248
+1507	1329	140
+1508	1330	241
+1509	1331	226
+1510	1332	242
+1511	1333	248
+1512	1334	140
+1513	1335	241
+1514	1336	244
+1515	1337	242
+1516	1338	248
+1517	1339	140
+1518	1340	241
+1519	1341	243
+1520	1342	242
+1521	1343	248
+1522	1344	140
+1523	1345	241
+1524	1346	226
+1525	1347	242
+1526	1348	248
+1527	1349	140
+1528	1350	241
+1529	1351	245
+1530	1352	219
+1531	1353	220
+1532	1354	140
+1533	1355	241
+1534	1356	244
+1535	1357	219
+1536	1358	220
+1537	1359	140
+1538	1360	241
+1539	1361	243
+1540	1362	219
+1541	1363	220
+1542	1364	140
+1543	1365	241
+1544	1366	226
+1545	1367	219
+1546	1368	220
+1547	1369	140
+1548	1370	241
+1549	1371	245
+1550	1372	219
+1551	1373	220
+1552	1374	140
+1553	1375	241
+1554	1376	244
+1555	1377	219
+1556	1378	220
+1557	1379	140
+1558	1380	241
+1559	1381	243
+1560	1382	219
+1561	1383	220
+1562	1384	140
+1563	1385	241
+1564	1386	226
+1565	1387	219
+1566	1388	220
+1567	1389	140
+1568	1390	217
+1569	1391	232
+1570	1392	219
+1571	1393	254
+1572	1394	140
+1573	1395	217
+1574	1396	233
+1575	1397	219
+1576	1398	254
+1577	1399	140
+1578	1400	217
+1579	1401	234
+1580	1402	219
+1581	1403	254
+1582	1404	140
+1583	1405	217
+1584	1406	255
+1585	1407	219
+1586	1408	254
+1587	1409	140
+1588	1410	217
+1589	1411	223
+1590	1412	219
+1591	1413	251
+1592	1414	140
+1593	1415	217
+1594	1416	224
+1595	1417	219
+1596	1418	251
+1597	1419	140
+1598	1420	217
+1599	1421	225
+1600	1422	219
+1601	1423	251
+1602	1424	140
+1603	1425	217
+1604	1426	256
+1605	1427	219
+1606	1428	251
+1607	1429	140
+1608	1430	217
+1609	1431	232
+1610	1432	219
+1611	1433	257
+1612	1434	140
+1613	1435	217
+1614	1436	233
+1615	1437	219
+1616	1438	257
+1617	1439	140
+1618	1440	217
+1619	1441	234
+1620	1442	219
+1621	1443	257
+1622	1444	140
+1623	1445	217
+1624	1446	255
+1625	1447	219
+1626	1448	257
+1627	1449	140
+1628	1450	217
+1629	1451	232
+1630	1452	219
+1631	1453	248
+1632	1454	140
+1633	1455	217
+1634	1456	233
+1635	1457	219
+1636	1458	248
+1637	1459	140
+1638	1460	217
+1639	1461	234
+1640	1462	219
+1641	1463	248
+1642	1464	140
+1643	1465	217
+1644	1466	255
+1645	1467	219
+1646	1468	248
+1647	1469	140
+1648	1470	217
+1649	1471	222
+1650	1472	219
+1651	1473	258
+1652	1474	140
+1653	1475	217
+1654	1476	223
+1655	1477	219
+1656	1478	258
+1657	1479	140
+1658	1480	217
+1659	1481	224
+1660	1482	219
+1661	1483	258
+1662	1484	140
+1663	1485	217
+1664	1486	225
+1665	1487	219
+1666	1488	258
+1667	1489	140
+1668	1490	217
+1669	1491	235
+1670	1492	219
+1671	1493	258
+1672	1494	140
+1673	1495	217
+1674	1496	259
+1675	1497	219
+1676	1498	258
+1677	1499	140
+1678	1500	217
+1679	1501	222
+1680	1502	219
+1681	1503	258
+1682	1504	140
+1683	1505	217
+1684	1506	223
+1685	1507	219
+1686	1508	258
+1687	1509	140
+1688	1510	217
+1689	1511	224
+1690	1512	219
+1691	1513	258
+1692	1514	140
+1693	1515	217
+1694	1516	225
+1695	1517	219
+1696	1518	258
+1697	1519	140
+1698	1520	217
+1699	1521	235
+1700	1522	219
+1701	1523	258
+1702	1524	140
+1703	1525	217
+1704	1526	259
+1705	1527	219
+1706	1528	258
+1707	1529	140
+1708	1530	217
+1709	1531	224
+1710	1532	219
+1711	1533	220
+1712	1534	140
+1713	1535	217
+1714	1536	221
+1715	1537	219
+1716	1538	220
+1717	1539	140
+1718	1540	217
+1719	1541	218
+1720	1542	219
+1721	1543	220
+1722	1544	140
+1723	1545	217
+1724	1546	218
+1725	1547	219
+1726	1548	220
+1727	1549	140
+1728	1550	217
+1729	1551	223
+1730	1552	219
+1731	1553	220
+1732	1554	140
+1733	1555	217
+1734	1556	222
+1735	1557	219
+1736	1558	220
+1737	1559	140
+1738	1560	217
+1739	1561	222
+1740	1562	219
+1741	1563	220
+1742	1564	140
+1743	1565	217
+1744	1566	223
+1745	1567	219
+1746	1568	220
+1747	1569	140
+1748	1570	217
+1749	1571	225
+1750	1572	219
+1751	1573	220
+1752	1574	140
+1753	1575	217
+1754	1576	223
+1755	1577	219
+1756	1578	220
+1757	1579	140
+1758	1580	217
+1759	1581	224
+1760	1582	219
+1761	1583	220
+1762	1584	140
+1763	1585	217
+1764	1586	222
+1765	1587	219
+1766	1588	220
+1767	1589	140
+1768	1590	217
+1769	1591	218
+1770	1592	219
+1771	1593	220
+1772	1594	140
+1773	1595	217
+1774	1596	221
+1775	1597	219
+1776	1598	220
+1777	1599	140
+1778	1600	217
+1779	1601	221
+1780	1602	219
+1781	1603	220
+1782	1604	140
+1783	1605	217
+1784	1606	224
+1785	1607	219
+1786	1608	220
+1787	1609	140
+1788	1610	217
+1789	1611	221
+1790	1612	219
+1791	1613	220
+1792	1614	140
+1793	1615	217
+1794	1616	225
+1795	1617	219
+1796	1618	220
+1797	1619	140
+1798	1620	217
+1799	1621	221
+1800	1622	219
+1801	1623	220
+1802	1624	140
+1803	1625	217
+1804	1626	222
+1805	1627	219
+1806	1628	220
+1807	1629	140
+1808	1630	217
+1809	1631	223
+1810	1632	219
+1811	1633	220
+1812	1634	140
+1813	1635	217
+1814	1636	223
+1815	1637	219
+1816	1638	220
+1817	1639	140
+1818	1640	217
+1819	1641	221
+1820	1642	219
+1821	1643	220
+1822	1644	140
+1823	1645	217
+1824	1646	218
+1825	1647	219
+1826	1648	220
+1827	1649	140
+1828	1650	217
+1829	1651	224
+1830	1652	219
+1831	1653	220
+1832	1654	140
+1833	1655	217
+1834	1656	224
+1835	1657	219
+1836	1658	220
+1837	1659	140
+1838	1660	217
+1839	1661	224
+1840	1662	219
+1841	1663	220
+1842	1664	140
+1843	1665	217
+1844	1666	222
+1845	1667	219
+1846	1668	220
+1847	1669	140
+1848	1670	217
+1849	1671	218
+1850	1672	219
+1851	1673	220
+1852	1674	140
+1853	1675	217
+1854	1676	222
+1855	1677	219
+1856	1678	220
+1857	1679	140
+1858	1680	217
+1859	1681	223
+1860	1682	219
+1861	1683	220
+1862	1684	140
+1863	1685	217
+1864	1686	218
+1865	1687	219
+1866	1688	220
+1867	1689	140
+1868	1690	217
+1869	1691	222
+1870	1692	219
+1871	1693	220
+1872	1694	140
+1873	1695	217
+1874	1696	223
+1875	1697	219
+1876	1698	220
+1877	1699	140
+1878	1700	217
+1879	1701	225
+1880	1702	219
+1881	1703	220
+1882	1704	140
+1883	1705	217
+1884	1706	221
+1885	1707	219
+1886	1708	220
+1887	1709	140
+1888	1710	217
+1889	1711	218
+1890	1712	219
+1891	1713	220
+1892	1714	140
+1893	1715	217
+1894	1716	223
+1895	1717	219
+1896	1718	220
+1897	1719	140
+1898	1720	217
+1899	1721	221
+1900	1722	219
+1901	1723	220
+1902	1724	140
+1903	1725	217
+1904	1726	221
+1905	1727	219
+1906	1728	220
+1907	1729	140
+1908	1730	217
+1909	1731	222
+1910	1732	219
+1911	1733	220
+1912	1734	140
+1913	1735	217
+1914	1736	223
+1915	1737	219
+1916	1738	220
+1917	1739	140
+1918	1740	217
+1919	1741	222
+1920	1742	219
+1921	1743	220
+1922	1744	140
+1923	1745	217
+1924	1746	218
+1925	1747	219
+1926	1748	220
+1927	1749	140
+1928	1750	217
+1929	1751	218
+1930	1752	219
+1931	1753	220
+1932	1754	140
+1933	1755	217
+1934	1756	235
+1935	1757	227
+1936	1758	248
+1937	1759	140
+1938	1760	217
+1939	1761	225
+1940	1762	227
+1941	1763	248
+1942	1764	140
+1943	1765	217
+1944	1766	260
+1945	1767	227
+1946	1768	248
+1947	1769	140
+1948	1770	217
+1949	1771	255
+1950	1772	227
+1951	1773	248
+1952	1774	140
+1953	1775	217
+1954	1776	234
+1955	1777	227
+1956	1778	248
+1957	1779	140
+1958	1780	217
+1959	1781	233
+1960	1782	227
+1961	1783	248
+1962	1784	140
+1963	1785	217
+1964	1786	224
+1965	1787	239
+1966	1788	261
+1967	1789	140
+1968	1790	217
+1969	1791	223
+1970	1792	239
+1971	1793	261
+1972	1794	140
+1973	1795	217
+1974	1796	222
+1975	1797	239
+1976	1798	261
+1977	1799	140
+1978	1800	217
+1979	1801	225
+1980	1802	239
+1981	1803	261
+1982	1804	140
+1983	1805	217
+1984	1806	224
+1985	1807	239
+1986	1808	261
+1987	1809	140
+1988	1810	217
+1989	1811	223
+1990	1812	239
+1991	1813	261
+1992	1814	140
+1993	1815	217
+1994	1816	222
+1995	1817	239
+1996	1818	261
+1997	1819	140
+1998	1820	217
+1999	1821	221
+2000	1822	239
+2001	1823	261
+2002	1824	140
+2003	1825	217
+2004	1826	238
+2005	1827	240
+2006	1828	261
+2007	1829	140
+2008	1830	217
+2009	1831	234
+2010	1832	240
+2011	1833	261
+2012	1834	140
+2013	1835	217
+2014	1836	233
+2015	1837	240
+2016	1838	261
+2017	1839	140
+2018	1840	217
+2019	1841	232
+2020	1842	240
+2021	1843	261
+2022	1844	140
+2023	1845	217
+2024	1846	262
+2025	1847	242
+2026	1848	261
+2027	1849	140
+2028	1850	217
+2029	1851	222
+2030	1852	219
+2031	1853	258
+2032	1854	140
+2033	1855	217
+2034	1856	223
+2035	1857	219
+2036	1858	258
+2037	1859	140
+2038	1860	217
+2039	1861	224
+2040	1862	219
+2041	1863	258
+2042	1864	140
+2043	1865	217
+2044	1866	225
+2045	1867	219
+2046	1868	258
+2047	1869	140
+2048	1870	217
+2049	1871	222
+2050	1872	219
+2051	1873	258
+2052	1874	140
+2053	1875	217
+2054	1876	223
+2055	1877	219
+2056	1878	258
+2057	1879	140
+2058	1880	217
+2059	1881	224
+2060	1882	219
+2061	1883	258
+2062	1884	140
+2063	1885	217
+2064	1886	225
+2065	1887	219
+2066	1888	258
+2067	1889	140
+2068	1890	217
+2069	1891	222
+2070	1892	219
+2071	1893	258
+2072	1894	140
+2073	1895	217
+2074	1896	223
+2075	1897	219
+2076	1898	258
+2077	1899	140
+2078	1900	217
+2079	1901	224
+2080	1902	219
+2081	1903	258
+2082	1904	140
+2083	1905	217
+2084	1906	222
+2085	1907	219
+2086	1908	258
+2087	1909	140
+2088	1910	217
+2089	1911	223
+2090	1912	219
+2091	1913	258
+2092	1914	140
+2093	1915	217
+2094	1916	224
+2095	1917	219
+2096	1918	258
+2097	1919	140
+2098	1920	217
+2099	1921	222
+2100	1922	219
+2101	1923	258
+2102	1924	140
+2103	1925	217
+2104	1926	223
+2105	1927	219
+2106	1928	258
+2107	1929	140
+2108	1930	217
+2109	1931	224
+2110	1932	219
+2111	1933	258
+2112	1934	140
+2113	1935	217
+2114	1936	225
+2115	1937	219
+2116	1938	258
+2117	1939	140
+2118	1940	217
+2119	1941	222
+2120	1942	219
+2121	1943	258
+2122	1944	140
+2123	1945	217
+2124	1946	223
+2125	1947	219
+2126	1948	258
+2127	1949	140
+2128	1950	217
+2129	1951	224
+2130	1952	219
+2131	1953	258
+2132	1954	140
+2133	1955	140
+2137	1960	266
+2138	1959	267
+2139	1961	140
+2140	1962	269
+2141	1963	268
+2142	1964	140
+2143	1965	140
+2144	1966	140
+2145	1981	140
+2146	1978	12
+2147	1979	270
+2148	1987	140
+2149	1982	271
+2150	1983	272
+2151	1984	14
+2152	1985	273
+2153	1986	274
+2154	1971	275
+2155	1973	12
+2156	1988	6
+2157	1989	13
+2158	1990	142
+2159	1991	140
+2160	1992	6
+2161	1993	13
+2162	1994	142
+2163	1995	140
+2167	1996	279
+2168	1997	280
+2169	1998	281
+2170	1999	140
+2171	2000	140
+2172	2001	140
+2173	2002	140
+2174	2003	140
+2175	2004	140
+2176	2005	140
+2177	2006	140
+2178	2007	140
+2179	2008	140
+2180	2009	140
+2181	2010	140
+2182	2011	140
+2183	2012	140
+2184	2013	140
+2185	2014	140
+2186	2015	140
+2187	2016	140
+2188	2017	140
+2189	2018	140
+2190	2019	140
+2191	2020	140
+2192	2021	140
+2193	2022	140
+2194	2023	140
+2195	2024	140
+2196	2025	140
+2197	2026	140
+2198	2027	140
+2199	2028	140
+2200	2029	140
+2201	2030	140
+2202	2031	140
+2203	2032	140
+2204	2033	140
+2205	2034	140
+2206	2035	140
+2207	2036	140
+2208	2037	140
+2209	2038	140
+2210	2039	140
+2211	2040	140
+2212	2041	140
+2213	2042	140
+2214	2043	140
+2215	2044	140
+2216	2045	140
+2217	2046	140
+2218	2047	140
+2219	2048	140
+2220	2049	140
+2221	2050	140
+2222	2051	140
+2223	2052	140
+2224	2053	140
+2225	2054	140
+2226	2055	140
+2227	2056	140
+2228	2057	140
+2229	2058	140
+2230	2059	140
+2231	2060	140
+2232	2061	140
+2233	2062	140
+2234	2063	140
+2235	2064	140
+2236	2065	140
+2237	2066	140
+2238	2067	140
+2239	2068	140
+2240	2069	140
+2241	2070	140
+2242	2071	140
+2243	2072	140
+2244	2073	140
+2245	2074	140
+2246	2075	140
+2247	2076	140
+2248	2077	140
+2249	2078	140
+2250	2079	140
+2251	2080	140
+2252	2081	140
+2253	2082	140
+2254	2083	140
+2255	2084	140
+2256	2085	140
+2257	2086	140
+2258	2087	140
+2259	2088	140
+2260	2089	140
+2261	2090	140
+2262	2091	140
+2263	2092	140
+2264	2093	140
+2265	2094	140
+2266	2095	140
+2267	2096	140
+2268	2097	140
+2269	2098	140
+2270	2099	140
+2271	2100	140
+2272	2101	140
+2273	2102	140
+2274	2103	140
+2275	2104	140
+2276	2105	140
+2277	2106	140
+2278	2107	140
+2279	2108	140
+2280	2109	140
+2281	2110	140
+2282	2111	140
+2283	2112	140
+2284	2113	140
+2285	2114	140
+2286	2115	140
+2287	2116	140
+2288	2117	140
+2289	2118	140
+2290	2119	140
+2291	2120	140
+2292	2121	140
+2293	2122	140
+2294	2123	140
+2295	2124	140
+2296	2125	140
+2297	2126	140
+2298	2127	140
+2299	2128	140
+2300	2129	140
+2301	2130	140
+2302	2131	140
+2303	2132	140
+2304	2133	140
+2305	2134	140
+2306	2135	140
+2307	2136	140
+2308	2137	140
+2309	2138	140
+2310	2139	140
+2311	2140	140
+2312	2141	140
+2313	2142	140
+2314	2143	140
+2315	2144	140
+2316	2145	140
+2317	2146	140
+2318	2147	140
+2319	2148	140
+2320	2149	140
+2321	2150	140
+2322	2151	140
+2323	2152	140
+2324	2153	140
+2325	2154	140
+2326	2155	140
+2327	2156	140
+2328	2157	140
+2329	2158	140
+2330	2159	140
+2331	2160	140
+2332	2161	140
+2333	2162	140
+2334	2163	140
+2335	2164	140
+2336	2165	140
+2337	2166	140
+2338	2167	140
+2339	2168	140
+2340	2169	140
+2341	2170	140
+2342	2171	140
+2343	2172	140
+2344	2173	140
+2345	2174	140
+2346	2175	140
+2347	2176	140
+2348	2177	140
+2349	2178	140
+2350	2179	140
+2351	2180	140
+2352	2181	140
+2353	2182	140
+2354	2183	140
+2355	2184	140
+2356	2185	140
+2357	2186	140
+2358	2187	140
+2359	2188	140
+2360	2189	140
+2361	2190	140
+2362	2191	140
+2363	2192	140
+2364	2193	140
+2365	2194	140
+2366	2195	140
+2367	2196	140
+2368	2197	140
+2369	2198	140
+2370	2199	140
+2371	2200	140
+2372	2201	140
+2373	2202	140
+2374	2203	140
+2375	2204	140
+2376	2205	140
+2377	2206	140
+2378	2207	140
+2379	2208	140
+2380	2209	140
+2381	2210	140
+2382	2211	140
+2383	2212	140
+2384	2213	140
+2385	2214	140
+2386	2215	140
+2387	2216	140
+2388	2217	140
+2389	2218	140
+2390	2219	140
+2391	2220	140
+2392	2221	140
+2393	2222	140
+2394	2223	140
+2395	2224	140
+2396	2225	140
+2397	2226	140
+2398	2227	140
+2399	2228	140
+2400	2229	140
+2401	2230	140
+2402	2231	140
+2403	2232	140
+2404	2233	140
+2405	2234	140
+2406	2235	140
+2407	2236	140
+2408	2237	140
+2409	2238	140
+2410	2239	140
+2411	2240	140
+2412	2241	140
+2413	2242	140
+2414	2243	140
+2415	2244	140
+2416	2245	140
+2417	2246	140
+2418	2247	140
+2419	2248	140
+2420	2249	140
+2421	2250	140
+2422	2251	140
+2423	2252	140
+2424	2253	140
+2425	2254	140
+2426	2255	140
+2427	2256	140
+2428	2257	140
+2429	2258	140
+2430	2259	140
+2431	2260	140
+2432	2261	140
+2433	2262	140
+2434	2263	140
+2435	2264	140
+2436	2265	140
+2437	2266	140
+2438	2267	140
+2439	2268	140
+2440	2269	140
+2441	2270	140
+2442	2271	140
+2443	2272	140
+2444	2273	140
+2445	2274	140
+2446	2275	140
+2447	2276	140
+2448	2277	140
+2449	2278	140
+2450	2279	140
+2451	2280	140
+2452	2281	140
+2453	2282	140
+2454	2283	140
+2455	2284	140
+2456	2285	140
+2457	2286	140
+2458	2287	140
+2459	2288	140
+2460	2289	140
+2461	2290	140
+2462	2291	140
+2463	2292	140
+2464	2293	140
+2465	2294	140
+2466	2295	140
+2467	2296	140
+2468	2297	140
+2469	2298	140
+2470	2299	140
+2471	2300	140
+2472	2301	140
+2473	2302	140
+2474	2303	140
+2475	2304	140
+2476	2305	140
+2477	2306	140
+2478	2307	140
+2479	2308	140
+2480	2309	140
+2481	2310	140
+2482	2311	140
+2483	2312	140
+2484	2313	140
+2485	2314	140
+2486	2315	140
+2487	2316	140
+2488	2317	140
+2489	2318	140
+2490	2319	140
+2491	2320	140
+2492	2321	140
+2493	2322	140
+2494	2323	140
+2495	2324	140
+2496	2325	140
+2497	2326	140
+2498	2327	140
+2499	2328	140
+2500	2329	140
+2501	2330	140
+2502	2331	140
+2503	2332	140
+2504	2333	140
+2505	2334	140
+2506	2335	140
+2507	2336	140
+2508	2337	140
+2509	2338	140
+2510	2339	140
+2511	2340	140
+2512	2341	140
+2513	2342	140
+2514	2343	140
+2515	2344	140
+2516	2345	140
+2517	2346	140
+2518	2347	140
+2519	2348	140
+2520	2349	140
+2521	2350	140
+2522	2351	140
+2523	2352	140
+2524	2353	140
+2525	2354	140
+2526	2355	140
+2527	2356	140
+2528	2357	140
+2529	2358	140
+2530	2359	140
+2531	2360	140
+2532	2361	140
+2533	2362	140
+2534	2363	140
+2535	2364	140
+2536	2365	140
+2537	2366	140
+2538	2367	140
+2539	2368	140
+2540	2369	140
 \.
 
 
@@ -7911,40 +24523,6 @@ COPY public.product_assignedproductattribute_values (id, assignedproductattribut
 --
 
 COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FROM stdin;
-1	10	1
-2	6	1
-3	6	2
-4	10	2
-5	8	3
-6	7	4
-7	13	5
-8	14	6
-9	15	6
-10	16	5
-11	17	5
-12	18	7
-13	12	7
-14	19	7
-15	20	8
-16	21	9
-17	23	9
-18	24	9
-40	46	9
-41	47	9
-42	48	9
-43	49	9
-44	50	9
-45	51	9
-47	54	12
-48	55	12
-49	56	4
-50	58	4
-51	59	4
-52	60	4
-53	62	12
-54	63	12
-55	64	12
-56	65	12
 \.
 
 
@@ -7953,40 +24531,6 @@ COPY public.product_assignedvariantattribute (id, variant_id, assignment_id) FRO
 --
 
 COPY public.product_assignedvariantattribute_values (id, assignedvariantattribute_id, attributevalue_id) FROM stdin;
-1	1	25
-2	2	25
-3	3	26
-4	4	27
-5	5	26
-6	6	29
-7	7	26
-8	8	28
-9	9	27
-10	10	26
-11	11	27
-12	12	29
-13	13	26
-14	14	27
-15	15	26
-16	16	79
-17	17	79
-18	18	79
-40	40	79
-41	41	79
-42	42	79
-43	43	79
-44	44	79
-45	45	79
-47	47	79
-48	48	79
-49	49	79
-50	50	79
-51	51	79
-52	52	79
-53	53	79
-54	54	79
-55	55	79
-56	56	79
 \.
 
 
@@ -7995,34 +24539,32 @@ COPY public.product_assignedvariantattribute_values (id, assignedvariantattribut
 --
 
 COPY public.product_attribute (id, slug, name, metadata, private_metadata, input_type, available_in_grid, visible_in_storefront, filterable_in_dashboard, filterable_in_storefront, value_required, storefront_search_position, is_variant_only) FROM stdin;
-9	lead-time	Lead time	{}	{}	dropdown	t	t	t	f	t	0	f
-8	ordering-code	Ordering Code	{}	{}	dropdown	t	t	t	f	t	0	f
-7	spec-code	Spec Code	{}	{}	dropdown	t	t	t	f	t	0	f
-16	groupsfamily	Groups/Family	{}	{}	dropdown	t	t	t	t	t	0	f
 17	memory-clock	Memory Clock	{}	{}	dropdown	t	t	t	t	t	0	f
 18	memory	Memory	{}	{}	dropdown	t	t	t	t	t	0	f
-1	cpu_family	Core Family	{}	{}	dropdown	t	t	t	t	t	0	f
-5	cpu_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
-6	cpu_model	Model	{}	{}	dropdown	t	t	t	f	t	0	f
 20	gpu_line	Line	{}	{}	dropdown	t	t	t	t	t	0	f
 21	gpu_packaging	Packaging	{}	{}	dropdown	t	t	t	t	t	0	f
 22	gpu_model	Model	{}	{}	dropdown	t	t	t	t	t	0	f
 12	gpu_interface	Interface	{}	{}	dropdown	t	t	t	t	t	0	f
 11	gpu_cooling	Cooling	{}	{}	dropdown	t	t	t	t	t	0	f
 23	gpu_memory_config	Memory Configutation	{}	{}	dropdown	t	t	t	t	t	0	f
-4	mcode	Manufacturer	{}	{}	dropdown	t	t	t	t	t	0	f
 19	memory_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
 13	memory_density	Density	{}	{}	dropdown	t	t	t	t	t	0	f
 14	memory_speed	Speed	{}	{}	dropdown	t	t	t	t	t	0	f
-24	memory_ddr	DDR	{}	{}	dropdown	t	t	t	t	t	0	f
 25	memory_rank_org	Rank	{}	{}	dropdown	t	t	t	t	t	0	f
 15	storage_capacity	Capacity	{}	{}	dropdown	t	t	t	t	t	0	f
 26	storage_class	Class	{}	{}	dropdown	t	t	t	t	t	0	f
 27	storage_size	Size	{}	{}	dropdown	t	t	t	t	t	0	f
 10	vendor	Vendor	{}	{}	dropdown	t	t	t	f	t	0	f
 28	storage_type	Type	{}	{}	dropdown	t	t	t	t	t	0	f
-29	primary-vendors	Primary Vendors	{}	{}	multiselect	t	f	t	t	t	0	f
-30	status	Status	{}	{}	dropdown	t	f	t	t	t	0	f
+30	status	Status	{}	{}	dropdown	t	f	t	f	t	0	f
+8	ordering-code	Ordering Code	{}	{}	dropdown	t	t	t	f	f	0	f
+1	cpu_family	Core Family	{}	{}	dropdown	t	t	t	t	f	0	f
+6	cpu_model	Model	{}	{}	dropdown	t	t	t	f	f	0	f
+5	cpu_type	Type	{}	{}	dropdown	t	t	t	t	f	0	f
+24	memory_ddr	DDR	{}	{}	dropdown	t	t	t	t	t	0	f
+7	spec-code	Spec Code	{}	{}	dropdown	t	t	t	f	f	0	f
+31	cpu_cache	Cache	{}	{}	dropdown	t	f	t	f	f	0	f
+32	cpu_lithography	Lithography	{}	{}	dropdown	t	f	t	f	f	0	f
 \.
 
 
@@ -8031,59 +24573,14 @@ COPY public.product_attribute (id, slug, name, metadata, private_metadata, input
 --
 
 COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_order) FROM stdin;
-5	5	3	0
-6	1	3	1
-7	4	3	2
-8	6	3	3
-9	5	2	0
-10	1	2	1
-11	4	2	2
-12	6	2	3
-13	5	4	0
-14	1	4	1
-15	4	4	2
-16	6	4	3
-17	8	2	4
-18	7	2	5
-19	8	3	4
-20	7	3	5
-21	8	4	4
-22	7	4	5
-23	11	5	0
-24	6	5	1
-26	4	5	3
-27	5	6	0
-28	13	6	1
-29	4	6	2
-30	14	6	3
-33	4	7	0
-34	15	7	1
-35	5	7	2
-36	5	5	4
-37	1	5	5
-38	18	5	6
-39	17	5	7
-40	19	5	8
-41	16	5	9
-42	5	8	0
-43	11	8	1
-44	1	8	2
-45	16	8	3
-47	4	8	5
-48	18	8	6
-49	17	8	7
-50	19	8	8
-51	6	8	9
 52	11	9	0
 53	12	9	1
 54	20	9	2
 55	23	9	3
 56	22	9	4
 57	21	9	5
-58	4	9	6
 59	8	9	7
 60	7	9	8
-61	4	10	0
 62	24	10	1
 63	13	10	2
 64	25	10	3
@@ -8091,7 +24588,6 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 66	19	10	5
 67	8	10	6
 68	7	10	7
-69	4	11	0
 70	8	11	1
 71	7	11	2
 72	15	11	3
@@ -8100,17 +24596,15 @@ COPY public.product_attributeproduct (id, attribute_id, product_type_id, sort_or
 75	1	12	0
 76	6	12	1
 77	5	12	2
-78	4	12	3
 79	8	12	4
 80	7	12	5
-81	29	12	6
-82	29	9	9
-83	29	10	8
-84	29	11	6
 85	30	12	7
 86	30	9	10
 87	30	11	7
 88	30	10	9
+89	28	11	8
+90	31	12	8
+91	32	12	9
 \.
 
 
@@ -8143,24 +24637,24 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 22	CM8068403377308	8	cm8068403377308	1	
 23	BX80684I38100	8	bx80684i38100	2	
 24	FH8066501715938	8	fh8066501715938	3	
-25	1 day	9	1-day	0	
+213	A	26	a	0	
 26	1	10	1	0	
 27	2	10	2	1	
 28	3	10	3	2	
 29	4	10	4	3	
 31	PCI Express 2.0	12	pci-express-20	0	
 32	VCGGT7102XPB-BB	6	vcggt7102xpb-bb	3	
-33	PNY	4	pny	1	
+214	888	15	888	1	
 37	64GB	13	64gb	0	
 38	16GB	13	16gb	1	
 39	2933 Mbps	14	2933-mbps	0	
 40	Hard Drive	5	hard-drive	3	
 42	10TB	15	10tb	0	
-43	GeForce RTX™ 3070	16	geforce-rtxtm-3070	0	
-44	GeForce GTX TITAN X	16	geforce-gtx-titan-x	1	
-45	GeForce GTX TITAN Z	16	geforce-gtx-titan-z	2	
-46	GeForce RTX 3070	16	geforce-rtx-3070	3	
-47	GeForce RTX 3090	16	geforce-rtx-3090	4	
+215	888	27	888	0	
+216	888	28	888	0	
+217	Server	26	server	1	
+218	240GB	15	240gb	2	
+219	2.5"	27	25	1	
 48	14000 MHz	17	14000-mhz	0	
 49	7Gbps	17	7gbps	1	
 50	7000MHz	17	7000mhz	2	
@@ -8180,12 +24674,12 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 63	3070	6	3070	5	
 64	TITAN X	6	titan-x	6	
 65	TITAN Z	6	titan-z	7	
-66	Gigabyte	4	gigabyte	5	
-3	Intel	4	intel	0	
-34	Samsung	4	samsung	2	
-41	Seagate	4	seagate	4	
-35	Hynix	4	hynix	3	
-67	Inno3D	4	inno3d	6	
+220	SATA III	28	sata-iii	1	
+221	480GB	15	480gb	3	
+222	960GB	15	960gb	4	
+223	1.9TB	15	19tb	5	
+224	3.8TB	15	38tb	6	
+225	7.6TB	15	76tb	7	
 68	12345	6	12345	8	
 69	AB123	6	ab123	9	
 72	Nvidia	20	nvidia	0	
@@ -8194,7 +24688,7 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 75	Unknown	12	unknown	1	
 76	test	21	test	0	
 89	HONG KONG SUPERPHI TECHNOLOGY LIMITED	10	19053	14	
-129	SHANGHAI NAME CHANGE	29	12790	0	
+226	1TB	15	1tb	8	
 79	SHANGHAI NAME CHANGE	10	12790	4	
 82	EX-CHANNEL GROUP LTD	10	9321	7	
 83	STARTECH PACIFIC LIMITED	10	10393	8	
@@ -8203,30 +24697,87 @@ COPY public.product_attributevalue (id, name, attribute_id, slug, sort_order, va
 86	Digital China (HK) Ltd	10	12430	11	
 87	HONGKONG YOUCHENG TECHNOLOGY LIMITED	10	13749	12	
 88	UHOP TECH CO., LIMITED	10	17199	13	
-130	TCH INTERNATIONAL CO., LIMITED	29	12882	1	
+227	U.2 15mm	27	u2-15mm	2	
 80	TCH INTERNATIONAL CO., LIMITED	10	12882	5	
 81	JOINTHARVEST(HONG KONG) NAME CHANGE	10	12089	6	
-139	HONG KONG SUPERPHI TECHNOLOGY LIMITED	29	19053	10	
+228	PCIe 3.1 x4	28	pcie-31-x4	2	
 140	Active	30	active	0	
 141	Inactive	30	inactive	1	
 142	NVDS-2	6	nvds-2	10	
-132	EX-CHANNEL GROUP LTD	29	9321	3	
-133	STARTECH PACIFIC LIMITED	29	10393	4	
-134	E-ENERGY LIMITED	29	12431	5	
-135	YICK WAH HONG CO., LTD	29	9565	6	
-136	Digital China (HK) Ltd	29	12430	7	
-137	HONGKONG YOUCHENG TECHNOLOGY LIMITED	29	13749	8	
-138	UHOP TECH CO., LIMITED	29	17199	9	
-131	JOINTHARVEST(HONG KONG) NAME CHANGE	29	12089	2	
+229	2TB	15	2tb	9	
+230	4TB	15	4tb	10	
+231	8TB	15	8tb	11	
+232	1.6TB	15	16tb	12	
+233	3.2TB	15	32tb	13	
+234	6.4TB	15	64tb	14	
+235	15.3TB	15	153tb	15	
+236	E1.L 18mm	27	e1l-18mm	3	
 150	???	24		0	
 151	???	19		3	
 152	???	13		2	
 153	???	25		0	
 154	???	14		1	
-155	ACME Corp 1	29	124	11	
+237	E1.L 9.5mm	27	e1l-95mm	4	
 156	ACME Corp 1	10	124	15	
-157	ACME Corp 2	29	125	12	
+238	800GB	15	800gb	16	
 158	ACME Corp 2	10	125	16	
+159	Gold	5	gold	5	
+160	6138T	6	6138t	11	
+161	RTX 3060Ti	22	rtx-3060ti	1	
+162	8GB	23	8gb	1	
+163	PCIe	12	pcie	2	
+164	Fan	11	fan	2	
+165	Retail	21	retail	1	
+166	9th Generation Intel® Core™ i5 Processors	5	9th-generation-intel-coretm-i5-processors	6	
+167	i5-9500T	6	i5-9500t	12	
+168	Silver	5	silver	7	
+169	4110	6	4110	13	
+170	8th Generation Intel® Core™ i5 Processors	5	8th-generation-intel-coretm-i5-processors	8	
+171	i5-8400	6	i5-8400	14	
+172	Intel® Pentium® Gold Processor Series	5	intel-pentium-gold-processor-series	9	
+173	G5400	6	g5400	15	
+174	i5-8500	6	i5-8500	16	
+175	8th Generation Intel® Core™ i3 Processors	5	8th-generation-intel-coretm-i3-processors	10	
+176	Cooper Lake	1	cooper-lake	4	
+177	5318H	6	5318h	17	
+178	SRJGD	7	srjgd	3	
+239	M.2 22110	27	m2-22110	5	
+240	U.2 7mm	27	u2-7mm	6	
+241	Consumer	26	consumer	2	
+242	M.2 2280	27	m2-2280	7	
+243	512GB	15	512gb	17	
+244	256GB	15	256gb	18	
+245	128GB	15	128gb	19	
+246	M.2 2242	27	m2-2242	8	
+247	M.2 2230	27	m2-2230	9	
+248	PCIe 3.0 x4 NVMe	28	pcie-30-x4-nvme	3	
+249	500GB	15	500gb	20	
+250	250GB	15	250gb	21	
+251	PCIe 4.0 NVMe	28	pcie-40-nvme	4	
+252	PCIe 4.0 x4 NVMe	28	pcie-40-x4-nvme	5	
+253	PCIe 3.0 x4	28	pcie-30-x4	6	
+254	PCIe 4.0 x8	28	pcie-40-x8	7	
+255	12.8TB	15	128tb	22	
+256	15TB	15	15tb	23	
+257	PCIe 3.0 x8	28	pcie-30-x8	8	
+258	SAS	28	sas	9	
+259	30.7TB	15	307tb	24	
+260	3.48TB	15	348tb	25	
+261	PCIe 3.1 x4 NVMe	28	pcie-31-x4-nvme	10	
+262	400GB	15	400gb	26	
+266	SR3XE	7	sr3xe	4	
+267	CM8068403362607	8	cm8068403362607	4	
+268	SR3X9	7	sr3x9	5	
+269	CM8068403360112	8	cm8068403360112	5	
+270	CD8069504449200	8	cd8069504449200	6	
+271	Apollo Lake	1	apollo-lake	5	
+272	N3350	6	n3350	18	
+273	FH8066802980002	8	fh8066802980002	7	
+274	SR2Z7	7	sr2z7	6	
+275	Intel® Xeon® Scalable Processors	1	intel-xeon-scalable-processors	6	
+279	24.75 MB	31	2475-mb	0	
+280	14 nm	32	14-nm	0	
+281	22 MB	31	22-mb	1	
 \.
 
 
@@ -8243,14 +24794,6 @@ COPY public.product_attributevaluetranslation (id, language_code, name, attribut
 --
 
 COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_order) FROM stdin;
-1	9	3	0
-2	10	3	1
-3	10	2	0
-4	10	4	0
-5	10	6	0
-6	10	7	0
-7	10	5	0
-8	10	8	0
 9	10	9	0
 10	10	10	0
 11	10	11	0
@@ -8263,23 +24806,23 @@ COPY public.product_attributevariant (id, attribute_id, product_type_id, sort_or
 --
 
 COPY public.product_category (id, name, slug, description, lft, rght, tree_id, level, parent_id, background_image, seo_description, seo_title, background_image_alt, description_json, metadata, private_metadata) FROM stdin;
-1	CPUs	cpus		1	14	1	0	\N					{"blocks": [{"key": "4cn7", "data": {}, "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis cursus mattis. Curabitur sem dui, vulputate fermentum imperdiet vitae, vehicula ut sapien. Duis consectetur mauris eu tristique mollis. Aenean pulvinar a nulla a tristique.", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-12	MEM_SERVER_DIMM	memory-server-dimm		2	3	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-13	MEM_GDDR	memory-gddr		4	5	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-14	MEM_DRAM	memory-dram		6	7	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-15	MEM_PC_DIMM	memory-pc-dimm		8	9	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-7	CPU_SERVER_INTEL	cpu-server-intel		4	5	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 3	Memory	memory		1	10	3	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-8	CPU_SERVER_AMD_EPYC	cpu-server-amd-epyc		6	7	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 2	GPUs	gpu		1	6	2	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 4	Storage	storage		1	4	4	0	\N					{"blocks": [{"key": "4vqo2", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-9	CPU_DESKTOP_INTEL	cpu-desktop-intel		8	9	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-10	CPU_DESKTOP_AMD_RYZEN_MOBILE_CPU	cpu-desktop-amd-ryzen-mobile-cpu		10	11	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-11	CPU_INTEL	cpu-intel		12	13	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-16	GPU_ENTERPRISE	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-17	GPU_CONSUMER	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
-18	STOR_SOLID_STATE_DRIVES	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 19	Integrated Circuits	integrated-circuits		1	2	5	0	\N					{"blocks": [{"key": "ffqa7", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+7	CPUs-Server-Intel	cpu-server-intel		4	5	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+8	CPUs-Server-AMD EPYC	cpu-server-amd-epyc		6	7	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+9	CPUs-Desktop-Intel	cpu-desktop-intel		8	9	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+10	CPUs-Desktop-AMD Ryzen Mobile CPU	cpu-desktop-amd-ryzen-mobile-cpu		10	11	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+11	CPUs-Intel	cpu-intel		12	13	1	1	1					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+16	GPUs-Enterprise	gpu-enterprise		2	3	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+17	GPUs-Consumer	gpu-consumer		4	5	2	1	2					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+12	Memory-Server-DIMM	memory-server-dimm		2	3	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+13	Memory-GDDR	memory-gddr		4	5	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+14	Memory-DRAM	memory-dram		6	7	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+15	Memory-PC-DIMM	memory-pc-dimm		8	9	3	1	3					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+18	Storage-Solid State Drives	storage-solid-state-drives		2	3	4	1	4					{"blocks": [{"key": "a1ghi", "data": {}, "text": "", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
+1	CPUs	cpus		1	16	1	0	\N					{"blocks": [{"key": "4cn7", "data": {}, "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In facilisis cursus mattis. Curabitur sem dui, vulputate fermentum imperdiet vitae, vehicula ut sapien. Duis consectetur mauris eu tristique mollis. Aenean pulvinar a nulla a tristique.", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}
 \.
 
 
@@ -8336,29 +24879,688 @@ COPY public.product_digitalcontenturl (id, token, created, download_num, content
 --
 
 COPY public.product_product (id, name, description, publication_date, updated_at, product_type_id, is_published, category_id, seo_description, seo_title, charge_taxes, weight, description_json, metadata, private_metadata, minimal_variant_price_amount, currency, slug, available_for_purchase, visible_in_listings, default_variant_id) FROM stdin;
-6	Intel® Core™ i3-8100 Processor		2021-06-10	2021-08-27 15:27:00.403838+00	3	t	1			f	1000	{"blocks": [{"key": "1ofom", "data": {}, "text": "Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "Intel", "item_num_id": "8679"}	{}	3.000	USD	intel-coretm-i3-8100-processor	2021-06-10	t	6
-9	Intel® Core™ i3-8100 Processor		2021-06-10	2021-06-22 18:17:52.452865+00	3	t	1			f	2000	{"blocks": [{"key": "qtpe", "data": {}, "text": "Boxed Intel® Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	201.000	USD	intel-coretm-i3-8100-processor-2	2021-06-10	t	9
-8	Intel® Xeon® Gold 6130T Processor		2021-06-10	2021-09-21 16:26:25.772719+00	2	t	1			f	4000	{"blocks": [{"key": "bcml", "data": {}, "text": "Test abcdef", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mcode": "INTEL"}	{}	1200.460	USD	intel-xeon-gold-6130t-processor	2021-06-10	t	8
-28	M386A8K40CM2-CVF		2021-07-23	2021-08-27 15:27:01.78138+00	6	t	3			f	\N	{"blocks": [{"key": "asqr8", "data": {}, "text": "64GB DDR4 R-DIMM 2933MHz", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	62.560	USD	m386a8k40cm2-cvf	2021-07-23	t	13
-116	Intel hfglmn		\N	2021-08-27 15:27:02.662869+00	12	t	11	\N	\N	t	\N	{}	{}	{}	59.990	USD	intel-hfglmn	\N	t	\N
-30	ST10000NM0016		2021-07-23	2021-08-27 15:27:01.808843+00	7	t	4			f	\N	{"blocks": [{"key": "5kaq2", "data": {}, "text": "Enterprise Capacity 3.5HDD (Helium)", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	36.000	USD	st10000nm0016	2021-07-23	t	14
-27	GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition		2021-07-13	2021-09-23 15:30:05.615435+00	5	t	2			f	\N	{"blocks": [{"key": "65r9v", "data": {}, "text": "VCG309024TFXPPB PNY GeForce RTX 3090 24GB XLR8 Gaming REVEL EPIC-X RGB Triple Fan Edition", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{"mpn": "AAAA"}	48.000	USD	geforce-gt-710-2gb-pci-express-20-graphics-card	2021-07-13	t	12
-117	Intel YNFP		\N	2021-08-09 20:17:30.04629+00	12	t	11	\N	\N	t	\N	{}	{}	{}	\N	USD	intel-ynfp	\N	t	\N
-7	Intel® Celeron® Processor N3010		2021-06-10	2021-08-27 15:27:01.380457+00	4	t	1			f	\N	{"blocks": [{"key": "5fokg", "data": {}, "text": "Intel® Celeron® Processor N3010 (2M Cache, up to 2.24 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2KM", "mcode": "Intel", "item_num_id": "43786", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc enim magna, vehicula nec augue ut, eleifend sagittis velit. Phasellus pulvinar ultrices tellus, ut varius nisi aliquam et. Praesent eu nibh nunc. Nullam posuere commodo blandit. Phasellus eu justo ligula. Cras leo ex, sagittis vitae mauris eget, luctus sodales ex. Maecenas venenatis vitae sem ut finibus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam ac quam nec magna porta vestibulum. Pellentesque rutrum sapien in nibh tincidunt, at gravida urna feugiat."}	{}	39.990	USD	intel-celeron-processor-n3010	2021-06-10	t	7
-29	HMA82GR7CJR4N-WM		2021-07-23	2021-08-27 15:27:01.818641+00	6	t	3			f	\N	{}	{}	{}	41.000	USD	hma82gr7cjr4n-wm	2021-07-23	t	16
-31	Gigabyte GeForce RTX™ 3070 Gaming OC 8G		2021-07-23	2021-08-27 15:27:01.979304+00	5	t	2			f	\N	{"blocks": [{"key": "1r1r3", "data": {}, "text": "Gigabyte GeForce RTX™ 3070 Gaming OC 8G ", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	114.990	USD	gigabyte-geforce-rtxtm-3070-gaming-oc-8g	2021-07-23	t	19
-32	Gigabyte GeForce GTX TITAN X		2021-07-23	2021-08-27 15:27:02.034962+00	8	t	2			f	\N	{"blocks": [{"key": "fpk3e", "data": {}, "text": "Gigabyte GeForce GTX TITANX 12GB", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	255.250	USD	gigabyte-geforce-gtx-titan-x	2021-07-23	t	20
-124	Intel A13CZ		\N	2021-09-20 14:38:31.49295+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a13cz	\N	t	\N
-122	Intel A12CZ		\N	2021-09-20 16:13:03.104249+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "A12CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-a12cz	\N	t	\N
-118	Intel HGFS		2021-08-12	2021-09-02 17:08:23.78459+00	12	t	11	\N	\N	t	\N	{}	{}	{"mpn": "HGFS", "mcode": "Intel", "status": "ACTIVE", "item_num_id": 190709}	\N	USD	intel-hgfs	2021-09-02	t	\N
-126	Intel C13CZ		\N	2021-09-20 15:44:44.558402+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "C13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-c13cz	\N	t	\N
-125	Intel B13CZ		\N	2021-09-20 15:30:23.741564+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "B13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-b13cz	\N	t	\N
-132	Intel D13CZ		\N	2021-09-20 16:19:52.381044+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "D13CZ", "mcode": "Intel", "item_num_id": 30}	{}	\N	USD	intel-d13cz	\N	t	\N
-88	Gigabyte DDDD		2021-08-04	2021-09-23 15:30:57.43188+00	9	t	2	\N	\N	t	\N	{}	{"mpn": "MAEGHAN"}	{"mpn": "DDDD"}	999.990	USD	gigabyte-dddd	2021-08-04	t	\N
-89	Gigabyte AAAAA		2021-08-04	2021-09-23 15:42:06.803525+00	9	t	2	\N	\N	t	\N	{}	{}	{"mpn": "BBBB"}	49.990	USD	gigabyte-aaaaa	2021-08-04	t	\N
-120	Intel H12FT		2021-09-21	2021-09-21 16:21:01.066906+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT", "mcode": "HP", "item_num_id": "27"}	{}	49.990	USD	intel-h12ft	\N	t	\N
-121	Intel H12FT2		2021-09-30	2021-09-30 19:26:47.101459+00	12	t	11	\N	\N	t	\N	{}	{"mpn": "H12FT2", "mcode": "Intel", "item_num_id": "28", "item_master_id": 28}	{}	50.000	USD	intel-h12ft2	\N	t	63
-133	intel quuz127		\N	2021-09-27 21:28:01.277513+00	10	t	13	\N	\N	t	\N	{}	{"mpn": "quuz127", "mcode": "intel", "item_num_id": 1}	{}	\N	USD	intel-quuz127	\N	t	\N
+189	INTEL SSDSCKKB240GZ01		\N	2021-11-04 15:02:21.826967+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSCKKB240GZ01", "mcode": "INTEL", "item_master_id": 212657, "market_insight": ""}	{}	\N	USD	intel-ssdsckkb240gz01	\N	t	\N
+179	INTEL SSDSC2KB019T801		\N	2021-11-04 15:02:16.057953+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB019T801", "mcode": "INTEL", "item_master_id": 194490, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb019t801	\N	t	\N
+180	INTEL SSDSC2KB038T801		\N	2021-11-04 15:02:16.567109+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB038T801", "mcode": "INTEL", "item_master_id": 198518, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb038t801	\N	t	\N
+195	INTEL SSDSC2KB076TZ01		\N	2021-11-04 15:02:25.06045+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB076TZ01", "mcode": "INTEL", "item_master_id": 212663, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb076tz01	\N	t	\N
+181	INTEL SSDSC2KB076T801		\N	2021-11-04 15:02:17.135212+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB076T801", "mcode": "INTEL", "item_master_id": 202141, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb076t801	\N	t	\N
+190	INTEL SSDSC2KB480GZ01		\N	2021-11-04 15:02:22.368059+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB480GZ01", "mcode": "INTEL", "item_master_id": 212658, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb480gz01	\N	t	\N
+182	INTEL SSDSC2KG240G801		\N	2021-11-04 15:02:17.668165+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG240G801", "mcode": "INTEL", "item_master_id": 194785, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg240g801	\N	t	\N
+153	Test Intel		2021-10-22	2021-10-22 19:19:54.648347+00	9	t	2			f	\N	{"blocks": [{"key": "3176q", "data": {}, "text": "This is a test", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{}	{}	\N	USD	test-intel	2021-10-22	f	\N
+183	INTEL SSDSC2KG480G801		\N	2021-11-04 15:02:18.156401+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG480G801", "mcode": "INTEL", "item_master_id": 197442, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg480g801	\N	t	\N
+184	INTEL SSDSC2KG960G801		\N	2021-11-04 15:02:18.659209+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG960G801", "mcode": "INTEL", "item_master_id": 195522, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg960g801	\N	t	\N
+191	INTEL SSDSCKKB480GZ01		\N	2021-11-04 15:02:22.933557+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSCKKB480GZ01", "mcode": "INTEL", "item_master_id": 212659, "market_insight": ""}	{}	\N	USD	intel-ssdsckkb480gz01	\N	t	\N
+185	INTEL SSDSC2KG019T801		\N	2021-11-04 15:02:19.156479+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG019T801", "mcode": "INTEL", "item_master_id": 199018, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg019t801	\N	t	\N
+174	Test Product 9998TEST		\N	2021-11-04 13:15:13.54744+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "9998TEST", "mcode": "36C", "item_master_id": 99998, "market_insight": ""}	{}	\N	USD	test-product-9998test	\N	t	\N
+155	Intel® Xeon® Processor 5160		2021-10-28	2021-11-05 19:56:37.991313+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "3l431", "data": {}, "text": "Intel® Xeon® Processor 5160", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SLABS", "mcode": "INTEL", "item_master_id": "165680", "market_insight": "This is market insight", "product_packaging": "Packaging"}	{}	\N	USD	intel-slabs	\N	t	\N
+186	INTEL SSDSC2KG038T801		\N	2021-11-04 15:02:19.665624+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG038T801", "mcode": "INTEL", "item_master_id": 197235, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg038t801	\N	t	\N
+201	INTEL SSDPE2KX010T807		\N	2021-11-04 15:02:28.116339+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX010T807", "mcode": "INTEL", "item_master_id": 212668, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx010t807	\N	t	\N
+187	INTEL SSDSC2KG076T801		\N	2021-11-04 15:02:20.167898+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG076T801", "mcode": "INTEL", "item_master_id": 202891, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg076t801	\N	t	\N
+192	INTEL SSDSC2KB960GZ01		\N	2021-11-04 15:02:23.46151+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB960GZ01", "mcode": "INTEL", "item_master_id": 212660, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb960gz01	\N	t	\N
+188	INTEL SSDSC2KB240GZ01		\N	2021-11-04 15:02:20.722072+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB240GZ01", "mcode": "INTEL", "item_master_id": 211540, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb240gz01	\N	t	\N
+196	INTEL SSDSC2KG480GZ01		\N	2021-11-04 15:02:25.555813+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG480GZ01", "mcode": "INTEL", "item_master_id": 212664, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg480gz01	\N	t	\N
+193	INTEL SSDSC2KB019TZ01		\N	2021-11-04 15:02:23.953721+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB019TZ01", "mcode": "INTEL", "item_master_id": 212661, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb019tz01	\N	t	\N
+199	INTEL SSDSC2KG038TZ01		\N	2021-11-04 15:02:27.057608+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG038TZ01", "mcode": "INTEL", "item_master_id": 212667, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg038tz01	\N	t	\N
+194	INTEL SSDSC2KB038TZ01		\N	2021-11-04 15:02:24.527867+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB038TZ01", "mcode": "INTEL", "item_master_id": 212662, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb038tz01	\N	t	\N
+197	INTEL SSDSC2KG960GZ01		\N	2021-11-04 15:02:26.059762+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG960GZ01", "mcode": "INTEL", "item_master_id": 212665, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg960gz01	\N	t	\N
+198	INTEL SSDSC2KG019TZ01		\N	2021-11-04 15:02:26.562596+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KG019TZ01", "mcode": "INTEL", "item_master_id": 212666, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kg019tz01	\N	t	\N
+200	INTEL SSDPE2KX010T801		\N	2021-11-04 15:02:27.55395+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX010T801", "mcode": "INTEL", "item_master_id": 198648, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx010t801	\N	t	\N
+203	INTEL SSDPE2KX020T801		\N	2021-11-04 15:02:29.154581+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX020T801", "mcode": "INTEL", "item_master_id": 198251, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx020t801	\N	t	\N
+202	INTEL SSDPE2KX010T8OS		\N	2021-11-04 15:02:28.635265+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX010T8OS", "mcode": "INTEL", "item_master_id": 212669, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx010t8os	\N	t	\N
+204	INTEL SSDPE2KX020T8OS		\N	2021-11-04 15:02:29.658142+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX020T8OS", "mcode": "INTEL", "item_master_id": 212670, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx020t8os	\N	t	\N
+205	INTEL SSDPE2KX040T801		\N	2021-11-04 15:02:30.159132+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX040T801", "mcode": "INTEL", "item_master_id": 198250, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx040t801	\N	t	\N
+235	HYNIX HFS1T9G3H2X069N		\N	2021-11-04 15:02:45.755921+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9G3H2X069N", "mcode": "HYNIX", "item_master_id": 212618, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9g3h2x069n	\N	t	\N
+148	INTEL SR3GH		2021-10-15	2021-10-29 02:03:32.611114+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SR3GH", "mcode": "INTEL", "item_master_id": "189978", "market_insight": "Lorem impsum ellentesque mattis mattis posuere. Curabitur id metus tristique, porttitor turpis et, rhoncus mauris. Mauris aviverra sem. Aliquam quam tellus, egestas vitae neque nec, posuere tempus velit. \\n\\nNam lobortis eros quam. Fusce ut vehicula odio. Nam ornare dui vel lectus ornare, nec interdum velit pharetra. Morbi ac libero erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam gravida ligula non varius vestibulum. Donec eleifend congue massa.</p>\\n\\n<p>Lorem impsum ellentesque mattis mattis posuere. Curabitur id metus tristique, porttitor turpis et, rhoncus mauris. Mauris aviverra sem. Aliquam quam tellus, egestas vitae neque nec, posuere tempus velit. </p>\\n", "product_packaging": "Packaging"}	{}	\N	USD	intel-sr3gh	2021-10-27	t	67
+178	INTEL SSDSCKKB960G801		\N	2021-11-04 15:02:15.555402+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSCKKB960G801", "mcode": "INTEL", "item_master_id": 200707, "market_insight": ""}	{}	\N	USD	intel-ssdsckkb960g801	\N	t	\N
+157	INTEL SRJY3		\N	2021-10-28 17:38:01.476072+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SRJY3", "mcode": "INTEL", "item_master_id": 212286, "market_insight": ""}	{}	\N	USD	intel-srjy3	\N	t	\N
+154	Intel Xeon® Gold 5318H Processor		2021-11-04	2021-11-04 16:46:31.114864+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SRJGD", "mcode": "INTEL", "item_master_id": 212285, "market_insight": ""}	{}	\N	USD	intel-srjgd	2021-11-04	t	\N
+145	INTEL SR3J7		\N	2021-10-08 17:47:29.869907+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SR3J7", "mcode": "INTEL", "item_master_id": 198900}	{}	\N	USD	intel-sr3j7	\N	t	\N
+158	INTEL SRKJ1		\N	2021-10-28 17:47:27.597383+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SRKJ1", "mcode": "INTEL", "item_master_id": 212301, "market_insight": ""}	{}	\N	USD	intel-srkj1	\N	t	\N
+206	INTEL SSDPE2KX040T807		\N	2021-11-04 15:02:30.722481+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX040T807", "mcode": "INTEL", "item_master_id": 212671, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx040t807	\N	t	\N
+210	INTEL SSDPE2KE032T807		\N	2021-11-04 15:02:32.828086+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KE032T807", "mcode": "INTEL", "item_master_id": 212672, "market_insight": ""}	{}	\N	USD	intel-ssdpe2ke032t807	\N	t	\N
+207	INTEL SSDPE2KX080T801		\N	2021-11-04 15:02:31.248401+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KX080T801", "mcode": "INTEL", "item_master_id": 195149, "market_insight": ""}	{}	\N	USD	intel-ssdpe2kx080t801	\N	t	\N
+173	Test Product 999TEST		\N	2021-11-04 13:11:56.806411+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "999TEST", "mcode": "36C", "item_master_id": 99997, "market_insight": ""}	{}	\N	USD	test-product-999test	\N	t	\N
+149	INTEL SR3QT		2021-11-04	2021-11-04 16:50:16.725259+00	12	t	7	\N	\N	t	\N	{}	{"mpn": "SR3QT", "mcode": "INTEL", "item_master_id": 190696}	{}	\N	USD	intel-sr3qt	2021-11-04	t	73
+160	Intel Xeon® Gold 5318H Processor		2021-11-03	2021-11-03 22:35:08.739383+00	12	t	7			f	\N	{"blocks": [{"key": "18t1a", "data": {}, "text": "Intel Xeon® Gold 5318H Processor", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SRJGD", "item_master_id": "212285"}	{}	\N	USD	intel-xeon-gold-5318h-processor	2021-11-03	f	\N
+208	INTEL SSDPE2KE016T801		\N	2021-11-04 15:02:31.756723+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KE016T801", "mcode": "INTEL", "item_master_id": 199786, "market_insight": ""}	{}	\N	USD	intel-ssdpe2ke016t801	\N	t	\N
+212	INTEL SSDPE2KE076T801		\N	2021-11-04 15:02:33.859428+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KE076T801", "mcode": "INTEL", "item_master_id": 203093, "market_insight": ""}	{}	\N	USD	intel-ssdpe2ke076t801	\N	t	\N
+209	INTEL SSDPE2KE032T801		\N	2021-11-04 15:02:32.256033+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KE032T801", "mcode": "INTEL", "item_master_id": 198645, "market_insight": ""}	{}	\N	USD	intel-ssdpe2ke032t801	\N	t	\N
+211	INTEL SSDPE2KE064T801		\N	2021-11-04 15:02:33.35546+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDPE2KE064T801", "mcode": "INTEL", "item_master_id": 198646, "market_insight": ""}	{}	\N	USD	intel-ssdpe2ke064t801	\N	t	\N
+214	HYNIX HFS15T3DGMX070N		\N	2021-11-04 15:02:34.918633+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS15T3DGMX070N", "mcode": "HYNIX", "item_master_id": 212596, "market_insight": ""}	{}	\N	USD	hynix-hfs15t3dgmx070n	\N	t	\N
+213	HYNIX HFS15T3DGLX070N		\N	2021-11-04 15:02:34.35957+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS15T3DGLX070N", "mcode": "HYNIX", "item_master_id": 212595, "market_insight": ""}	{}	\N	USD	hynix-hfs15t3dglx070n	\N	t	\N
+175	INTEL SSDSC2KB240G801		\N	2021-11-04 15:02:09.030123+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB240G801", "mcode": "INTEL", "item_master_id": 197090, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb240g801	\N	t	\N
+215	HYNIX HFS6T4GETFEI-D430A		\N	2021-11-04 15:02:35.457845+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS6T4GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212597, "market_insight": ""}	{}	\N	USD	hynix-hfs6t4getfei-d430a	\N	t	\N
+176	INTEL SSDSCKKB240G801		\N	2021-11-04 15:02:14.381365+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSCKKB240G801", "mcode": "INTEL", "item_master_id": 199115, "market_insight": ""}	{}	\N	USD	intel-ssdsckkb240g801	\N	t	\N
+177	INTEL SSDSC2KB480G801		\N	2021-11-04 15:02:15.063052+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "SSDSC2KB480G801", "mcode": "INTEL", "item_master_id": 197143, "market_insight": ""}	{}	\N	USD	intel-ssdsc2kb480g801	\N	t	\N
+216	HYNIX HFS3T2GETFEI-D430A		\N	2021-11-04 15:02:35.959797+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T2GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212598, "market_insight": ""}	{}	\N	USD	hynix-hfs3t2getfei-d430a	\N	t	\N
+217	HYNIX HFS1T6GETFEI-D430A		\N	2021-11-04 15:02:36.516702+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T6GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212599, "market_insight": ""}	{}	\N	USD	hynix-hfs1t6getfei-d430a	\N	t	\N
+150	Intel Pentium® Gold G5400 Processor		2021-11-04	2021-11-04 16:01:34.914282+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "d6v5m", "data": {}, "text": "Intel Pentium® Gold G5400 Processor (4M Cache, 3.70 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3X9", "mcode": "INTEL", "item_master_id": 192553}	{}	\N	USD	intel-sr3x9	2021-11-04	t	68
+288	SAM MZ-76E4T0E		\N	2021-11-04 15:03:15.757278+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E4T0E", "mcode": "SAM", "item_master_id": 212680, "market_insight": ""}	{}	\N	USD	sam-mz-76e4t0e	\N	t	\N
+218	HYNIX HFS800GETFEI-D430A		\N	2021-11-04 15:02:37.051317+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS800GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212600, "market_insight": ""}	{}	\N	USD	hynix-hfs800getfei-d430a	\N	t	\N
+227	HYNIX HFS3T2GDUFEH-A430A		\N	2021-11-04 15:02:41.726772+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T2GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212610, "market_insight": ""}	{}	\N	USD	hynix-hfs3t2gdufeh-a430a	\N	t	\N
+219	HYNIX HFS7T6GETFEI-D430A		\N	2021-11-04 15:02:37.555215+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS7T6GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212601, "market_insight": ""}	{}	\N	USD	hynix-hfs7t6getfei-d430a	\N	t	\N
+220	HYNIX HFS3T8GETFEI-D430A		\N	2021-11-04 15:02:38.12378+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212603, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8getfei-d430a	\N	t	\N
+232	HYNIX HFS1T9GDUFEH-A430A		\N	2021-11-04 15:02:44.256539+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212615, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9gdufeh-a430a	\N	t	\N
+221	HYNIX HFS1T9GETFEI-D430A		\N	2021-11-04 15:02:38.628495+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212604, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9getfei-d430a	\N	t	\N
+228	HYNIX HFS1T6GDUFEH-A430A		\N	2021-11-04 15:02:42.237529+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T6GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212611, "market_insight": ""}	{}	\N	USD	hynix-hfs1t6gdufeh-a430a	\N	t	\N
+222	HYNIX HFS960GETFEI-D430A		\N	2021-11-04 15:02:39.14339+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960GETFEI-D430A", "mcode": "HYNIX", "item_master_id": 212605, "market_insight": ""}	{}	\N	USD	hynix-hfs960getfei-d430a	\N	t	\N
+223	HYNIX HFS3T8GD0FEI-A430A		\N	2021-11-04 15:02:39.654341+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8GD0FEI-A430A", "mcode": "HYNIX", "item_master_id": 212606, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8gd0fei-a430a	\N	t	\N
+224	HYNIX HFS1T9GD0FEI-A430A		\N	2021-11-04 15:02:40.154168+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9GD0FEI-A430A", "mcode": "HYNIX", "item_master_id": 212207, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9gd0fei-a430a	\N	t	\N
+229	HYNIX HFS800GDUFEH-A430A		\N	2021-11-04 15:02:42.75305+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS800GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212612, "market_insight": ""}	{}	\N	USD	hynix-hfs800gdufeh-a430a	\N	t	\N
+225	HYNIX HFS960GD0FEI-A430A		\N	2021-11-04 15:02:40.662516+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960GD0FEI-A430A", "mcode": "HYNIX", "item_master_id": 212608, "market_insight": ""}	{}	\N	USD	hynix-hfs960gd0fei-a430a	\N	t	\N
+226	HYNIX HFS6T4GDUFEH-A430A		\N	2021-11-04 15:02:41.164447+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS6T4GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212609, "market_insight": ""}	{}	\N	USD	hynix-hfs6t4gdufeh-a430a	\N	t	\N
+233	HYNIX HFS960GDUFEH-A430A		\N	2021-11-04 15:02:44.757126+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212616, "market_insight": ""}	{}	\N	USD	hynix-hfs960gdufeh-a430a	\N	t	\N
+230	HYNIX HFS7T6GDUFEH-A430A		\N	2021-11-04 15:02:43.25686+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS7T6GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212613, "market_insight": ""}	{}	\N	USD	hynix-hfs7t6gdufeh-a430a	\N	t	\N
+231	HYNIX HFS3T8GDUFEH-A430A		\N	2021-11-04 15:02:43.755288+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8GDUFEH-A430A", "mcode": "HYNIX", "item_master_id": 212614, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8gdufeh-a430a	\N	t	\N
+237	HYNIX HFS480G3H2X069N		\N	2021-11-04 15:02:46.756221+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS480G3H2X069N", "mcode": "HYNIX", "item_master_id": 212620, "market_insight": ""}	{}	\N	USD	hynix-hfs480g3h2x069n	\N	t	\N
+234	HYNIX HFS3T8G3H2X069N		\N	2021-11-04 15:02:45.256929+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8G3H2X069N", "mcode": "HYNIX", "item_master_id": 212617, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8g3h2x069n	\N	t	\N
+236	HYNIX HFS960G3H2X069N		\N	2021-11-04 15:02:46.254798+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960G3H2X069N", "mcode": "HYNIX", "item_master_id": 212619, "market_insight": ""}	{}	\N	USD	hynix-hfs960g3h2x069n	\N	t	\N
+239	HYNIX HFS1T9G32FEH-BA10A		\N	2021-11-04 15:02:47.75777+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9G32FEH-BA10A", "mcode": "HYNIX", "item_master_id": 212622, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9g32feh-ba10a	\N	t	\N
+238	HYNIX HFS3T8G32FEH-BA10A		\N	2021-11-04 15:02:47.25771+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8G32FEH-BA10A", "mcode": "HYNIX", "item_master_id": 212621, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8g32feh-ba10a	\N	t	\N
+147	Intel Core™ i5-9500T Processor		2021-10-26	2021-11-05 19:43:43.130571+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "dcn4m", "data": {}, "text": "Intel Core™ i5-9500T Processor (9M Cache, up to 3.70 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SRF4D", "mcode": "INTEL", "item_master_id": "202438", "market_insight": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus nec leo rhoncus, varius leo vel, fringilla nisl. Ut mattis, odio ac rhoncus luctus, diam augue lacinia elit, vel volutpat eros lacus ac nisi. Nulla in massa ut justo faucibus commodo in et nunc. Integer blandit ligula sed velit sollicitudin, ut congue erat semper. Aenean porta in quam at hendrerit. Morbi nisl magna, mattis non urna vel, consectetur venenatis nibh. Nullam mollis consequat erat. Praesent posuere, velit sed mattis congue, tortor ligula auctor velit, congue blandit urna felis id elit. Proin bibendum condimentum volutpat. Pellentesque venenatis mauris lacus. Suspendisse facilisis tempor purus, nec laoreet leo ornare quis.\\n\\nDonec sodales elit in augue laoreet luctus. Sed quis ornare ex, eu eleifend orci. Nunc suscipit porta risus at placerat. Praesent dapibus eros vitae ipsum consectetur, non faucibus quam blandit. Sed vestibulum nec orci vel placerat. Aenean tincidunt felis et pharetra finibus. Curabitur at turpis ullamcorper, pretium urna quis, ornare leo. Curabitur bibendum vulputate lorem. In nec lorem tortor. Donec aliquam euismod venenatis. Nam vestibulum orci eget risus pretium, ut eleifend sem ultricies. Proin eu magna ut nisl egestas scelerisque.\\n\\nNam pretium lectus rutrum, interdum arcu finibus, mattis purus. Donec lectus magna, posuere vel felis tincidunt, fringilla vestibulum nisi. Donec interdum mi ac consectetur consequat. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aenean consequat lobortis dui, ut maximus felis feugiat sit amet. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer iaculis est id neque dapibus viverra. Integer gravida ante vitae dolor accumsan placerat. Vestibulum id elit bibendum, blandit nulla a, maximus nisi. Mauris posuere est non risus imperdiet placerat. Praesent eleifend metus tellus, vitae egestas nibh maximus quis. Mauris interdum eros id nisi dictum, vitae dapibus enim laoreet. Mauris sollicitudin nunc quis odio convallis rhoncus. Nam sagittis malesuada orci. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\\n\\nPraesent interdum iaculis purus, a efficitur massa sagittis non. Proin ut dui in dui mollis convallis. Nulla facilisi. Curabitur malesuada orci a blandit gravida. Fusce sit amet leo metus. Sed condimentum efficitur lacus nec commodo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.\\n\\nCurabitur dapibus gravida efficitur. Cras at hendrerit justo, quis vulputate quam. Suspendisse a interdum felis. Nam accumsan metus non mi hendrerit rhoncus. Morbi vel dolor blandit, tempor erat tristique, tempus velit. Vivamus faucibus quis lorem eu accumsan. Quisque accumsan euismod eros, sit amet bibendum erat tempus in. Vestibulum iaculis ipsum et cursus euismod. Nam at leo et ex bibendum maximus. Maecenas purus arcu, porta in vehicula id, suscipit at nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vivamus a nibh eget erat finibus posuere vel at libero."}	{}	\N	USD	intel-srf4d	\N	t	\N
+240	HYNIX HFS960G32FEH-BA10A		\N	2021-11-04 15:02:48.258162+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960G32FEH-BA10A", "mcode": "HYNIX", "item_master_id": 212623, "market_insight": ""}	{}	\N	USD	hynix-hfs960g32feh-ba10a	\N	t	\N
+241	HYNIX HFS480G32FEH-BA10A		\N	2021-11-04 15:02:48.756136+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS480G32FEH-BA10A", "mcode": "HYNIX", "item_master_id": 212624, "market_insight": ""}	{}	\N	USD	hynix-hfs480g32feh-ba10a	\N	t	\N
+242	HYNIX HFS3T8G32FEH-7410A		\N	2021-11-04 15:02:49.262538+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS3T8G32FEH-7410A", "mcode": "HYNIX", "item_master_id": 212625, "market_insight": ""}	{}	\N	USD	hynix-hfs3t8g32feh-7410a	\N	t	\N
+243	HYNIX HFS1T9G32FEH-7A10A		\N	2021-11-04 15:02:49.838192+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS1T9G32FEH-7A10A", "mcode": "HYNIX", "item_master_id": 212626, "market_insight": ""}	{}	\N	USD	hynix-hfs1t9g32feh-7a10a	\N	t	\N
+244	HYNIX HFS960G32FEH-7A10A		\N	2021-11-04 15:02:50.357118+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS960G32FEH-7A10A", "mcode": "HYNIX", "item_master_id": 212627, "market_insight": ""}	{}	\N	USD	hynix-hfs960g32feh-7a10a	\N	t	\N
+245	HYNIX HFS480G32FEH-7410A		\N	2021-11-04 15:02:50.856071+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS480G32FEH-7410A", "mcode": "HYNIX", "item_master_id": 212628, "market_insight": ""}	{}	\N	USD	hynix-hfs480g32feh-7410a	\N	t	\N
+256	HYNIX HFM128GD3HX015N		\N	2021-11-04 15:02:57.365628+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM128GD3HX015N", "mcode": "HYNIX", "item_master_id": 212642, "market_insight": ""}	{}	\N	USD	hynix-hfm128gd3hx015n	\N	t	\N
+246	HYNIX HFS001TDE9X073N		\N	2021-11-04 15:02:51.765846+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS001TDE9X073N", "mcode": "HYNIX", "item_master_id": 212629, "market_insight": ""}	{}	\N	USD	hynix-hfs001tde9x073n	\N	t	\N
+247	HYNIX HFS512GDE9X073N		\N	2021-11-04 15:02:52.324841+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS512GDE9X073N", "mcode": "HYNIX", "item_master_id": 212630, "market_insight": ""}	{}	\N	USD	hynix-hfs512gde9x073n	\N	t	\N
+248	HYNIX HFS256GDE9X073N		\N	2021-11-04 15:02:52.845308+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS256GDE9X073N", "mcode": "HYNIX", "item_master_id": 212631, "market_insight": ""}	{}	\N	USD	hynix-hfs256gde9x073n	\N	t	\N
+257	HYNIX HFM001TD3GX013N		\N	2021-11-04 15:02:57.926787+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM001TD3GX013N", "mcode": "HYNIX", "item_master_id": 212643, "market_insight": ""}	{}	\N	USD	hynix-hfm001td3gx013n	\N	t	\N
+249	HYNIX HFM001TD3JX013N		\N	2021-11-04 15:02:53.38506+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM001TD3JX013N", "mcode": "HYNIX", "item_master_id": 212634, "market_insight": ""}	{}	\N	USD	hynix-hfm001td3jx013n	\N	t	\N
+250	HYNIX HFM512GD3JX013N		\N	2021-11-04 15:02:53.940863+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM512GD3JX013N", "mcode": "HYNIX", "item_master_id": 212636, "market_insight": ""}	{}	\N	USD	hynix-hfm512gd3jx013n	\N	t	\N
+251	HYNIX HFM256GD3JX013N		\N	2021-11-04 15:02:54.518176+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM256GD3JX013N", "mcode": "HYNIX", "item_master_id": 212637, "market_insight": ""}	{}	\N	USD	hynix-hfm256gd3jx013n	\N	t	\N
+258	HYNIX HFM512GD3GX013N		\N	2021-11-04 15:02:58.453762+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM512GD3GX013N", "mcode": "HYNIX", "item_master_id": 212644, "market_insight": ""}	{}	\N	USD	hynix-hfm512gd3gx013n	\N	t	\N
+252	HYNIX HFM128GD3JX013N		\N	2021-11-04 15:02:55.059237+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM128GD3JX013N", "mcode": "HYNIX", "item_master_id": 212638, "market_insight": ""}	{}	\N	USD	hynix-hfm128gd3jx013n	\N	t	\N
+253	HYNIX HFM001TD3HX015N		\N	2021-11-04 15:02:55.858975+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM001TD3HX015N", "mcode": "HYNIX", "item_master_id": 212639, "market_insight": ""}	{}	\N	USD	hynix-hfm001td3hx015n	\N	t	\N
+254	HYNIX HFM512GD3HX015N		\N	2021-11-04 15:02:56.364043+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM512GD3HX015N", "mcode": "HYNIX", "item_master_id": 212640, "market_insight": ""}	{}	\N	USD	hynix-hfm512gd3hx015n	\N	t	\N
+255	HYNIX HFM256GD3HX015N		\N	2021-11-04 15:02:56.863719+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM256GD3HX015N", "mcode": "HYNIX", "item_master_id": 212641, "market_insight": ""}	{}	\N	USD	hynix-hfm256gd3hx015n	\N	t	\N
+259	HYNIX HFM256GD3GX013N		\N	2021-11-04 15:02:58.956739+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM256GD3GX013N", "mcode": "HYNIX", "item_master_id": 212645, "market_insight": ""}	{}	\N	USD	hynix-hfm256gd3gx013n	\N	t	\N
+260	HYNIX HFM128GD3GX013N		\N	2021-11-04 15:02:59.46239+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM128GD3GX013N", "mcode": "HYNIX", "item_master_id": 212646, "market_insight": ""}	{}	\N	USD	hynix-hfm128gd3gx013n	\N	t	\N
+261	HYNIX HFS001TDC9X030N		\N	2021-11-04 15:03:00.21682+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS001TDC9X030N", "mcode": "HYNIX", "item_master_id": 212647, "market_insight": ""}	{}	\N	USD	hynix-hfs001tdc9x030n	\N	t	\N
+262	HYNIX HFS512GDC9X030N		\N	2021-11-04 15:03:01.159196+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS512GDC9X030N", "mcode": "HYNIX", "item_master_id": 212648, "market_insight": ""}	{}	\N	USD	hynix-hfs512gdc9x030n	\N	t	\N
+263	HYNIX HFS256GDC9X030N		\N	2021-11-04 15:03:01.665302+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS256GDC9X030N", "mcode": "HYNIX", "item_master_id": 212649, "market_insight": ""}	{}	\N	USD	hynix-hfs256gdc9x030n	\N	t	\N
+275	SAM MZ-V7S250B/AM		\N	2021-11-04 15:03:09.028042+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7S250B/AM", "mcode": "SAM", "item_master_id": 200383, "market_insight": ""}	{}	\N	USD	sam-mz-v7s250bam	\N	t	\N
+264	HYNIX HFS001TD89X024N		\N	2021-11-04 15:03:02.395218+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS001TD89X024N", "mcode": "HYNIX", "item_master_id": 212650, "market_insight": ""}	{}	\N	USD	hynix-hfs001td89x024n	\N	t	\N
+265	HYNIX HFS512GD89X024N		\N	2021-11-04 15:03:02.940377+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS512GD89X024N", "mcode": "HYNIX", "item_master_id": 212651, "market_insight": ""}	{}	\N	USD	hynix-hfs512gd89x024n	\N	t	\N
+266	HYNIX HFS256GD89X024N		\N	2021-11-04 15:03:03.464068+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFS256GD89X024N", "mcode": "HYNIX", "item_master_id": 212652, "market_insight": ""}	{}	\N	USD	hynix-hfs256gd89x024n	\N	t	\N
+276	SAM MZ-V7S500B/AM		\N	2021-11-04 15:03:09.566807+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7S500B/AM", "mcode": "SAM", "item_master_id": 207057, "market_insight": ""}	{}	\N	USD	sam-mz-v7s500bam	\N	t	\N
+267	HYNIX HFM512GD2HX006N		\N	2021-11-04 15:03:04.072116+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM512GD2HX006N", "mcode": "HYNIX", "item_master_id": 212653, "market_insight": ""}	{}	\N	USD	hynix-hfm512gd2hx006n	\N	t	\N
+268	HYNIX HFM256GD2HX006N		\N	2021-11-04 15:03:04.643529+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM256GD2HX006N", "mcode": "HYNIX", "item_master_id": 212654, "market_insight": ""}	{}	\N	USD	hynix-hfm256gd2hx006n	\N	t	\N
+283	SAM MZ-76P4T0E		\N	2021-11-04 15:03:13.161948+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76P4T0E", "mcode": "SAM", "item_master_id": 212678, "market_insight": ""}	{}	\N	USD	sam-mz-76p4t0e	\N	t	\N
+269	HYNIX HFM512GD2GX006N		\N	2021-11-04 15:03:05.160826+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM512GD2GX006N", "mcode": "HYNIX", "item_master_id": 212655, "market_insight": ""}	{}	\N	USD	hynix-hfm512gd2gx006n	\N	t	\N
+277	SAM MZ-V7S1T0B/AM		\N	2021-11-04 15:03:10.129781+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7S1T0B/AM", "mcode": "SAM", "item_master_id": 206675, "market_insight": ""}	{}	\N	USD	sam-mz-v7s1t0bam	\N	t	\N
+270	HYNIX HFM256GD2GX006N		\N	2021-11-04 15:03:05.727012+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "HFM256GD2GX006N", "mcode": "HYNIX", "item_master_id": 212656, "market_insight": ""}	{}	\N	USD	hynix-hfm256gd2gx006n	\N	t	\N
+271	SAM MZ-V7P512E		\N	2021-11-04 15:03:06.255907+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7P512E", "mcode": "SAM", "item_master_id": 200464, "market_insight": ""}	{}	\N	USD	sam-mz-v7p512e	\N	t	\N
+272	SAM MZ-V7P1T0E		\N	2021-11-04 15:03:06.824814+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7P1T0E", "mcode": "SAM", "item_master_id": 212673, "market_insight": ""}	{}	\N	USD	sam-mz-v7p1t0e	\N	t	\N
+278	SAM MZ-V7S2T0B/AM		\N	2021-11-04 15:03:10.653688+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7S2T0B/AM", "mcode": "SAM", "item_master_id": 212676, "market_insight": ""}	{}	\N	USD	sam-mz-v7s2t0bam	\N	t	\N
+273	SAM MZ-V7E500BW		\N	2021-11-04 15:03:07.348371+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7E500BW", "mcode": "SAM", "item_master_id": 212674, "market_insight": ""}	{}	\N	USD	sam-mz-v7e500bw	\N	t	\N
+274	SAM MZ-V7E1T0BW		\N	2021-11-04 15:03:07.858882+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V7E1T0BW", "mcode": "SAM", "item_master_id": 212675, "market_insight": ""}	{}	\N	USD	sam-mz-v7e1t0bw	\N	t	\N
+287	SAM MZ-76E2T0E		\N	2021-11-04 15:03:15.259473+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E2T0E", "mcode": "SAM", "item_master_id": 206038, "market_insight": ""}	{}	\N	USD	sam-mz-76e2t0e	\N	t	\N
+279	SAM MZ-76P256E		\N	2021-11-04 15:03:11.157295+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76P256E", "mcode": "SAM", "item_master_id": 204860, "market_insight": ""}	{}	\N	USD	sam-mz-76p256e	\N	t	\N
+284	SAM MZ-76E250E		\N	2021-11-04 15:03:13.669164+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E250E", "mcode": "SAM", "item_master_id": 200463, "market_insight": ""}	{}	\N	USD	sam-mz-76e250e	\N	t	\N
+280	SAM MZ-76P512E		\N	2021-11-04 15:03:11.657513+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76P512E", "mcode": "SAM", "item_master_id": 201723, "market_insight": ""}	{}	\N	USD	sam-mz-76p512e	\N	t	\N
+281	SAM MZ-76P1T0E		\N	2021-11-04 15:03:12.161069+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76P1T0E", "mcode": "SAM", "item_master_id": 212677, "market_insight": ""}	{}	\N	USD	sam-mz-76p1t0e	\N	t	\N
+282	SAM MZ-76P2T0E		\N	2021-11-04 15:03:12.657885+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76P2T0E", "mcode": "SAM", "item_master_id": 206395, "market_insight": ""}	{}	\N	USD	sam-mz-76p2t0e	\N	t	\N
+285	SAM MZ-76E500E		\N	2021-11-04 15:03:14.232459+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E500E", "mcode": "SAM", "item_master_id": 212679, "market_insight": ""}	{}	\N	USD	sam-mz-76e500e	\N	t	\N
+286	SAM MZ-76E1T0E		\N	2021-11-04 15:03:14.75337+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E1T0E", "mcode": "SAM", "item_master_id": 203253, "market_insight": ""}	{}	\N	USD	sam-mz-76e1t0e	\N	t	\N
+302	SAM MZ-V8P250B/AM		\N	2021-11-04 15:03:23.469477+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V8P250B/AM", "mcode": "SAM", "item_master_id": 212692, "market_insight": ""}	{}	\N	USD	sam-mz-v8p250bam	\N	t	\N
+289	SAM MZ-N6E250BW		\N	2021-11-04 15:03:16.257292+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-N6E250BW", "mcode": "SAM", "item_master_id": 212681, "market_insight": ""}	{}	\N	USD	sam-mz-n6e250bw	\N	t	\N
+290	SAM MZ-N6E500BW		\N	2021-11-04 15:03:16.757581+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-N6E500BW", "mcode": "SAM", "item_master_id": 201074, "market_insight": ""}	{}	\N	USD	sam-mz-n6e500bw	\N	t	\N
+291	SAM MZ-N6E1T0BW		\N	2021-11-04 15:03:17.254963+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-N6E1T0BW", "mcode": "SAM", "item_master_id": 212682, "market_insight": ""}	{}	\N	USD	sam-mz-n6e1t0bw	\N	t	\N
+303	SAM MZ-V8P500B/AM		\N	2021-11-04 15:03:24.041208+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V8P500B/AM", "mcode": "SAM", "item_master_id": 212693, "market_insight": ""}	{}	\N	USD	sam-mz-v8p500bam	\N	t	\N
+292	SAM MZ-N6E2T0BW		\N	2021-11-04 15:03:17.758299+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-N6E2T0BW", "mcode": "SAM", "item_master_id": 207788, "market_insight": ""}	{}	\N	USD	sam-mz-n6e2t0bw	\N	t	\N
+293	SAM MZ-77Q1T0B/AM		\N	2021-11-04 15:03:18.254433+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77Q1T0B/AM", "mcode": "SAM", "item_master_id": 212683, "market_insight": ""}	{}	\N	USD	sam-mz-77q1t0bam	\N	t	\N
+310	SAM MZ7LH480HAHQ-00005		\N	2021-11-04 15:03:27.661709+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH480HAHQ-00005", "mcode": "SAM", "item_master_id": 197050, "market_insight": ""}	{}	\N	USD	sam-mz7lh480hahq-00005	\N	t	\N
+294	SAM MZ-77Q2T0B/AM		\N	2021-11-04 15:03:18.757917+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77Q2T0B/AM", "mcode": "SAM", "item_master_id": 212684, "market_insight": ""}	{}	\N	USD	sam-mz-77q2t0bam	\N	t	\N
+304	SAM MZ-V8P1T0B/AM		\N	2021-11-04 15:03:24.557036+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V8P1T0B/AM", "mcode": "SAM", "item_master_id": 212694, "market_insight": ""}	{}	\N	USD	sam-mz-v8p1t0bam	\N	t	\N
+295	SAM MZ-77Q4T0B/AM		\N	2021-11-04 15:03:19.259282+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77Q4T0B/AM", "mcode": "SAM", "item_master_id": 212685, "market_insight": ""}	{}	\N	USD	sam-mz-77q4t0bam	\N	t	\N
+296	SAM MZ-77Q8T0B/AM		\N	2021-11-04 15:03:19.761527+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77Q8T0B/AM", "mcode": "SAM", "item_master_id": 212686, "market_insight": ""}	{}	\N	USD	sam-mz-77q8t0bam	\N	t	\N
+297	SAM MZ-77E250E		\N	2021-11-04 15:03:20.369536+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77E250E", "mcode": "SAM", "item_master_id": 212687, "market_insight": ""}	{}	\N	USD	sam-mz-77e250e	\N	t	\N
+305	SAM MZ-V8P2T0B/AM		\N	2021-11-04 15:03:25.122107+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-V8P2T0B/AM", "mcode": "SAM", "item_master_id": 207054, "market_insight": ""}	{}	\N	USD	sam-mz-v8p2t0bam	\N	t	\N
+298	SAM MZ-77E500E		\N	2021-11-04 15:03:20.951785+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77E500E", "mcode": "SAM", "item_master_id": 212688, "market_insight": ""}	{}	\N	USD	sam-mz-77e500e	\N	t	\N
+299	SAM MZ-77E1T0E		\N	2021-11-04 15:03:21.861955+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77E1T0E", "mcode": "SAM", "item_master_id": 212689, "market_insight": ""}	{}	\N	USD	sam-mz-77e1t0e	\N	t	\N
+300	SAM MZ-77E2T0E		\N	2021-11-04 15:03:22.429851+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77E2T0E", "mcode": "SAM", "item_master_id": 212690, "market_insight": ""}	{}	\N	USD	sam-mz-77e2t0e	\N	t	\N
+306	SAM MZ-76E960E		\N	2021-11-04 15:03:25.634254+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E960E", "mcode": "SAM", "item_master_id": 212695, "market_insight": ""}	{}	\N	USD	sam-mz-76e960e	\N	t	\N
+301	SAM MZ-77E4T0E		\N	2021-11-04 15:03:22.957859+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-77E4T0E", "mcode": "SAM", "item_master_id": 212691, "market_insight": ""}	{}	\N	USD	sam-mz-77e4t0e	\N	t	\N
+311	SAM MZ7LH960HAJR-00005		\N	2021-11-04 15:03:28.156594+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH960HAJR-00005", "mcode": "SAM", "item_master_id": 197049, "market_insight": ""}	{}	\N	USD	sam-mz7lh960hajr-00005	\N	t	\N
+307	SAM MZ-76E1T9E		\N	2021-11-04 15:03:26.144342+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E1T9E", "mcode": "SAM", "item_master_id": 212696, "market_insight": ""}	{}	\N	USD	sam-mz-76e1t9e	\N	t	\N
+315	SAM MZ7KH240HAHQ-00005		\N	2021-11-04 15:03:30.256834+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7KH240HAHQ-00005", "mcode": "SAM", "item_master_id": 199376, "market_insight": ""}	{}	\N	USD	sam-mz7kh240hahq-00005	\N	t	\N
+308	SAM MZ-76E3T8E		\N	2021-11-04 15:03:26.650862+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ-76E3T8E", "mcode": "SAM", "item_master_id": 212697, "market_insight": ""}	{}	\N	USD	sam-mz-76e3t8e	\N	t	\N
+312	SAM MZ7LH1T9HMLT-00005		\N	2021-11-04 15:03:28.722114+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH1T9HMLT-00005", "mcode": "SAM", "item_master_id": 195688, "market_insight": ""}	{}	\N	USD	sam-mz7lh1t9hmlt-00005	\N	t	\N
+309	SAM MZ7LH240HAHQ-00005		\N	2021-11-04 15:03:27.158414+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH240HAHQ-00005", "mcode": "SAM", "item_master_id": 196974, "market_insight": ""}	{}	\N	USD	sam-mz7lh240hahq-00005	\N	t	\N
+313	SAM MZ7LH3T8HMLT-00005		\N	2021-11-04 15:03:29.229138+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH3T8HMLT-00005", "mcode": "SAM", "item_master_id": 197065, "market_insight": ""}	{}	\N	USD	sam-mz7lh3t8hmlt-00005	\N	t	\N
+317	SAM MZ7KH960HAJR-00005		\N	2021-11-04 15:03:31.257236+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7KH960HAJR-00005", "mcode": "SAM", "item_master_id": 199173, "market_insight": ""}	{}	\N	USD	sam-mz7kh960hajr-00005	\N	t	\N
+314	SAM MZ7LH7T6HMLA-00005		\N	2021-11-04 15:03:29.752561+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH7T6HMLA-00005", "mcode": "SAM", "item_master_id": 198490, "market_insight": ""}	{}	\N	USD	sam-mz7lh7t6hmla-00005	\N	t	\N
+316	SAM MZ7KH480HAHQ-00005		\N	2021-11-04 15:03:30.757451+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7KH480HAHQ-00005", "mcode": "SAM", "item_master_id": 200266, "market_insight": ""}	{}	\N	USD	sam-mz7kh480hahq-00005	\N	t	\N
+319	SAM MZ7KH3T8HALS-00005		\N	2021-11-04 15:03:32.255645+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7KH3T8HALS-00005", "mcode": "SAM", "item_master_id": 206366, "market_insight": ""}	{}	\N	USD	sam-mz7kh3t8hals-00005	\N	t	\N
+318	SAM MZ7KH1T9HAJR-00005		\N	2021-11-04 15:03:31.755022+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7KH1T9HAJR-00005", "mcode": "SAM", "item_master_id": 197185, "market_insight": ""}	{}	\N	USD	sam-mz7kh1t9hajr-00005	\N	t	\N
+320	SAM MZQL2960HCJR-00A07		\N	2021-11-04 15:03:32.773084+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZQL2960HCJR-00A07", "mcode": "SAM", "item_master_id": 210538, "market_insight": ""}	{}	\N	USD	sam-mzql2960hcjr-00a07	\N	t	\N
+321	SAM MZQL21T9HCJR-00A07		\N	2021-11-04 15:03:33.321435+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZQL21T9HCJR-00A07", "mcode": "SAM", "item_master_id": 212698, "market_insight": ""}	{}	\N	USD	sam-mzql21t9hcjr-00a07	\N	t	\N
+322	SAM MZQL23T8HCJS-00A07		\N	2021-11-04 15:03:33.825757+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZQL23T8HCJS-00A07", "mcode": "SAM", "item_master_id": 212699, "market_insight": ""}	{}	\N	USD	sam-mzql23t8hcjs-00a07	\N	t	\N
+342	SAM MZ7LH512HALU-00000		\N	2021-11-04 15:03:55.96884+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH512HALU-00000", "mcode": "SAM", "item_master_id": 212717, "market_insight": ""}	{}	\N	USD	sam-mz7lh512halu-00000	\N	t	\N
+323	SAM MZVLB480HBJQ-00017		\N	2021-11-04 15:03:34.348861+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLB480HBJQ-00017", "mcode": "SAM", "item_master_id": 212700, "market_insight": ""}	{}	\N	USD	sam-mzvlb480hbjq-00017	\N	t	\N
+335	SAM MZVLQ512HALU-00000		\N	2021-11-04 15:03:40.656489+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ512HALU-00000", "mcode": "SAM", "item_master_id": 212712, "market_insight": ""}	{}	\N	USD	sam-mzvlq512halu-00000	\N	t	\N
+324	SAM MZVLB960HBLR-00017		\N	2021-11-04 15:03:34.855252+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLB960HBLR-00017", "mcode": "SAM", "item_master_id": 212701, "market_insight": ""}	{}	\N	USD	sam-mzvlb960hblr-00017	\N	t	\N
+325	SAM MZVL2256HCHQ-00000		\N	2021-11-04 15:03:35.453859+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVL2256HCHQ-00000", "mcode": "SAM", "item_master_id": 212702, "market_insight": ""}	{}	\N	USD	sam-mzvl2256hchq-00000	\N	t	\N
+326	SAM MZVL2512HCJQ-00000		\N	2021-11-04 15:03:35.96649+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVL2512HCJQ-00000", "mcode": "SAM", "item_master_id": 212703, "market_insight": ""}	{}	\N	USD	sam-mzvl2512hcjq-00000	\N	t	\N
+336	SAM MZVLQ1T0HALB-00000		\N	2021-11-04 15:03:41.157694+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ1T0HALB-00000", "mcode": "SAM", "item_master_id": 212713, "market_insight": ""}	{}	\N	USD	sam-mzvlq1t0halb-00000	\N	t	\N
+327	SAM MZVL21T0HCLR-00000		\N	2021-11-04 15:03:36.524912+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVL21T0HCLR-00000", "mcode": "SAM", "item_master_id": 212704, "market_insight": ""}	{}	\N	USD	sam-mzvl21t0hclr-00000	\N	t	\N
+328	SAM MZVL22T0HBLB-00000		\N	2021-11-04 15:03:37.032847+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVL22T0HBLB-00000", "mcode": "SAM", "item_master_id": 212705, "market_insight": ""}	{}	\N	USD	sam-mzvl22t0hblb-00000	\N	t	\N
+329	SAM MZVLQ128HCHQ-00000		\N	2021-11-04 15:03:37.554364+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ128HCHQ-00000", "mcode": "SAM", "item_master_id": 212706, "market_insight": ""}	{}	\N	USD	sam-mzvlq128hchq-00000	\N	t	\N
+337	SAM MZVLB256HBHQ-00000		\N	2021-11-04 15:03:41.656837+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLB256HBHQ-00000", "mcode": "SAM", "item_master_id": 200629, "market_insight": ""}	{}	\N	USD	sam-mzvlb256hbhq-00000	\N	t	\N
+330	SAM MZVLQ256HBJD-00000		\N	2021-11-04 15:03:38.056125+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ256HBJD-00000", "mcode": "SAM", "item_master_id": 212707, "market_insight": ""}	{}	\N	USD	sam-mzvlq256hbjd-00000	\N	t	\N
+331	SAM MZVLQ512HBLU-00000		\N	2021-11-04 15:03:38.558232+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ512HBLU-00000", "mcode": "SAM", "item_master_id": 212708, "market_insight": ""}	{}	\N	USD	sam-mzvlq512hblu-00000	\N	t	\N
+343	SAM MZ7LH1T0HALB-00000		\N	2021-11-04 15:03:56.545715+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH1T0HALB-00000", "mcode": "SAM", "item_master_id": 212718, "market_insight": ""}	{}	\N	USD	sam-mz7lh1t0halb-00000	\N	t	\N
+332	SAM MZVLQ1T0HBLB-00000		\N	2021-11-04 15:03:39.066251+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ1T0HBLB-00000", "mcode": "SAM", "item_master_id": 212709, "market_insight": ""}	{}	\N	USD	sam-mzvlq1t0hblb-00000	\N	t	\N
+338	SAM MZVLB512HBJQ-00000		\N	2021-11-04 15:03:53.753985+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLB512HBJQ-00000", "mcode": "SAM", "item_master_id": 200048, "market_insight": ""}	{}	\N	USD	sam-mzvlb512hbjq-00000	\N	t	\N
+333	SAM MZVLQ128HBHQ-00000		\N	2021-11-04 15:03:39.617157+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ128HBHQ-00000", "mcode": "SAM", "item_master_id": 212710, "market_insight": ""}	{}	\N	USD	sam-mzvlq128hbhq-00000	\N	t	\N
+334	SAM MZVLQ256HAJD-00000		\N	2021-11-04 15:03:40.150867+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLQ256HAJD-00000", "mcode": "SAM", "item_master_id": 212711, "market_insight": ""}	{}	\N	USD	sam-mzvlq256hajd-00000	\N	t	\N
+339	SAM MZVLB1T0HBLR-00000		\N	2021-11-04 15:03:54.340212+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZVLB1T0HBLR-00000", "mcode": "SAM", "item_master_id": 212714, "market_insight": ""}	{}	\N	USD	sam-mzvlb1t0hblr-00000	\N	t	\N
+340	SAM MZ7LH128HBHQ-00000		\N	2021-11-04 15:03:54.85828+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH128HBHQ-00000", "mcode": "SAM", "item_master_id": 212715, "market_insight": ""}	{}	\N	USD	sam-mz7lh128hbhq-00000	\N	t	\N
+344	SAM MZNLH128HBHQ-00000		\N	2021-11-04 15:03:57.055968+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZNLH128HBHQ-00000", "mcode": "SAM", "item_master_id": 212720, "market_insight": ""}	{}	\N	USD	sam-mznlh128hbhq-00000	\N	t	\N
+341	SAM MZ7LH256HAJD-00000		\N	2021-11-04 15:03:55.442244+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZ7LH256HAJD-00000", "mcode": "SAM", "item_master_id": 212716, "market_insight": ""}	{}	\N	USD	sam-mz7lh256hajd-00000	\N	t	\N
+347	SAM MZNLH1T0HALB-00000		\N	2021-11-04 15:03:58.562793+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZNLH1T0HALB-00000", "mcode": "SAM", "item_master_id": 212723, "market_insight": ""}	{}	\N	USD	sam-mznlh1t0halb-00000	\N	t	\N
+345	SAM MZNLH256HAJD-00000		\N	2021-11-04 15:03:57.561849+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZNLH256HAJD-00000", "mcode": "SAM", "item_master_id": 212721, "market_insight": ""}	{}	\N	USD	sam-mznlh256hajd-00000	\N	t	\N
+349	SAM MZPLJ3T2HBJR-00007		\N	2021-11-04 15:03:59.641897+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLJ3T2HBJR-00007", "mcode": "SAM", "item_master_id": 206003, "market_insight": ""}	{}	\N	USD	sam-mzplj3t2hbjr-00007	\N	t	\N
+346	SAM MZNLH512HALU-00000		\N	2021-11-04 15:03:58.059083+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZNLH512HALU-00000", "mcode": "SAM", "item_master_id": 212722, "market_insight": ""}	{}	\N	USD	sam-mznlh512halu-00000	\N	t	\N
+348	SAM MZPLJ1T6HBJR-00007		\N	2021-11-04 15:03:59.067823+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLJ1T6HBJR-00007", "mcode": "SAM", "item_master_id": 205333, "market_insight": ""}	{}	\N	USD	sam-mzplj1t6hbjr-00007	\N	t	\N
+351	SAM MZPLJ12THALA-00007		\N	2021-11-04 15:04:01.139639+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLJ12THALA-00007", "mcode": "SAM", "item_master_id": 204660, "market_insight": ""}	{}	\N	USD	sam-mzplj12thala-00007	\N	t	\N
+350	SAM MZPLJ6T4HALA-00007		\N	2021-11-04 15:04:00.279459+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLJ6T4HALA-00007", "mcode": "SAM", "item_master_id": 212724, "market_insight": ""}	{}	\N	USD	sam-mzplj6t4hala-00007	\N	t	\N
+352	SAM MZWLJ1T9HBJR-00007		\N	2021-11-04 15:04:01.660724+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLJ1T9HBJR-00007", "mcode": "SAM", "item_master_id": 204729, "market_insight": ""}	{}	\N	USD	sam-mzwlj1t9hbjr-00007	\N	t	\N
+353	SAM MZWLJ3T8HBLS-00007		\N	2021-11-04 15:04:02.252177+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLJ3T8HBLS-00007", "mcode": "SAM", "item_master_id": 207591, "market_insight": ""}	{}	\N	USD	sam-mzwlj3t8hbls-00007	\N	t	\N
+354	SAM MZWLJ7T6HALA-00007		\N	2021-11-04 15:04:02.771918+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLJ7T6HALA-00007", "mcode": "SAM", "item_master_id": 212725, "market_insight": ""}	{}	\N	USD	sam-mzwlj7t6hala-00007	\N	t	\N
+374	SAM MZILT15THMLA-00007		\N	2021-11-04 15:04:13.350172+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT15THMLA-00007", "mcode": "SAM", "item_master_id": 201915, "market_insight": ""}	{}	\N	USD	sam-mzilt15thmla-00007	\N	t	\N
+355	SAM MZWLJ15THALA-00007		\N	2021-11-04 15:04:03.370079+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLJ15THALA-00007", "mcode": "SAM", "item_master_id": 202382, "market_insight": ""}	{}	\N	USD	sam-mzwlj15thala-00007	\N	t	\N
+367	SAM MZILT7T6HALA-00007		\N	2021-11-04 15:04:09.656509+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT7T6HALA-00007", "mcode": "SAM", "item_master_id": 205712, "market_insight": ""}	{}	\N	USD	sam-mzilt7t6hala-00007	\N	t	\N
+356	SAM MZPLL1T6HAJQ-00005		\N	2021-11-04 15:04:03.945763+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLL1T6HAJQ-00005", "mcode": "SAM", "item_master_id": 199064, "market_insight": ""}	{}	\N	USD	sam-mzpll1t6hajq-00005	\N	t	\N
+357	SAM MZPLL3T2HAJQ-00005		\N	2021-11-04 15:04:04.461335+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLL3T2HAJQ-00005", "mcode": "SAM", "item_master_id": 197352, "market_insight": ""}	{}	\N	USD	sam-mzpll3t2hajq-00005	\N	t	\N
+358	SAM MZPLL6T4HMLA-00005		\N	2021-11-04 15:04:04.961931+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLL6T4HMLA-00005", "mcode": "SAM", "item_master_id": 197478, "market_insight": ""}	{}	\N	USD	sam-mzpll6t4hmla-00005	\N	t	\N
+368	SAM MZILT15THALA-00007		\N	2021-11-04 15:04:10.152652+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT15THALA-00007", "mcode": "SAM", "item_master_id": 202932, "market_insight": ""}	{}	\N	USD	sam-mzilt15thala-00007	\N	t	\N
+359	SAM MZPLL12THMLA-00005		\N	2021-11-04 15:04:05.560334+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZPLL12THMLA-00005", "mcode": "SAM", "item_master_id": 212726, "market_insight": ""}	{}	\N	USD	sam-mzpll12thmla-00005	\N	t	\N
+360	SAM MZWLL1T6HAJQ-00005		\N	2021-11-04 15:04:06.056605+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLL1T6HAJQ-00005", "mcode": "SAM", "item_master_id": 198591, "market_insight": ""}	{}	\N	USD	sam-mzwll1t6hajq-00005	\N	t	\N
+378	MICRO MTFDDAK240TDT-1AW1ZABYY		\N	2021-11-04 15:04:15.45536+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDT-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 211583, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tdt-1aw1zabyy	\N	t	\N
+361	SAM MZWLL3T2HAJQ-00005		\N	2021-11-04 15:04:06.560668+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLL3T2HAJQ-00005", "mcode": "SAM", "item_master_id": 199929, "market_insight": ""}	{}	\N	USD	sam-mzwll3t2hajq-00005	\N	t	\N
+369	SAM MZILT30THALA-00007		\N	2021-11-04 15:04:10.65682+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT30THALA-00007", "mcode": "SAM", "item_master_id": 212728, "market_insight": ""}	{}	\N	USD	sam-mzilt30thala-00007	\N	t	\N
+362	SAM MZWLL6T4HMLA-00005		\N	2021-11-04 15:04:07.057408+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLL6T4HMLA-00005", "mcode": "SAM", "item_master_id": 197060, "market_insight": ""}	{}	\N	USD	sam-mzwll6t4hmla-00005	\N	t	\N
+363	SAM MZWLL12THMLA-00005		\N	2021-11-04 15:04:07.581993+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZWLL12THMLA-00005", "mcode": "SAM", "item_master_id": 212727, "market_insight": ""}	{}	\N	USD	sam-mzwll12thmla-00005	\N	t	\N
+375	SAM MZILT30THMLA-00007		\N	2021-11-04 15:04:13.858335+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT30THMLA-00007", "mcode": "SAM", "item_master_id": 203677, "market_insight": ""}	{}	\N	USD	sam-mzilt30thmla-00007	\N	t	\N
+364	SAM MZILT960HBHQ-00007		\N	2021-11-04 15:04:08.129311+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT960HBHQ-00007", "mcode": "SAM", "item_master_id": 203892, "market_insight": ""}	{}	\N	USD	sam-mzilt960hbhq-00007	\N	t	\N
+370	SAM MZILT960HAHQ-00007		\N	2021-11-04 15:04:11.156285+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT960HAHQ-00007", "mcode": "SAM", "item_master_id": 196837, "market_insight": ""}	{}	\N	USD	sam-mzilt960hahq-00007	\N	t	\N
+365	SAM MZILT1T9HBJR-00007		\N	2021-11-04 15:04:08.67452+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT1T9HBJR-00007", "mcode": "SAM", "item_master_id": 204816, "market_insight": ""}	{}	\N	USD	sam-mzilt1t9hbjr-00007	\N	t	\N
+366	SAM MZILT3T8HBLS-00007		\N	2021-11-04 15:04:09.157882+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT3T8HBLS-00007", "mcode": "SAM", "item_master_id": 208341, "market_insight": ""}	{}	\N	USD	sam-mzilt3t8hbls-00007	\N	t	\N
+371	SAM MZILT1T9HAJQ-00007		\N	2021-11-04 15:04:11.722958+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT1T9HAJQ-00007", "mcode": "SAM", "item_master_id": 197540, "market_insight": ""}	{}	\N	USD	sam-mzilt1t9hajq-00007	\N	t	\N
+372	SAM MZILT3T8HALS-00007		\N	2021-11-04 15:04:12.257446+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT3T8HALS-00007", "mcode": "SAM", "item_master_id": 198003, "market_insight": ""}	{}	\N	USD	sam-mzilt3t8hals-00007	\N	t	\N
+376	MICRO MTFDDAK3T8TDS-1AW1ZABYY		\N	2021-11-04 15:04:14.359886+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 203045, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tds-1aw1zabyy	\N	t	\N
+373	SAM MZILT7T6HMLA-00007		\N	2021-11-04 15:04:12.756894+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MZILT7T6HMLA-00007", "mcode": "SAM", "item_master_id": 197510, "market_insight": ""}	{}	\N	USD	sam-mzilt7t6hmla-00007	\N	t	\N
+379	MICRO MTFDDAK240TDS-1AW1ZABYY		\N	2021-11-04 15:04:16.014352+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212730, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tds-1aw1zabyy	\N	t	\N
+377	MICRO MTFDDAK480TDS-1AW1ZABYY		\N	2021-11-04 15:04:14.923657+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 202154, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tds-1aw1zabyy	\N	t	\N
+382	MICRO MTFDDAV960TDS-1AW1ZABYY		\N	2021-11-04 15:04:17.578253+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV960TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212733, "market_insight": ""}	{}	\N	USD	micro-mtfddav960tds-1aw1zabyy	\N	t	\N
+380	MICRO MTFDDAV1T9TDS-1AW1ZABYY		\N	2021-11-04 15:04:16.532243+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV1T9TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212732, "market_insight": ""}	{}	\N	USD	micro-mtfddav1t9tds-1aw1zabyy	\N	t	\N
+381	MICRO MTFDDAK960TDT-1AW1ZABYY		\N	2021-11-04 15:04:17.045232+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDT-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 204947, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tdt-1aw1zabyy	\N	t	\N
+383	MICRO MTFDDAK1T9TDS-1AW1ZABYY		\N	2021-11-04 15:04:18.129626+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 202617, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tds-1aw1zabyy	\N	t	\N
+384	MICRO MTFDDAK7T6TDS-1AW1ZABYY		\N	2021-11-04 15:04:18.65374+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK7T6TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212734, "market_insight": ""}	{}	\N	USD	micro-mtfddak7t6tds-1aw1zabyy	\N	t	\N
+385	MICRO MTFDDAK1T9TDT-1AW1ZABYY		\N	2021-11-04 15:04:19.158742+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDT-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 200196, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tdt-1aw1zabyy	\N	t	\N
+386	MICRO MTFDDAK3T8TDT-1AW1ZABYY		\N	2021-11-04 15:04:19.655831+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDT-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 200216, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tdt-1aw1zabyy	\N	t	\N
+407	MICRO MTFDDAK240TDS-1AW15ABYY		\N	2021-11-04 15:04:31.157202+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212752, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tds-1aw15abyy	\N	t	\N
+387	MICRO MTFDDAK960TDS-1AW1ZABYY		\N	2021-11-04 15:04:20.154646+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 202155, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tds-1aw1zabyy	\N	t	\N
+397	MICRO MTFDDAV1T9TDS-1AW16ABYY		\N	2021-11-04 15:04:26.045367+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV1T9TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212742, "market_insight": ""}	{}	\N	USD	micro-mtfddav1t9tds-1aw16abyy	\N	t	\N
+388	MICRO MTFDDAV240TDS-1AW1ZABYY		\N	2021-11-04 15:04:20.656493+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV240TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212735, "market_insight": ""}	{}	\N	USD	micro-mtfddav240tds-1aw1zabyy	\N	t	\N
+389	MICRO MTFDDAV480TDS-1AW1ZABYY		\N	2021-11-04 15:04:21.836105+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV480TDS-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 201706, "market_insight": ""}	{}	\N	USD	micro-mtfddav480tds-1aw1zabyy	\N	t	\N
+403	MICRO MTFDDAV960TDS-1AW16ABYY		\N	2021-11-04 15:04:29.170219+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV960TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212748, "market_insight": ""}	{}	\N	USD	micro-mtfddav960tds-1aw16abyy	\N	t	\N
+390	MICRO MTFDDAK480TDT-1AW1ZABYY		\N	2021-11-04 15:04:22.355514+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDT-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 199965, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tdt-1aw1zabyy	\N	t	\N
+398	MICRO MTFDDAV480TDS-1AW15ABYY		\N	2021-11-04 15:04:26.562397+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV480TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212743, "market_insight": ""}	{}	\N	USD	micro-mtfddav480tds-1aw15abyy	\N	t	\N
+391	MICRO MTFDDAK3T8TDS-1AW16ABYY		\N	2021-11-04 15:04:22.859739+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212736, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tds-1aw16abyy	\N	t	\N
+392	MICRO MTFDDAK480TDT-1AW16ABYY		\N	2021-11-04 15:04:23.3559+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDT-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212737, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tdt-1aw16abyy	\N	t	\N
+393	MICRO MTFDDAK7T6TDS-1AW16ABYY		\N	2021-11-04 15:04:23.862345+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK7T6TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212738, "market_insight": ""}	{}	\N	USD	micro-mtfddak7t6tds-1aw16abyy	\N	t	\N
+399	MICRO MTFDDAK240TDT-1AW15ABYY		\N	2021-11-04 15:04:27.055881+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDT-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212744, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tdt-1aw15abyy	\N	t	\N
+394	MICRO MTFDDAK480TDS-1AW15ABYY		\N	2021-11-04 15:04:24.436882+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212739, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tds-1aw15abyy	\N	t	\N
+395	MICRO MTFDDAK960TDT-1AW15ABYY		\N	2021-11-04 15:04:24.953562+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDT-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212740, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tdt-1aw15abyy	\N	t	\N
+396	MICRO MTFDDAK1T9TDT-1AW15ABYY		\N	2021-11-04 15:04:25.527236+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDT-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212741, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tdt-1aw15abyy	\N	t	\N
+404	MICRO MTFDDAK240TDT-1AW16ABYY		\N	2021-11-04 15:04:29.656638+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDT-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212749, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tdt-1aw16abyy	\N	t	\N
+400	MICRO MTFDDAK3T8TDT-1AW15ABYY		\N	2021-11-04 15:04:27.555226+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDT-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212745, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tdt-1aw15abyy	\N	t	\N
+401	MICRO MTFDDAK3T8TDS-1AW15ABYY		\N	2021-11-04 15:04:28.05749+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212746, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tds-1aw15abyy	\N	t	\N
+402	MICRO MTFDDAK3T8TDT-1AW16ABYY		\N	2021-11-04 15:04:28.556084+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK3T8TDT-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212747, "market_insight": ""}	{}	\N	USD	micro-mtfddak3t8tdt-1aw16abyy	\N	t	\N
+405	MICRO MTFDDAK960TDS-1AW16ABYY		\N	2021-11-04 15:04:30.159993+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212750, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tds-1aw16abyy	\N	t	\N
+408	MICRO MTFDDAK960TDS-1AW15ABYY		\N	2021-11-04 15:04:31.655754+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212753, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tds-1aw15abyy	\N	t	\N
+406	MICRO MTFDDAK1T9TDS-1AW15ABYY		\N	2021-11-04 15:04:30.653864+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212751, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tds-1aw15abyy	\N	t	\N
+411	MICRO MTFDDAV480TDS-1AW16ABYY		\N	2021-11-04 15:04:33.157266+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV480TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212756, "market_insight": ""}	{}	\N	USD	micro-mtfddav480tds-1aw16abyy	\N	t	\N
+409	MICRO MTFDDAK1T9TDS-1AW16ABYY		\N	2021-11-04 15:04:32.155647+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212754, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tds-1aw16abyy	\N	t	\N
+410	MICRO MTFDDAK7T6TDS-1AW15ABYY		\N	2021-11-04 15:04:32.667149+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK7T6TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212755, "market_insight": ""}	{}	\N	USD	micro-mtfddak7t6tds-1aw15abyy	\N	t	\N
+412	MICRO MTFDDAV240TDS-1AW15ABYY		\N	2021-11-04 15:04:33.654728+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV240TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212757, "market_insight": ""}	{}	\N	USD	micro-mtfddav240tds-1aw15abyy	\N	t	\N
+413	MICRO MTFDDAV1T9TDS-1AW15ABYY		\N	2021-11-04 15:04:34.154163+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV1T9TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212758, "market_insight": ""}	{}	\N	USD	micro-mtfddav1t9tds-1aw15abyy	\N	t	\N
+414	MICRO MTFDDAK480TDS-1AW16ABYY		\N	2021-11-04 15:04:34.670887+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212759, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tds-1aw16abyy	\N	t	\N
+415	MICRO MTFDDAK480TDT-1AW15ABYY		\N	2021-11-04 15:04:35.157289+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK480TDT-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212760, "market_insight": ""}	{}	\N	USD	micro-mtfddak480tdt-1aw15abyy	\N	t	\N
+436	MICRO MTFDHBE6T4TDG-1AW1ZABYY		\N	2021-11-04 15:04:45.759611+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE6T4TDG-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212772, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe6t4tdg-1aw1zabyy	\N	t	\N
+416	MICRO MTFDDAK960TDT-1AW16ABYY		\N	2021-11-04 15:04:35.656292+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK960TDT-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212761, "market_insight": ""}	{}	\N	USD	micro-mtfddak960tdt-1aw16abyy	\N	t	\N
+426	MICRO MTFDHAL3T2TDR-1AT1ZABYY		\N	2021-11-04 15:04:40.768061+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL3T2TDR-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 209716, "market_insight": ""}	{}	\N	USD	micro-mtfdhal3t2tdr-1at1zabyy	\N	t	\N
+417	MICRO MTFDDAK1T9TDT-1AW16ABYY		\N	2021-11-04 15:04:36.158721+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK1T9TDT-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212762, "market_insight": ""}	{}	\N	USD	micro-mtfddak1t9tdt-1aw16abyy	\N	t	\N
+418	MICRO MTFDDAV960TDS-1AW15ABYY		\N	2021-11-04 15:04:36.660942+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV960TDS-1AW15ABYY", "mcode": "MICRO", "item_master_id": 212763, "market_insight": ""}	{}	\N	USD	micro-mtfddav960tds-1aw15abyy	\N	t	\N
+432	MICRO MTFDHBE1T9TDF-1AW1ZABYY		\N	2021-11-04 15:04:43.774802+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE1T9TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212770, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe1t9tdf-1aw1zabyy	\N	t	\N
+419	MICRO MTFDDAV240TDS-1AW16ABYY		\N	2021-11-04 15:04:37.154796+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAV240TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212764, "market_insight": ""}	{}	\N	USD	micro-mtfddav240tds-1aw16abyy	\N	t	\N
+427	MICRO MTFDHBG3T8TDF-1AW1ZABYY		\N	2021-11-04 15:04:41.254553+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBG3T8TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 211093, "market_insight": ""}	{}	\N	USD	micro-mtfdhbg3t8tdf-1aw1zabyy	\N	t	\N
+420	MICRO MTFDDAK240TDS-1AW16ABYY		\N	2021-11-04 15:04:37.654121+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDDAK240TDS-1AW16ABYY", "mcode": "MICRO", "item_master_id": 212765, "market_insight": ""}	{}	\N	USD	micro-mtfddak240tds-1aw16abyy	\N	t	\N
+421	MICRO MTFDHAL15T3TDP-1AT1ZABYY		\N	2021-11-04 15:04:38.229727+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL15T3TDP-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 212766, "market_insight": ""}	{}	\N	USD	micro-mtfdhal15t3tdp-1at1zabyy	\N	t	\N
+422	MICRO MTFDHAL7T6TDP-1AT1ZABYY		\N	2021-11-04 15:04:38.744956+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL7T6TDP-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 210087, "market_insight": ""}	{}	\N	USD	micro-mtfdhal7t6tdp-1at1zabyy	\N	t	\N
+428	MICRO MTFDHBG1T9TDF-1AW1ZABYY		\N	2021-11-04 15:04:41.755313+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBG1T9TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 200945, "market_insight": ""}	{}	\N	USD	micro-mtfdhbg1t9tdf-1aw1zabyy	\N	t	\N
+423	MICRO MTFDHAL3T8TDP-1AT1ZABYY		\N	2021-11-04 15:04:39.256231+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL3T8TDP-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 203458, "market_insight": ""}	{}	\N	USD	micro-mtfdhal3t8tdp-1at1zabyy	\N	t	\N
+424	MICRO MTFDHAL12T8TDR-1AT1ZABYY		\N	2021-11-04 15:04:39.757102+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL12T8TDR-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 212767, "market_insight": ""}	{}	\N	USD	micro-mtfdhal12t8tdr-1at1zabyy	\N	t	\N
+425	MICRO MTFDHAL6T4TDR-1AT1ZABYY		\N	2021-11-04 15:04:40.257164+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHAL6T4TDR-1AT1ZABYY", "mcode": "MICRO", "item_master_id": 200239, "market_insight": ""}	{}	\N	USD	micro-mtfdhal6t4tdr-1at1zabyy	\N	t	\N
+433	MICRO MTFDHBA960TDF-1AW1ZABYY		\N	2021-11-04 15:04:44.253541+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBA960TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212771, "market_insight": ""}	{}	\N	USD	micro-mtfdhba960tdf-1aw1zabyy	\N	t	\N
+429	MICRO MTFDHBE960TDF-1AW1ZABYY		\N	2021-11-04 15:04:42.25761+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE960TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212768, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe960tdf-1aw1zabyy	\N	t	\N
+430	MICRO MTFDHBE7T6TDF-1AW1ZABYY		\N	2021-11-04 15:04:42.757956+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE7T6TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212277, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe7t6tdf-1aw1zabyy	\N	t	\N
+431	MICRO MTFDHBE3T8TDF-1AW1ZABYY		\N	2021-11-04 15:04:43.256804+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE3T8TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212769, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe3t8tdf-1aw1zabyy	\N	t	\N
+434	MICRO MTFDHBA480TDF-1AW1ZABYY		\N	2021-11-04 15:04:44.754907+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBA480TDF-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 209418, "market_insight": ""}	{}	\N	USD	micro-mtfdhba480tdf-1aw1zabyy	\N	t	\N
+437	MICRO MTFDHBE3T2TDG-1AW1ZABYY		\N	2021-11-04 15:04:46.256456+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE3T2TDG-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212276, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe3t2tdg-1aw1zabyy	\N	t	\N
+435	MICRO MTFDHBE800TDG-1AW1ZABYY		\N	2021-11-04 15:04:45.260849+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE800TDG-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 208263, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe800tdg-1aw1zabyy	\N	t	\N
+440	KIOXI KRM5XRUG960G		\N	2021-11-04 15:04:47.765258+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XRUG960G", "mcode": "KIOXI", "item_master_id": 212775, "market_insight": ""}	{}	\N	USD	kioxi-krm5xrug960g	\N	t	\N
+438	MICRO MTFDHBE1T6TDG-1AW1ZABYY		\N	2021-11-04 15:04:46.757615+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBE1T6TDG-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212773, "market_insight": ""}	{}	\N	USD	micro-mtfdhbe1t6tdg-1aw1zabyy	\N	t	\N
+439	MICRO MTFDHBA400TDG-1AW1ZABYY		\N	2021-11-04 15:04:47.264137+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "MTFDHBA400TDG-1AW1ZABYY", "mcode": "MICRO", "item_master_id": 212774, "market_insight": ""}	{}	\N	USD	micro-mtfdhba400tdg-1aw1zabyy	\N	t	\N
+441	KIOXI KRM5XRUG1T92		\N	2021-11-04 15:04:48.31683+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XRUG1T92", "mcode": "KIOXI", "item_master_id": 212776, "market_insight": ""}	{}	\N	USD	kioxi-krm5xrug1t92	\N	t	\N
+442	KIOXI KRM5XRUG3T84		\N	2021-11-04 15:04:48.825719+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XRUG3T84", "mcode": "KIOXI", "item_master_id": 212777, "market_insight": ""}	{}	\N	USD	kioxi-krm5xrug3t84	\N	t	\N
+443	KIOXI KRM5XRUG7T68		\N	2021-11-04 15:04:49.361549+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XRUG7T68", "mcode": "KIOXI", "item_master_id": 212778, "market_insight": ""}	{}	\N	USD	kioxi-krm5xrug7t68	\N	t	\N
+444	KIOXI KRM5VRUG960G		\N	2021-11-04 15:04:49.855499+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VRUG960G", "mcode": "KIOXI", "item_master_id": 212779, "market_insight": ""}	{}	\N	USD	kioxi-krm5vrug960g	\N	t	\N
+445	KIOXI KRM5VRUG1T92		\N	2021-11-04 15:04:50.437219+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VRUG1T92", "mcode": "KIOXI", "item_master_id": 212780, "market_insight": ""}	{}	\N	USD	kioxi-krm5vrug1t92	\N	t	\N
+458	KIOXI KRM6VVUG960G		\N	2021-11-04 15:04:57.65546+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VVUG960G", "mcode": "KIOXI", "item_master_id": 212793, "market_insight": ""}	{}	\N	USD	kioxi-krm6vvug960g	\N	t	\N
+446	KIOXI KRM5VRUG3T84		\N	2021-11-04 15:04:50.949758+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VRUG3T84", "mcode": "KIOXI", "item_master_id": 212781, "market_insight": ""}	{}	\N	USD	kioxi-krm5vrug3t84	\N	t	\N
+447	KIOXI KRM5VRUG7T68		\N	2021-11-04 15:04:51.848075+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VRUG7T68", "mcode": "KIOXI", "item_master_id": 212782, "market_insight": ""}	{}	\N	USD	kioxi-krm5vrug7t68	\N	t	\N
+151	Intel Core™ i5-8500 Processor		2021-11-04	2021-11-04 15:54:06.632353+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "7jr0c", "data": {}, "text": "Intel Core™ i5-8500 Processor (9M Cache, up to 4.10 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3XE", "mcode": "INTEL", "item_master_id": 193981}	{}	\N	USD	intel-sr3xe	2021-11-04	t	72
+448	KIOXI KRM5XVUG960G		\N	2021-11-04 15:04:52.35598+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XVUG960G", "mcode": "KIOXI", "item_master_id": 212783, "market_insight": ""}	{}	\N	USD	kioxi-krm5xvug960g	\N	t	\N
+459	KIOXI KRM6VVUG1T92		\N	2021-11-04 15:04:58.158339+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VVUG1T92", "mcode": "KIOXI", "item_master_id": 212794, "market_insight": ""}	{}	\N	USD	kioxi-krm6vvug1t92	\N	t	\N
+449	KIOXI KRM5XVUG1T92		\N	2021-11-04 15:04:52.858472+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XVUG1T92", "mcode": "KIOXI", "item_master_id": 212784, "market_insight": ""}	{}	\N	USD	kioxi-krm5xvug1t92	\N	t	\N
+450	KIOXI KRM5XVUG3T84		\N	2021-11-04 15:04:53.413476+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5XVUG3T84", "mcode": "KIOXI", "item_master_id": 212785, "market_insight": ""}	{}	\N	USD	kioxi-krm5xvug3t84	\N	t	\N
+451	KIOXI KRM5VVUG960G		\N	2021-11-04 15:04:53.919448+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VVUG960G", "mcode": "KIOXI", "item_master_id": 212786, "market_insight": ""}	{}	\N	USD	kioxi-krm5vvug960g	\N	t	\N
+460	KIOXI KRM6VVUG3T84		\N	2021-11-04 15:04:58.668633+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VVUG3T84", "mcode": "KIOXI", "item_master_id": 212795, "market_insight": ""}	{}	\N	USD	kioxi-krm6vvug3t84	\N	t	\N
+452	KIOXI KRM5VVUG1T92		\N	2021-11-04 15:04:54.45507+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VVUG1T92", "mcode": "KIOXI", "item_master_id": 212787, "market_insight": ""}	{}	\N	USD	kioxi-krm5vvug1t92	\N	t	\N
+453	KIOXI KRM5VVUG3T84		\N	2021-11-04 15:04:54.956176+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM5VVUG3T84", "mcode": "KIOXI", "item_master_id": 212788, "market_insight": ""}	{}	\N	USD	kioxi-krm5vvug3t84	\N	t	\N
+454	KIOXI KRM6VRUG960G		\N	2021-11-04 15:04:55.538009+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VRUG960G", "mcode": "KIOXI", "item_master_id": 212789, "market_insight": ""}	{}	\N	USD	kioxi-krm6vrug960g	\N	t	\N
+455	KIOXI KRM6VRUG1T92		\N	2021-11-04 15:04:56.057222+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VRUG1T92", "mcode": "KIOXI", "item_master_id": 212790, "market_insight": ""}	{}	\N	USD	kioxi-krm6vrug1t92	\N	t	\N
+456	KIOXI KRM6VRUG3T84		\N	2021-11-04 15:04:56.599259+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VRUG3T84", "mcode": "KIOXI", "item_master_id": 212791, "market_insight": ""}	{}	\N	USD	kioxi-krm6vrug3t84	\N	t	\N
+457	KIOXI KRM6VRUG7T68		\N	2021-11-04 15:04:57.141691+00	11	t	18	\N	\N	t	\N	{}	{"mpn": "KRM6VRUG7T68", "mcode": "KIOXI", "item_master_id": 212792, "market_insight": ""}	{}	\N	USD	kioxi-krm6vrug7t68	\N	t	\N
+472	Test Product 9997TEST		\N	2021-11-04 15:43:44.601359+00	10	t	14	\N	\N	t	\N	{}	{"mpn": "9997TEST", "mcode": "36C", "item_master_id": 99997, "market_insight": ""}	{}	\N	USD	test-product-9997test	\N	t	\N
+483	Test Product 9995TEST		\N	2021-11-04 15:59:45.974737+00	10	t	14	\N	\N	t	\N	{}	{"mpn": "9995TEST", "mcode": "36C", "item_master_id": 99995, "market_insight": ""}	{}	\N	USD	test-product-9995test	\N	t	\N
+485	Test Product 66667TEST		\N	2021-11-04 16:02:16.344837+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "66667TEST", "mcode": "36C", "item_master_id": 66667, "market_insight": ""}	{}	\N	USD	test-product-66667test	\N	t	\N
+486	Test Product 55556TEST		\N	2021-11-04 16:37:37.591001+00	10	t	13	\N	\N	t	\N	{}	{"mpn": "55556TEST", "mcode": "36C", "item_master_id": 55556, "market_insight": ""}	{}	\N	USD	test-product-55556test	\N	t	\N
+487	Test Product 44446TEST		\N	2021-11-04 16:42:02.392404+00	9	t	16	\N	\N	t	\N	{}	{"mpn": "44446TEST", "mcode": "36C", "item_master_id": 44446, "market_insight": ""}	{}	\N	USD	test-product-44446test	\N	t	\N
+152	Intel Core™ i3-8100 Processor		2021-10-15	2021-11-04 19:05:20.634151+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "186u7", "data": {}, "text": "Intel Core™ i3-8100 Processor (6M Cache, 3.60 GHz) FC-LGA14C, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3N5", "mcode": "INTEL", "item_master_id": "194248", "market_insight": "Lorem impsum ellentesque mattis mattis posuere. Curabitur id metus tristique, porttitor turpis et, rhoncus mauris. Mauris aviverra sem. Aliquam quam tellus, egestas vitae neque nec, posuere tempus velit. \\n\\nNam lobortis eros quam. Fusce ut vehicula odio. Nam ornare dui vel lectus ornare, nec interdum velit pharetra. Morbi ac libero erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam gravida ligula non varius vestibulum. Donec eleifend congue massa."}	{}	\N	USD	intel-sr3n5	2021-10-29	t	69
+489	Intel Celeron® Processor N3350		2021-11-05	2021-11-05 18:20:00.92245+00	12	t	7			f	\N	{"blocks": [{"key": "9uc2j", "data": {}, "text": "Intel Celeron® Processor N3350 (2M Cache, up to 2.40 GHz) FC-BGA15F, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR2Z7", "item_master_id": "5"}	{}	\N	USD	sr2z7	2021-11-05	t	77
+488	Intel Xeon® Silver 4215R Processor		2021-11-05	2021-11-05 15:44:21.814058+00	12	t	7			f	\N	{"blocks": [{"key": "3p384", "data": {}, "text": "Intel Xeon® Silver 4215R Processor (11M Cache, 3.20 GHz) FC-LGA14B, Tray", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SRGZE", "item_master_id": "202369"}	{}	\N	USD	srgze	2021-11-05	t	76
+136	Intel® Xeon® Gold 6138 Processor		2021-11-04	2021-11-05 18:23:37.212495+00	12	t	7	\N	\N	t	\N	{"blocks": [{"key": "2mcj1", "data": {}, "text": "Intel® Xeon® Gold 6138 Processor", "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}], "entityMap": {}}	{"mpn": "SR3B5", "mcode": "INTEL", "item_master_id": 192616}	{}	\N	USD	intel-sr3b5	2021-11-04	t	74
+501	SAM M378A2K43DB1-CTD		\N	2021-11-05 23:01:19.4162+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2K43DB1-CTD", "mcode": "SAM", "item_master_id": 205089, "market_insight": ""}	{}	\N	USD	sam-m378a2k43db1-ctd	\N	t	\N
+509	SAM M378A5244CB0-CVF		\N	2021-11-05 23:01:22.718882+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A5244CB0-CVF", "mcode": "SAM", "item_master_id": 212850, "market_insight": ""}	{}	\N	USD	sam-m378a5244cb0-cvf	\N	t	\N
+502	SAM M378A2K43DB1-CVF		\N	2021-11-05 23:01:19.824689+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2K43DB1-CVF", "mcode": "SAM", "item_master_id": 212846, "market_insight": ""}	{}	\N	USD	sam-m378a2k43db1-cvf	\N	t	\N
+490	Test Product 1112 Name		\N	2021-11-05 20:12:53.855324+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "1112TEST", "mcode": "TEST", "item_master_id": 1112, "market_insight": ""}	{}	\N	USD	test-1112test	\N	t	\N
+491	Test Product 2223 Name		\N	2021-11-05 20:12:55.334034+00	12	t	9	\N	\N	t	\N	{}	{"mpn": "2223TEST", "mcode": "TEST", "item_master_id": 2223, "market_insight": ""}	{}	\N	USD	test-2223test	\N	t	\N
+492	SAM M378A1G44AB0-CWE		\N	2021-11-05 23:01:15.747143+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1G44AB0-CWE", "mcode": "SAM", "item_master_id": 211602, "market_insight": ""}	{}	\N	USD	sam-m378a1g44ab0-cwe	\N	t	\N
+503	SAM M378A4G43AB1-CVF		\N	2021-11-05 23:01:20.220684+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A4G43AB1-CVF", "mcode": "SAM", "item_master_id": 212847, "market_insight": ""}	{}	\N	USD	sam-m378a4g43ab1-cvf	\N	t	\N
+493	SAM M378A1K43CB2-CPB		\N	2021-11-05 23:01:16.228587+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1K43CB2-CPB", "mcode": "SAM", "item_master_id": 212841, "market_insight": ""}	{}	\N	USD	sam-m378a1k43cb2-cpb	\N	t	\N
+494	SAM M378A1K43CB2-CRC		\N	2021-11-05 23:01:16.623957+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1K43CB2-CRC", "mcode": "SAM", "item_master_id": 193112, "market_insight": ""}	{}	\N	USD	sam-m378a1k43cb2-crc	\N	t	\N
+514	SAM M386A8K40BMB-CPB		\N	2021-11-05 23:01:24.71734+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40BMB-CPB", "mcode": "SAM", "item_master_id": 212851, "market_insight": ""}	{}	\N	USD	sam-m386a8k40bmb-cpb	\N	t	\N
+495	SAM M378A1K43CB2-CTD		\N	2021-11-05 23:01:17.03029+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1K43CB2-CTD", "mcode": "SAM", "item_master_id": 193111, "market_insight": ""}	{}	\N	USD	sam-m378a1k43cb2-ctd	\N	t	\N
+504	SAM M378A4G43AB1-CWE		\N	2021-11-05 23:01:20.622525+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A4G43AB1-CWE", "mcode": "SAM", "item_master_id": 212848, "market_insight": ""}	{}	\N	USD	sam-m378a4g43ab1-cwe	\N	t	\N
+496	SAM M378A1K43DB2-CTD		\N	2021-11-05 23:01:17.420143+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1K43DB2-CTD", "mcode": "SAM", "item_master_id": 212842, "market_insight": ""}	{}	\N	USD	sam-m378a1k43db2-ctd	\N	t	\N
+497	SAM M378A2G43AB3-CWE		\N	2021-11-05 23:01:17.814041+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2G43AB3-CWE", "mcode": "SAM", "item_master_id": 206782, "market_insight": ""}	{}	\N	USD	sam-m378a2g43ab3-cwe	\N	t	\N
+510	SAM M386A4K40BB0-CRC		\N	2021-11-05 23:01:23.118059+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A4K40BB0-CRC", "mcode": "SAM", "item_master_id": 199813, "market_insight": ""}	{}	\N	USD	sam-m386a4k40bb0-crc	\N	t	\N
+498	SAM M378A2K43CB1-CPB		\N	2021-11-05 23:01:18.219386+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2K43CB1-CPB", "mcode": "SAM", "item_master_id": 212844, "market_insight": ""}	{}	\N	USD	sam-m378a2k43cb1-cpb	\N	t	\N
+505	SAM M378A4G43MB1-CTD		\N	2021-11-05 23:01:21.020312+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A4G43MB1-CTD", "mcode": "SAM", "item_master_id": 206380, "market_insight": ""}	{}	\N	USD	sam-m378a4g43mb1-ctd	\N	t	\N
+499	SAM M378A2K43CB1-CRC		\N	2021-11-05 23:01:18.621297+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2K43CB1-CRC", "mcode": "SAM", "item_master_id": 212845, "market_insight": ""}	{}	\N	USD	sam-m378a2k43cb1-crc	\N	t	\N
+500	SAM M378A2K43CB1-CTD		\N	2021-11-05 23:01:19.031874+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A2K43CB1-CTD", "mcode": "SAM", "item_master_id": 197277, "market_insight": ""}	{}	\N	USD	sam-m378a2k43cb1-ctd	\N	t	\N
+506	SAM M378A5244CB0-CPB		\N	2021-11-05 23:01:21.420939+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A5244CB0-CPB", "mcode": "SAM", "item_master_id": 212849, "market_insight": ""}	{}	\N	USD	sam-m378a5244cb0-cpb	\N	t	\N
+507	SAM M378A5244CB0-CRC		\N	2021-11-05 23:01:21.862815+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A5244CB0-CRC", "mcode": "SAM", "item_master_id": 187989, "market_insight": ""}	{}	\N	USD	sam-m378a5244cb0-crc	\N	t	\N
+511	SAM M386A8K40BM1-CPB		\N	2021-11-05 23:01:23.522704+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40BM1-CPB", "mcode": "SAM", "item_master_id": 185089, "market_insight": ""}	{}	\N	USD	sam-m386a8k40bm1-cpb	\N	t	\N
+508	SAM M378A5244CB0-CTD		\N	2021-11-05 23:01:22.306195+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A5244CB0-CTD", "mcode": "SAM", "item_master_id": 194688, "market_insight": ""}	{}	\N	USD	sam-m378a5244cb0-ctd	\N	t	\N
+517	SAM M386A8K40CM2-CTD		\N	2021-11-05 23:01:25.915406+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40CM2-CTD", "mcode": "SAM", "item_master_id": 197158, "market_insight": ""}	{}	\N	USD	sam-m386a8k40cm2-ctd	\N	t	\N
+512	SAM M386A8K40BM1-CRC		\N	2021-11-05 23:01:23.9321+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40BM1-CRC", "mcode": "SAM", "item_master_id": 187987, "market_insight": ""}	{}	\N	USD	sam-m386a8k40bm1-crc	\N	t	\N
+515	SAM M386A8K40BMB-CRC		\N	2021-11-05 23:01:25.114777+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40BMB-CRC", "mcode": "SAM", "item_master_id": 210224, "market_insight": ""}	{}	\N	USD	sam-m386a8k40bmb-crc	\N	t	\N
+513	SAM M386A8K40BM2-CTD		\N	2021-11-05 23:01:24.328847+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40BM2-CTD", "mcode": "SAM", "item_master_id": 190986, "market_insight": ""}	{}	\N	USD	sam-m386a8k40bm2-ctd	\N	t	\N
+516	SAM M386A8K40CM2-CRC		\N	2021-11-05 23:01:25.524516+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40CM2-CRC", "mcode": "SAM", "item_master_id": 212852, "market_insight": ""}	{}	\N	USD	sam-m386a8k40cm2-crc	\N	t	\N
+519	SAM M386A8K40DM2-CTD		\N	2021-11-05 23:01:26.735583+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40DM2-CTD", "mcode": "SAM", "item_master_id": 212853, "market_insight": ""}	{}	\N	USD	sam-m386a8k40dm2-ctd	\N	t	\N
+518	SAM M386A8K40CM2-CVF		\N	2021-11-05 23:01:26.324906+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40CM2-CVF", "mcode": "SAM", "item_master_id": 197926, "market_insight": ""}	{}	\N	USD	sam-m386a8k40cm2-cvf	\N	t	\N
+520	SAM M386A8K40DM2-CVF		\N	2021-11-05 23:01:27.119331+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40DM2-CVF", "mcode": "SAM", "item_master_id": 212854, "market_insight": ""}	{}	\N	USD	sam-m386a8k40dm2-cvf	\N	t	\N
+521	SAM M386A8K40DM2-CWE		\N	2021-11-05 23:01:27.517295+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386A8K40DM2-CWE", "mcode": "SAM", "item_master_id": 212855, "market_insight": ""}	{}	\N	USD	sam-m386a8k40dm2-cwe	\N	t	\N
+522	SAM M386AAG40AM3-CWE		\N	2021-11-05 23:01:27.917687+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386AAG40AM3-CWE", "mcode": "SAM", "item_master_id": 212856, "market_insight": ""}	{}	\N	USD	sam-m386aag40am3-cwe	\N	t	\N
+523	SAM M386AAG40MM2-CVF		\N	2021-11-05 23:01:28.797731+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386AAG40MM2-CVF", "mcode": "SAM", "item_master_id": 212857, "market_insight": ""}	{}	\N	USD	sam-m386aag40mm2-cvf	\N	t	\N
+543	SAM M391A2K43DB1-CWE		\N	2021-11-05 23:01:37.029785+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43DB1-CWE", "mcode": "SAM", "item_master_id": 212868, "market_insight": ""}	{}	\N	USD	sam-m391a2k43db1-cwe	\N	t	\N
+524	SAM M386AAG40MMB-CVF		\N	2021-11-05 23:01:29.440047+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386AAG40MMB-CVF", "mcode": "SAM", "item_master_id": 200094, "market_insight": ""}	{}	\N	USD	sam-m386aag40mmb-cvf	\N	t	\N
+536	SAM M391A1K43DB2-CVF		\N	2021-11-05 23:01:34.21797+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43DB2-CVF", "mcode": "SAM", "item_master_id": 212865, "market_insight": ""}	{}	\N	USD	sam-m391a1k43db2-cvf	\N	t	\N
+525	SAM M386AAK40B40-CUC		\N	2021-11-05 23:01:29.823435+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386AAK40B40-CUC", "mcode": "SAM", "item_master_id": 193832, "market_insight": ""}	{}	\N	USD	sam-m386aak40b40-cuc	\N	t	\N
+526	SAM M386AAK40B40-CWD		\N	2021-11-05 23:01:30.216859+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386AAK40B40-CWD", "mcode": "SAM", "item_master_id": 199338, "market_insight": ""}	{}	\N	USD	sam-m386aak40b40-cwd	\N	t	\N
+527	SAM M386ABG40M50-CYF		\N	2021-11-05 23:01:30.616064+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386ABG40M50-CYF", "mcode": "SAM", "item_master_id": 212858, "market_insight": ""}	{}	\N	USD	sam-m386abg40m50-cyf	\N	t	\N
+537	SAM M391A1K43DB2-CWE		\N	2021-11-05 23:01:34.616641+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43DB2-CWE", "mcode": "SAM", "item_master_id": 212866, "market_insight": ""}	{}	\N	USD	sam-m391a1k43db2-cwe	\N	t	\N
+528	SAM M386ABG40M51-CAE		\N	2021-11-05 23:01:31.02105+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386ABG40M51-CAE", "mcode": "SAM", "item_master_id": 212859, "market_insight": ""}	{}	\N	USD	sam-m386abg40m51-cae	\N	t	\N
+529	SAM M386ABG40M5B-CYF		\N	2021-11-05 23:01:31.416467+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M386ABG40M5B-CYF", "mcode": "SAM", "item_master_id": 212860, "market_insight": ""}	{}	\N	USD	sam-m386abg40m5b-cyf	\N	t	\N
+547	SAM M391A5143EB1-CPB		\N	2021-11-05 23:01:38.619084+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A5143EB1-CPB", "mcode": "SAM", "item_master_id": 212869, "market_insight": ""}	{}	\N	USD	sam-m391a5143eb1-cpb	\N	t	\N
+530	SAM M391A1G43EB1-CPB		\N	2021-11-05 23:01:31.818364+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1G43EB1-CPB", "mcode": "SAM", "item_master_id": 212861, "market_insight": ""}	{}	\N	USD	sam-m391a1g43eb1-cpb	\N	t	\N
+538	SAM M391A2K43BB1-CPB		\N	2021-11-05 23:01:35.080435+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43BB1-CPB", "mcode": "SAM", "item_master_id": 212867, "market_insight": ""}	{}	\N	USD	sam-m391a2k43bb1-cpb	\N	t	\N
+531	SAM M391A1G43EB1-CRC		\N	2021-11-05 23:01:32.221403+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1G43EB1-CRC", "mcode": "SAM", "item_master_id": 212862, "market_insight": ""}	{}	\N	USD	sam-m391a1g43eb1-crc	\N	t	\N
+532	SAM M391A1K43BB1-CPB		\N	2021-11-05 23:01:32.614307+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43BB1-CPB", "mcode": "SAM", "item_master_id": 212863, "market_insight": ""}	{}	\N	USD	sam-m391a1k43bb1-cpb	\N	t	\N
+544	SAM M391A4G43AB1-CVF		\N	2021-11-05 23:01:37.423028+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A4G43AB1-CVF", "mcode": "SAM", "item_master_id": 208067, "market_insight": ""}	{}	\N	USD	sam-m391a4g43ab1-cvf	\N	t	\N
+533	SAM M391A1K43BB1-CRC		\N	2021-11-05 23:01:33.04111+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43BB1-CRC", "mcode": "SAM", "item_master_id": 197484, "market_insight": ""}	{}	\N	USD	sam-m391a1k43bb1-crc	\N	t	\N
+539	SAM M391A2K43BB1-CRC		\N	2021-11-05 23:01:35.419423+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43BB1-CRC", "mcode": "SAM", "item_master_id": 197215, "market_insight": ""}	{}	\N	USD	sam-m391a2k43bb1-crc	\N	t	\N
+534	SAM M391A1K43BB2-CTD		\N	2021-11-05 23:01:33.414684+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43BB2-CTD", "mcode": "SAM", "item_master_id": 196960, "market_insight": ""}	{}	\N	USD	sam-m391a1k43bb2-ctd	\N	t	\N
+535	SAM M391A1K43DB2-CTD		\N	2021-11-05 23:01:33.820519+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A1K43DB2-CTD", "mcode": "SAM", "item_master_id": 212864, "market_insight": ""}	{}	\N	USD	sam-m391a1k43db2-ctd	\N	t	\N
+540	SAM M391A2K43BB1-CTD		\N	2021-11-05 23:01:35.869279+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43BB1-CTD", "mcode": "SAM", "item_master_id": 197924, "market_insight": ""}	{}	\N	USD	sam-m391a2k43bb1-ctd	\N	t	\N
+541	SAM M391A2K43DB1-CTD		\N	2021-11-05 23:01:36.21909+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43DB1-CTD", "mcode": "SAM", "item_master_id": 209790, "market_insight": ""}	{}	\N	USD	sam-m391a2k43db1-ctd	\N	t	\N
+545	SAM M391A4G43AB1-CWE		\N	2021-11-05 23:01:37.828314+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A4G43AB1-CWE", "mcode": "SAM", "item_master_id": 210772, "market_insight": ""}	{}	\N	USD	sam-m391a4g43ab1-cwe	\N	t	\N
+542	SAM M391A2K43DB1-CVF		\N	2021-11-05 23:01:36.618112+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A2K43DB1-CVF", "mcode": "SAM", "item_master_id": 208099, "market_insight": ""}	{}	\N	USD	sam-m391a2k43db1-cvf	\N	t	\N
+548	SAM M391A5143EB1-CRC		\N	2021-11-05 23:01:39.021705+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A5143EB1-CRC", "mcode": "SAM", "item_master_id": 212870, "market_insight": ""}	{}	\N	USD	sam-m391a5143eb1-crc	\N	t	\N
+546	SAM M391A4G43MB1-CTD		\N	2021-11-05 23:01:38.220467+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M391A4G43MB1-CTD", "mcode": "SAM", "item_master_id": 198654, "market_insight": ""}	{}	\N	USD	sam-m391a4g43mb1-ctd	\N	t	\N
+550	SAM M392A2K43BB0-CRC		\N	2021-11-05 23:01:39.814312+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M392A2K43BB0-CRC", "mcode": "SAM", "item_master_id": 212872, "market_insight": ""}	{}	\N	USD	sam-m392a2k43bb0-crc	\N	t	\N
+549	SAM M392A2K43BB0-CPB		\N	2021-11-05 23:01:39.414098+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M392A2K43BB0-CPB", "mcode": "SAM", "item_master_id": 212871, "market_insight": ""}	{}	\N	USD	sam-m392a2k43bb0-cpb	\N	t	\N
+552	SAM M392A4K40BM0-CRC		\N	2021-11-05 23:01:40.621577+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M392A4K40BM0-CRC", "mcode": "SAM", "item_master_id": 201949, "market_insight": ""}	{}	\N	USD	sam-m392a4k40bm0-crc	\N	t	\N
+551	SAM M392A4K40BM0-CPB		\N	2021-11-05 23:01:40.216828+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M392A4K40BM0-CPB", "mcode": "SAM", "item_master_id": 212873, "market_insight": ""}	{}	\N	USD	sam-m392a4k40bm0-cpb	\N	t	\N
+553	SAM M393A1G40EB1-CPB		\N	2021-11-05 23:01:41.016991+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G40EB1-CPB", "mcode": "SAM", "item_master_id": 212874, "market_insight": ""}	{}	\N	USD	sam-m393a1g40eb1-cpb	\N	t	\N
+554	SAM M393A1G40EB1-CRC		\N	2021-11-05 23:01:41.422779+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G40EB1-CRC", "mcode": "SAM", "item_master_id": 188345, "market_insight": ""}	{}	\N	USD	sam-m393a1g40eb1-crc	\N	t	\N
+555	SAM M393A1G40EB2-CTD		\N	2021-11-05 23:01:41.82295+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G40EB2-CTD", "mcode": "SAM", "item_master_id": 195912, "market_insight": ""}	{}	\N	USD	sam-m393a1g40eb2-ctd	\N	t	\N
+556	SAM M393A1G43EB1-CPB		\N	2021-11-05 23:01:42.215982+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G43EB1-CPB", "mcode": "SAM", "item_master_id": 212875, "market_insight": ""}	{}	\N	USD	sam-m393a1g43eb1-cpb	\N	t	\N
+576	SAM M393A2K40DB2-CWE		\N	2021-11-05 23:01:51.4319+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40DB2-CWE", "mcode": "SAM", "item_master_id": 212883, "market_insight": ""}	{}	\N	USD	sam-m393a2k40db2-cwe	\N	t	\N
+557	SAM M393A1G43EB1-CRC		\N	2021-11-05 23:01:42.62432+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G43EB1-CRC", "mcode": "SAM", "item_master_id": 188616, "market_insight": ""}	{}	\N	USD	sam-m393a1g43eb1-crc	\N	t	\N
+569	SAM M393A2K40BB1-CRC		\N	2021-11-05 23:01:47.925816+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40BB1-CRC", "mcode": "SAM", "item_master_id": 188069, "market_insight": ""}	{}	\N	USD	sam-m393a2k40bb1-crc	\N	t	\N
+558	SAM M393A1G43EB1-CTD		\N	2021-11-05 23:01:43.120414+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1G43EB1-CTD", "mcode": "SAM", "item_master_id": 197836, "market_insight": ""}	{}	\N	USD	sam-m393a1g43eb1-ctd	\N	t	\N
+559	SAM M393A1K43BB0-CPB		\N	2021-11-05 23:01:43.521322+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43BB0-CPB", "mcode": "SAM", "item_master_id": 212876, "market_insight": ""}	{}	\N	USD	sam-m393a1k43bb0-cpb	\N	t	\N
+560	SAM M393A1K43BB0-CRC		\N	2021-11-05 23:01:43.921054+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43BB0-CRC", "mcode": "SAM", "item_master_id": 188807, "market_insight": ""}	{}	\N	USD	sam-m393a1k43bb0-crc	\N	t	\N
+570	SAM M393A2K40BB2-CTD		\N	2021-11-05 23:01:48.31709+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40BB2-CTD", "mcode": "SAM", "item_master_id": 189036, "market_insight": ""}	{}	\N	USD	sam-m393a2k40bb2-ctd	\N	t	\N
+561	SAM M393A1K43BB1-CTD		\N	2021-11-05 23:01:44.318332+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43BB1-CTD", "mcode": "SAM", "item_master_id": 190080, "market_insight": ""}	{}	\N	USD	sam-m393a1k43bb1-ctd	\N	t	\N
+562	SAM M393A1K43DB1-CVF		\N	2021-11-05 23:01:44.719092+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43DB1-CVF", "mcode": "SAM", "item_master_id": 212877, "market_insight": ""}	{}	\N	USD	sam-m393a1k43db1-cvf	\N	t	\N
+580	SAM M393A2K43BB1-CTD		\N	2021-11-05 23:01:53.018734+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43BB1-CTD", "mcode": "SAM", "item_master_id": 191046, "market_insight": ""}	{}	\N	USD	sam-m393a2k43bb1-ctd	\N	t	\N
+563	SAM M393A1K43DB1-CWE		\N	2021-11-05 23:01:45.516845+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43DB1-CWE", "mcode": "SAM", "item_master_id": 212878, "market_insight": ""}	{}	\N	USD	sam-m393a1k43db1-cwe	\N	t	\N
+571	SAM M393A2K40CB1-CRC		\N	2021-11-05 23:01:48.716636+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40CB1-CRC", "mcode": "SAM", "item_master_id": 195742, "market_insight": ""}	{}	\N	USD	sam-m393a2k40cb1-crc	\N	t	\N
+564	SAM M393A1K43DB2-CWE		\N	2021-11-05 23:01:45.923417+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A1K43DB2-CWE", "mcode": "SAM", "item_master_id": 207316, "market_insight": ""}	{}	\N	USD	sam-m393a1k43db2-cwe	\N	t	\N
+565	SAM M393A2G40EB1-CPB		\N	2021-11-05 23:01:46.314993+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2G40EB1-CPB", "mcode": "SAM", "item_master_id": 212879, "market_insight": ""}	{}	\N	USD	sam-m393a2g40eb1-cpb	\N	t	\N
+577	SAM M393A2K40DB3-CWE		\N	2021-11-05 23:01:51.823041+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40DB3-CWE", "mcode": "SAM", "item_master_id": 204771, "market_insight": ""}	{}	\N	USD	sam-m393a2k40db3-cwe	\N	t	\N
+566	SAM M393A2G40EB1-CRC		\N	2021-11-05 23:01:46.714061+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2G40EB1-CRC", "mcode": "SAM", "item_master_id": 188789, "market_insight": ""}	{}	\N	USD	sam-m393a2g40eb1-crc	\N	t	\N
+572	SAM M393A2K40CB2-CTD		\N	2021-11-05 23:01:49.117244+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40CB2-CTD", "mcode": "SAM", "item_master_id": 196865, "market_insight": ""}	{}	\N	USD	sam-m393a2k40cb2-ctd	\N	t	\N
+567	SAM M393A2G40EB2-CTD		\N	2021-11-05 23:01:47.118894+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2G40EB2-CTD", "mcode": "SAM", "item_master_id": 212880, "market_insight": ""}	{}	\N	USD	sam-m393a2g40eb2-ctd	\N	t	\N
+568	SAM M393A2K40BB0-CPB		\N	2021-11-05 23:01:47.524123+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40BB0-CPB", "mcode": "SAM", "item_master_id": 212881, "market_insight": ""}	{}	\N	USD	sam-m393a2k40bb0-cpb	\N	t	\N
+573	SAM M393A2K40CB2-CVF		\N	2021-11-05 23:01:49.517518+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40CB2-CVF", "mcode": "SAM", "item_master_id": 197781, "market_insight": ""}	{}	\N	USD	sam-m393a2k40cb2-cvf	\N	t	\N
+574	SAM M393A2K40DB2-CTD		\N	2021-11-05 23:01:49.984308+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40DB2-CTD", "mcode": "SAM", "item_master_id": 212882, "market_insight": ""}	{}	\N	USD	sam-m393a2k40db2-ctd	\N	t	\N
+578	SAM M393A2K43BB1-CPB		\N	2021-11-05 23:01:52.233625+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43BB1-CPB", "mcode": "SAM", "item_master_id": 212884, "market_insight": ""}	{}	\N	USD	sam-m393a2k43bb1-cpb	\N	t	\N
+575	SAM M393A2K40DB2-CVF		\N	2021-11-05 23:01:51.017971+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K40DB2-CVF", "mcode": "SAM", "item_master_id": 203963, "market_insight": ""}	{}	\N	USD	sam-m393a2k40db2-cvf	\N	t	\N
+581	SAM M393A2K43CB1-CRC		\N	2021-11-05 23:01:53.420793+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43CB1-CRC", "mcode": "SAM", "item_master_id": 195626, "market_insight": ""}	{}	\N	USD	sam-m393a2k43cb1-crc	\N	t	\N
+579	SAM M393A2K43BB1-CRC		\N	2021-11-05 23:01:52.616475+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43BB1-CRC", "mcode": "SAM", "item_master_id": 188021, "market_insight": ""}	{}	\N	USD	sam-m393a2k43bb1-crc	\N	t	\N
+583	SAM M393A2K43CB2-CVF		\N	2021-11-05 23:01:54.21744+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43CB2-CVF", "mcode": "SAM", "item_master_id": 200252, "market_insight": ""}	{}	\N	USD	sam-m393a2k43cb2-cvf	\N	t	\N
+582	SAM M393A2K43CB2-CTD		\N	2021-11-05 23:01:53.817193+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43CB2-CTD", "mcode": "SAM", "item_master_id": 192819, "market_insight": ""}	{}	\N	USD	sam-m393a2k43cb2-ctd	\N	t	\N
+585	SAM M393A2K43DB2-CVF		\N	2021-11-05 23:01:55.058439+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43DB2-CVF", "mcode": "SAM", "item_master_id": 203600, "market_insight": ""}	{}	\N	USD	sam-m393a2k43db2-cvf	\N	t	\N
+584	SAM M393A2K43DB2-CTD		\N	2021-11-05 23:01:54.615366+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43DB2-CTD", "mcode": "SAM", "item_master_id": 212885, "market_insight": ""}	{}	\N	USD	sam-m393a2k43db2-ctd	\N	t	\N
+586	SAM M393A2K43DB2-CWE		\N	2021-11-05 23:01:55.418918+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43DB2-CWE", "mcode": "SAM", "item_master_id": 202657, "market_insight": ""}	{}	\N	USD	sam-m393a2k43db2-cwe	\N	t	\N
+587	SAM M393A2K43DB3-CWE		\N	2021-11-05 23:01:55.852862+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A2K43DB3-CWE", "mcode": "SAM", "item_master_id": 202765, "market_insight": ""}	{}	\N	USD	sam-m393a2k43db3-cwe	\N	t	\N
+588	SAM M393A4G40AB3-CVF		\N	2021-11-05 23:01:56.217701+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4G40AB3-CVF", "mcode": "SAM", "item_master_id": 212886, "market_insight": ""}	{}	\N	USD	sam-m393a4g40ab3-cvf	\N	t	\N
+589	SAM M393A4G40AB3-CWE		\N	2021-11-05 23:01:56.625361+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4G40AB3-CWE", "mcode": "SAM", "item_master_id": 204689, "market_insight": ""}	{}	\N	USD	sam-m393a4g40ab3-cwe	\N	t	\N
+609	SAM M393A8K40B2B-CTC		\N	2021-11-05 23:02:05.618631+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8K40B2B-CTC", "mcode": "SAM", "item_master_id": 212890, "market_insight": ""}	{}	\N	USD	sam-m393a8k40b2b-ctc	\N	t	\N
+590	SAM M393A4G43AB3-CVF		\N	2021-11-05 23:01:57.097928+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4G43AB3-CVF", "mcode": "SAM", "item_master_id": 212887, "market_insight": ""}	{}	\N	USD	sam-m393a4g43ab3-cvf	\N	t	\N
+602	SAM M393A8G40AB2-CVF		\N	2021-11-05 23:02:02.832782+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8G40AB2-CVF", "mcode": "SAM", "item_master_id": 205606, "market_insight": ""}	{}	\N	USD	sam-m393a8g40ab2-cvf	\N	t	\N
+591	SAM M393A4G43AB3-CWE		\N	2021-11-05 23:01:57.486708+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4G43AB3-CWE", "mcode": "SAM", "item_master_id": 205268, "market_insight": ""}	{}	\N	USD	sam-m393a4g43ab3-cwe	\N	t	\N
+592	SAM M393A4K40BB0-CPB		\N	2021-11-05 23:01:57.827942+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40BB0-CPB", "mcode": "SAM", "item_master_id": 186473, "market_insight": ""}	{}	\N	USD	sam-m393a4k40bb0-cpb	\N	t	\N
+593	SAM M393A4K40BB1-CRC		\N	2021-11-05 23:01:58.47801+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40BB1-CRC", "mcode": "SAM", "item_master_id": 187326, "market_insight": ""}	{}	\N	USD	sam-m393a4k40bb1-crc	\N	t	\N
+603	SAM M393A8G40AB2-CWE		\N	2021-11-05 23:02:03.217082+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8G40AB2-CWE", "mcode": "SAM", "item_master_id": 201001, "market_insight": ""}	{}	\N	USD	sam-m393a8g40ab2-cwe	\N	t	\N
+594	SAM M393A4K40BB2-CTD		\N	2021-11-05 23:01:59.178323+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40BB2-CTD", "mcode": "SAM", "item_master_id": 188800, "market_insight": ""}	{}	\N	USD	sam-m393a4k40bb2-ctd	\N	t	\N
+595	SAM M393A4K40CB1-CRC		\N	2021-11-05 23:01:59.526671+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40CB1-CRC", "mcode": "SAM", "item_master_id": 191493, "market_insight": ""}	{}	\N	USD	sam-m393a4k40cb1-crc	\N	t	\N
+613	SAM M393AAK40B41-CTC		\N	2021-11-05 23:02:07.225333+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393AAK40B41-CTC", "mcode": "SAM", "item_master_id": 212926, "market_insight": ""}	{}	\N	USD	sam-m393aak40b41-ctc	\N	t	\N
+596	SAM M393A4K40CB2-CTD		\N	2021-11-05 23:01:59.915918+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40CB2-CTD", "mcode": "SAM", "item_master_id": 191500, "market_insight": ""}	{}	\N	USD	sam-m393a4k40cb2-ctd	\N	t	\N
+604	SAM M393A8G40MB2-CTD		\N	2021-11-05 23:02:03.621185+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8G40MB2-CTD", "mcode": "SAM", "item_master_id": 203227, "market_insight": ""}	{}	\N	USD	sam-m393a8g40mb2-ctd	\N	t	\N
+597	SAM M393A4K40CB2-CVF		\N	2021-11-05 23:02:00.820655+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40CB2-CVF", "mcode": "SAM", "item_master_id": 197978, "market_insight": ""}	{}	\N	USD	sam-m393a4k40cb2-cvf	\N	t	\N
+598	SAM M393A4K40DB2-CTD		\N	2021-11-05 23:02:01.226231+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40DB2-CTD", "mcode": "SAM", "item_master_id": 208340, "market_insight": ""}	{}	\N	USD	sam-m393a4k40db2-ctd	\N	t	\N
+610	SAM M393AAG40M32-CAE		\N	2021-11-05 23:02:06.045775+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393AAG40M32-CAE", "mcode": "SAM", "item_master_id": 204726, "market_insight": ""}	{}	\N	USD	sam-m393aag40m32-cae	\N	t	\N
+599	SAM M393A4K40DB2-CVF		\N	2021-11-05 23:02:01.623725+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40DB2-CVF", "mcode": "SAM", "item_master_id": 204158, "market_insight": ""}	{}	\N	USD	sam-m393a4k40db2-cvf	\N	t	\N
+605	SAM M393A8G40MB2-CVF		\N	2021-11-05 23:02:04.026826+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8G40MB2-CVF", "mcode": "SAM", "item_master_id": 197418, "market_insight": ""}	{}	\N	USD	sam-m393a8g40mb2-cvf	\N	t	\N
+600	SAM M393A4K40DB2-CWE		\N	2021-11-05 23:02:02.020253+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40DB2-CWE", "mcode": "SAM", "item_master_id": 212888, "market_insight": ""}	{}	\N	USD	sam-m393a4k40db2-cwe	\N	t	\N
+601	SAM M393A4K40DB3-CWE		\N	2021-11-05 23:02:02.42732+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A4K40DB3-CWE", "mcode": "SAM", "item_master_id": 204291, "market_insight": ""}	{}	\N	USD	sam-m393a4k40db3-cwe	\N	t	\N
+606	SAM M393A8K40B21-CRB		\N	2021-11-05 23:02:04.418038+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8K40B21-CRB", "mcode": "SAM", "item_master_id": 212889, "market_insight": ""}	{}	\N	USD	sam-m393a8k40b21-crb	\N	t	\N
+607	SAM M393A8K40B21-CTC		\N	2021-11-05 23:02:04.828363+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8K40B21-CTC", "mcode": "SAM", "item_master_id": 203470, "market_insight": ""}	{}	\N	USD	sam-m393a8k40b21-ctc	\N	t	\N
+611	SAM M393AAG40M32-CYF		\N	2021-11-05 23:02:06.416273+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393AAG40M32-CYF", "mcode": "SAM", "item_master_id": 197417, "market_insight": ""}	{}	\N	USD	sam-m393aag40m32-cyf	\N	t	\N
+608	SAM M393A8K40B22-CWD		\N	2021-11-05 23:02:05.218686+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393A8K40B22-CWD", "mcode": "SAM", "item_master_id": 192509, "market_insight": ""}	{}	\N	USD	sam-m393a8k40b22-cwd	\N	t	\N
+614	SAM M393AAK40B42-CWD		\N	2021-11-05 23:02:07.633782+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393AAK40B42-CWD", "mcode": "SAM", "item_master_id": 195397, "market_insight": ""}	{}	\N	USD	sam-m393aak40b42-cwd	\N	t	\N
+612	SAM M393AAG40M3B-CYF		\N	2021-11-05 23:02:06.818707+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393AAG40M3B-CYF", "mcode": "SAM", "item_master_id": 209262, "market_insight": ""}	{}	\N	USD	sam-m393aag40m3b-cyf	\N	t	\N
+616	SAM M393ABG40M52-CYF		\N	2021-11-05 23:02:08.415243+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393ABG40M52-CYF", "mcode": "SAM", "item_master_id": 212928, "market_insight": ""}	{}	\N	USD	sam-m393abg40m52-cyf	\N	t	\N
+615	SAM M393ABG40M52-CAE		\N	2021-11-05 23:02:08.024106+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393ABG40M52-CAE", "mcode": "SAM", "item_master_id": 212927, "market_insight": ""}	{}	\N	USD	sam-m393abg40m52-cae	\N	t	\N
+618	SAM M393B1G70EB0-CK0		\N	2021-11-05 23:02:09.215976+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G70EB0-CK0", "mcode": "SAM", "item_master_id": 212930, "market_insight": ""}	{}	\N	USD	sam-m393b1g70eb0-ck0	\N	t	\N
+617	SAM M393ABG40M5B-CYF		\N	2021-11-05 23:02:08.858803+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393ABG40M5B-CYF", "mcode": "SAM", "item_master_id": 212929, "market_insight": ""}	{}	\N	USD	sam-m393abg40m5b-cyf	\N	t	\N
+619	SAM M393B1G70EB0-CMA		\N	2021-11-05 23:02:09.616506+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G70EB0-CMA", "mcode": "SAM", "item_master_id": 212931, "market_insight": ""}	{}	\N	USD	sam-m393b1g70eb0-cma	\N	t	\N
+620	SAM M393B1G70EB0-YK0		\N	2021-11-05 23:02:10.062214+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G70EB0-YK0", "mcode": "SAM", "item_master_id": 188053, "market_insight": ""}	{}	\N	USD	sam-m393b1g70eb0-yk0	\N	t	\N
+621	SAM M393B1G70EB0-YMA		\N	2021-11-05 23:02:10.493094+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G70EB0-YMA", "mcode": "SAM", "item_master_id": 212932, "market_insight": ""}	{}	\N	USD	sam-m393b1g70eb0-yma	\N	t	\N
+622	SAM M393B1G73EB0-CK0		\N	2021-11-05 23:02:10.884299+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G73EB0-CK0", "mcode": "SAM", "item_master_id": 212933, "market_insight": ""}	{}	\N	USD	sam-m393b1g73eb0-ck0	\N	t	\N
+642	SAM M471A4G43AB1-CWE		\N	2021-11-05 23:02:18.814426+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A4G43AB1-CWE", "mcode": "SAM", "item_master_id": 212945, "market_insight": ""}	{}	\N	USD	sam-m471a4g43ab1-cwe	\N	t	\N
+623	SAM M393B1G73EB0-CMA		\N	2021-11-05 23:02:11.28342+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G73EB0-CMA", "mcode": "SAM", "item_master_id": 212934, "market_insight": ""}	{}	\N	USD	sam-m393b1g73eb0-cma	\N	t	\N
+635	SAM M471A1K43EB1-CTD		\N	2021-11-05 23:02:16.025816+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43EB1-CTD", "mcode": "SAM", "item_master_id": 212941, "market_insight": ""}	{}	\N	USD	sam-m471a1k43eb1-ctd	\N	t	\N
+624	SAM M393B1G73EB0-YK0		\N	2021-11-05 23:02:11.618553+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G73EB0-YK0", "mcode": "SAM", "item_master_id": 212935, "market_insight": ""}	{}	\N	USD	sam-m393b1g73eb0-yk0	\N	t	\N
+625	SAM M393B1G73EB0-YMA		\N	2021-11-05 23:02:12.016301+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B1G73EB0-YMA", "mcode": "SAM", "item_master_id": 212936, "market_insight": ""}	{}	\N	USD	sam-m393b1g73eb0-yma	\N	t	\N
+626	SAM M393B2G70EB0-CK0		\N	2021-11-05 23:02:12.414737+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B2G70EB0-CK0", "mcode": "SAM", "item_master_id": 212937, "market_insight": ""}	{}	\N	USD	sam-m393b2g70eb0-ck0	\N	t	\N
+636	SAM M471A2K43CB1-CPB		\N	2021-11-05 23:02:16.416884+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43CB1-CPB", "mcode": "SAM", "item_master_id": 212942, "market_insight": ""}	{}	\N	USD	sam-m471a2k43cb1-cpb	\N	t	\N
+627	SAM M393B2G70EB0-CMA		\N	2021-11-05 23:02:12.824226+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B2G70EB0-CMA", "mcode": "SAM", "item_master_id": 212938, "market_insight": ""}	{}	\N	USD	sam-m393b2g70eb0-cma	\N	t	\N
+628	SAM M393B2G70EB0-YK0		\N	2021-11-05 23:02:13.219594+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B2G70EB0-YK0", "mcode": "SAM", "item_master_id": 188598, "market_insight": ""}	{}	\N	USD	sam-m393b2g70eb0-yk0	\N	t	\N
+646	SAM M471A5244CB0-CTD		\N	2021-11-05 23:02:20.51795+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A5244CB0-CTD", "mcode": "SAM", "item_master_id": 194683, "market_insight": ""}	{}	\N	USD	sam-m471a5244cb0-ctd	\N	t	\N
+629	SAM M393B2G70EB0-YMA		\N	2021-11-05 23:02:13.616953+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "M393B2G70EB0-YMA", "mcode": "SAM", "item_master_id": 212939, "market_insight": ""}	{}	\N	USD	sam-m393b2g70eb0-yma	\N	t	\N
+637	SAM M471A2K43CB1-CRC		\N	2021-11-05 23:02:16.814206+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43CB1-CRC", "mcode": "SAM", "item_master_id": 192364, "market_insight": ""}	{}	\N	USD	sam-m471a2k43cb1-crc	\N	t	\N
+630	SAM M471A1K43CB1-CPB		\N	2021-11-05 23:02:14.031644+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43CB1-CPB", "mcode": "SAM", "item_master_id": 212940, "market_insight": ""}	{}	\N	USD	sam-m471a1k43cb1-cpb	\N	t	\N
+631	SAM M471A1K43CB1-CRC		\N	2021-11-05 23:02:14.415767+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43CB1-CRC", "mcode": "SAM", "item_master_id": 187896, "market_insight": ""}	{}	\N	USD	sam-m471a1k43cb1-crc	\N	t	\N
+643	SAM M471A4G43MB1-CTD		\N	2021-11-05 23:02:19.214835+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A4G43MB1-CTD", "mcode": "SAM", "item_master_id": 204912, "market_insight": ""}	{}	\N	USD	sam-m471a4g43mb1-ctd	\N	t	\N
+632	SAM M471A1K43CB1-CTD		\N	2021-11-05 23:02:14.822537+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43CB1-CTD", "mcode": "SAM", "item_master_id": 193733, "market_insight": ""}	{}	\N	USD	sam-m471a1k43cb1-ctd	\N	t	\N
+638	SAM M471A2K43CB1-CTD		\N	2021-11-05 23:02:17.224711+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43CB1-CTD", "mcode": "SAM", "item_master_id": 198280, "market_insight": ""}	{}	\N	USD	sam-m471a2k43cb1-ctd	\N	t	\N
+633	SAM M471A1K43DB1-CTD		\N	2021-11-05 23:02:15.225462+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43DB1-CTD", "mcode": "SAM", "item_master_id": 201016, "market_insight": ""}	{}	\N	USD	sam-m471a1k43db1-ctd	\N	t	\N
+634	SAM M471A1K43DB1-CWE		\N	2021-11-05 23:02:15.626852+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A1K43DB1-CWE", "mcode": "SAM", "item_master_id": 204355, "market_insight": ""}	{}	\N	USD	sam-m471a1k43db1-cwe	\N	t	\N
+639	SAM M471A2K43DB1-CTD		\N	2021-11-05 23:02:17.61678+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43DB1-CTD", "mcode": "SAM", "item_master_id": 212943, "market_insight": ""}	{}	\N	USD	sam-m471a2k43db1-ctd	\N	t	\N
+640	SAM M471A2K43DB1-CWE		\N	2021-11-05 23:02:18.026772+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43DB1-CWE", "mcode": "SAM", "item_master_id": 204767, "market_insight": ""}	{}	\N	USD	sam-m471a2k43db1-cwe	\N	t	\N
+644	SAM M471A5244CB0-CPB		\N	2021-11-05 23:02:19.619612+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A5244CB0-CPB", "mcode": "SAM", "item_master_id": 212946, "market_insight": ""}	{}	\N	USD	sam-m471a5244cb0-cpb	\N	t	\N
+641	SAM M471A2K43EB1-CTD		\N	2021-11-05 23:02:18.418214+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A2K43EB1-CTD", "mcode": "SAM", "item_master_id": 212944, "market_insight": ""}	{}	\N	USD	sam-m471a2k43eb1-ctd	\N	t	\N
+647	SAM M471A5244CB0-CWE		\N	2021-11-05 23:02:20.919571+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A5244CB0-CWE", "mcode": "SAM", "item_master_id": 203191, "market_insight": ""}	{}	\N	USD	sam-m471a5244cb0-cwe	\N	t	\N
+645	SAM M471A5244CB0-CRC		\N	2021-11-05 23:02:20.126094+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M471A5244CB0-CRC", "mcode": "SAM", "item_master_id": 190887, "market_insight": ""}	{}	\N	USD	sam-m471a5244cb0-crc	\N	t	\N
+649	SAM M474A1G43DB1-CRC		\N	2021-11-05 23:02:21.720401+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1G43DB1-CRC", "mcode": "SAM", "item_master_id": 212948, "market_insight": ""}	{}	\N	USD	sam-m474a1g43db1-crc	\N	t	\N
+648	SAM M474A1G43DB0-CPB		\N	2021-11-05 23:02:21.320708+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1G43DB0-CPB", "mcode": "SAM", "item_master_id": 212947, "market_insight": ""}	{}	\N	USD	sam-m474a1g43db0-cpb	\N	t	\N
+651	SAM M474A1G43EB1-CRC		\N	2021-11-05 23:02:22.517906+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1G43EB1-CRC", "mcode": "SAM", "item_master_id": 190706, "market_insight": ""}	{}	\N	USD	sam-m474a1g43eb1-crc	\N	t	\N
+650	SAM M474A1G43EB1-CPB		\N	2021-11-05 23:02:22.131809+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1G43EB1-CPB", "mcode": "SAM", "item_master_id": 212949, "market_insight": ""}	{}	\N	USD	sam-m474a1g43eb1-cpb	\N	t	\N
+652	SAM M474A1K43BB1-CTD		\N	2021-11-05 23:02:22.920164+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1K43BB1-CTD", "mcode": "SAM", "item_master_id": 212951, "market_insight": ""}	{}	\N	USD	sam-m474a1k43bb1-ctd	\N	t	\N
+653	SAM M474A1K43DB1-CTD		\N	2021-11-05 23:02:23.321098+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1K43DB1-CTD", "mcode": "SAM", "item_master_id": 212952, "market_insight": ""}	{}	\N	USD	sam-m474a1k43db1-ctd	\N	t	\N
+654	SAM M474A1K43DB1-CVF		\N	2021-11-05 23:02:23.718256+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1K43DB1-CVF", "mcode": "SAM", "item_master_id": 212953, "market_insight": ""}	{}	\N	USD	sam-m474a1k43db1-cvf	\N	t	\N
+655	SAM M474A1K43DB1-CWE		\N	2021-11-05 23:02:24.119716+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A1K43DB1-CWE", "mcode": "SAM", "item_master_id": 212954, "market_insight": ""}	{}	\N	USD	sam-m474a1k43db1-cwe	\N	t	\N
+656	SAM M474A2K43BB1-CRC		\N	2021-11-05 23:02:24.521077+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A2K43BB1-CRC", "mcode": "SAM", "item_master_id": 193168, "market_insight": ""}	{}	\N	USD	sam-m474a2k43bb1-crc	\N	t	\N
+657	SAM M474A2K43BB1-CTD		\N	2021-11-05 23:02:24.914255+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A2K43BB1-CTD", "mcode": "SAM", "item_master_id": 212955, "market_insight": ""}	{}	\N	USD	sam-m474a2k43bb1-ctd	\N	t	\N
+668	MICRO MTA36ASF8G72LZ-3G2B1		\N	2021-11-05 23:02:29.82169+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72LZ-3G2B1", "mcode": "MICRO", "item_master_id": 212966, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72lz-3g2b1	\N	t	\N
+658	SAM M474A2K43DB1-CTD		\N	2021-11-05 23:02:25.392121+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A2K43DB1-CTD", "mcode": "SAM", "item_master_id": 212956, "market_insight": ""}	{}	\N	USD	sam-m474a2k43db1-ctd	\N	t	\N
+659	SAM M474A2K43DB1-CVF		\N	2021-11-05 23:02:25.785438+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A2K43DB1-CVF", "mcode": "SAM", "item_master_id": 212957, "market_insight": ""}	{}	\N	USD	sam-m474a2k43db1-cvf	\N	t	\N
+674	MICRO MTA72ASS16G72LZ-3G2B3		\N	2021-11-05 23:02:32.218346+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS16G72LZ-3G2B3", "mcode": "MICRO", "item_master_id": 212969, "market_insight": ""}	{}	\N	USD	micro-mta72ass16g72lz-3g2b3	\N	t	\N
+660	SAM M474A2K43DB1-CWE		\N	2021-11-05 23:02:26.118458+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A2K43DB1-CWE", "mcode": "SAM", "item_master_id": 212958, "market_insight": ""}	{}	\N	USD	sam-m474a2k43db1-cwe	\N	t	\N
+669	MICRO MTA144ASQ16G72LSZ-2S6G1		\N	2021-11-05 23:02:30.219928+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA144ASQ16G72LSZ-2S6G1", "mcode": "MICRO", "item_master_id": 212967, "market_insight": ""}	{}	\N	USD	micro-mta144asq16g72lsz-2s6g1	\N	t	\N
+661	SAM M474A4G43AB1-CVF		\N	2021-11-05 23:02:26.517764+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A4G43AB1-CVF", "mcode": "SAM", "item_master_id": 212959, "market_insight": ""}	{}	\N	USD	sam-m474a4g43ab1-cvf	\N	t	\N
+662	SAM M474A4G43AB1-CWE		\N	2021-11-05 23:02:26.915587+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A4G43AB1-CWE", "mcode": "SAM", "item_master_id": 212960, "market_insight": ""}	{}	\N	USD	sam-m474a4g43ab1-cwe	\N	t	\N
+663	SAM M474A4G43MB1-CTD		\N	2021-11-05 23:02:27.316789+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M474A4G43MB1-CTD", "mcode": "SAM", "item_master_id": 212961, "market_insight": ""}	{}	\N	USD	sam-m474a4g43mb1-ctd	\N	t	\N
+670	MICRO MTA72ASS8G72LZ-2G6B2		\N	2021-11-05 23:02:30.615551+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS8G72LZ-2G6B2", "mcode": "MICRO", "item_master_id": 198348, "market_insight": ""}	{}	\N	USD	micro-mta72ass8g72lz-2g6b2	\N	t	\N
+664	MICRO MTA144ASQ16G72LSZ-2S6E1		\N	2021-11-05 23:02:27.714757+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA144ASQ16G72LSZ-2S6E1", "mcode": "MICRO", "item_master_id": 212962, "market_insight": ""}	{}	\N	USD	micro-mta144asq16g72lsz-2s6e1	\N	t	\N
+665	MICRO MTA144ASQ16G72LSZ-2S9E1		\N	2021-11-05 23:02:28.17958+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA144ASQ16G72LSZ-2S9E1", "mcode": "MICRO", "item_master_id": 212963, "market_insight": ""}	{}	\N	USD	micro-mta144asq16g72lsz-2s9e1	\N	t	\N
+678	MICRO MTA36ASF8G72PZ-3G2B3		\N	2021-11-05 23:02:33.817445+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72PZ-3G2B3", "mcode": "MICRO", "item_master_id": 212972, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72pz-3g2b3	\N	t	\N
+666	MICRO MTA36ASF4G72LZ-2G6D1		\N	2021-11-05 23:02:29.087246+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72LZ-2G6D1", "mcode": "MICRO", "item_master_id": 212964, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72lz-2g6d1	\N	t	\N
+675	MICRO MTA144ASQ16G72PSZ-2S6E1		\N	2021-11-05 23:02:32.616452+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA144ASQ16G72PSZ-2S6E1", "mcode": "MICRO", "item_master_id": 212970, "market_insight": ""}	{}	\N	USD	micro-mta144asq16g72psz-2s6e1	\N	t	\N
+667	MICRO MTA36ASF8G72LZ-2G9B1		\N	2021-11-05 23:02:29.418267+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72LZ-2G9B1", "mcode": "MICRO", "item_master_id": 212965, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72lz-2g9b1	\N	t	\N
+671	MICRO MTA72ASS8G72LZ-2G6D2		\N	2021-11-05 23:02:31.017781+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS8G72LZ-2G6D2", "mcode": "MICRO", "item_master_id": 197675, "market_insight": ""}	{}	\N	USD	micro-mta72ass8g72lz-2g6d2	\N	t	\N
+672	MICRO MTA72ASS8G72LZ-2G9D1		\N	2021-11-05 23:02:31.42198+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS8G72LZ-2G9D1", "mcode": "MICRO", "item_master_id": 199889, "market_insight": ""}	{}	\N	USD	micro-mta72ass8g72lz-2g9d1	\N	t	\N
+673	MICRO MTA72ASS8G72LZ-2G9D2		\N	2021-11-05 23:02:31.814906+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS8G72LZ-2G9D2", "mcode": "MICRO", "item_master_id": 212968, "market_insight": ""}	{}	\N	USD	micro-mta72ass8g72lz-2g9d2	\N	t	\N
+676	MICRO MTA72ASS8G72PSZ-2S6E1		\N	2021-11-05 23:02:33.025203+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA72ASS8G72PSZ-2S6E1", "mcode": "MICRO", "item_master_id": 212971, "market_insight": ""}	{}	\N	USD	micro-mta72ass8g72psz-2s6e1	\N	t	\N
+682	MICRO MTA36ASF4G72PZ-3G2J1		\N	2021-11-05 23:02:35.624819+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-3G2J1", "mcode": "MICRO", "item_master_id": 212973, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-3g2j1	\N	t	\N
+677	MICRO MTA36ASF8G72PZ-3G2B2		\N	2021-11-05 23:02:33.417686+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72PZ-3G2B2", "mcode": "MICRO", "item_master_id": 208231, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72pz-3g2b2	\N	t	\N
+679	MICRO MTA36ASF8G72PZ-2G9B1		\N	2021-11-05 23:02:34.217896+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72PZ-2G9B1", "mcode": "MICRO", "item_master_id": 202927, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72pz-2g9b1	\N	t	\N
+680	MICRO MTA36ASF8G72PZ-2G9B2		\N	2021-11-05 23:02:34.617142+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF8G72PZ-2G9B2", "mcode": "MICRO", "item_master_id": 207094, "market_insight": ""}	{}	\N	USD	micro-mta36asf8g72pz-2g9b2	\N	t	\N
+681	MICRO MTA36ASF4G72PZ-3G2E7		\N	2021-11-05 23:02:35.124299+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-3G2E7", "mcode": "MICRO", "item_master_id": 208528, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-3g2e7	\N	t	\N
+683	MICRO MTA36ASF4G72PZ-3G2J3		\N	2021-11-05 23:02:36.044602+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-3G2J3", "mcode": "MICRO", "item_master_id": 211130, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-3g2j3	\N	t	\N
+684	MICRO MTA36ASF4G72PZ-3G2R1		\N	2021-11-05 23:02:36.42612+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-3G2R1", "mcode": "MICRO", "item_master_id": 212974, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-3g2r1	\N	t	\N
+685	MICRO MTA36ASF4G72PZ-2G9E1		\N	2021-11-05 23:02:36.822231+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G9E1", "mcode": "MICRO", "item_master_id": 212975, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g9e1	\N	t	\N
+686	MICRO MTA36ASF4G72PZ-2G9E2		\N	2021-11-05 23:02:37.215375+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G9E2", "mcode": "MICRO", "item_master_id": 204318, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g9e2	\N	t	\N
+698	MICRO MTA18ASF4G72PZ-2G9B1		\N	2021-11-05 23:02:42.025907+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-2G9B1", "mcode": "MICRO", "item_master_id": 212983, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-2g9b1	\N	t	\N
+687	MICRO MTA36ASF4G72PZ-2G6J1		\N	2021-11-05 23:02:37.61435+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G6J1", "mcode": "MICRO", "item_master_id": 212976, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g6j1	\N	t	\N
+688	MICRO MTA36ASF4G72PZ-2G6E1		\N	2021-11-05 23:02:38.019412+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G6E1", "mcode": "MICRO", "item_master_id": 197649, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g6e1	\N	t	\N
+689	MICRO MTA36ASF4G72PZ-2G6E2		\N	2021-11-05 23:02:38.418601+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G6E2", "mcode": "MICRO", "item_master_id": 212977, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g6e2	\N	t	\N
+699	MICRO MTA18ASF4G72PZ-2G9E1		\N	2021-11-05 23:02:42.417209+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-2G9E1", "mcode": "MICRO", "item_master_id": 212984, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-2g9e1	\N	t	\N
+690	MICRO MTA36ASF4G72PZ-2G6E4		\N	2021-11-05 23:02:38.827158+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G6E4", "mcode": "MICRO", "item_master_id": 212978, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g6e4	\N	t	\N
+691	MICRO MTA36ASF4G72PZ-2G3A1		\N	2021-11-05 23:02:39.220248+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G3A1", "mcode": "MICRO", "item_master_id": 188131, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g3a1	\N	t	\N
+708	MICRO MTA18ASF2G72PZ-3G2E2		\N	2021-11-05 23:02:46.022066+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-3G2E2", "mcode": "MICRO", "item_master_id": 212994, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-3g2e2	\N	t	\N
+692	MICRO MTA36ASF4G72PZ-2G3B1		\N	2021-11-05 23:02:39.61466+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G3B1", "mcode": "MICRO", "item_master_id": 187921, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g3b1	\N	t	\N
+700	MICRO MTA18ASF4G72PDZ-3G2E1		\N	2021-11-05 23:02:42.82015+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PDZ-3G2E1", "mcode": "MICRO", "item_master_id": 204728, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pdz-3g2e1	\N	t	\N
+693	MICRO MTA36ASF4G72PZ-2G3D1		\N	2021-11-05 23:02:40.077553+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF4G72PZ-2G3D1", "mcode": "MICRO", "item_master_id": 212979, "market_insight": ""}	{}	\N	USD	micro-mta36asf4g72pz-2g3d1	\N	t	\N
+694	MICRO MTA18ASF4G72PZ-3G2E1		\N	2021-11-05 23:02:40.420144+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-3G2E1", "mcode": "MICRO", "item_master_id": 206619, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-3g2e1	\N	t	\N
+705	MICRO MTA9ASF2G72PZ-2G9E1		\N	2021-11-05 23:02:44.81721+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF2G72PZ-2G9E1", "mcode": "MICRO", "item_master_id": 212991, "market_insight": ""}	{}	\N	USD	micro-mta9asf2g72pz-2g9e1	\N	t	\N
+695	MICRO MTA18ASF4G72PZ-3G2E2		\N	2021-11-05 23:02:40.819699+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-3G2E2", "mcode": "MICRO", "item_master_id": 212980, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-3g2e2	\N	t	\N
+701	MICRO MTA18ASF4G72PDZ-2G9B2		\N	2021-11-05 23:02:43.217065+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PDZ-2G9B2", "mcode": "MICRO", "item_master_id": 212985, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pdz-2g9b2	\N	t	\N
+696	MICRO MTA18ASF4G72PZ-3G2E7		\N	2021-11-05 23:02:41.244599+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-3G2E7", "mcode": "MICRO", "item_master_id": 212981, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-3g2e7	\N	t	\N
+697	MICRO MTA18ASF4G72PZ-3G2J3		\N	2021-11-05 23:02:41.62419+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PZ-3G2J3", "mcode": "MICRO", "item_master_id": 212982, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pz-3g2j3	\N	t	\N
+702	MICRO MTA18ASF4G72PDZ-2G9E1		\N	2021-11-05 23:02:43.619849+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72PDZ-2G9E1", "mcode": "MICRO", "item_master_id": 212986, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72pdz-2g9e1	\N	t	\N
+706	MICRO MTA36ASF2G72PZ-2G6B2		\N	2021-11-05 23:02:45.215222+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF2G72PZ-2G6B2", "mcode": "MICRO", "item_master_id": 212992, "market_insight": ""}	{}	\N	USD	micro-mta36asf2g72pz-2g6b2	\N	t	\N
+703	MICRO MTA9ASF2G72PZ-3G2B1		\N	2021-11-05 23:02:44.018176+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF2G72PZ-3G2B1", "mcode": "MICRO", "item_master_id": 212988, "market_insight": ""}	{}	\N	USD	micro-mta9asf2g72pz-3g2b1	\N	t	\N
+704	MICRO MTA9ASF2G72PZ-3G2E1		\N	2021-11-05 23:02:44.421193+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF2G72PZ-3G2E1", "mcode": "MICRO", "item_master_id": 212990, "market_insight": ""}	{}	\N	USD	micro-mta9asf2g72pz-3g2e1	\N	t	\N
+709	MICRO MTA18ASF2G72PZ-3G2J1		\N	2021-11-05 23:02:46.425754+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-3G2J1", "mcode": "MICRO", "item_master_id": 212995, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-3g2j1	\N	t	\N
+707	MICRO MTA36ASF2G72PZ-2G6F1		\N	2021-11-05 23:02:45.614254+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA36ASF2G72PZ-2G6F1", "mcode": "MICRO", "item_master_id": 212993, "market_insight": ""}	{}	\N	USD	micro-mta36asf2g72pz-2g6f1	\N	t	\N
+713	MICRO MTA18ASF2G72PZ-2G9J1		\N	2021-11-05 23:02:48.027931+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G9J1", "mcode": "MICRO", "item_master_id": 212999, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g9j1	\N	t	\N
+712	MICRO MTA18ASF2G72PZ-2G9E1		\N	2021-11-05 23:02:47.61722+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G9E1", "mcode": "MICRO", "item_master_id": 212998, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g9e1	\N	t	\N
+710	MICRO MTA18ASF2G72PZ-3G2J3		\N	2021-11-05 23:02:46.819897+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-3G2J3", "mcode": "MICRO", "item_master_id": 212996, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-3g2j3	\N	t	\N
+711	MICRO MTA18ASF2G72PZ-3G2R1		\N	2021-11-05 23:02:47.284007+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-3G2R1", "mcode": "MICRO", "item_master_id": 212997, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-3g2r1	\N	t	\N
+714	MICRO MTA18ASF2G72PZ-2G9J3		\N	2021-11-05 23:02:48.415634+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G9J3", "mcode": "MICRO", "item_master_id": 213000, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g9j3	\N	t	\N
+715	MICRO MTA18ASF2G72PZ-2G6D1		\N	2021-11-05 23:02:48.813122+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G6D1", "mcode": "MICRO", "item_master_id": 189122, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g6d1	\N	t	\N
+716	MICRO MTA18ASF2G72PZ-2G6E1		\N	2021-11-05 23:02:49.219983+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G6E1", "mcode": "MICRO", "item_master_id": 213001, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g6e1	\N	t	\N
+717	MICRO MTA18ASF2G72PZ-2G6J1		\N	2021-11-05 23:02:49.649015+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G6J1", "mcode": "MICRO", "item_master_id": 213002, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g6j1	\N	t	\N
+718	MICRO MTA18ASF2G72PZ-2G3A1		\N	2021-11-05 23:02:50.135428+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G3A1", "mcode": "MICRO", "item_master_id": 213003, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g3a1	\N	t	\N
+729	MICRO MTA9ASF1G72PZ-3G2E1		\N	2021-11-05 23:02:54.621703+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72PZ-3G2E1", "mcode": "MICRO", "item_master_id": 203205, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72pz-3g2e1	\N	t	\N
+719	MICRO MTA18ASF2G72PZ-2G3B1		\N	2021-11-05 23:02:50.52851+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PZ-2G3B1", "mcode": "MICRO", "item_master_id": 188166, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pz-2g3b1	\N	t	\N
+720	MICRO MTA18ASF2G72PDZ-3G2E1		\N	2021-11-05 23:02:51.009762+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PDZ-3G2E1", "mcode": "MICRO", "item_master_id": 204561, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pdz-3g2e1	\N	t	\N
+739	MICRO MTA18ASF1G72PZ-2G6F1		\N	2021-11-05 23:02:59.422752+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF1G72PZ-2G6F1", "mcode": "MICRO", "item_master_id": 213011, "market_insight": ""}	{}	\N	USD	micro-mta18asf1g72pz-2g6f1	\N	t	\N
+721	MICRO MTA18ASF2G72PDZ-2G9E1		\N	2021-11-05 23:02:51.411056+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PDZ-2G9E1", "mcode": "MICRO", "item_master_id": 199229, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pdz-2g9e1	\N	t	\N
+730	MICRO MTA9ASF1G72PZ-2G9E1		\N	2021-11-05 23:02:55.058201+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72PZ-2G9E1", "mcode": "MICRO", "item_master_id": 200027, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72pz-2g9e1	\N	t	\N
+722	MICRO MTA18ASF2G72PDZ-2G6D1		\N	2021-11-05 23:02:51.823635+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PDZ-2G6D1", "mcode": "MICRO", "item_master_id": 197606, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pdz-2g6d1	\N	t	\N
+723	MICRO MTA18ASF2G72PDZ-2G6E1		\N	2021-11-05 23:02:52.219138+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PDZ-2G6E1", "mcode": "MICRO", "item_master_id": 197844, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pdz-2g6e1	\N	t	\N
+736	MICRO MTA9ASF51272PZ-2G6B1		\N	2021-11-05 23:02:57.487838+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF51272PZ-2G6B1", "mcode": "MICRO", "item_master_id": 187904, "market_insight": ""}	{}	\N	USD	micro-mta9asf51272pz-2g6b1	\N	t	\N
+724	MICRO MTA18ASF2G72PDZ-2G3D1		\N	2021-11-05 23:02:52.620844+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72PDZ-2G3D1", "mcode": "MICRO", "item_master_id": 213004, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72pdz-2g3d1	\N	t	\N
+731	MICRO MTA9ASF1G72PZ-2G9J3		\N	2021-11-05 23:02:55.447652+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72PZ-2G9J3", "mcode": "MICRO", "item_master_id": 213006, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72pz-2g9j3	\N	t	\N
+725	MICRO MTA18ADF2G72PZ-2G6D1		\N	2021-11-05 23:02:53.019972+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ADF2G72PZ-2G6D1", "mcode": "MICRO", "item_master_id": 213005, "market_insight": ""}	{}	\N	USD	micro-mta18adf2g72pz-2g6d1	\N	t	\N
+726	MICRO MT36KSF2G72PZ-1G6E1		\N	2021-11-05 23:02:53.419829+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MT36KSF2G72PZ-1G6E1", "mcode": "MICRO", "item_master_id": 192306, "market_insight": ""}	{}	\N	USD	micro-mt36ksf2g72pz-1g6e1	\N	t	\N
+727	MICRO MT36KSF2G72PZ-1G6N1		\N	2021-11-05 23:02:53.821889+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MT36KSF2G72PZ-1G6N1", "mcode": "MICRO", "item_master_id": 193227, "market_insight": ""}	{}	\N	USD	micro-mt36ksf2g72pz-1g6n1	\N	t	\N
+732	MICRO MTA9ASF1G72PZ-2G6D1		\N	2021-11-05 23:02:55.82597+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72PZ-2G6D1", "mcode": "MICRO", "item_master_id": 196416, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72pz-2g6d1	\N	t	\N
+728	MICRO MT36KSF2G72PZ-1G6P1		\N	2021-11-05 23:02:54.216254+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MT36KSF2G72PZ-1G6P1", "mcode": "MICRO", "item_master_id": 186786, "market_insight": ""}	{}	\N	USD	micro-mt36ksf2g72pz-1g6p1	\N	t	\N
+733	MICRO MTA9ASF1G72PZ-2G3B1		\N	2021-11-05 23:02:56.218762+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72PZ-2G3B1", "mcode": "MICRO", "item_master_id": 186540, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72pz-2g3b1	\N	t	\N
+737	MICRO MTA9ASF51272PZ-2G6F1		\N	2021-11-05 23:02:57.920524+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA9ASF51272PZ-2G6F1", "mcode": "MICRO", "item_master_id": 213009, "market_insight": ""}	{}	\N	USD	micro-mta9asf51272pz-2g6f1	\N	t	\N
+734	MICRO MTA18ASF1G72PDZ-2G6B1		\N	2021-11-05 23:02:56.619594+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF1G72PDZ-2G6B1", "mcode": "MICRO", "item_master_id": 213007, "market_insight": ""}	{}	\N	USD	micro-mta18asf1g72pdz-2g6b1	\N	t	\N
+735	MICRO MTA18ASF1G72PDZ-2G6F1		\N	2021-11-05 23:02:57.093962+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF1G72PDZ-2G6F1", "mcode": "MICRO", "item_master_id": 213008, "market_insight": ""}	{}	\N	USD	micro-mta18asf1g72pdz-2g6f1	\N	t	\N
+740	MICRO MTA18ADF4G72PZ-3G2B2		\N	2021-11-05 23:02:59.82285+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ADF4G72PZ-3G2B2", "mcode": "MICRO", "item_master_id": 213012, "market_insight": ""}	{}	\N	USD	micro-mta18adf4g72pz-3g2b2	\N	t	\N
+738	MICRO MTA18ASF1G72PZ-2G6B1		\N	2021-11-05 23:02:58.888675+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ASF1G72PZ-2G6B1", "mcode": "MICRO", "item_master_id": 213010, "market_insight": ""}	{}	\N	USD	micro-mta18asf1g72pz-2g6b1	\N	t	\N
+744	MICRO MTA8ATF2G64HZ-3G2B2		\N	2021-11-05 23:03:01.916685+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF2G64HZ-3G2B2", "mcode": "MICRO", "item_master_id": 213016, "market_insight": ""}	{}	\N	USD	micro-mta8atf2g64hz-3g2b2	\N	t	\N
+743	MICRO MTA16ATF4G64HZ-3G2B4		\N	2021-11-05 23:03:01.524258+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF4G64HZ-3G2B4", "mcode": "MICRO", "item_master_id": 213015, "market_insight": ""}	{}	\N	USD	micro-mta16atf4g64hz-3g2b4	\N	t	\N
+741	MICRO MTA18ADF4G72PZ-2G9B1		\N	2021-11-05 23:03:00.73073+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "MTA18ADF4G72PZ-2G9B1", "mcode": "MICRO", "item_master_id": 213013, "market_insight": ""}	{}	\N	USD	micro-mta18adf4g72pz-2g9b1	\N	t	\N
+742	MICRO MTA18ASF4G72HZ-3G2E2		\N	2021-11-05 23:03:01.130433+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72HZ-3G2E2", "mcode": "MICRO", "item_master_id": 213014, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72hz-3g2e2	\N	t	\N
+745	MICRO MTA18ASF2G72HZ-2G6E1		\N	2021-11-05 23:03:02.322987+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72HZ-2G6E1", "mcode": "MICRO", "item_master_id": 204724, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72hz-2g6e1	\N	t	\N
+746	MICRO MTA16ATF2G64HZ-3G2E1		\N	2021-11-05 23:03:02.719215+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64HZ-3G2E1", "mcode": "MICRO", "item_master_id": 213017, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64hz-3g2e1	\N	t	\N
+747	MICRO MTA16ATF2G64HZ-3G2J1		\N	2021-11-05 23:03:03.119122+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64HZ-3G2J1", "mcode": "MICRO", "item_master_id": 213018, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64hz-3g2j1	\N	t	\N
+748	MICRO MTA16ATF2G64HZ-2G6E1		\N	2021-11-05 23:03:03.519949+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64HZ-2G6E1", "mcode": "MICRO", "item_master_id": 213019, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64hz-2g6e1	\N	t	\N
+760	MICRO MT16KTF1G64HZ-1G9N1		\N	2021-11-05 23:03:08.313286+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT16KTF1G64HZ-1G9N1", "mcode": "MICRO", "item_master_id": 213030, "market_insight": ""}	{}	\N	USD	micro-mt16ktf1g64hz-1g9n1	\N	t	\N
+749	MICRO MTA16ATF2G64HZ-2G6J1		\N	2021-11-05 23:03:03.920987+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64HZ-2G6J1", "mcode": "MICRO", "item_master_id": 213020, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64hz-2g6j1	\N	t	\N
+750	MICRO MTA9ASF1G72HZ-2G6E2		\N	2021-11-05 23:03:04.316437+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72HZ-2G6E2", "mcode": "MICRO", "item_master_id": 213021, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72hz-2g6e2	\N	t	\N
+751	MICRO MTA8ATF1G64HZ-3G2E1		\N	2021-11-05 23:03:04.718525+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64HZ-3G2E1", "mcode": "MICRO", "item_master_id": 213022, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64hz-3g2e1	\N	t	\N
+761	MICRO MT16KTF1G64HZ-1G9P1		\N	2021-11-05 23:03:08.731447+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT16KTF1G64HZ-1G9P1", "mcode": "MICRO", "item_master_id": 189484, "market_insight": ""}	{}	\N	USD	micro-mt16ktf1g64hz-1g9p1	\N	t	\N
+752	MICRO MTA8ATF1G64HZ-3G2J1		\N	2021-11-05 23:03:05.121536+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64HZ-3G2J1", "mcode": "MICRO", "item_master_id": 213023, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64hz-3g2j1	\N	t	\N
+753	MICRO MTA8ATF1G64HZ-2G6D1		\N	2021-11-05 23:03:05.518346+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64HZ-2G6D1", "mcode": "MICRO", "item_master_id": 213024, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64hz-2g6d1	\N	t	\N
+770	MICRO MTA9ASF1G72HZ-3G2R1		\N	2021-11-05 23:03:12.317014+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72HZ-3G2R1", "mcode": "MICRO", "item_master_id": 213038, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72hz-3g2r1	\N	t	\N
+754	MICRO MTA8ATF1G64HZ-2G6E1		\N	2021-11-05 23:03:05.917241+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64HZ-2G6E1", "mcode": "MICRO", "item_master_id": 191737, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64hz-2g6e1	\N	t	\N
+762	MICRO MTA4ATF51264HZ-3G2J1		\N	2021-11-05 23:03:09.13136+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF51264HZ-3G2J1", "mcode": "MICRO", "item_master_id": 213031, "market_insight": ""}	{}	\N	USD	micro-mta4atf51264hz-3g2j1	\N	t	\N
+755	MICRO MTA4ATF1G64HZ-3G2E1		\N	2021-11-05 23:03:06.327027+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF1G64HZ-3G2E1", "mcode": "MICRO", "item_master_id": 213025, "market_insight": ""}	{}	\N	USD	micro-mta4atf1g64hz-3g2e1	\N	t	\N
+756	MICRO MTA4ATF1G64HZ-3G2E2		\N	2021-11-05 23:03:06.726334+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF1G64HZ-3G2E2", "mcode": "MICRO", "item_master_id": 213026, "market_insight": ""}	{}	\N	USD	micro-mta4atf1g64hz-3g2e2	\N	t	\N
+767	MICRO MT18KSF51272HZ-1G6K2		\N	2021-11-05 23:03:11.190361+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT18KSF51272HZ-1G6K2", "mcode": "MICRO", "item_master_id": 213035, "market_insight": ""}	{}	\N	USD	micro-mt18ksf51272hz-1g6k2	\N	t	\N
+757	MICRO MT18KSF1G72HZ-1G6E2		\N	2021-11-05 23:03:07.118236+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT18KSF1G72HZ-1G6E2", "mcode": "MICRO", "item_master_id": 213027, "market_insight": ""}	{}	\N	USD	micro-mt18ksf1g72hz-1g6e2	\N	t	\N
+763	MICRO MTA4ATF51264HZ-2G6E1		\N	2021-11-05 23:03:09.522763+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF51264HZ-2G6E1", "mcode": "MICRO", "item_master_id": 191139, "market_insight": ""}	{}	\N	USD	micro-mta4atf51264hz-2g6e1	\N	t	\N
+758	MICRO MT18KSF1G72HZ-1G6P1		\N	2021-11-05 23:03:07.555412+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT18KSF1G72HZ-1G6P1", "mcode": "MICRO", "item_master_id": 213028, "market_insight": ""}	{}	\N	USD	micro-mt18ksf1g72hz-1g6p1	\N	t	\N
+759	MICRO MT16KTF1G64HZ-1G9E1		\N	2021-11-05 23:03:07.921413+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT16KTF1G64HZ-1G9E1", "mcode": "MICRO", "item_master_id": 213029, "market_insight": ""}	{}	\N	USD	micro-mt16ktf1g64hz-1g9e1	\N	t	\N
+764	MICRO MT8KTF51264HZ-1G9E5		\N	2021-11-05 23:03:09.919599+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT8KTF51264HZ-1G9E5", "mcode": "MICRO", "item_master_id": 213033, "market_insight": ""}	{}	\N	USD	micro-mt8ktf51264hz-1g9e5	\N	t	\N
+768	MICRO MTA9ASF2G72HZ-3G2B2		\N	2021-11-05 23:03:11.51438+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA9ASF2G72HZ-3G2B2", "mcode": "MICRO", "item_master_id": 213036, "market_insight": ""}	{}	\N	USD	micro-mta9asf2g72hz-3g2b2	\N	t	\N
+765	MICRO MT8KTF51264HZ-1G9N1		\N	2021-11-05 23:03:10.399003+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT8KTF51264HZ-1G9N1", "mcode": "MICRO", "item_master_id": 213034, "market_insight": ""}	{}	\N	USD	micro-mt8ktf51264hz-1g9n1	\N	t	\N
+766	MICRO MT8KTF51264HZ-1G9P1		\N	2021-11-05 23:03:10.797986+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT8KTF51264HZ-1G9P1", "mcode": "MICRO", "item_master_id": 188508, "market_insight": ""}	{}	\N	USD	micro-mt8ktf51264hz-1g9p1	\N	t	\N
+771	MICRO MTA18ASF4G72HZ-2G6B1		\N	2021-11-05 23:03:12.715016+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72HZ-2G6B1", "mcode": "MICRO", "item_master_id": 213039, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72hz-2g6b1	\N	t	\N
+769	MICRO MTA9ASF1G72HZ-3G2E4		\N	2021-11-05 23:03:11.918785+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA9ASF1G72HZ-3G2E4", "mcode": "MICRO", "item_master_id": 213037, "market_insight": ""}	{}	\N	USD	micro-mta9asf1g72hz-3g2e4	\N	t	\N
+773	MICRO MTA18ASF2G72HZ-3G2R1		\N	2021-11-05 23:03:13.518529+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72HZ-3G2R1", "mcode": "MICRO", "item_master_id": 213041, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72hz-3g2r1	\N	t	\N
+772	MICRO MTA18ASF2G72HZ-3G2E3		\N	2021-11-05 23:03:13.116955+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72HZ-3G2E3", "mcode": "MICRO", "item_master_id": 213040, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72hz-3g2e3	\N	t	\N
+775	MICRO MT4KTF25664HZ-1G9P1		\N	2021-11-05 23:03:14.318931+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT4KTF25664HZ-1G9P1", "mcode": "MICRO", "item_master_id": 213043, "market_insight": ""}	{}	\N	USD	micro-mt4ktf25664hz-1g9p1	\N	t	\N
+774	MICRO MTA16ATF4G64HZ-2G6B2		\N	2021-11-05 23:03:13.918959+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF4G64HZ-2G6B2", "mcode": "MICRO", "item_master_id": 213042, "market_insight": ""}	{}	\N	USD	micro-mta16atf4g64hz-2g6b2	\N	t	\N
+776	MICRO MTA18ASF4G72AZ-3G2B1		\N	2021-11-05 23:03:14.715046+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72AZ-3G2B1", "mcode": "MICRO", "item_master_id": 204140, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72az-3g2b1	\N	t	\N
+777	MICRO MTA18ASF4G72AZ-2G6B1		\N	2021-11-05 23:03:15.113474+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF4G72AZ-2G6B1", "mcode": "MICRO", "item_master_id": 213044, "market_insight": ""}	{}	\N	USD	micro-mta18asf4g72az-2g6b1	\N	t	\N
+778	MICRO MTA18ADF4G72AZ-2G6B2		\N	2021-11-05 23:03:15.514767+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ADF4G72AZ-2G6B2", "mcode": "MICRO", "item_master_id": 213045, "market_insight": ""}	{}	\N	USD	micro-mta18adf4g72az-2g6b2	\N	t	\N
+779	MICRO MTA16ATF4G64AZ-3G2B1		\N	2021-11-05 23:03:15.925067+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF4G64AZ-3G2B1", "mcode": "MICRO", "item_master_id": 213046, "market_insight": ""}	{}	\N	USD	micro-mta16atf4g64az-3g2b1	\N	t	\N
+797	MICRO MTA4ATF51264AZ-3G2J1		\N	2021-11-05 23:03:23.217606+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF51264AZ-3G2J1", "mcode": "MICRO", "item_master_id": 213062, "market_insight": ""}	{}	\N	USD	micro-mta4atf51264az-3g2j1	\N	t	\N
+780	MICRO MTA16ATF4G64AZ-3G2E1		\N	2021-11-05 23:03:16.32013+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF4G64AZ-3G2E1", "mcode": "MICRO", "item_master_id": 213047, "market_insight": ""}	{}	\N	USD	micro-mta16atf4g64az-3g2e1	\N	t	\N
+791	MICRO MT8KTF51264AZ-1G9P1		\N	2021-11-05 23:03:20.815255+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT8KTF51264AZ-1G9P1", "mcode": "MICRO", "item_master_id": 213057, "market_insight": ""}	{}	\N	USD	micro-mt8ktf51264az-1g9p1	\N	t	\N
+781	MICRO MTA9ASF2G72AZ-3G2B1		\N	2021-11-05 23:03:16.718963+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA9ASF2G72AZ-3G2B1", "mcode": "MICRO", "item_master_id": 210827, "market_insight": ""}	{}	\N	USD	micro-mta9asf2g72az-3g2b1	\N	t	\N
+782	MICRO MTA8ATF2G64AZ-3G2E1		\N	2021-11-05 23:03:17.118726+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF2G64AZ-3G2E1", "mcode": "MICRO", "item_master_id": 213048, "market_insight": ""}	{}	\N	USD	micro-mta8atf2g64az-3g2e1	\N	t	\N
+783	MICRO MTA18ASF2G72AZ-2G3B1		\N	2021-11-05 23:03:17.51726+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA18ASF2G72AZ-2G3B1", "mcode": "MICRO", "item_master_id": 213049, "market_insight": ""}	{}	\N	USD	micro-mta18asf2g72az-2g3b1	\N	t	\N
+792	MICRO MT4KTF25664AZ-1G9P1		\N	2021-11-05 23:03:21.219195+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT4KTF25664AZ-1G9P1", "mcode": "MICRO", "item_master_id": 213058, "market_insight": ""}	{}	\N	USD	micro-mt4ktf25664az-1g9p1	\N	t	\N
+784	MICRO MTA16ATF2G64AZ-3G2E1		\N	2021-11-05 23:03:17.916949+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64AZ-3G2E1", "mcode": "MICRO", "item_master_id": 213050, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64az-3g2e1	\N	t	\N
+785	MICRO MTA16ATF2G64AZ-3G2J1		\N	2021-11-05 23:03:18.317657+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64AZ-3G2J1", "mcode": "MICRO", "item_master_id": 213051, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64az-3g2j1	\N	t	\N
+801	MICRO MTA4ATF51264AZ-2G6E1		\N	2021-11-05 23:03:24.817744+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF51264AZ-2G6E1", "mcode": "MICRO", "item_master_id": 213064, "market_insight": ""}	{}	\N	USD	micro-mta4atf51264az-2g6e1	\N	t	\N
+786	MICRO MTA16ATF2G64AZ-2G6E1		\N	2021-11-05 23:03:18.724157+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF2G64AZ-2G6E1", "mcode": "MICRO", "item_master_id": 213052, "market_insight": ""}	{}	\N	USD	micro-mta16atf2g64az-2g6e1	\N	t	\N
+793	MICRO MT18KSF51272AZ-1G6K1		\N	2021-11-05 23:03:21.618123+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT18KSF51272AZ-1G6K1", "mcode": "MICRO", "item_master_id": 182030, "market_insight": ""}	{}	\N	USD	micro-mt18ksf51272az-1g6k1	\N	t	\N
+787	MICRO MTA8ATF1G64AZ-3G2E1		\N	2021-11-05 23:03:19.13279+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64AZ-3G2E1", "mcode": "MICRO", "item_master_id": 213053, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64az-3g2e1	\N	t	\N
+788	MICRO MTA8ATF1G64AZ-3G2J1		\N	2021-11-05 23:03:19.519283+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64AZ-3G2J1", "mcode": "MICRO", "item_master_id": 213054, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64az-3g2j1	\N	t	\N
+798	MICRO MT18JSF51272AZ-1G6K1		\N	2021-11-05 23:03:23.617914+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT18JSF51272AZ-1G6K1", "mcode": "MICRO", "item_master_id": 178199, "market_insight": ""}	{}	\N	USD	micro-mt18jsf51272az-1g6k1	\N	t	\N
+789	MICRO MTA16ATF4G64AZ-2G6B1		\N	2021-11-05 23:03:19.915206+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA16ATF4G64AZ-2G6B1", "mcode": "MICRO", "item_master_id": 213055, "market_insight": ""}	{}	\N	USD	micro-mta16atf4g64az-2g6b1	\N	t	\N
+790	MICRO MT8KTF51264AZ-1G9E1		\N	2021-11-05 23:03:20.42055+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT8KTF51264AZ-1G9E1", "mcode": "MICRO", "item_master_id": 213056, "market_insight": ""}	{}	\N	USD	micro-mt8ktf51264az-1g9e1	\N	t	\N
+794	MICRO MTA8ATF1G64AZ-2G6E1		\N	2021-11-05 23:03:22.019559+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64AZ-2G6E1", "mcode": "MICRO", "item_master_id": 206857, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64az-2g6e1	\N	t	\N
+795	MICRO MTA8ATF1G64AZ-2G6J1		\N	2021-11-05 23:03:22.426879+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA8ATF1G64AZ-2G6J1", "mcode": "MICRO", "item_master_id": 213060, "market_insight": ""}	{}	\N	USD	micro-mta8atf1g64az-2g6j1	\N	t	\N
+799	MICRO MT16KTF1G64AZ-1G9E1		\N	2021-11-05 23:03:24.014113+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT16KTF1G64AZ-1G9E1", "mcode": "MICRO", "item_master_id": 213063, "market_insight": ""}	{}	\N	USD	micro-mt16ktf1g64az-1g9e1	\N	t	\N
+796	MICRO MTA4ATF1G64AZ-3G2E1		\N	2021-11-05 23:03:22.818843+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MTA4ATF1G64AZ-3G2E1", "mcode": "MICRO", "item_master_id": 213061, "market_insight": ""}	{}	\N	USD	micro-mta4atf1g64az-3g2e1	\N	t	\N
+802	HYNIX HMA82GR7CJR4N-WM		\N	2021-11-05 23:03:25.216173+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR4N-WM", "mcode": "HYNIX", "item_master_id": 207066, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr4n-wm	\N	t	\N
+800	MICRO MT16KTF1G64AZ-1G9P1		\N	2021-11-05 23:03:24.418163+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "MT16KTF1G64AZ-1G9P1", "mcode": "MICRO", "item_master_id": 199894, "market_insight": ""}	{}	\N	USD	micro-mt16ktf1g64az-1g9p1	\N	t	\N
+804	HYNIX HMABAGR7A2R4N-XS		\N	2021-11-05 23:03:26.015788+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMABAGR7A2R4N-XS", "mcode": "HYNIX", "item_master_id": 213065, "market_insight": ""}	{}	\N	USD	hynix-hmabagr7a2r4n-xs	\N	t	\N
+803	HYNIX HMA82GR7AFR4N-UH		\N	2021-11-05 23:03:25.617627+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7AFR4N-UH", "mcode": "HYNIX", "item_master_id": 189433, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7afr4n-uh	\N	t	\N
+806	HYNIX HMAA8GR7CJR4N-XN		\N	2021-11-05 23:03:26.817086+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GR7CJR4N-XN", "mcode": "HYNIX", "item_master_id": 213067, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gr7cjr4n-xn	\N	t	\N
+805	HYNIX HMABAGR7C4R4N-XS		\N	2021-11-05 23:03:26.415593+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMABAGR7C4R4N-XS", "mcode": "HYNIX", "item_master_id": 213066, "market_insight": ""}	{}	\N	USD	hynix-hmabagr7c4r4n-xs	\N	t	\N
+807	HYNIX HMAA8GR7AJR4N-XN		\N	2021-11-05 23:03:27.234059+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GR7AJR4N-XN", "mcode": "HYNIX", "item_master_id": 199355, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gr7ajr4n-xn	\N	t	\N
+808	HYNIX HMAA8GR7AJR4N-WM		\N	2021-11-05 23:03:27.632248+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GR7AJR4N-WM", "mcode": "HYNIX", "item_master_id": 198652, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gr7ajr4n-wm	\N	t	\N
+809	HYNIX HMAA4GR7CJR8N-XN		\N	2021-11-05 23:03:28.024253+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA4GR7CJR8N-XN", "mcode": "HYNIX", "item_master_id": 213068, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gr7cjr8n-xn	\N	t	\N
+810	HYNIX HMAA4GR7AJR8N-XN		\N	2021-11-05 23:03:29.003152+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA4GR7AJR8N-XN", "mcode": "HYNIX", "item_master_id": 207374, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gr7ajr8n-xn	\N	t	\N
+811	HYNIX HMA84GR7DJR4N-XN		\N	2021-11-05 23:03:29.42763+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7DJR4N-XN", "mcode": "HYNIX", "item_master_id": 207523, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7djr4n-xn	\N	t	\N
+829	HYNIX HMA81GR7CJR8N-XN		\N	2021-11-05 23:03:36.636831+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7CJR8N-XN", "mcode": "HYNIX", "item_master_id": 213079, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7cjr8n-xn	\N	t	\N
+812	HYNIX HMA84GR7CJR4N-XN		\N	2021-11-05 23:03:29.829515+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7CJR4N-XN", "mcode": "HYNIX", "item_master_id": 199427, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7cjr4n-xn	\N	t	\N
+823	HYNIX HMA82GR7DJR4N-WM		\N	2021-11-05 23:03:34.224964+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7DJR4N-WM", "mcode": "HYNIX", "item_master_id": 213074, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7djr4n-wm	\N	t	\N
+813	HYNIX HMA84GR7CJR4N-WM		\N	2021-11-05 23:03:30.215153+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7CJR4N-WM", "mcode": "HYNIX", "item_master_id": 197788, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7cjr4n-wm	\N	t	\N
+814	HYNIX HMA84GR7DJR4N-WM		\N	2021-11-05 23:03:30.620142+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7DJR4N-WM", "mcode": "HYNIX", "item_master_id": 213069, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7djr4n-wm	\N	t	\N
+815	HYNIX HMA84GR7CJR4N-VK		\N	2021-11-05 23:03:31.029695+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7CJR4N-VK", "mcode": "HYNIX", "item_master_id": 194714, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7cjr4n-vk	\N	t	\N
+824	HYNIX HMA82GR7DJR4N-VK		\N	2021-11-05 23:03:34.614988+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7DJR4N-VK", "mcode": "HYNIX", "item_master_id": 213075, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7djr4n-vk	\N	t	\N
+816	HYNIX HMA82GR7DJR8N-XN		\N	2021-11-05 23:03:31.413475+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7DJR8N-XN", "mcode": "HYNIX", "item_master_id": 213070, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7djr8n-xn	\N	t	\N
+817	HYNIX HMA82GR7CJR8N-XN		\N	2021-11-05 23:03:31.813143+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR8N-XN", "mcode": "HYNIX", "item_master_id": 205405, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr8n-xn	\N	t	\N
+818	HYNIX HMA82GR7CJR8N-WM		\N	2021-11-05 23:03:32.216829+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR8N-WM", "mcode": "HYNIX", "item_master_id": 199255, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr8n-wm	\N	t	\N
+825	HYNIX HMA82GR7CJR4N-VK		\N	2021-11-05 23:03:35.088723+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR4N-VK", "mcode": "HYNIX", "item_master_id": 201239, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr4n-vk	\N	t	\N
+819	HYNIX HMA82GR7DJR8N-VK		\N	2021-11-05 23:03:32.616539+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7DJR8N-VK", "mcode": "HYNIX", "item_master_id": 213071, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7djr8n-vk	\N	t	\N
+820	HYNIX HMA82GR7CJR8N-VK		\N	2021-11-05 23:03:33.016143+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 198640, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr8n-vk	\N	t	\N
+830	HYNIX HMA81GR7DJR8N-VK		\N	2021-11-05 23:03:37.031443+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7DJR8N-VK", "mcode": "HYNIX", "item_master_id": 213080, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7djr8n-vk	\N	t	\N
+821	HYNIX HMA82GR7DJR4N-XN		\N	2021-11-05 23:03:33.41952+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7DJR4N-XN", "mcode": "HYNIX", "item_master_id": 213072, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7djr4n-xn	\N	t	\N
+822	HYNIX HMA82GR7CJR4N-XN		\N	2021-11-05 23:03:33.846446+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7CJR4N-XN", "mcode": "HYNIX", "item_master_id": 213073, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7cjr4n-xn	\N	t	\N
+826	HYNIX HMA81GR7CJR8N-UH		\N	2021-11-05 23:03:35.419589+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7CJR8N-UH", "mcode": "HYNIX", "item_master_id": 213076, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7cjr8n-uh	\N	t	\N
+827	HYNIX HMA81GR7CJR8N-VK		\N	2021-11-05 23:03:35.817637+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 213077, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7cjr8n-vk	\N	t	\N
+831	HYNIX HMA81GR7DJR8N-WM		\N	2021-11-05 23:03:37.41919+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7DJR8N-WM", "mcode": "HYNIX", "item_master_id": 213081, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7djr8n-wm	\N	t	\N
+828	HYNIX HMA81GR7CJR8N-WM		\N	2021-11-05 23:03:36.220074+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7CJR8N-WM", "mcode": "HYNIX", "item_master_id": 213078, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7cjr8n-wm	\N	t	\N
+834	HYNIX HMA82GR7JJR4N-VK		\N	2021-11-05 23:03:38.616967+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7JJR4N-VK", "mcode": "HYNIX", "item_master_id": 213084, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7jjr4n-vk	\N	t	\N
+832	HYNIX HMA81GR7DJR8N-XN		\N	2021-11-05 23:03:37.821435+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7DJR8N-XN", "mcode": "HYNIX", "item_master_id": 213082, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7djr8n-xn	\N	t	\N
+836	HYNIX HMA82GR7JJR8N-VK		\N	2021-11-05 23:03:39.420998+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7JJR8N-VK", "mcode": "HYNIX", "item_master_id": 213086, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7jjr8n-vk	\N	t	\N
+833	HYNIX HMA81GR7JJR8N-VK		\N	2021-11-05 23:03:38.221337+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA81GR7JJR8N-VK", "mcode": "HYNIX", "item_master_id": 213083, "market_insight": ""}	{}	\N	USD	hynix-hma81gr7jjr8n-vk	\N	t	\N
+835	HYNIX HMA82GR7JJR4N-WM		\N	2021-11-05 23:03:39.019341+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7JJR4N-WM", "mcode": "HYNIX", "item_master_id": 213085, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7jjr4n-wm	\N	t	\N
+838	HYNIX HMA84GR7CJR4N-UH		\N	2021-11-05 23:03:40.215698+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7CJR4N-UH", "mcode": "HYNIX", "item_master_id": 213088, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7cjr4n-uh	\N	t	\N
+837	HYNIX HMA82GR7JJR8N-WM		\N	2021-11-05 23:03:39.815152+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA82GR7JJR8N-WM", "mcode": "HYNIX", "item_master_id": 213087, "market_insight": ""}	{}	\N	USD	hynix-hma82gr7jjr8n-wm	\N	t	\N
+839	HYNIX HMA84GR7DJR4N-VK		\N	2021-11-05 23:03:40.616188+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7DJR4N-VK", "mcode": "HYNIX", "item_master_id": 213089, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7djr4n-vk	\N	t	\N
+840	HYNIX HMA84GR7JJR4N-VK		\N	2021-11-05 23:03:41.016691+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7JJR4N-VK", "mcode": "HYNIX", "item_master_id": 207951, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7jjr4n-vk	\N	t	\N
+841	HYNIX HMA84GR7JJR4N-WM		\N	2021-11-05 23:03:41.415956+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMA84GR7JJR4N-WM", "mcode": "HYNIX", "item_master_id": 198923, "market_insight": ""}	{}	\N	USD	hynix-hma84gr7jjr4n-wm	\N	t	\N
+842	HYNIX HMAA4GR7AJR4N-WM		\N	2021-11-05 23:03:41.8166+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA4GR7AJR4N-WM", "mcode": "HYNIX", "item_master_id": 213090, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gr7ajr4n-wm	\N	t	\N
+843	HYNIX HMAA4GR7AJR4N-XN		\N	2021-11-05 23:03:42.218501+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA4GR7AJR4N-XN", "mcode": "HYNIX", "item_master_id": 213091, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gr7ajr4n-xn	\N	t	\N
+861	HYNIX HMA81GS7CJR8N-VK		\N	2021-11-05 23:03:49.513686+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA81GS7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 213106, "market_insight": ""}	{}	\N	USD	hynix-hma81gs7cjr8n-vk	\N	t	\N
+844	HYNIX HMAA4GR7AJR8N-WM		\N	2021-11-05 23:03:42.617607+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA4GR7AJR8N-WM", "mcode": "HYNIX", "item_master_id": 213092, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gr7ajr8n-wm	\N	t	\N
+855	HYNIX HMA81GU7CJR8N-VK		\N	2021-11-05 23:03:47.125662+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA81GU7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 213100, "market_insight": ""}	{}	\N	USD	hynix-hma81gu7cjr8n-vk	\N	t	\N
+845	HYNIX HMABAGL7ABR4N-XN		\N	2021-11-05 23:03:43.117278+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMABAGL7ABR4N-XN", "mcode": "HYNIX", "item_master_id": 211089, "market_insight": ""}	{}	\N	USD	hynix-hmabagl7abr4n-xn	\N	t	\N
+846	HYNIX HMABAGL7ABR4N-WM		\N	2021-11-05 23:03:43.519161+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMABAGL7ABR4N-WM", "mcode": "HYNIX", "item_master_id": 213093, "market_insight": ""}	{}	\N	USD	hynix-hmabagl7abr4n-wm	\N	t	\N
+847	HYNIX HMAA8GL7CPR4N-XN		\N	2021-11-05 23:03:43.940858+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GL7CPR4N-XN", "mcode": "HYNIX", "item_master_id": 213094, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gl7cpr4n-xn	\N	t	\N
+856	HYNIX HMA82GS7DJR8N-XN		\N	2021-11-05 23:03:47.518823+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA82GS7DJR8N-XN", "mcode": "HYNIX", "item_master_id": 213101, "market_insight": ""}	{}	\N	USD	hynix-hma82gs7djr8n-xn	\N	t	\N
+848	HYNIX HMAA8GL7CPR4N-WM		\N	2021-11-05 23:03:44.314414+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GL7CPR4N-WM", "mcode": "HYNIX", "item_master_id": 197919, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gl7cpr4n-wm	\N	t	\N
+849	HYNIX HMAA8GL7CPR4N-VK		\N	2021-11-05 23:03:44.718709+00	10	t	12	\N	\N	t	\N	{}	{"mpn": "HMAA8GL7CPR4N-VK", "mcode": "HYNIX", "item_master_id": 199940, "market_insight": ""}	{}	\N	USD	hynix-hmaa8gl7cpr4n-vk	\N	t	\N
+850	HYNIX HMAA4GU7CJR8N-XN		\N	2021-11-05 23:03:45.152353+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMAA4GU7CJR8N-XN", "mcode": "HYNIX", "item_master_id": 213095, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gu7cjr8n-xn	\N	t	\N
+857	HYNIX HMA82GS7DJR8N-WM		\N	2021-11-05 23:03:47.920187+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA82GS7DJR8N-WM", "mcode": "HYNIX", "item_master_id": 213102, "market_insight": ""}	{}	\N	USD	hynix-hma82gs7djr8n-wm	\N	t	\N
+851	HYNIX HMAA4GU7AJR8N-WM		\N	2021-11-05 23:03:45.519654+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMAA4GU7AJR8N-WM", "mcode": "HYNIX", "item_master_id": 213096, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gu7ajr8n-wm	\N	t	\N
+852	HYNIX HMAA4GU7AJR8N-VK		\N	2021-11-05 23:03:45.91782+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMAA4GU7AJR8N-VK", "mcode": "HYNIX", "item_master_id": 213097, "market_insight": ""}	{}	\N	USD	hynix-hmaa4gu7ajr8n-vk	\N	t	\N
+862	SAM M378A1K43DB2-CVF		\N	2021-11-05 23:03:49.9188+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "M378A1K43DB2-CVF", "mcode": "SAM", "item_master_id": 212843, "market_insight": ""}	{}	\N	USD	sam-m378a1k43db2-cvf	\N	t	\N
+853	HYNIX HMAA2GU7CJR8N-XN		\N	2021-11-05 23:03:46.318941+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMAA2GU7CJR8N-XN", "mcode": "HYNIX", "item_master_id": 213098, "market_insight": ""}	{}	\N	USD	hynix-hmaa2gu7cjr8n-xn	\N	t	\N
+854	HYNIX HMA82GU7CJR8N-VK		\N	2021-11-05 23:03:46.729804+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA82GU7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 213099, "market_insight": ""}	{}	\N	USD	hynix-hma82gu7cjr8n-vk	\N	t	\N
+858	HYNIX HMA82GS7CJR8N-VK		\N	2021-11-05 23:03:48.330184+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA82GS7CJR8N-VK", "mcode": "HYNIX", "item_master_id": 213103, "market_insight": ""}	{}	\N	USD	hynix-hma82gs7cjr8n-vk	\N	t	\N
+859	HYNIX HMA82GS7DJR8N-VK		\N	2021-11-05 23:03:48.719288+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA82GS7DJR8N-VK", "mcode": "HYNIX", "item_master_id": 213104, "market_insight": ""}	{}	\N	USD	hynix-hma82gs7djr8n-vk	\N	t	\N
+860	HYNIX HMA81GS7DJR8N-XN		\N	2021-11-05 23:03:49.115961+00	10	t	15	\N	\N	t	\N	{}	{"mpn": "HMA81GS7DJR8N-XN", "mcode": "HYNIX", "item_master_id": 213105, "market_insight": ""}	{}	\N	USD	hynix-hma81gs7djr8n-xn	\N	t	\N
 \.
 
 
@@ -8383,16 +25585,9 @@ COPY public.product_producttranslation (id, seo_title, seo_description, language
 --
 
 COPY public.product_producttype (id, name, has_variants, is_shipping_required, weight, is_digital, metadata, private_metadata, slug) FROM stdin;
-2	Gold	t	t	0	f	{}	{}	gold
-4	Intel® Celeron® Processor N Series	t	t	0	f	{}	{}	intel-celeron-processor-n-series
-6	Memory Module	t	f	0	f	{}	{}	memory-module
-7	Storage Hard Drive	t	f	0	f	{}	{}	storage-hard-drive
-5	RTX	t	t	0	f	{}	{}	nvidia-geforce-gt-710
-8	GTX	t	t	0	f	{}	{}	gtx
 9	GPU	t	t	0	f	{}	{}	gpu
 10	Memory	t	t	0	f	{}	{}	memory
 11	Storage	t	t	0	f	{}	{}	storage
-3	8th Generation Intel® Core™ i3 Processors	t	t	0	f	{}	{}	8th-generation-intel-coretm-i3-processors
 12	CPU	t	t	0	f	{}	{}	cpu
 \.
 
@@ -8402,39 +25597,19 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 --
 
 COPY public.product_productvariant (id, sku, name, product_id, cost_price_amount, track_inventory, weight, metadata, private_metadata, currency, price_amount, sort_order) FROM stdin;
-46	654321		89	\N	t	\N	{}	{}	USD	59.990	2
-47	654322		89	\N	t	\N	{}	{}	USD	59.990	3
-48	654323		89	\N	t	\N	{}	{}	USD	59.990	4
-49	654324		89	\N	t	\N	{}	{}	USD	59.990	5
-50	654325		89	\N	t	\N	{}	{}	USD	59.990	6
-51	654326		89	\N	t	\N	{}	{}	USD	59.990	7
-54	654327		116	\N	t	\N	{}	{}	USD	59.990	0
-55	654329		116	\N	t	\N	{}	{}	USD	79.990	1
-56	654328		7	\N	t	\N	{}	{}	USD	39.990	1
-58	6543200		7	\N	t	\N	{}	{}	USD	39.990	2
-59	2348791		7	\N	t	\N	{}	{}	USD	49.990	3
-19	123412323	2	31	\N	t	\N	{}	{}	USD	114.990	0
-8	123456	1	8	\N	t	\N	{}	{}	USD	1200.460	0
-12	246	1	27	\N	f	\N	{}	{}	USD	79.990	0
-7	12345	4	7	\N	t	\N	{}	{}	USD	105.000	0
-13	65784	1	28	\N	t	\N	{}	{}	USD	62.560	0
-14	123123	3	30	\N	t	\N	{}	{}	USD	39.990	0
-15	978987	2	30	\N	t	\N	{}	{}	USD	36.000	1
-16	345345	1	29	\N	t	\N	{}	{}	USD	41.000	0
-17	543543	2	29	\N	t	\N	{}	{}	USD	45.000	1
-18	432432	4	27	\N	t	\N	{}	{}	USD	48.000	1
-20	4532634	1	32	\N	t	\N	{}	{}	USD	255.250	0
-21	777789		88	\N	t	\N	{}	{}	USD	999.990	0
-23	777765		89	\N	t	\N	{}	{}	USD	999.990	0
-24	777766		89	\N	t	\N	{}	{}	USD	49.990	1
-6	1234	1 day / 1	6	100.000	t	\N	{}	{}	USD	200.590	0
-9	9876		9	\N	f	\N	{}	{}	USD	201.000	0
-10	8765	1 day / 2	6	1.000	t	\N	{}	{}	USD	3.000	1
-60	2348792		7	\N	t	\N	{}	{}	USD	49.990	4
-62	2348793		120	\N	t	\N	{}	{}	USD	49.990	0
-63	92	SHANGHAI SUPERSERVER INFORMATION	121	\N	t	\N	{}	{}	USD	50.000	0
-64	2348794		120	\N	t	\N	{}	{}	USD	49.990	1
-65	2348798		120	\N	t	\N	{}	{}	USD	49.990	2
+66	209588532		148	445.000	t	\N	{}	{}	USD	500.000	0
+67	209588881		148	445.000	t	\N	{}	{}	USD	800.000	1
+68	209640268		150	85.000	t	\N	{}	{}	USD	104.990	0
+71	209636844		151	177.000	t	\N	{}	{}	USD	190.000	0
+72	209640271		151	175.000	t	\N	{}	{}	USD	188.000	0
+73	209640270		149	158.000	t	\N	{}	{}	USD	299.000	0
+74	209595233		136	2050.000	t	\N	{}	{}	USD	3999.990	0
+69	209640538		152	124.000	t	\N	{}	{}	USD	149.990	0
+70	209654653		152	124.000	t	\N	{}	{}	USD	145.000	1
+75	209765382		152	124.000	t	\N	{}	{}	USD	147.000	2
+76	210588654		488	670.000	t	\N	{}	{}	USD	900.000	0
+77	209428121		489	20.000	t	\N	{}	{}	USD	60.000	1
+78	209426249		489	14.000	t	\N	{}	{}	USD	59.000	0
 \.
 
 
@@ -8487,6 +25662,7 @@ COPY public.shipping_shippingmethodtranslation (id, language_code, name, shippin
 
 COPY public.shipping_shippingzone (id, name, countries, "default") FROM stdin;
 1	United States	US	f
+2	Canada	CA	f
 \.
 
 
@@ -8503,7 +25679,7 @@ COPY public.site_authorizationkey (id, name, key, password, site_settings_id) FR
 --
 
 COPY public.site_sitesettings (id, header_text, description, site_id, bottom_menu_id, top_menu_id, display_gross_prices, include_taxes_in_prices, charge_taxes_on_shipping, track_inventory_by_default, homepage_collection_id, default_weight_unit, automatic_fulfillment_digital_products, default_digital_max_downloads, default_digital_url_valid_days, company_address_id, default_mail_sender_address, default_mail_sender_name, customer_set_password_url) FROM stdin;
-1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	\N	kg	f	\N	\N	22	\N		\N
+1	Test Saleor - a sample shop!	RocketChips Store Description	1	2	1	t	t	t	t	\N	lb	f	\N	\N	22	\N		\N
 \.
 
 
@@ -8520,8 +25696,22 @@ COPY public.site_sitesettingstranslation (id, language_code, header_text, descri
 --
 
 COPY public.warehouse_allocation (id, quantity_allocated, order_line_id, stock_id) FROM stdin;
-1	2	8	5
-2	2	9	11
+3	1	411	33
+4	1	412	33
+5	1	413	33
+6	2	414	33
+7	3	415	33
+8	2	416	33
+9	1	417	35
+10	2	418	33
+11	1	419	36
+12	4	420	33
+13	1	421	33
+14	1	422	33
+15	4	423	33
+16	1	424	33
+17	0	425	33
+18	0	426	42
 \.
 
 
@@ -8530,35 +25720,19 @@ COPY public.warehouse_allocation (id, quantity_allocated, order_line_id, stock_i
 --
 
 COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FROM stdin;
-2	20	10	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-5	10	7	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-4	38	8	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-1	24	6	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-6	11	13	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-7	30	14	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-8	2	15	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-9	15	16	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-10	1	17	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-11	6	18	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-3	2	12	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-12	5000	19	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-13	1500	20	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-14	1000	46	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-15	1000	47	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-16	1000	48	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-17	1000	49	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-18	1000	50	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-19	1000	51	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-21	1000	54	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-22	99	55	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-23	100	56	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-25	100	58	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-26	1	59	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-27	1	60	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-28	1	62	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-29	10	63	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-30	1	64	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
-31	1	65	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+32	50	66	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+34	2000	68	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+37	588	71	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+38	3000	72	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+33	297	67	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+39	3500	73	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+40	300	74	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+35	1000	69	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+36	275	70	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+41	1000	75	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+42	10	76	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+43	4000	77	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
+44	5742	78	f4a76bcd-c628-48d5-a24d-c5b37c1e6078
 \.
 
 
@@ -8567,7 +25741,7 @@ COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id) FRO
 --
 
 COPY public.warehouse_warehouse (id, name, company_name, email, address_id, slug) FROM stdin;
-f4a76bcd-c628-48d5-a24d-c5b37c1e6078	Test Warehouse	Testing		11	test-warehouse
+f4a76bcd-c628-48d5-a24d-c5b37c1e6078	Fusion Warehouse	Testing		11	test-warehouse
 \.
 
 
@@ -8624,7 +25798,7 @@ COPY public.wishlist_wishlistitem_variants (id, wishlistitem_id, productvariant_
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 54, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 89, true);
 
 
 --
@@ -8701,7 +25875,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 327, true);
 -- Name: cart_cartline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.cart_cartline_id_seq', 10, true);
+SELECT pg_catalog.setval('public.cart_cartline_id_seq', 31, true);
 
 
 --
@@ -8715,14 +25889,14 @@ SELECT pg_catalog.setval('public.checkout_checkout_gift_cards_id_seq', 1, false)
 -- Name: csv_exportevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.csv_exportevent_id_seq', 1, false);
+SELECT pg_catalog.setval('public.csv_exportevent_id_seq', 2, true);
 
 
 --
 -- Name: csv_exportfile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.csv_exportfile_id_seq', 1, false);
+SELECT pg_catalog.setval('public.csv_exportfile_id_seq', 2, true);
 
 
 --
@@ -8813,7 +25987,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 78, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 574, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 580, true);
 
 
 --
@@ -8848,28 +26022,28 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: fusion_online_offer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 128, true);
+SELECT pg_catalog.setval('public.fusion_online_offer_id_seq', 382, true);
 
 
 --
 -- Name: fusion_online_rfqlineitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 406, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqlineitem_id_seq', 866, true);
 
 
 --
 -- Name: fusion_online_rfqresponse_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 4, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqresponse_id_seq', 6, true);
 
 
 --
 -- Name: fusion_online_rfqsubmission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 243, true);
+SELECT pg_catalog.setval('public.fusion_online_rfqsubmission_id_seq', 473, true);
 
 
 --
@@ -8883,7 +26057,14 @@ SELECT pg_catalog.setval('public.fusion_online_shippingaddress_id_seq', 36, true
 -- Name: fusion_online_vendor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 23, true);
+SELECT pg_catalog.setval('public.fusion_online_vendor_id_seq', 69, true);
+
+
+--
+-- Name: fusion_online_vendor_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
+--
+
+SELECT pg_catalog.setval('public.fusion_online_vendor_products_id_seq', 11451, true);
 
 
 --
@@ -8897,14 +26078,14 @@ SELECT pg_catalog.setval('public.giftcard_giftcard_id_seq', 1, false);
 -- Name: invoice_invoice_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.invoice_invoice_id_seq', 1, true);
+SELECT pg_catalog.setval('public.invoice_invoice_id_seq', 2, true);
 
 
 --
 -- Name: invoice_invoiceevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.invoice_invoiceevent_id_seq', 1, true);
+SELECT pg_catalog.setval('public.invoice_invoiceevent_id_seq', 2, true);
 
 
 --
@@ -8932,14 +26113,14 @@ SELECT pg_catalog.setval('public.menu_menuitemtranslation_id_seq', 1, false);
 -- Name: order_fulfillment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 1, true);
+SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 3, true);
 
 
 --
 -- Name: order_fulfillmentline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 2, true);
+SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 4, true);
 
 
 --
@@ -8953,28 +26134,28 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_order_id_seq', 237, true);
+SELECT pg_catalog.setval('public.order_order_id_seq', 471, true);
 
 
 --
 -- Name: order_ordereditem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 214, true);
+SELECT pg_catalog.setval('public.order_ordereditem_id_seq', 426, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 41, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 104, true);
 
 
 --
 -- Name: page_page_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.page_page_id_seq', 1, false);
+SELECT pg_catalog.setval('public.page_page_id_seq', 1, true);
 
 
 --
@@ -8988,35 +26169,35 @@ SELECT pg_catalog.setval('public.page_pagetranslation_id_seq', 1, false);
 -- Name: payment_paymentmethod_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.payment_paymentmethod_id_seq', 7, true);
+SELECT pg_catalog.setval('public.payment_paymentmethod_id_seq', 21, true);
 
 
 --
 -- Name: payment_transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.payment_transaction_id_seq', 7, true);
+SELECT pg_catalog.setval('public.payment_transaction_id_seq', 21, true);
 
 
 --
 -- Name: plugins_pluginconfiguration_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 1, true);
+SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 2, true);
 
 
 --
 -- Name: product_assignedproductattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 409, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_id_seq', 2369, true);
 
 
 --
 -- Name: product_assignedproductattribute_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 592, true);
+SELECT pg_catalog.setval('public.product_assignedproductattribute_values_id_seq', 2540, true);
 
 
 --
@@ -9037,7 +26218,7 @@ SELECT pg_catalog.setval('public.product_assignedvariantattribute_values_id_seq'
 -- Name: product_attributechoicevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 158, true);
+SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 281, true);
 
 
 --
@@ -9051,7 +26232,7 @@ SELECT pg_catalog.setval('public.product_attributechoicevaluetranslation_id_seq'
 -- Name: product_attributeproduct_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 88, true);
+SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 91, true);
 
 
 --
@@ -9065,7 +26246,7 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 12, true);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 19, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 23, true);
 
 
 --
@@ -9114,14 +26295,14 @@ SELECT pg_catalog.setval('public.product_digitalcontenturl_id_seq', 1, false);
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 134, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 864, true);
 
 
 --
 -- Name: product_productattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productattribute_id_seq', 30, true);
+SELECT pg_catalog.setval('public.product_productattribute_id_seq', 32, true);
 
 
 --
@@ -9156,7 +26337,7 @@ SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 1, false);
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 65, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 78, true);
 
 
 --
@@ -9191,7 +26372,7 @@ SELECT pg_catalog.setval('public.shipping_shippingmethodtranslation_id_seq', 1, 
 -- Name: shipping_shippingzone_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.shipping_shippingzone_id_seq', 1, true);
+SELECT pg_catalog.setval('public.shipping_shippingzone_id_seq', 2, true);
 
 
 --
@@ -9219,28 +26400,28 @@ SELECT pg_catalog.setval('public.site_sitesettingstranslation_id_seq', 1, false)
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 82, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 163, true);
 
 
 --
 -- Name: userprofile_user_addresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 10, true);
+SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 55, true);
 
 
 --
 -- Name: userprofile_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 5, true);
+SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 7, true);
 
 
 --
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 36, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 48, true);
 
 
 --
@@ -9254,14 +26435,14 @@ SELECT pg_catalog.setval('public.userprofile_user_user_permissions_id_seq', 1, f
 -- Name: warehouse_allocation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 2, true);
+SELECT pg_catalog.setval('public.warehouse_allocation_id_seq', 18, true);
 
 
 --
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: saleor
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 31, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 44, true);
 
 
 --
@@ -9816,6 +26997,22 @@ ALTER TABLE ONLY public.fusion_online_shippingaddress
 
 ALTER TABLE ONLY public.fusion_online_vendor
     ADD CONSTRAINT fusion_online_vendor_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fusion_online_vendor_products fusion_online_vendor_pro_vendor_id_product_id_f2ea9732_uniq; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor_products
+    ADD CONSTRAINT fusion_online_vendor_pro_vendor_id_product_id_f2ea9732_uniq UNIQUE (vendor_id, product_id);
+
+
+--
+-- Name: fusion_online_vendor_products fusion_online_vendor_products_pkey; Type: CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor_products
+    ADD CONSTRAINT fusion_online_vendor_products_pkey PRIMARY KEY (id);
 
 
 --
@@ -11102,6 +28299,20 @@ CREATE INDEX fusion_online_shippingaddress_address_id_575e32e6 ON public.fusion_
 
 
 --
+-- Name: fusion_online_vendor_products_product_id_f0b7455c; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_vendor_products_product_id_f0b7455c ON public.fusion_online_vendor_products USING btree (product_id);
+
+
+--
+-- Name: fusion_online_vendor_products_vendor_id_1c5caa5a; Type: INDEX; Schema: public; Owner: saleor
+--
+
+CREATE INDEX fusion_online_vendor_products_vendor_id_1c5caa5a ON public.fusion_online_vendor_products USING btree (vendor_id);
+
+
+--
 -- Name: giftcard_giftcard_code_f6fb6be8_like; Type: INDEX; Schema: public; Owner: saleor
 --
 
@@ -12320,6 +29531,22 @@ ALTER TABLE ONLY public.fusion_online_shippingaddress
 
 
 --
+-- Name: fusion_online_vendor_products fusion_online_vendor_product_id_f0b7455c_fk_product_p; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor_products
+    ADD CONSTRAINT fusion_online_vendor_product_id_f0b7455c_fk_product_p FOREIGN KEY (product_id) REFERENCES public.product_product(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: fusion_online_vendor_products fusion_online_vendor_vendor_id_1c5caa5a_fk_fusion_on; Type: FK CONSTRAINT; Schema: public; Owner: saleor
+--
+
+ALTER TABLE ONLY public.fusion_online_vendor_products
+    ADD CONSTRAINT fusion_online_vendor_vendor_id_1c5caa5a_fk_fusion_on FOREIGN KEY (vendor_id) REFERENCES public.fusion_online_vendor(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
 -- Name: giftcard_giftcard giftcard_giftcard_user_id_ce2401b5_fk_account_user_id; Type: FK CONSTRAINT; Schema: public; Owner: saleor
 --
 
@@ -13052,6 +30279,729 @@ ALTER TABLE ONLY public.wishlist_wishlistitem
 --
 
 GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT USAGE ON SCHEMA public TO data_analyst;
+
+
+--
+-- Name: TABLE account_address; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_address TO data_analyst;
+
+
+--
+-- Name: TABLE account_customerevent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_customerevent TO data_analyst;
+
+
+--
+-- Name: TABLE account_customernote; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_customernote TO data_analyst;
+
+
+--
+-- Name: TABLE app_app; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.app_app TO data_analyst;
+
+
+--
+-- Name: TABLE app_app_permissions; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.app_app_permissions TO data_analyst;
+
+
+--
+-- Name: TABLE app_apptoken; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.app_apptoken TO data_analyst;
+
+
+--
+-- Name: TABLE account_staffnotificationrecipient; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_staffnotificationrecipient TO data_analyst;
+
+
+--
+-- Name: TABLE account_user; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_user TO data_analyst;
+
+
+--
+-- Name: TABLE account_user_addresses; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_user_addresses TO data_analyst;
+
+
+--
+-- Name: TABLE account_user_groups; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_user_groups TO data_analyst;
+
+
+--
+-- Name: TABLE account_user_user_permissions; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.account_user_user_permissions TO data_analyst;
+
+
+--
+-- Name: TABLE app_appinstallation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.app_appinstallation TO data_analyst;
+
+
+--
+-- Name: TABLE app_appinstallation_permissions; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.app_appinstallation_permissions TO data_analyst;
+
+
+--
+-- Name: TABLE auth_group; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.auth_group TO data_analyst;
+
+
+--
+-- Name: TABLE auth_group_permissions; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.auth_group_permissions TO data_analyst;
+
+
+--
+-- Name: TABLE auth_permission; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.auth_permission TO data_analyst;
+
+
+--
+-- Name: TABLE checkout_checkoutline; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.checkout_checkoutline TO data_analyst;
+
+
+--
+-- Name: TABLE checkout_checkout; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.checkout_checkout TO data_analyst;
+
+
+--
+-- Name: TABLE checkout_checkout_gift_cards; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.checkout_checkout_gift_cards TO data_analyst;
+
+
+--
+-- Name: TABLE csv_exportevent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.csv_exportevent TO data_analyst;
+
+
+--
+-- Name: TABLE csv_exportfile; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.csv_exportfile TO data_analyst;
+
+
+--
+-- Name: TABLE discount_sale; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_sale TO data_analyst;
+
+
+--
+-- Name: TABLE discount_sale_categories; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_sale_categories TO data_analyst;
+
+
+--
+-- Name: TABLE discount_sale_collections; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_sale_collections TO data_analyst;
+
+
+--
+-- Name: TABLE discount_sale_products; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_sale_products TO data_analyst;
+
+
+--
+-- Name: TABLE discount_saletranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_saletranslation TO data_analyst;
+
+
+--
+-- Name: TABLE discount_voucher; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_voucher TO data_analyst;
+
+
+--
+-- Name: TABLE discount_voucher_categories; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_voucher_categories TO data_analyst;
+
+
+--
+-- Name: TABLE discount_voucher_collections; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_voucher_collections TO data_analyst;
+
+
+--
+-- Name: TABLE discount_voucher_products; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_voucher_products TO data_analyst;
+
+
+--
+-- Name: TABLE discount_vouchercustomer; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_vouchercustomer TO data_analyst;
+
+
+--
+-- Name: TABLE discount_vouchertranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.discount_vouchertranslation TO data_analyst;
+
+
+--
+-- Name: TABLE django_content_type; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_content_type TO data_analyst;
+
+
+--
+-- Name: TABLE django_migrations; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_migrations TO data_analyst;
+
+
+--
+-- Name: TABLE django_prices_openexchangerates_conversionrate; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_prices_openexchangerates_conversionrate TO data_analyst;
+
+
+--
+-- Name: TABLE django_prices_vatlayer_ratetypes; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_prices_vatlayer_ratetypes TO data_analyst;
+
+
+--
+-- Name: TABLE django_prices_vatlayer_vat; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_prices_vatlayer_vat TO data_analyst;
+
+
+--
+-- Name: TABLE django_site; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.django_site TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_offer; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_offer TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_rfqlineitem; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_rfqlineitem TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_rfqresponse; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_rfqresponse TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_rfqsubmission; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_rfqsubmission TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_shippingaddress; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_shippingaddress TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_vendor; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_vendor TO data_analyst;
+
+
+--
+-- Name: TABLE fusion_online_vendor_products; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.fusion_online_vendor_products TO data_analyst;
+
+
+--
+-- Name: TABLE giftcard_giftcard; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.giftcard_giftcard TO data_analyst;
+
+
+--
+-- Name: TABLE invoice_invoice; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.invoice_invoice TO data_analyst;
+
+
+--
+-- Name: TABLE invoice_invoiceevent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.invoice_invoiceevent TO data_analyst;
+
+
+--
+-- Name: TABLE menu_menu; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.menu_menu TO data_analyst;
+
+
+--
+-- Name: TABLE menu_menuitem; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.menu_menuitem TO data_analyst;
+
+
+--
+-- Name: TABLE menu_menuitemtranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.menu_menuitemtranslation TO data_analyst;
+
+
+--
+-- Name: TABLE order_fulfillment; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_fulfillment TO data_analyst;
+
+
+--
+-- Name: TABLE order_fulfillmentline; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_fulfillmentline TO data_analyst;
+
+
+--
+-- Name: TABLE order_order; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_order TO data_analyst;
+
+
+--
+-- Name: TABLE order_order_gift_cards; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_order_gift_cards TO data_analyst;
+
+
+--
+-- Name: TABLE order_orderline; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_orderline TO data_analyst;
+
+
+--
+-- Name: TABLE order_orderevent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.order_orderevent TO data_analyst;
+
+
+--
+-- Name: TABLE page_page; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.page_page TO data_analyst;
+
+
+--
+-- Name: TABLE page_pagetranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.page_pagetranslation TO data_analyst;
+
+
+--
+-- Name: TABLE payment_payment; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.payment_payment TO data_analyst;
+
+
+--
+-- Name: TABLE payment_transaction; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.payment_transaction TO data_analyst;
+
+
+--
+-- Name: TABLE plugins_pluginconfiguration; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.plugins_pluginconfiguration TO data_analyst;
+
+
+--
+-- Name: TABLE product_assignedproductattribute; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_assignedproductattribute TO data_analyst;
+
+
+--
+-- Name: TABLE product_assignedproductattribute_values; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_assignedproductattribute_values TO data_analyst;
+
+
+--
+-- Name: TABLE product_assignedvariantattribute; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_assignedvariantattribute TO data_analyst;
+
+
+--
+-- Name: TABLE product_assignedvariantattribute_values; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_assignedvariantattribute_values TO data_analyst;
+
+
+--
+-- Name: TABLE product_attribute; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attribute TO data_analyst;
+
+
+--
+-- Name: TABLE product_attributevalue; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attributevalue TO data_analyst;
+
+
+--
+-- Name: TABLE product_attributevaluetranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attributevaluetranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_attributeproduct; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attributeproduct TO data_analyst;
+
+
+--
+-- Name: TABLE product_attributetranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attributetranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_attributevariant; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_attributevariant TO data_analyst;
+
+
+--
+-- Name: TABLE product_category; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_category TO data_analyst;
+
+
+--
+-- Name: TABLE product_categorytranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_categorytranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_collection; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_collection TO data_analyst;
+
+
+--
+-- Name: TABLE product_collectionproduct; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_collectionproduct TO data_analyst;
+
+
+--
+-- Name: TABLE product_collectiontranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_collectiontranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_digitalcontent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_digitalcontent TO data_analyst;
+
+
+--
+-- Name: TABLE product_digitalcontenturl; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_digitalcontenturl TO data_analyst;
+
+
+--
+-- Name: TABLE product_product; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_product TO data_analyst;
+
+
+--
+-- Name: TABLE product_producttype; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_producttype TO data_analyst;
+
+
+--
+-- Name: TABLE product_productimage; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_productimage TO data_analyst;
+
+
+--
+-- Name: TABLE product_producttranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_producttranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_productvariant; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_productvariant TO data_analyst;
+
+
+--
+-- Name: TABLE product_productvarianttranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_productvarianttranslation TO data_analyst;
+
+
+--
+-- Name: TABLE product_variantimage; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.product_variantimage TO data_analyst;
+
+
+--
+-- Name: TABLE rest_framework_api_key_apikey; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.rest_framework_api_key_apikey TO data_analyst;
+
+
+--
+-- Name: TABLE shipping_shippingmethod; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.shipping_shippingmethod TO data_analyst;
+
+
+--
+-- Name: TABLE shipping_shippingmethodtranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.shipping_shippingmethodtranslation TO data_analyst;
+
+
+--
+-- Name: TABLE shipping_shippingzone; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.shipping_shippingzone TO data_analyst;
+
+
+--
+-- Name: TABLE site_authorizationkey; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.site_authorizationkey TO data_analyst;
+
+
+--
+-- Name: TABLE site_sitesettings; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.site_sitesettings TO data_analyst;
+
+
+--
+-- Name: TABLE site_sitesettingstranslation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.site_sitesettingstranslation TO data_analyst;
+
+
+--
+-- Name: TABLE warehouse_allocation; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.warehouse_allocation TO data_analyst;
+
+
+--
+-- Name: TABLE warehouse_stock; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.warehouse_stock TO data_analyst;
+
+
+--
+-- Name: TABLE warehouse_warehouse; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.warehouse_warehouse TO data_analyst;
+
+
+--
+-- Name: TABLE warehouse_warehouse_shipping_zones; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.warehouse_warehouse_shipping_zones TO data_analyst;
+
+
+--
+-- Name: TABLE webhook_webhook; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.webhook_webhook TO data_analyst;
+
+
+--
+-- Name: TABLE webhook_webhookevent; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.webhook_webhookevent TO data_analyst;
+
+
+--
+-- Name: TABLE wishlist_wishlist; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.wishlist_wishlist TO data_analyst;
+
+
+--
+-- Name: TABLE wishlist_wishlistitem; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.wishlist_wishlistitem TO data_analyst;
+
+
+--
+-- Name: TABLE wishlist_wishlistitem_variants; Type: ACL; Schema: public; Owner: saleor
+--
+
+GRANT SELECT ON TABLE public.wishlist_wishlistitem_variants TO data_analyst;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: saleor
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE saleor IN SCHEMA public REVOKE ALL ON TABLES  FROM saleor;
+ALTER DEFAULT PRIVILEGES FOR ROLE saleor IN SCHEMA public GRANT SELECT ON TABLES  TO data_analyst;
 
 
 --

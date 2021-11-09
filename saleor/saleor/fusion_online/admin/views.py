@@ -4,6 +4,7 @@ from ...product.models import Product, Attribute, AttributeValue
 from ...product.utils.attributes import associate_attribute_values_to_instance
 from django.utils.text import slugify
 from .tasks import test_task
+from .models import ImportRecord
 import csv
 
 def decode_utf8(input_iterator):
@@ -33,10 +34,15 @@ def upload_file(request):
             #         product.name = row['name']
             #     product.save()
             #     print("--PRODUCT NAME UPDATED--")
+            #     # Update product slug?? (slugify new product name? - slug appears in storefront url on pdp)
+            #     # Update product description
+            #     # Update global metadata
+            #     # Update product-type specific metadata
+            #     # Update global attributes?? (or just manually enter them using the admin dashboard)
+            #     # Update product-type specific attributes?? (or just manually enter them using the admin dashboard)
+            #     # Update global attribute values
+            #     # Update product-type specific attribute values
 
-            #     # Update product metadata
-
-            #     # Update Attributes
             #     attr_slugs = ['cpu_cache', 'cpu_lithography']
             #     for attr_slug in attr_slugs:
             #         if row.get(attr_slug):
