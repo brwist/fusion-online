@@ -5,7 +5,9 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.3
 jobs:
   frontend-deploy:
-    executor: aws-cli/default
+    executor:
+      name: aws-cli/default
+      python-version: "3.7-node"
     steps:
       - checkout
       - aws-cli/setup:
