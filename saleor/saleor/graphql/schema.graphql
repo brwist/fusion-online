@@ -118,6 +118,12 @@ type AccountUpdateMeta {
   user: User
 }
 
+type AddCompleteRegistrationForm {
+  errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
+  user: User
+  accountErrors: [AccountError!]!
+}
+
 type AddStripePaymentMethod {
   errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
   user: User
@@ -1263,6 +1269,23 @@ type CollectionUpdatePrivateMeta {
   errors: [Error!]! @deprecated(reason: "Use typed errors with error codes. This field will be removed after 2020-07-31.")
   productErrors: [ProductError!]!
   collection: Collection
+}
+
+input CompleteRegistrationInput {
+  customerAddress: String!
+  city: String!
+  country: String!
+  countryArea: String!
+  postalCode: String!
+  taxId: String
+  vatId: String
+  shippingName: String!
+  shippingAddress: String!
+  shippingCity: String!
+  shippingCountry: String!
+  shippingCountryArea: String!
+  shippingPostalCode: String!
+  exportComplianceCheck: String!
 }
 
 type ConfigurationItem {
@@ -2854,6 +2877,7 @@ type Mutation {
   accountUpdateMeta(input: MetaInput!): AccountUpdateMeta @deprecated(reason: "Use the `updateMetadata` mutation. This field will be removed after 2020-07-31.")
   addStripePaymentMethod(isDefault: Boolean, paymentMethodId: String!): AddStripePaymentMethod
   removeStripePaymentMethod(paymentMethodId: String!): RemoveStripePaymentMethod
+  addCompleteRegistrationForm(input: CompleteRegistrationInput!): AddCompleteRegistrationForm
   addressCreate(input: AddressInput!, userId: ID!): AddressCreate
   addressUpdate(id: ID!, input: AddressInput!): AddressUpdate
   addressDelete(id: ID!): AddressDelete

@@ -33,6 +33,7 @@ from .mutations.account import (
     RemoveStripePaymentMethod,
     ConfirmEmailChange,
     RequestEmailChange,
+    AddCompleteRegistrationForm
 )
 from .mutations.base import (
     ConfirmAccount,
@@ -266,6 +267,12 @@ class AccountMutations(graphene.ObjectType):
     remove_stripe_payment_method = RemoveStripePaymentMethod.Field(
         description=(
             "Allows customer to remove stripe payment method id to private metadata for CC retrieval."
+        )
+    )
+
+    add_complete_registration_form = AddCompleteRegistrationForm.Field(
+        description=(
+            "The complete registration form's field values will be stored in private metadata as well as synced with Hubspot."
         )
     )
 

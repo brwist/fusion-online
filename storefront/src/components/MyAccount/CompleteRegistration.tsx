@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { useForm, SubmitHandler, useWatch, useFieldArray } from 'react-hook-form';
-
-import { User, AddressInput, CountryCode } from '../../generated/graphql';
+import { useForm, useWatch } from 'react-hook-form';
+import { gql, useMutation } from '@apollo/client';
+import { User, AddressInput, CompleteRegistrationInput } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
 
-import {
-  jobTitleOptions,
-  revenueOptions,
-  numberOfEmployeesOptions,
-  descriptionOfBusinessOptions,
-} from '../Forms/misc/options';
+// import {
+//   jobTitleOptions,
+//   revenueOptions,
+//   numberOfEmployeesOptions,
+//   descriptionOfBusinessOptions,
+// } from '../Forms/misc/options';
 
 interface CompleteRegistrationProps {}
 
@@ -41,6 +41,16 @@ type AddressMutationInput = {
   input: AddressInput;
 };
 
+const ADD_COMPLETE_REGISTRATION_FORM = gql`
+  mutation addCompleteRegistrationForm($input: CompleteRegistrationInput!) {
+    addCompleteRegistrationForm(input: $input) {
+      user {
+        id
+      }
+    }
+  }
+`;
+
 export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...props }) => {
   const {
     register,
@@ -50,6 +60,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     getValues,
     setValue,
   } = useForm<FormValues>();
+  const [submitCompleteRegistration, submitCompleteRegistrationResponse] = useMutation(ADD_COMPLETE_REGISTRATION_FORM);
 
   // Additional fields
   const [nonDisclosure, setNonDisclosure] = useState(false);
@@ -57,7 +68,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   // const [businessDescription, setBusinessDescription] = useState([]);
   const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
 
-  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck;
+  // const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck;
+  const disableSubmit = false;
 
   // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
   //   control,
@@ -210,6 +222,10 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
   console.log('errors: ', errors);
 
+  const onSubmit = async (data) => {
+    console.log('data: ', data);
+  };
+
   return (
     <div>
       <header className="mb-4 pb-4 border-bottom d-flex justify-content-between align-items-center">
@@ -225,7 +241,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
         </Col>
       </Row>
 
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Row className="justify-content-center">
           <Col xl={6}>
             <h3 className="h4 font-weight-bold">Business Information</h3>

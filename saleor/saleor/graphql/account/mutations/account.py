@@ -29,6 +29,7 @@ from saleor.plugins.manager import get_plugins_manager
 import json
 from saleor.fusion_online.hubspot.registration import HubspotRegistration
 from saleor.fusion_online.hubspot.email import HubspotEmails
+import datetime
 
 
 class AccountRegisterInput(graphene.InputObjectType):
@@ -491,6 +492,57 @@ class RemoveStripePaymentMethod(BaseMutation):
                 data['payment_method_id'])
             user.save()
         return RemoveStripePaymentMethod(user=user)
+
+
+class CompleteRegistrationInput(graphene.InputObjectType):
+    customerAddress = graphene.String(required=True)
+    city = graphene.String(required=True)
+    country = graphene.String(required=True)
+    countryArea = graphene.String(required=True)
+    postalCode = graphene.String(required=True)
+    taxId = graphene.String()
+    vatId = graphene.String()
+    shippingName = graphene.String(required=True)
+    shippingAddress = graphene.String(required=True)
+    shippingCity = graphene.String(required=True)
+    shippingCountry = graphene.String(required=True)
+    shippingCountryArea = graphene.String(required=True)
+    shippingPostalCode = graphene.String(required=True)
+    exportComplianceCheck = graphene.String(required=True)
+
+
+class AddCompleteRegistrationForm(BaseMutation):
+    user = graphene.Field(User, description="An updated user instance.")
+
+    """
+    The complete registration form's field values will be stored
+    in private metadata as well as synced with Hubspot.
+    """
+    class Meta:
+        description = "Updates private metadata of the logged-in user."
+        model = models.User
+        public = False
+        error_type_class = AccountError
+        error_type_field = "account_errors"
+
+    class Arguments:
+        input = CompleteRegistrationInput(required=True)
+
+    @classmethod
+    def check_permissions(cls, context):
+        return context.user.is_authenticated
+
+    @classmethod
+    def get_instance(cls, info, **data):
+        return info.context.user
+
+    @classmethod
+    def perform_mutation(cls, _root, info, **data):
+        user = info.context.user
+        data['submitted'] = datetime.datetime.now()
+        user.private_metadata['registrationForm2'] = json.dumps(data)
+        user.save()
+        return AddCompleteRegistrationForm(user=user)
 
 
 class RequestEmailChange(BaseMutation):
