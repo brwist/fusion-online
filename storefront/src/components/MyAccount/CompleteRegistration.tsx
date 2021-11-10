@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
+import { useForm, SubmitHandler, useWatch, useFieldArray } from 'react-hook-form';
 
 import { User, AddressInput, CountryCode } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
 
+import {
+  jobTitleOptions,
+  revenueOptions,
+  numberOfEmployeesOptions,
+  descriptionOfBusinessOptions,
+} from '../Forms/misc/options';
+
 interface CompleteRegistrationProps {}
 
 type FormValues = {
+  jobTitle: string;
   companyName: string;
   companyType: string;
   companyRevenue: number;
@@ -45,7 +53,6 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-
     control,
     getValues,
     setValue,
@@ -54,6 +61,15 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   // Additional fields
   const [nonDisclosure, setNonDisclosure] = useState(false);
   const [terms, setTerms] = useState(false);
+  const [businessDescription, setBusinessDescription] = useState([]);
+  const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
+
+  const disableSubmit = !nonDisclosure || !terms || businessDescription.length === 0 || !exportComplianceCheck;
+
+  // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  //   control,
+  //   name: 'businessDescription',
+  // });
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
@@ -177,6 +193,32 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
   };
 
+  const handleToggleBusinessDescription = (e) => {
+    const val = e.target.value;
+    const checked = e.target.checked;
+    if (checked) {
+      setBusinessDescription([...businessDescription, val]);
+    } else {
+      let newBusinessDescription = businessDescription.filter((x) => x !== val);
+      setBusinessDescription(newBusinessDescription);
+    }
+  };
+
+  const businessDescriptionCheckbox = ({ value, label }, index) => {
+    return (
+      <Col sm={6} key={index}>
+        <Form.Check
+          custom
+          className="mb-2"
+          type="checkbox"
+          onChange={handleToggleBusinessDescription}
+          id={value}
+          label={label}
+        />
+      </Col>
+    );
+  };
+
   console.log('errors: ', errors);
 
   return (
@@ -200,9 +242,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             <h3 className="h4 font-weight-bold">Business Information</h3>
             <Form.Group>
               <Form.Label>Job Title</Form.Label>
-              <Form.Control as="select" custom>
-                <option>Please Select</option>
-                <option>Option 2</option>
+              <Form.Control as="select" custom {...register('jobTitle', { required: true })}>
+                {jobTitleOptions()}
               </Form.Control>
             </Form.Group>
 
@@ -246,15 +287,13 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             <Form.Group>
               <Form.Label>Revenue</Form.Label>
               <Form.Control as="select" custom required>
-                <option>Please Select</option>
-                <option>Option 2</option>
+                {revenueOptions()}
               </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Number of Employees</Form.Label>
               <Form.Control as="select" custom required>
-                <option>Please Select</option>
-                <option>Option 2</option>
+                {numberOfEmployeesOptions()}
               </Form.Control>
             </Form.Group>
 
@@ -262,42 +301,9 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
               <Col xs={12}>
                 <Form.Label>Description of Business (select all that apply)</Form.Label>
               </Col>
-              <Col sm={6}>
-                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check custom className="mb-2" type="checkbox" name="businessDescription" label="Aerospace" />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
+              {descriptionOfBusinessOptions().map((option, index) => {
+                return businessDescriptionCheckbox(option, index);
+              })}
             </Form.Group>
           </Col>
         </Row>
@@ -388,21 +394,25 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 custom
                 className="mb-2"
                 type="radio"
-                name="exportComplianceCheck"
                 label="on behalf of itself, its subsidiaries, and affiliates"
-                // required
+                id="exportComplianceCheck-1"
+                value="1"
+                checked={exportComplianceCheck == '1'}
+                onChange={() => setExportComplianceCheck('1')}
               />
               <Form.Check
                 custom
                 className="mb-2"
                 type="radio"
-                name="exportComplianceCheck"
                 label="only for the locations in the country specified in the address line below"
-                // required
+                id="exportComplianceCheck-2"
+                value="2"
+                checked={exportComplianceCheck == '2'}
+                onChange={() => setExportComplianceCheck('2')}
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={disableSubmit}>
               Complete
             </Button>
           </Col>
