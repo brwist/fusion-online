@@ -539,7 +539,7 @@ class AddCompleteRegistrationForm(BaseMutation):
     @classmethod
     def perform_mutation(cls, _root, info, **data):
         user = info.context.user
-        data['submitted'] = datetime.datetime.now()
+        data['submitted'] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         user.private_metadata['registrationForm2'] = json.dumps(data)
         user.save()
         return AddCompleteRegistrationForm(user=user)

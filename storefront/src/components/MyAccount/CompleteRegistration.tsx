@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm, useWatch } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
-import { User, AddressInput, CompleteRegistrationInput } from '../../generated/graphql';
+import { User, AddressInput } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
@@ -68,8 +68,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   // const [businessDescription, setBusinessDescription] = useState([]);
   const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
 
-  // const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck;
-  const disableSubmit = false;
+  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck || isSubmitting;
+  // const disableSubmit = false;
 
   // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
   //   control,
@@ -222,8 +222,15 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
   console.log('errors: ', errors);
 
+  useEffect(() => {
+    if (submitCompleteRegistrationResponse.data) {
+      console.log('submitCompleteRegistrationResponse.data: ', submitCompleteRegistrationResponse.data);
+    }
+  }, [submitCompleteRegistrationResponse]);
+
   const onSubmit = async (data) => {
-    console.log('data: ', data);
+    data['exportComplianceCheck'] = exportComplianceCheck;
+    submitCompleteRegistration({ variables: { input: data } });
   };
 
   return (
