@@ -243,6 +243,7 @@ export const GET_USER_ORDER_BY_TOKEN = gql`
     product {
       id
       name
+      metadata
       productType {
         id
         isShippingRequired

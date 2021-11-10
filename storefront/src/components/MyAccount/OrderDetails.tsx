@@ -8,6 +8,7 @@ import { faBookmark as farFaBookmark } from '@fortawesome/pro-regular-svg-icons'
 // eslint-disable-next-line
 import { faBookmark as fasFaBookmark } from '@fortawesome/pro-solid-svg-icons';
 import {useUserOrderByTokenQuery} from '../../graphql/account'
+import manufacturers from '../../utils/manufacturers.json'
 
 import './myaccount.scss';
 
@@ -26,6 +27,8 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
   const {id} = useParams<{id: string}>()
   const {data} = useUserOrderByTokenQuery({variables: {token: id}})
   console.log("order details", data)
+  const getMetadataValue = (key, product) => product.metadata?.find(pair => pair.key === key)?.value
+
   return (
     <div className="order-details">
       <header className="my-3 d-flex justify-content-between align-items-center">
@@ -33,7 +36,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
           <Button variant="link" className="btn-see-all" onClick={() => history.push(getAllOrdersPath())}>SEE ALL ORDERS</Button>
           <h2 className="h3 mt-1 mb-0">Order Details</h2>
         </div>
-        <Button variant="primary">
+        <Button variant="primary" disabled>
           Download Invoice
         </Button>
       </header>
@@ -45,7 +48,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               <strong>Order Number:</strong> {data?.orderByToken?.number}
             </Col>
             <Col lg={4}>
-              <strong>Purchase Date:</strong> {moment(data?.orderByToken?.created).format('MMM DD, YYY')}
+              <strong>Purchase Date:</strong> {moment(data?.orderByToken?.created).format('MMM DD, YYYY')}
             </Col>
             <Col lg={4} className="text-right">
               <strong>Total:</strong> ${data?.orderByToken?.total?.gross.amount}
@@ -129,7 +132,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
               {data?.orderByToken?.shippingAddress?.city}, {data?.orderByToken?.shippingAddress?.countryArea} {data?.orderByToken?.shippingAddress?.postalCode}, {data?.orderByToken?.shippingAddress?.country.code}
             </Col>
             <Col lg={4} className="text-right">
-              <Button variant="primary">
+              <Button variant="primary" disabled>
                 Track Package
               </Button>
             </Col>
@@ -137,13 +140,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
 
           <hr />
             {data?.orderByToken?.lines.map((line) => {
+                const mcode = getMetadataValue("mcode", line?.variant.product)
+                const manufacturer = manufacturers.find(m => m.mcode === mcode)?.manufacturer
               return (
                 <Row key={line?.id} className="mb-5">
                   <Col lg={4}>
                     <div className="small">
-                      <strong className="text-uppercase">{line?.variant?.product?.attributes?.find(({attribute}) => attribute.slug === 'manufacturer')
-                        ?.values[0]?.name
-                      }</strong> {line?.productSku}
+                      <strong className="text-uppercase">{manufacturer}</strong> {line?.productSku}
                     </div>
                     <Link to={`/products/${line?.variant?.id}`}>{line?.productName}</Link>
                     <div className="small mt-1">
