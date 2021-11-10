@@ -14,7 +14,7 @@ def test_task(self, product_data, import_record_id):
         import_record.status = 'RUNNING'
         import_record.celery_task_id = self.request.id
         import_record.save()
-        print('running product updates...')
+
         for row in product_data:
             item_master_id = int(row['item_master_id'])
             # Find product to update by item_master_id
@@ -24,24 +24,40 @@ def test_task(self, product_data, import_record_id):
                 import_record.status = 'ERROR'
                 import_record.message = {"error": f'Could not find product with item_master_id "{item_master_id}"'}
                 import_record.save()
-                print(f'Error in task: Could not find product with item_master_id "{item_master_id}"')
+                return f'Error in task: Could not find product with item_master_id "{item_master_id}"'
+            
             # get product type
             product_type = product.product_type.slug
-            print("product type", product_type)
+
             # Update product name
             product.name = row['name']
             # # Update product description json field
             # product.description_json = row['description']
             product.save()
-            print("--PRODUCT NAME UPDATED--")
 
             # Update global metadata
+            try:
+                for key in metadata['global']:
+                    product.metadata[key] = row[key]
+                product.save()
+            except KeyError as e:
+                import_record.status = 'ERROR'
+                import_record.message = {"error": f'Could not find global metadata key {str(e)}'}
+                import_record.save()
+                return f'Error in task: Could not find global metadata key {str(e)}'
 
             # Update product-type specific metadata
-            # Update global attributes?? (or just manually enter them using the admin dashboard)
-            # Update product-type specific attributes?? (or just manually enter them using the admin dashboard)
-            # Update global attribute values
+            try:
+                for key in metadata[product_type]:
+                    product.metadata[key] = row[key]
+                product.save()
+            except KeyError as e:
+                import_record.status = 'ERROR'
+                import_record.message = {"error": f'Could not find {product_type.upper()} metadata key {str(e)}'}
+                import_record.save()
+                return f'Error in task: Could not find {product_type.upper()} metadata key {str(e)}'
 
+            # Update global attribute values
             for attr_slug in attributes['global']:
                 if row[attr_slug]:
                     try:
@@ -55,10 +71,9 @@ def test_task(self, product_data, import_record_id):
                         associate_attribute_values_to_instance(product, attr, attr_val[0])
                     except Attribute.DoesNotExist:
                         import_record.status = 'ERROR'
-                        import_record.message = {"error": f'Could not find attribute with slug "{attr_slug}"'}
+                        import_record.message = {"error": f'Could not find global attribute with slug "{attr_slug}"'}
                         import_record.save()
-                        print(f'Error in task: Could not find attribute with slug "{attr_slug}"')
-            print("--GLOBAL ATTRIBUTE VALUES UPDATED--")
+                        return f'Error in task: Could not find global attribute with slug "{attr_slug}"'
 
             # Update product-type specific attribute values
             for attr_slug in attributes[product_type]:
@@ -74,10 +89,10 @@ def test_task(self, product_data, import_record_id):
                         associate_attribute_values_to_instance(product, attr, attr_val[0])
                     except Attribute.DoesNotExist:
                         import_record.status = 'ERROR'
-                        import_record.message = {"error": f'Could not find attribute with slug "{attr_slug}"'}
+                        import_record.message = {"error": f'Could not find {product_type.upper()} attribute with slug "{attr_slug}"'}
                         import_record.save()
-                        print(f'Error in task: Could not find attribute with slug "{attr_slug}"')
-            print(f'--{product_type.upper()} ATTRIBUTE VALUES UPDATED--')
+                        return f'Error in task: Could not find {product_type.upper()} attribute with slug "{attr_slug}"'
+    
         import_record.status = 'COMPLETED'
         import_record.end_date = datetime.now()
         import_record.save()
@@ -85,5 +100,5 @@ def test_task(self, product_data, import_record_id):
         import_record.status = 'ERROR'
         import_record.message = {"error": str(e)}
         import_record.save()
-        print(f'Error in task: {str(e)}')
+        return f'Error in task: {str(e)}'
         

@@ -1,6 +1,6 @@
 metadata = {
   "global": [
-    "sku"
+    "sku",
     "mcode",
     "mpn",
     "model",
