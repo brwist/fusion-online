@@ -17,7 +17,6 @@ def upload_file(request):
             import_record = ImportRecord.objects.create()
             product_data = list(csv.DictReader(decode_utf8(request.FILES['product_list_csv'])))
             test_task.delay(product_data, import_record.pk)
-            print(import_record.pk)
             return HttpResponse(import_record.pk)
         else:
             return HttpResponseRedirect('/')
