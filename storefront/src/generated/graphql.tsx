@@ -243,6 +243,19 @@ export type AccountUpdateMeta = {
   user?: Maybe<User>;
 };
 
+/** Updates private metadata of the logged-in user. */
+export type AddCompleteRegistrationForm = {
+  __typename?: 'AddCompleteRegistrationForm';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** An updated user instance. */
+  user?: Maybe<User>;
+  accountErrors: Array<AccountError>;
+};
+
 /** Updates privatemetadata of the logged-in user. */
 export type AddStripePaymentMethod = {
   __typename?: 'AddStripePaymentMethod';
@@ -2374,6 +2387,23 @@ export type CollectionUpdatePrivateMeta = {
   errors: Array<Error>;
   productErrors: Array<ProductError>;
   collection?: Maybe<Collection>;
+};
+
+export type CompleteRegistrationInput = {
+  customerAddress: Scalars['String'];
+  city: Scalars['String'];
+  country: Scalars['String'];
+  countryArea: Scalars['String'];
+  postalCode: Scalars['String'];
+  taxId?: Maybe<Scalars['String']>;
+  vatId?: Maybe<Scalars['String']>;
+  shippingName: Scalars['String'];
+  shippingAddress: Scalars['String'];
+  shippingCity: Scalars['String'];
+  shippingCountry: Scalars['String'];
+  shippingCountryArea: Scalars['String'];
+  shippingPostalCode: Scalars['String'];
+  exportComplianceCheck: Scalars['String'];
 };
 
 /** Stores information about a single configuration field. */
@@ -4762,6 +4792,8 @@ export type Mutation = {
   draftOrderUpdate?: Maybe<DraftOrderUpdate>;
   /** Adds note to the order. */
   orderAddNote?: Maybe<OrderAddNote>;
+  /** Adds note to the order. */
+  orderAddCustomerNote?: Maybe<OrderAddCustomerNote>;
   /** Cancel an order. */
   orderCancel?: Maybe<OrderCancel>;
   /** Capture an order. */
@@ -5023,6 +5055,8 @@ export type Mutation = {
   addStripePaymentMethod?: Maybe<AddStripePaymentMethod>;
   /** Allows customer to remove stripe payment method id to private metadata for CC retrieval. */
   removeStripePaymentMethod?: Maybe<RemoveStripePaymentMethod>;
+  /** The complete registration form's field values will be stored in private metadata as well as synced with Hubspot. */
+  addCompleteRegistrationForm?: Maybe<AddCompleteRegistrationForm>;
   /** Creates user address. */
   addressCreate?: Maybe<AddressCreate>;
   /** Updates an address. */
@@ -5862,6 +5896,12 @@ export type MutationOrderAddNoteArgs = {
 };
 
 
+export type MutationOrderAddCustomerNoteArgs = {
+  order: Scalars['ID'];
+  input: OrderAddNoteInput;
+};
+
+
 export type MutationOrderCancelArgs = {
   id: Scalars['ID'];
 };
@@ -6485,6 +6525,11 @@ export type MutationRemoveStripePaymentMethodArgs = {
 };
 
 
+export type MutationAddCompleteRegistrationFormArgs = {
+  input: CompleteRegistrationInput;
+};
+
+
 export type MutationAddressCreateArgs = {
   input: AddressInput;
   userId: Scalars['ID'];
@@ -6833,6 +6878,19 @@ export enum OrderAction {
   /** Represents a void action. */
   Void = 'VOID'
 }
+
+/** Adds note to the order. */
+export type OrderAddCustomerNote = {
+  __typename?: 'OrderAddCustomerNote';
+  /**
+   * List of errors that occurred executing the mutation.
+   * @deprecated Use typed errors with error codes. This field will be removed after 2020-07-31.
+   */
+  errors: Array<Error>;
+  /** Order with the note added. */
+  order?: Maybe<Order>;
+  orderErrors: Array<OrderError>;
+};
 
 /** Adds note to the order. */
 export type OrderAddNote = {
@@ -12372,10 +12430,25 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type OrderAddCustomerNoteMutationVariables = Exact<{
+  order: Scalars['ID'];
+  input: OrderAddNoteInput;
+}>;
+
+
+export type OrderAddCustomerNoteMutation = { __typename?: 'Mutation', orderAddCustomerNote?: Maybe<{ __typename?: 'OrderAddCustomerNote', order?: Maybe<{ __typename?: 'Order', id: string, customerNote: string }> }> };
+
 export type GetUserPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserPaymentsQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', defaultStripeCard?: Maybe<string>, stripeCards?: Maybe<Array<Maybe<{ __typename?: 'StripePaymentMethod', id?: Maybe<string>, object?: Maybe<string>, billingDetails?: Maybe<{ __typename?: 'StripeBillingDetails', name?: Maybe<string>, address?: Maybe<{ __typename?: 'StripeBillingAddress', city?: Maybe<string>, country?: Maybe<string>, line1?: Maybe<string>, line2?: Maybe<string>, postalCode?: Maybe<string>, state?: Maybe<string> }> }>, card?: Maybe<{ __typename?: 'StripeCard', brand?: Maybe<string>, last4?: Maybe<string>, expMonth?: Maybe<string>, expYear?: Maybe<string> }> }>>> }> };
+
+export type AddCompleteRegistrationFormMutationVariables = Exact<{
+  input: CompleteRegistrationInput;
+}>;
+
+
+export type AddCompleteRegistrationFormMutation = { __typename?: 'Mutation', addCompleteRegistrationForm?: Maybe<{ __typename?: 'AddCompleteRegistrationForm', user?: Maybe<{ __typename?: 'User', id: string }> }> };
 
 export type AddStripeTokenMutationVariables = Exact<{
   paymentMethodId: Scalars['String'];
@@ -12454,6 +12527,89 @@ export type CategoryListQueryVariables = Exact<{
 
 
 export type CategoryListQuery = { __typename?: 'Query', categories?: Maybe<{ __typename?: 'CategoryCountableConnection', edges: Array<{ __typename?: 'CategoryCountableEdge', node: { __typename?: 'Category', id: string, name: string, slug: string, parent?: Maybe<{ __typename?: 'Category', id: string }> } }> }> };
+
+export type AccountConfirmMutationVariables = Exact<{
+  email: Scalars['String'];
+  token: Scalars['String'];
+}>;
+
+
+export type AccountConfirmMutation = { __typename?: 'Mutation', confirmAccount?: Maybe<{ __typename?: 'ConfirmAccount', errors: Array<{ __typename?: 'Error', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
+export type UserAddressesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserAddressesQuery = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', addresses?: Maybe<Array<Maybe<{ __typename?: 'Address', id: string, isDefaultBillingAddress?: Maybe<boolean>, isDefaultShippingAddress?: Maybe<boolean>, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, phone?: Maybe<string>, companyName: string, shipToName?: Maybe<string>, customerId?: Maybe<number>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', code: string } }>>> }> };
+
+export type AddressFieldsFragment = { __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } };
+
+export type EditAddressMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: AddressInput;
+}>;
+
+
+export type EditAddressMutation = { __typename?: 'Mutation', accountAddressUpdate?: Maybe<{ __typename?: 'AccountAddressUpdate', address?: Maybe<{ __typename?: 'Address', id: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type CreateAddressMutationVariables = Exact<{
+  input: AddressInput;
+}>;
+
+
+export type CreateAddressMutation = { __typename?: 'Mutation', accountAddressCreate?: Maybe<{ __typename?: 'AccountAddressCreate', address?: Maybe<{ __typename?: 'Address', id: string, firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> }> };
+
+export type PriceFragment = { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } };
+
+export type OrdersByUserQueryVariables = Exact<{
+  perPage: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type OrdersByUserQuery = { __typename?: 'Query', me?: Maybe<{ __typename: 'User', id: string, orders?: Maybe<{ __typename: 'OrderCountableConnection', pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<string> }, edges: Array<{ __typename: 'OrderCountableEdge', node: { __typename: 'Order', id: string, token: string, number?: Maybe<string>, statusDisplay?: Maybe<string>, created: any, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', id: string, productName: string, productSku: string, quantity: number, variant?: Maybe<{ __typename: 'ProductVariant', id: string, quantityAvailable: number, product: { __typename: 'Product', name: string, id: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', id: string, name?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', id: string, name?: Maybe<string> }>> }> } }>, totalPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }>, unitPrice?: Maybe<{ __typename?: 'TaxedMoney', gross: { __typename?: 'Money', amount: number } }> }>>, shippingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }> } }> }> }> };
+
+export type OrderPriceFragment = { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } };
+
+export type ProductVariantFragment = { __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } };
+
+export type OrderDetailFragment = { __typename: 'Order', userEmail?: Maybe<string>, paymentStatus?: Maybe<PaymentChargeStatusEnum>, paymentStatusDisplay?: Maybe<string>, status: OrderStatus, statusDisplay?: Maybe<string>, id: string, token: string, number?: Maybe<string>, created: any, customerNote: string, shippingAddress?: Maybe<{ __typename: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', productName: string, quantity: number, id: string, productSku: string, variant?: Maybe<{ __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } }>, unitPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, tax: { __typename?: 'Money', amount: number }, gross: { __typename: 'Money', amount: number, currency: string } }> }>>, subtotal?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, payments?: Maybe<Array<Maybe<{ __typename?: 'Payment', creditCard?: Maybe<{ __typename?: 'CreditCard', brand: string, expMonth?: Maybe<number>, expYear?: Maybe<number>, firstDigits?: Maybe<string>, lastDigits: string }> }>>>, billingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, fulfillments: Array<Maybe<{ __typename?: 'Fulfillment', created: any, fulfillmentOrder: number, trackingNumber: string, statusDisplay?: Maybe<string> }>> };
+
+export type InvoiceFragmentFragment = { __typename: 'Invoice', id: string, number?: Maybe<string>, createdAt: any, url?: Maybe<string>, status: JobStatusEnum };
+
+export type UserOrderByTokenQueryVariables = Exact<{
+  token: Scalars['UUID'];
+}>;
+
+
+export type UserOrderByTokenQuery = { __typename?: 'Query', orderByToken?: Maybe<{ __typename: 'Order', userEmail?: Maybe<string>, paymentStatus?: Maybe<PaymentChargeStatusEnum>, paymentStatusDisplay?: Maybe<string>, status: OrderStatus, statusDisplay?: Maybe<string>, id: string, token: string, number?: Maybe<string>, created: any, customerNote: string, invoices?: Maybe<Array<Maybe<{ __typename: 'Invoice', id: string, number?: Maybe<string>, createdAt: any, url?: Maybe<string>, status: JobStatusEnum }>>>, shippingAddress?: Maybe<{ __typename: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, lines: Array<Maybe<{ __typename: 'OrderLine', productName: string, quantity: number, id: string, productSku: string, variant?: Maybe<{ __typename: 'ProductVariant', id: string, name: string, sku: string, quantityAvailable: number, isAvailable?: Maybe<boolean>, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>>, pricing?: Maybe<{ __typename: 'VariantPricingInfo', onSale?: Maybe<boolean>, priceUndiscounted?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }>, price?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, net: { __typename: 'Money', amount: number, currency: string } }> }>, attributes: Array<{ __typename: 'SelectedAttribute', attribute: { __typename: 'Attribute', id: string, slug?: Maybe<string> }, values: Array<Maybe<{ __typename: 'AttributeValue', id: string, name?: Maybe<string>, value?: Maybe<string> }>> }>, product: { __typename: 'Product', id: string, name: string, productType: { __typename: 'ProductType', id: string, isShippingRequired: boolean }, attributes: Array<{ __typename?: 'SelectedAttribute', attribute: { __typename?: 'Attribute', slug?: Maybe<string> }, values: Array<Maybe<{ __typename?: 'AttributeValue', name?: Maybe<string> }>> }> } }>, unitPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, totalPrice?: Maybe<{ __typename: 'TaxedMoney', currency: string, tax: { __typename?: 'Money', amount: number }, gross: { __typename: 'Money', amount: number, currency: string } }> }>>, subtotal?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, total?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, shippingPrice?: Maybe<{ __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string }, tax: { __typename?: 'Money', amount: number } }>, payments?: Maybe<Array<Maybe<{ __typename?: 'Payment', creditCard?: Maybe<{ __typename?: 'CreditCard', brand: string, expMonth?: Maybe<number>, expYear?: Maybe<number>, firstDigits?: Maybe<string>, lastDigits: string }> }>>>, billingAddress?: Maybe<{ __typename?: 'Address', firstName: string, lastName: string, streetAddress1: string, streetAddress2: string, city: string, countryArea: string, postalCode: string, customerId?: Maybe<number>, shipToName?: Maybe<string>, shipVia?: Maybe<string>, vatId?: Maybe<string>, country: { __typename?: 'CountryDisplay', country: string, code: string } }>, fulfillments: Array<Maybe<{ __typename?: 'Fulfillment', created: any, fulfillmentOrder: number, trackingNumber: string, statusDisplay?: Maybe<string> }>> }> };
+
+export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type Unnamed_1_Query = { __typename?: 'Query', me?: Maybe<{ __typename?: 'User', isApproved?: Maybe<boolean> }> };
+
+export type RegisterUserMutationVariables = Exact<{
+  input: AccountRegisterInput;
+}>;
+
+
+export type RegisterUserMutation = { __typename?: 'Mutation', accountRegister?: Maybe<{ __typename?: 'AccountRegister', accountErrors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string>, code: AccountErrorCode }>, user?: Maybe<{ __typename?: 'User', id: string, firstName: string, lastName: string, email: string, metadata: Array<Maybe<{ __typename?: 'MetadataItem', key: string, value: string }>> }> }> };
+
+export type PasswordResetRequestMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type PasswordResetRequestMutation = { __typename?: 'Mutation', requestPasswordReset?: Maybe<{ __typename?: 'RequestPasswordReset', accountErrors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string> }> }> };
+
+export type SetPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+  token: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type SetPasswordMutation = { __typename?: 'Mutation', setPassword?: Maybe<{ __typename?: 'SetPassword', accountErrors: Array<{ __typename?: 'AccountError', field?: Maybe<string>, message?: Maybe<string> }> }> };
 
 export type ShopQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12602,6 +12758,196 @@ export const ProductPricingFieldFragmentDoc = gql`
   }
 }
     ${ProductPriceFragmentDoc}`;
+export const AddressFieldsFragmentDoc = gql`
+    fragment AddressFields on Address {
+  firstName
+  lastName
+  streetAddress1
+  streetAddress2
+  city
+  country {
+    country
+    code
+  }
+  countryArea
+  postalCode
+  customerId
+  shipToName
+  shipVia
+  vatId
+}
+    `;
+export const PriceFragmentDoc = gql`
+    fragment Price on TaxedMoney {
+  gross {
+    amount
+    currency
+    __typename
+  }
+  net {
+    amount
+    currency
+    __typename
+  }
+  __typename
+}
+    `;
+export const ProductVariantFragmentDoc = gql`
+    fragment ProductVariant on ProductVariant {
+  id
+  name
+  sku
+  metadata {
+    key
+    value
+  }
+  quantityAvailable
+  isAvailable
+  pricing {
+    onSale
+    priceUndiscounted {
+      ...Price
+      __typename
+    }
+    price {
+      ...Price
+      __typename
+    }
+    __typename
+  }
+  attributes {
+    attribute {
+      id
+      __typename
+      slug
+    }
+    values {
+      id
+      name
+      value: name
+      __typename
+    }
+    __typename
+  }
+  product {
+    id
+    name
+    productType {
+      id
+      isShippingRequired
+      __typename
+    }
+    attributes {
+      attribute {
+        slug
+      }
+      values {
+        name
+      }
+    }
+    __typename
+  }
+  __typename
+}
+    ${PriceFragmentDoc}`;
+export const OrderPriceFragmentDoc = gql`
+    fragment OrderPrice on TaxedMoney {
+  gross {
+    amount
+    currency
+    __typename
+  }
+  __typename
+  tax {
+    amount
+  }
+}
+    `;
+export const OrderDetailFragmentDoc = gql`
+    fragment OrderDetail on Order {
+  userEmail
+  paymentStatus
+  paymentStatusDisplay
+  status
+  statusDisplay
+  id
+  token
+  number
+  shippingAddress {
+    ...AddressFields
+    __typename
+  }
+  lines {
+    productName
+    quantity
+    variant {
+      ...ProductVariant
+      __typename
+    }
+    unitPrice {
+      currency
+      ...OrderPrice
+      __typename
+    }
+    totalPrice {
+      currency
+      ...OrderPrice
+      __typename
+      tax {
+        amount
+      }
+    }
+    __typename
+    id
+    productSku
+  }
+  subtotal {
+    ...OrderPrice
+    __typename
+  }
+  total {
+    ...OrderPrice
+    __typename
+  }
+  shippingPrice {
+    ...OrderPrice
+    __typename
+  }
+  __typename
+  created
+  customerNote
+  payments {
+    creditCard {
+      brand
+      expMonth
+      expYear
+      firstDigits
+      lastDigits
+    }
+  }
+  billingAddress {
+    ...AddressFields
+  }
+  fulfillments {
+    created
+    fulfillmentOrder
+    trackingNumber
+    statusDisplay
+  }
+}
+    ${AddressFieldsFragmentDoc}
+${ProductVariantFragmentDoc}
+${OrderPriceFragmentDoc}`;
+export const InvoiceFragmentFragmentDoc = gql`
+    fragment InvoiceFragment on Invoice {
+  id
+  number
+  createdAt
+  url
+  status
+  __typename
+}
+    `;
 export const Checkout_PriceFragmentDoc = gql`
     fragment Checkout_Price on TaxedMoney {
   gross {
@@ -12735,6 +13081,43 @@ export const CheckoutFragmentDoc = gql`
 ${AddressFragmentDoc}
 ${ShippingMethodFragmentDoc}
 ${CheckoutLineFragmentDoc}`;
+export const OrderAddCustomerNoteDocument = gql`
+    mutation orderAddCustomerNote($order: ID!, $input: OrderAddNoteInput!) {
+  orderAddCustomerNote(order: $order, input: $input) {
+    order {
+      id
+      customerNote
+    }
+  }
+}
+    `;
+export type OrderAddCustomerNoteMutationFn = Apollo.MutationFunction<OrderAddCustomerNoteMutation, OrderAddCustomerNoteMutationVariables>;
+
+/**
+ * __useOrderAddCustomerNoteMutation__
+ *
+ * To run a mutation, you first call `useOrderAddCustomerNoteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useOrderAddCustomerNoteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [orderAddCustomerNoteMutation, { data, loading, error }] = useOrderAddCustomerNoteMutation({
+ *   variables: {
+ *      order: // value for 'order'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useOrderAddCustomerNoteMutation(baseOptions?: Apollo.MutationHookOptions<OrderAddCustomerNoteMutation, OrderAddCustomerNoteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<OrderAddCustomerNoteMutation, OrderAddCustomerNoteMutationVariables>(OrderAddCustomerNoteDocument, options);
+      }
+export type OrderAddCustomerNoteMutationHookResult = ReturnType<typeof useOrderAddCustomerNoteMutation>;
+export type OrderAddCustomerNoteMutationResult = Apollo.MutationResult<OrderAddCustomerNoteMutation>;
+export type OrderAddCustomerNoteMutationOptions = Apollo.BaseMutationOptions<OrderAddCustomerNoteMutation, OrderAddCustomerNoteMutationVariables>;
 export const GetUserPaymentsDocument = gql`
     query GetUserPayments {
   me {
@@ -12790,6 +13173,41 @@ export function useGetUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetUserPaymentsQueryHookResult = ReturnType<typeof useGetUserPaymentsQuery>;
 export type GetUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetUserPaymentsLazyQuery>;
 export type GetUserPaymentsQueryResult = Apollo.QueryResult<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>;
+export const AddCompleteRegistrationFormDocument = gql`
+    mutation addCompleteRegistrationForm($input: CompleteRegistrationInput!) {
+  addCompleteRegistrationForm(input: $input) {
+    user {
+      id
+    }
+  }
+}
+    `;
+export type AddCompleteRegistrationFormMutationFn = Apollo.MutationFunction<AddCompleteRegistrationFormMutation, AddCompleteRegistrationFormMutationVariables>;
+
+/**
+ * __useAddCompleteRegistrationFormMutation__
+ *
+ * To run a mutation, you first call `useAddCompleteRegistrationFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCompleteRegistrationFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCompleteRegistrationFormMutation, { data, loading, error }] = useAddCompleteRegistrationFormMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddCompleteRegistrationFormMutation(baseOptions?: Apollo.MutationHookOptions<AddCompleteRegistrationFormMutation, AddCompleteRegistrationFormMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCompleteRegistrationFormMutation, AddCompleteRegistrationFormMutationVariables>(AddCompleteRegistrationFormDocument, options);
+      }
+export type AddCompleteRegistrationFormMutationHookResult = ReturnType<typeof useAddCompleteRegistrationFormMutation>;
+export type AddCompleteRegistrationFormMutationResult = Apollo.MutationResult<AddCompleteRegistrationFormMutation>;
+export type AddCompleteRegistrationFormMutationOptions = Apollo.BaseMutationOptions<AddCompleteRegistrationFormMutation, AddCompleteRegistrationFormMutationVariables>;
 export const AddStripeTokenDocument = gql`
     mutation addStripeToken($paymentMethodId: String!, $isDefault: Boolean!) {
   addStripePaymentMethod(paymentMethodId: $paymentMethodId, isDefault: $isDefault) {
@@ -13246,6 +13664,469 @@ export function useCategoryListLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type CategoryListQueryHookResult = ReturnType<typeof useCategoryListQuery>;
 export type CategoryListLazyQueryHookResult = ReturnType<typeof useCategoryListLazyQuery>;
 export type CategoryListQueryResult = Apollo.QueryResult<CategoryListQuery, CategoryListQueryVariables>;
+export const AccountConfirmDocument = gql`
+    mutation AccountConfirm($email: String!, $token: String!) {
+  confirmAccount(email: $email, token: $token) {
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type AccountConfirmMutationFn = Apollo.MutationFunction<AccountConfirmMutation, AccountConfirmMutationVariables>;
+
+/**
+ * __useAccountConfirmMutation__
+ *
+ * To run a mutation, you first call `useAccountConfirmMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAccountConfirmMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [accountConfirmMutation, { data, loading, error }] = useAccountConfirmMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useAccountConfirmMutation(baseOptions?: Apollo.MutationHookOptions<AccountConfirmMutation, AccountConfirmMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AccountConfirmMutation, AccountConfirmMutationVariables>(AccountConfirmDocument, options);
+      }
+export type AccountConfirmMutationHookResult = ReturnType<typeof useAccountConfirmMutation>;
+export type AccountConfirmMutationResult = Apollo.MutationResult<AccountConfirmMutation>;
+export type AccountConfirmMutationOptions = Apollo.BaseMutationOptions<AccountConfirmMutation, AccountConfirmMutationVariables>;
+export const UserAddressesDocument = gql`
+    query userAddresses {
+  me {
+    addresses {
+      id
+      isDefaultBillingAddress
+      isDefaultShippingAddress
+      firstName
+      lastName
+      streetAddress1
+      streetAddress2
+      city
+      countryArea
+      postalCode
+      country {
+        code
+      }
+      phone
+      companyName
+      shipToName
+      customerId
+      vatId
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserAddressesQuery__
+ *
+ * To run a query within a React component, call `useUserAddressesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserAddressesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserAddressesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserAddressesQuery(baseOptions?: Apollo.QueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+      }
+export function useUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserAddressesQuery, UserAddressesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserAddressesQuery, UserAddressesQueryVariables>(UserAddressesDocument, options);
+        }
+export type UserAddressesQueryHookResult = ReturnType<typeof useUserAddressesQuery>;
+export type UserAddressesLazyQueryHookResult = ReturnType<typeof useUserAddressesLazyQuery>;
+export type UserAddressesQueryResult = Apollo.QueryResult<UserAddressesQuery, UserAddressesQueryVariables>;
+export const EditAddressDocument = gql`
+    mutation editAddress($id: ID!, $input: AddressInput!) {
+  accountAddressUpdate(id: $id, input: $input) {
+    address {
+      id
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type EditAddressMutationFn = Apollo.MutationFunction<EditAddressMutation, EditAddressMutationVariables>;
+
+/**
+ * __useEditAddressMutation__
+ *
+ * To run a mutation, you first call `useEditAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editAddressMutation, { data, loading, error }] = useEditAddressMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEditAddressMutation(baseOptions?: Apollo.MutationHookOptions<EditAddressMutation, EditAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditAddressMutation, EditAddressMutationVariables>(EditAddressDocument, options);
+      }
+export type EditAddressMutationHookResult = ReturnType<typeof useEditAddressMutation>;
+export type EditAddressMutationResult = Apollo.MutationResult<EditAddressMutation>;
+export type EditAddressMutationOptions = Apollo.BaseMutationOptions<EditAddressMutation, EditAddressMutationVariables>;
+export const CreateAddressDocument = gql`
+    mutation createAddress($input: AddressInput!) {
+  accountAddressCreate(input: $input) {
+    address {
+      id
+      ...AddressFields
+    }
+  }
+}
+    ${AddressFieldsFragmentDoc}`;
+export type CreateAddressMutationFn = Apollo.MutationFunction<CreateAddressMutation, CreateAddressMutationVariables>;
+
+/**
+ * __useCreateAddressMutation__
+ *
+ * To run a mutation, you first call `useCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAddressMutation, { data, loading, error }] = useCreateAddressMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<CreateAddressMutation, CreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAddressMutation, CreateAddressMutationVariables>(CreateAddressDocument, options);
+      }
+export type CreateAddressMutationHookResult = ReturnType<typeof useCreateAddressMutation>;
+export type CreateAddressMutationResult = Apollo.MutationResult<CreateAddressMutation>;
+export type CreateAddressMutationOptions = Apollo.BaseMutationOptions<CreateAddressMutation, CreateAddressMutationVariables>;
+export const OrdersByUserDocument = gql`
+    query OrdersByUser($perPage: Int!, $after: String) {
+  me {
+    id
+    orders(first: $perPage, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+        __typename
+      }
+      edges {
+        node {
+          id
+          token
+          number
+          statusDisplay
+          created
+          total {
+            ...Price
+          }
+          lines {
+            id
+            variant {
+              id
+              __typename
+              quantityAvailable
+              product {
+                name
+                id
+                __typename
+                metadata {
+                  key
+                  value
+                }
+                attributes {
+                  attribute {
+                    id
+                    name
+                  }
+                  values {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+            __typename
+            productName
+            productSku
+            quantity
+            totalPrice {
+              gross {
+                amount
+              }
+            }
+            unitPrice {
+              gross {
+                amount
+              }
+            }
+          }
+          __typename
+          shippingAddress {
+            ...AddressFields
+          }
+        }
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+}
+    ${PriceFragmentDoc}
+${AddressFieldsFragmentDoc}`;
+
+/**
+ * __useOrdersByUserQuery__
+ *
+ * To run a query within a React component, call `useOrdersByUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrdersByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrdersByUserQuery({
+ *   variables: {
+ *      perPage: // value for 'perPage'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useOrdersByUserQuery(baseOptions: Apollo.QueryHookOptions<OrdersByUserQuery, OrdersByUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrdersByUserQuery, OrdersByUserQueryVariables>(OrdersByUserDocument, options);
+      }
+export function useOrdersByUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrdersByUserQuery, OrdersByUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrdersByUserQuery, OrdersByUserQueryVariables>(OrdersByUserDocument, options);
+        }
+export type OrdersByUserQueryHookResult = ReturnType<typeof useOrdersByUserQuery>;
+export type OrdersByUserLazyQueryHookResult = ReturnType<typeof useOrdersByUserLazyQuery>;
+export type OrdersByUserQueryResult = Apollo.QueryResult<OrdersByUserQuery, OrdersByUserQueryVariables>;
+export const UserOrderByTokenDocument = gql`
+    query UserOrderByToken($token: UUID!) {
+  orderByToken(token: $token) {
+    ...OrderDetail
+    invoices {
+      ...InvoiceFragment
+      __typename
+    }
+    __typename
+  }
+}
+    ${OrderDetailFragmentDoc}
+${InvoiceFragmentFragmentDoc}`;
+
+/**
+ * __useUserOrderByTokenQuery__
+ *
+ * To run a query within a React component, call `useUserOrderByTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserOrderByTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserOrderByTokenQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useUserOrderByTokenQuery(baseOptions: Apollo.QueryHookOptions<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>(UserOrderByTokenDocument, options);
+      }
+export function useUserOrderByTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>(UserOrderByTokenDocument, options);
+        }
+export type UserOrderByTokenQueryHookResult = ReturnType<typeof useUserOrderByTokenQuery>;
+export type UserOrderByTokenLazyQueryHookResult = ReturnType<typeof useUserOrderByTokenLazyQuery>;
+export type UserOrderByTokenQueryResult = Apollo.QueryResult<UserOrderByTokenQuery, UserOrderByTokenQueryVariables>;
+export const Document = gql`
+    {
+  me {
+    isApproved
+  }
+}
+    `;
+
+/**
+ * __useQuery__
+ *
+ * To run a query within a React component, call `useQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useQuery(baseOptions?: Apollo.QueryHookOptions<Query, QueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<Query, QueryVariables>(Document, options);
+      }
+export function useLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Query, QueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<Query, QueryVariables>(Document, options);
+        }
+export type QueryHookResult = ReturnType<typeof useQuery>;
+export type LazyQueryHookResult = ReturnType<typeof useLazyQuery>;
+export type QueryResult = Apollo.QueryResult<Query, QueryVariables>;
+export const RegisterUserDocument = gql`
+    mutation registerUser($input: AccountRegisterInput!) {
+  accountRegister(input: $input) {
+    accountErrors {
+      field
+      message
+      code
+    }
+    user {
+      id
+      firstName
+      lastName
+      email
+      metadata {
+        key
+        value
+      }
+    }
+  }
+}
+    `;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
+
+/**
+ * __useRegisterUserMutation__
+ *
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const PasswordResetRequestDocument = gql`
+    mutation passwordResetRequest($email: String!) {
+  requestPasswordReset(email: $email) {
+    accountErrors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type PasswordResetRequestMutationFn = Apollo.MutationFunction<PasswordResetRequestMutation, PasswordResetRequestMutationVariables>;
+
+/**
+ * __usePasswordResetRequestMutation__
+ *
+ * To run a mutation, you first call `usePasswordResetRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePasswordResetRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [passwordResetRequestMutation, { data, loading, error }] = usePasswordResetRequestMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function usePasswordResetRequestMutation(baseOptions?: Apollo.MutationHookOptions<PasswordResetRequestMutation, PasswordResetRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PasswordResetRequestMutation, PasswordResetRequestMutationVariables>(PasswordResetRequestDocument, options);
+      }
+export type PasswordResetRequestMutationHookResult = ReturnType<typeof usePasswordResetRequestMutation>;
+export type PasswordResetRequestMutationResult = Apollo.MutationResult<PasswordResetRequestMutation>;
+export type PasswordResetRequestMutationOptions = Apollo.BaseMutationOptions<PasswordResetRequestMutation, PasswordResetRequestMutationVariables>;
+export const SetPasswordDocument = gql`
+    mutation setPassword($email: String!, $token: String!, $password: String!) {
+  setPassword(email: $email, token: $token, password: $password) {
+    accountErrors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type SetPasswordMutationFn = Apollo.MutationFunction<SetPasswordMutation, SetPasswordMutationVariables>;
+
+/**
+ * __useSetPasswordMutation__
+ *
+ * To run a mutation, you first call `useSetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setPasswordMutation, { data, loading, error }] = useSetPasswordMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      token: // value for 'token'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useSetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<SetPasswordMutation, SetPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetPasswordMutation, SetPasswordMutationVariables>(SetPasswordDocument, options);
+      }
+export type SetPasswordMutationHookResult = ReturnType<typeof useSetPasswordMutation>;
+export type SetPasswordMutationResult = Apollo.MutationResult<SetPasswordMutation>;
+export type SetPasswordMutationOptions = Apollo.BaseMutationOptions<SetPasswordMutation, SetPasswordMutationVariables>;
 export const ShopQueryDocument = gql`
     query shopQuery {
   shop {
