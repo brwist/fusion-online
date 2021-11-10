@@ -17,18 +17,11 @@ import {
 interface CompleteRegistrationProps {}
 
 type FormValues = {
-  jobTitle: string;
-  companyName: string;
-  companyType: string;
-  companyRevenue: number;
-  numberOfEmployees: number;
-  tradeName: string;
   customerAddress: string;
   city: string;
   country: string;
   countryArea: string;
   postalCode: string;
-  companyUrl: string;
   taxId: string;
   vatId: string;
   shippingName: string;
@@ -61,10 +54,10 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   // Additional fields
   const [nonDisclosure, setNonDisclosure] = useState(false);
   const [terms, setTerms] = useState(false);
-  const [businessDescription, setBusinessDescription] = useState([]);
+  // const [businessDescription, setBusinessDescription] = useState([]);
   const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
 
-  const disableSubmit = !nonDisclosure || !terms || businessDescription.length === 0 || !exportComplianceCheck;
+  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck;
 
   // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
   //   control,
@@ -166,11 +159,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
     const values = getValues();
 
-    const { companyName, customerAddress, city, countryArea, postalCode, country } = values;
-
-    if (companyName) {
-      setValue('shippingName', companyName);
-    }
+    const { customerAddress, city, countryArea, postalCode, country } = values;
 
     if (customerAddress) {
       setValue('shippingAddress', customerAddress);
@@ -193,31 +182,31 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
   };
 
-  const handleToggleBusinessDescription = (e) => {
-    const val = e.target.value;
-    const checked = e.target.checked;
-    if (checked) {
-      setBusinessDescription([...businessDescription, val]);
-    } else {
-      let newBusinessDescription = businessDescription.filter((x) => x !== val);
-      setBusinessDescription(newBusinessDescription);
-    }
-  };
+  // const handleToggleBusinessDescription = (e) => {
+  //   const val = e.target.value;
+  //   const checked = e.target.checked;
+  //   if (checked) {
+  //     setBusinessDescription([...businessDescription, val]);
+  //   } else {
+  //     let newBusinessDescription = businessDescription.filter((x) => x !== val);
+  //     setBusinessDescription(newBusinessDescription);
+  //   }
+  // };
 
-  const businessDescriptionCheckbox = ({ value, label }, index) => {
-    return (
-      <Col sm={6} key={index}>
-        <Form.Check
-          custom
-          className="mb-2"
-          type="checkbox"
-          onChange={handleToggleBusinessDescription}
-          id={value}
-          label={label}
-        />
-      </Col>
-    );
-  };
+  // const businessDescriptionCheckbox = ({ value, label }, index) => {
+  //   return (
+  //     <Col sm={6} key={index}>
+  //       <Form.Check
+  //         custom
+  //         className="mb-2"
+  //         type="checkbox"
+  //         onChange={handleToggleBusinessDescription}
+  //         id={value}
+  //         label={label}
+  //       />
+  //     </Col>
+  //   );
+  // };
 
   console.log('errors: ', errors);
 
@@ -240,15 +229,15 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
         <Row className="justify-content-center">
           <Col xl={6}>
             <h3 className="h4 font-weight-bold">Business Information</h3>
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Job Title</Form.Label>
               <Form.Control as="select" custom {...register('jobTitle', { required: true })}>
                 {jobTitleOptions()}
               </Form.Control>
-            </Form.Group>
+            </Form.Group> */}
 
-            {textInput('companyName', 'Legal Company Name', true)}
-            {textInput('tradeName', 'Trade Name/DBA', true)}
+            {/* {textInput('companyName', 'Legal Company Name', true)}
+            {textInput('tradeName', 'Trade Name/DBA', true)} */}
             {textInput('customerAddress', 'Customer Address', true)}
             {textInput('city', 'City', true)}
             <Form.Row>
@@ -256,7 +245,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
               <Col lg={4}>{zipInput('postalCode')}</Col>
             </Form.Row>
             {locationSelect('country', 'Country', countries)}
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Company Type</Form.Label>
               <div>
                 <Form.Check
@@ -280,8 +269,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                   {...register('companyType', { required: true })}
                 />
               </div>
-            </Form.Group>
-            {textInput('companyUrl', 'Company URL', true)}
+            </Form.Group> */}
+            {/* {textInput('companyUrl', 'Company URL', true)} */}
             {textInput('taxId', 'Federal Tax ID', true)}
             {textInput('vatId', 'VAT ID')}
             <Form.Group>
@@ -297,14 +286,14 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
               </Form.Control>
             </Form.Group>
 
-            <Form.Group as={Row}>
+            {/* <Form.Group as={Row}>
               <Col xs={12}>
                 <Form.Label>Description of Business (select all that apply)</Form.Label>
               </Col>
               {descriptionOfBusinessOptions().map((option, index) => {
                 return businessDescriptionCheckbox(option, index);
               })}
-            </Form.Group>
+            </Form.Group> */}
           </Col>
         </Row>
 
