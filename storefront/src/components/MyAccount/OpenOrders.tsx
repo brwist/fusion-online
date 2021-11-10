@@ -23,7 +23,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
         <Table borderless striped responsive>
         <thead className="bg-dark text-white">
           <tr>
-            <th>RFQ Number <Link to="/">123456789</Link></th>
+            <th>Order Number <Link to={`/account/orders/open-orders/${token}`}>{number}</Link></th>
             <th>{moment(created).format('MMM DD, YYYY')}</th>
             <th>${total?.gross.amount}</th>
             <th className="text-center">
@@ -37,9 +37,9 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
               <tr key={line?.id}>
               <td>
                 <div>
-                  <strong>{line?.variant?.product.attributes
-                    .find(({attribute}) => attribute.name === 'Manufacturer')
-                    ?.values[0]?.name
+                  <strong>{line?.variant?.product.metadata
+                    .find((data) => data.key === 'mcode')
+                    ?.value
                   }</strong> {line?.productSku}
                 </div>
                 <div>
@@ -61,7 +61,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                   {shippingAddress?.city}, {shippingAddress?.countryArea} {shippingAddress?.postalCode}, {shippingAddress?.country.code}
               </td>
               <td className="text-center" style={{'verticalAlign': 'middle'}}>
-                <Button variant="primary">
+                <Button variant="primary" disabled>
                   Track Package
                 </Button>
               </td>
