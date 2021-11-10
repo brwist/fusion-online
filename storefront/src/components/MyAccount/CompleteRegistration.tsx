@@ -273,7 +273,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             {/* {textInput('companyUrl', 'Company URL', true)} */}
             {textInput('taxId', 'Federal Tax ID', true)}
             {textInput('vatId', 'VAT ID')}
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Revenue</Form.Label>
               <Form.Control as="select" custom required>
                 {revenueOptions()}
@@ -284,7 +284,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
               <Form.Control as="select" custom required>
                 {numberOfEmployeesOptions()}
               </Form.Control>
-            </Form.Group>
+            </Form.Group> */}
 
             {/* <Form.Group as={Row}>
               <Col xs={12}>
@@ -393,7 +393,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 custom
                 className="mb-2"
                 type="radio"
-                label="only for the locations in the country specified in the address line below"
+                label="only for the locations in the country specified in the Business Information form above"
                 id="exportComplianceCheck-2"
                 value="2"
                 checked={exportComplianceCheck == '2'}
