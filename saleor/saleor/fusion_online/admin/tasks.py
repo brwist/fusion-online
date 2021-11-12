@@ -15,7 +15,10 @@ def test_task(self, product_data, import_record_id):
         import_record.celery_task_id = self.request.id
         import_record.save()
 
-        for row in product_data:
+        for raw_row in product_data:
+            #removes leading and trailing whitespace from each value
+            row = { k:v.strip() for k, v in raw_row.items()}
+
             item_master_id = int(row['item_master_id'])
             # Find product to update by item_master_id
             try:
@@ -76,7 +79,7 @@ def test_task(self, product_data, import_record_id):
                         import_record.save()
                         return f'Error in task: Could not find global attribute with slug "{attr_slug}"'
                     
-                    except Exception as e:
+                    except Exception:
                         attr_val = AttributeValue.objects.get(slug=slugify(row[attr_slug], allow_unicode=True))
                         associate_attribute_values_to_instance(product, attr, attr_val)
 
