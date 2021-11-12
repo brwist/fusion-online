@@ -12,7 +12,7 @@ from django.forms.models import model_to_dict
 from .serializers import HubspotContactSerializer
 
 import base64
-from io import BytesIO
+import datetime
 
 
 class HubspotRegistration:
@@ -41,6 +41,7 @@ class HubspotRegistration:
 
         self.api_base_url = 'https://api.hubapi.com/crm/v3'
         self.files_base_url = 'https://api.hubapi.com/files/v3'
+        self.engagement_base_url = 'https://api.hubapi.com/engagements/v1/'
 
         self.contacts_endpoint = self.api_base_url + '/objects/contacts?hapikey=' + self.api_key
         self.contacts_search_endpoint = self.api_base_url + \
@@ -296,3 +297,36 @@ class HubspotRegistration:
             return r.reason
         response = r.json()
         return response
+
+    def add_engagement_note(self, note, contact_id, attachment_id=None):
+        url = self.engagement_base_url + '/engagements?hapikey=' + self.api_key
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        payload = {
+            'engagement': {
+                'active': True,
+                'type': 'NOTE'
+            },
+            'associations': {
+                'contactIds': [contact_id],
+
+            },
+            'metadata': {
+                'body': note
+            }
+        }
+        if attachment_id:
+            payload['attachments'] = [
+                {
+                    'id': attachment_id
+                }
+            ]
+        r = requests.post(url, headers=(
+            {
+                'Content-Type': 'application/json'
+            }),
+            data=json.dumps(payload))
+        if r.status_code != 200:
+            return None
+        else:
+            engagement = r.json()
+            return engagement

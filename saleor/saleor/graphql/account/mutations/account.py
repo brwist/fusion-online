@@ -543,18 +543,51 @@ class AddCompleteRegistrationForm(BaseMutation):
         return info.context.user
 
     @classmethod
+    def format_entries(cls, data):
+        output = []
+        for key in data:
+            line_item = key + ': ' + data[key]
+            output.append(line_item)
+        return '<br />'.join(output)
+
+    @classmethod
     def perform_mutation(cls, _root, info, **data):
         user = info.context.user
         hubspot_reg = HubspotRegistration()
         input_data = data['input']
         input_data['submitted'] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        file_id = None
         if 'resellerCertificate' in input_data:
             file = hubspot_reg.upload_file(input_data['resellerCertificate'])
             if 'id' in file:
+                file_id = file['id']
                 input_data['resellerCertificate'] = file['id']
             else:
                 input_data['resellerCertificate'] = file  # response error reason
-        user.private_metadata['registrationForm2'] = json.dumps(input_data)
+
+        # Additional agreement fields
+        input_data['agreedToTerms'] = 'True'
+        input_data['agreedToNonDisclosureAgreement'] = 'True'
+
+        if input_data['exportComplianceCheck'] == '1':
+            input_data['exportComplianceCheck'] = 'I HAVE READ AND AGREE TO THE EXPORT COMPLIANCE CHECK, AND CERTIFY THAT THIS DOCUMENT IS BEING SIGNED on behalf of itself, its subsidiaries, and affiliates'
+        elif input_data['exportComplianceCheck'] == '2':
+            input_data['exportComplianceCheck'] = 'I HAVE READ AND AGREE TO THE EXPORT COMPLIANCE CHECK, AND CERTIFY THAT THIS DOCUMENT IS BEING SIGNED only for the locations in the country specified in the Business Information form above'
+
+        engagement_note = cls.format_entries(input_data)
+        # return AddCompleteRegistrationForm(user=user)
+
+        if 'hubspot_user_id' in user.private_metadata:
+            contact_id = user.private_metadata['hubspot_user_id']
+            if file_id:
+                engagement = hubspot_reg.add_engagement_note(
+                    engagement_note, contact_id, file_id)
+            else:
+                engagement = hubspot_reg.add_engagement_note(
+                    engagement_note, contact_id)
+
+        # Store original data payload
+        user.private_metadata['registrationForm2'] = json.dumps(data['input'])
         user.save()
         return AddCompleteRegistrationForm(user=user)
 
