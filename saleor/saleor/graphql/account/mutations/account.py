@@ -494,6 +494,11 @@ class RemoveStripePaymentMethod(BaseMutation):
         return RemoveStripePaymentMethod(user=user)
 
 
+class FileInput(graphene.InputObjectType):
+    contents = graphene.String()
+    filename = graphene.String()
+
+
 class CompleteRegistrationInput(graphene.InputObjectType):
     customerAddress = graphene.String(required=True)
     city = graphene.String(required=True)
@@ -509,6 +514,7 @@ class CompleteRegistrationInput(graphene.InputObjectType):
     shippingCountryArea = graphene.String(required=True)
     shippingPostalCode = graphene.String(required=True)
     exportComplianceCheck = graphene.String(required=True)
+    resellerCertificate = FileInput()
 
 
 class AddCompleteRegistrationForm(BaseMutation):
@@ -539,8 +545,16 @@ class AddCompleteRegistrationForm(BaseMutation):
     @classmethod
     def perform_mutation(cls, _root, info, **data):
         user = info.context.user
-        data['submitted'] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        user.private_metadata['registrationForm2'] = json.dumps(data)
+        hubspot_reg = HubspotRegistration()
+        input_data = data['input']
+        input_data['submitted'] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        if 'resellerCertificate' in input_data:
+            file = hubspot_reg.upload_file(input_data['resellerCertificate'])
+            if 'id' in file:
+                input_data['resellerCertificate'] = file['id']
+            else:
+                input_data['resellerCertificate'] = file  # response error reason
+        user.private_metadata['registrationForm2'] = json.dumps(input_data)
         user.save()
         return AddCompleteRegistrationForm(user=user)
 

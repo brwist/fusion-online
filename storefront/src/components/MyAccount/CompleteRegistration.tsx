@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm, useWatch } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
-import { User, AddressInput } from '../../generated/graphql';
+import { FileInput, AddressInput } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
@@ -67,6 +67,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   const [terms, setTerms] = useState(false);
   // const [businessDescription, setBusinessDescription] = useState([]);
   const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
+  const [resellerCertificate, setResellerCertificate] = useState(null);
 
   const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck || isSubmitting;
   // const disableSubmit = false;
@@ -186,7 +187,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
 
     if (postalCode) {
-      setValue('shippingPostalCode', countryArea);
+      setValue('shippingPostalCode', postalCode);
     }
 
     if (country) {
@@ -229,8 +230,34 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   }, [submitCompleteRegistrationResponse]);
 
   const onSubmit = async (data) => {
-    data['exportComplianceCheck'] = exportComplianceCheck;
-    submitCompleteRegistration({ variables: { input: data } });
+    try {
+      data['exportComplianceCheck'] = exportComplianceCheck;
+      if (resellerCertificate) {
+        data['resellerCertificate'] = resellerCertificate;
+      }
+      submitCompleteRegistration({ variables: { input: data } });
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = Object(event.currentTarget.files)[0];
+    console.log(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const metadata = `name: ${file.name}, type: ${file.type}, size: ${file.size}, contents:`;
+        const contents = evt.target.result;
+        console.log(metadata, contents);
+        setResellerCertificate({
+          contents,
+          filename: file.name,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -354,7 +381,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
             <Form.Group>
               <Form.Label>Reseller Certificate</Form.Label>
-              <Form.File label="Select file to upload" custom />
+              {resellerCertificate && <p>{resellerCertificate.filename}</p>}
+              <Form.File label="Select file to upload" custom onChange={handleFileChange} />
             </Form.Group>
           </Col>
         </Row>

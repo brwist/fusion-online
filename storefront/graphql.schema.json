@@ -14416,6 +14416,18 @@
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "resellerCertificate",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "FileInput",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -20386,6 +20398,41 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "FileInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "contents",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "filename",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null
       },
       {
@@ -45571,13 +45618,13 @@
         "enumValues": [
           {
             "name": "NAME",
-            "description": null,
+            "description": "Sort plugins by name.",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "IS_ACTIVE",
-            "description": null,
+            "description": "Sort plugins by activity status.",
             "isDeprecated": false,
             "deprecationReason": null
           }

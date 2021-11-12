@@ -1286,6 +1286,7 @@ input CompleteRegistrationInput {
   shippingCountryArea: String!
   shippingPostalCode: String!
   exportComplianceCheck: String!
+  resellerCertificate: FileInput
 }
 
 type ConfigurationItem {
@@ -1989,6 +1990,11 @@ enum ExportScope {
   ALL
   IDS
   FILTER
+}
+
+input FileInput {
+  contents: String
+  filename: String
 }
 
 enum FileTypesEnum {
