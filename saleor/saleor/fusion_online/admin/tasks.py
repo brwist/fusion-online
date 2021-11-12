@@ -75,6 +75,10 @@ def test_task(self, product_data, import_record_id):
                         import_record.message = {"error": f'Could not find global attribute with slug "{attr_slug}"'}
                         import_record.save()
                         return f'Error in task: Could not find global attribute with slug "{attr_slug}"'
+                    
+                    except Exception as e:
+                        attr_val = AttributeValue.objects.get(slug=slugify(row[attr_slug], allow_unicode=True))
+                        associate_attribute_values_to_instance(product, attr, attr_val)
 
             # Update product-type specific attribute values
             for attr_slug in attributes[product_type]:
