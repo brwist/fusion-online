@@ -32,7 +32,8 @@ def test_task(self, product_data, import_record_id):
             # Update product name
             product.name = row['name']
             # # Update product description json field
-            # product.description_json = row['description']
+            product.description_json['blocks'] = [{ "key": "a", "data": {}, "text": row['full_description'], "type": "unstyled", "depth": 0, "entityRanges": [], "inlineStyleRanges": []}]
+            product.description_json['entityMap'] = {}
             product.save()
 
             # Update global metadata
