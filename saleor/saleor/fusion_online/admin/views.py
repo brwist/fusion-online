@@ -1,8 +1,4 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
-from ...product.models import Product, Attribute, AttributeValue
-from ...product.utils.attributes import associate_attribute_values_to_instance
-from django.utils.text import slugify
 from .tasks import test_task
 from .models import ImportRecord
 import csv

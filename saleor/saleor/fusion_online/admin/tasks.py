@@ -7,6 +7,12 @@ from ...product.utils.attributes import associate_attribute_values_to_instance
 from .data.attributes import attributes
 from .data.metadata import metadata
 
+def get_product(item_master_id):
+    try:
+        return Product.objects.get(metadata__contains={'item_master_id': item_master_id})
+    except Product.DoesNotExist:
+        return None
+
 @app.task(bind=True)
 def test_task(self, product_data, import_record_id):
     try:
@@ -18,17 +24,18 @@ def test_task(self, product_data, import_record_id):
         for raw_row in product_data:
             #removes leading and trailing whitespace from each value
             row = { k:v.strip() for k, v in raw_row.items()}
-
-            item_master_id = int(row['item_master_id'])
             # Find product to update by item_master_id
-            try:
-                product = Product.objects.get(metadata__contains={'item_master_id': item_master_id})
-            except Product.DoesNotExist:
-                import_record.status = 'ERROR'
-                import_record.message = {"error": f'Could not find product with item_master_id "{item_master_id}"'}
-                import_record.save()
-                return f'Error in task: Could not find product with item_master_id "{item_master_id}"'
+            item_master_id = row['item_master_id']
+            product = get_product(item_master_id)
             
+            if (product is None):
+                product = get_product(int(item_master_id))
+                if (product is None):
+                    import_record.status = 'ERROR'
+                    import_record.message = {"error": f'Could not find product with item_master_id "{item_master_id}"'}
+                    import_record.save()
+                    return f'Error in task: Could not find product with item_master_id "{item_master_id}"'
+                    
             # get product type
             product_type = product.product_type.slug
 
