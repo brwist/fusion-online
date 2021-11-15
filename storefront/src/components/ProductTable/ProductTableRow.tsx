@@ -46,8 +46,8 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
       ({attribute: {slug}}) => slug === slugName)
     return matchingAttribute[0] && matchingAttribute[0].values[0]?.name
   }
-
-  const productMcode = (product?.metadata.find((item) => item?.key === 'mcode'))?.value
+  const getMetadataValue = (key) => product?.metadata.find(pair => pair.key === key)?.value
+  const productMcode = getMetadataValue("mcode")
   const manufacturer = manufacturers.find(({mcode, manufacturer}) => mcode === productMcode)?.manufacturer || productMcode
   console.log(product)
   return (<tr>
@@ -56,11 +56,11 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
     </td>
     <td>
       <div className="small">
-        <strong className="text-uppercase">{manufacturer}</strong> {product?.defaultVariant?.sku}
+        <strong className="text-uppercase">{manufacturer}</strong> {getMetadataValue("sku")}
       </div>
       <Link style={{textDecoration: "underline"}} to={`/products/${product?.slug}`}>{product?.name}</Link>
       <div className="small mt-1">
-        Spec Code: {product?.attributes && getAttributeValue("spec-code")} | Ordering Code: { product?.attributes && getAttributeValue("ordering-code")}
+        Spec Code: {getMetadataValue("mpn")} | Ordering Code: { product?.attributes && getAttributeValue("ordering-code")}
       </div>
     </td>
     <td className="text-center">{userApproval ? 'Incoming Stock' : '--'}</td>
