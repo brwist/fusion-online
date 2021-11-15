@@ -65,7 +65,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
     </td>
     <td className="text-center">{userApproval ? 'Incoming Stock' : '--'}</td>
     <td className="text-center">{userApproval ? product?.defaultVariant?.quantityAvailable : '--'}</td>
-    <td className="text-center">{unitPrice !== "0.00" ? `${unitPrice}` : `--`}</td>
+    <td className="text-center">{unitPrice !== "0.00" ? `$${unitPrice}` : `--`}</td>
     <td className="text-center">
       <Button variant="primary" onClick={() => setShow(true)} disabled={!userApproval}>
         Select Quantity
