@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { useForm, useWatch } from 'react-hook-form';
 import { gql, useMutation } from '@apollo/client';
-import { FileInput, AddressInput } from '../../generated/graphql';
+import { AddressInput } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
+
+import { useHistory } from 'react-router-dom';
 
 // import {
 //   jobTitleOptions,
@@ -61,6 +63,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     setValue,
   } = useForm<FormValues>();
   const [submitCompleteRegistration, submitCompleteRegistrationResponse] = useMutation(ADD_COMPLETE_REGISTRATION_FORM);
+  const history = useHistory();
 
   // Additional fields
   const [nonDisclosure, setNonDisclosure] = useState(false);
@@ -69,7 +72,7 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
   const [resellerCertificate, setResellerCertificate] = useState(null);
 
-  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck || isSubmitting;
+  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck || isSubmitting || !resellerCertificate;
   // const disableSubmit = false;
 
   // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
@@ -221,11 +224,10 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
   //   );
   // };
 
-  console.log('errors: ', errors);
-
   useEffect(() => {
     if (submitCompleteRegistrationResponse.data) {
       console.log('submitCompleteRegistrationResponse.data: ', submitCompleteRegistrationResponse.data);
+      history.push('/');
     }
   }, [submitCompleteRegistrationResponse]);
 
@@ -243,14 +245,11 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = Object(event.currentTarget.files)[0];
-    console.log(file);
-
     if (file) {
       const reader = new FileReader();
       reader.onload = function (evt) {
         const metadata = `name: ${file.name}, type: ${file.type}, size: ${file.size}, contents:`;
         const contents = evt.target.result;
-        console.log(metadata, contents);
         setResellerCertificate({
           contents,
           filename: file.name,
