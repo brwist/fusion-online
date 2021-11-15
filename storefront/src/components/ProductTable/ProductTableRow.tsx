@@ -56,7 +56,7 @@ export const ProductTableRow: React.FC<ProductTableRowProps> = ({
     </td>
     <td>
       <div className="small">
-        <strong className="text-uppercase">{manufacturer}</strong> {getMetadataValue("sku")}
+        <strong className="text-uppercase">{manufacturer}</strong> {product?.defaultVariant?.sku}
       </div>
       <Link style={{textDecoration: "underline"}} to={`/products/${product?.slug}`}>{product?.name}</Link>
       <div className="small mt-1">
