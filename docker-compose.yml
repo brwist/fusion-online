@@ -87,7 +87,7 @@ services:
        restart: unless-stopped
        networks:
          - saleor-backend-tier
-       env_file: common.env
+       env_file: common.secret.env
        depends_on:
          - redis
          - mailhog
