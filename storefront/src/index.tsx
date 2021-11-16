@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SaleorProvider } from "@saleor/sdk";
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache, DefaultOptions } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client/react';
 
 import { setContext } from '@apollo/client/link/context';
@@ -25,10 +25,16 @@ const authLink = setContext((_, { headers }) => {
     }
   }
 });
-
+const defaultOptions: DefaultOptions = {
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
+  },
+}
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  defaultOptions: defaultOptions
 });
  
 const config = { apiUrl: process.env.REACT_APP_GRAPHQL_URL || '' };
