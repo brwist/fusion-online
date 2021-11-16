@@ -11,6 +11,9 @@ from hubspot.crm.contacts import ApiException
 from django.forms.models import model_to_dict
 from .serializers import HubspotContactSerializer
 
+import base64
+import datetime
+
 
 class HubspotRegistration:
 
@@ -36,11 +39,19 @@ class HubspotRegistration:
             "customer_approval_status_rc": "Limited"
         }
 
-        self.contacts_endpoint = 'https://api.hubapi.com/crm/v3/objects/contacts?hapikey=' + self.api_key
-        self.contacts_search_endpoint = 'https://api.hubapi.com/crm/v3/objects/contacts/search?hapikey=' + self.api_key
-        self.companies_search_endpoint = 'https://api.hubapi.com/crm/v3/objects/companies/search?hapikey=' + self.api_key
-        self.companies_endpoint = 'https://api.hubapi.com/crm/v3/objects/companies?hapikey=' + self.api_key
-        self.contact_properties_endpoint = 'https://api.hubapi.com/crm/v3/properties/contacts/role_rc?hapikey=' + self.api_key
+        self.api_base_url = 'https://api.hubapi.com/crm/v3'
+        self.files_base_url = 'https://api.hubapi.com/files/v3'
+        self.engagement_base_url = 'https://api.hubapi.com/engagements/v1/'
+
+        self.contacts_endpoint = self.api_base_url + '/objects/contacts?hapikey=' + self.api_key
+        self.contacts_search_endpoint = self.api_base_url + \
+            '/objects/contacts/search?hapikey=' + self.api_key
+        self.companies_search_endpoint = self.api_base_url + \
+            '/objects/companies/search?hapikey=' + self.api_key
+        self.companies_endpoint = self.api_base_url + \
+            '/objects/companies?hapikey=' + self.api_key
+        self.contact_properties_endpoint = self.api_base_url + \
+            '/properties/contacts/role_rc?hapikey=' + self.api_key
 
     def format_associations_endpoint(self, type):
         return 'https://api.hubapi.com/crm/v3/associations/contact/company/batch/' + type + '?hapikey=' + self.api_key
@@ -75,30 +86,30 @@ class HubspotRegistration:
             print(
                 'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
-                # # Create the association
-                # self.associate_company_with_contact(company['id'], hubspot_user['id'])
+            # # Create the association
+            # self.associate_company_with_contact(company['id'], hubspot_user['id'])
 
             # else:
             #     print(
             #         'No company found for email "%s". Creating a new company in Hubspot for domain "%s".' % (user.email, email_domain))
 
-                # company_payload = {
-                #     "name": user.private_metadata['company'],
-                #     "domain": self.get_email_domain(user.email),
-                #     "region_rms": user.private_metadata['region']
-                # }
+            # company_payload = {
+            #     "name": user.private_metadata['company'],
+            #     "domain": self.get_email_domain(user.email),
+            #     "region_rms": user.private_metadata['region']
+            # }
 
-                # company = self.create_company(company_payload)
+            # company = self.create_company(company_payload)
 
-                # Create user with property role_rc = ADMIN
-                # hubspot_user = self.add_user(user, 'Admin')
-                # if hubspot_user:
-                #     print(
-                #         'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
+            # Create user with property role_rc = ADMIN
+            # hubspot_user = self.add_user(user, 'Admin')
+            # if hubspot_user:
+            #     print(
+            #         'Hubspot user created with user id "%s" with role "%s".' % (str(hubspot_user['id']), str(hubspot_user['properties']['role_rc'])))
 
-                #     # Create the association
-                #     self.associate_company_with_contact(
-                #         company['id'], hubspot_user['id'])
+            #     # Create the association
+            #     self.associate_company_with_contact(
+            #         company['id'], hubspot_user['id'])
 
         return hubspot_user
 
@@ -264,3 +275,58 @@ class HubspotRegistration:
         else:
             hubspot_user = r.json()
             return hubspot_user
+
+    def upload_file(self, file):
+        # convert file contents to local file
+        file_contents = file.contents.split('base64,')[1]
+        binary_image_data = base64.b64decode(file_contents)
+        filename = file.filename
+        url = self.files_base_url + '/files?hapikey=' + self.api_key
+        files_data = {
+            'file': (filename, binary_image_data, 'text/plain'),
+            'options': (None, json.dumps({
+                "access": "PRIVATE"
+            }), 'text/strings'),
+            'folderPath': (None, '/docs', 'text/strings')
+        }
+        r = requests.post(url,
+                          files=files_data,
+                          )
+
+        if r.status_code != 201:
+            return r.reason
+        response = r.json()
+        return response
+
+    def add_engagement_note(self, note, contact_id, attachment_id=None):
+        url = self.engagement_base_url + '/engagements?hapikey=' + self.api_key
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        payload = {
+            'engagement': {
+                'active': True,
+                'type': 'NOTE'
+            },
+            'associations': {
+                'contactIds': [contact_id],
+
+            },
+            'metadata': {
+                'body': note
+            }
+        }
+        if attachment_id:
+            payload['attachments'] = [
+                {
+                    'id': attachment_id
+                }
+            ]
+        r = requests.post(url, headers=(
+            {
+                'Content-Type': 'application/json'
+            }),
+            data=json.dumps(payload))
+        if r.status_code != 200:
+            return None
+        else:
+            engagement = r.json()
+            return engagement
