@@ -146,7 +146,9 @@ export const GET_PRODUCT_DETAILS = gql`
   fragment SelectedAttributeFields on SelectedAttribute {
     attribute {
       id
+      slug
       name
+      visibleInStorefront
     }
     values {
       id

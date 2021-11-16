@@ -43,6 +43,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
       setSelectedOffer(data?.product?.variants[0]?.id)
     }
   })
+  function getAttributeValue (slugName: string): any {
+    const matchingAttribute = data?.product?.attributes?.filter(
+      ({attribute: {slug}}) => slug === slugName)
+    return matchingAttribute?.length > 0 && matchingAttribute[0].values[0]?.name
+  }
+  console.log(data)
   const getMetadataValue = (key) => data?.product?.metadata.find(pair => pair.key === key)?.value
   const mcode = getMetadataValue("mcode")
   const manufacturer = manufacturers.find(m => m.mcode === mcode)?.manufacturer
@@ -167,7 +173,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     Commodity
                   </Col>
                   <Col>
-                    {data?.product?.category.name.split("-")[0]}
+                    {getAttributeValue("commodity")}
                   </Col>
                 </Row>
                 <Row className="mb-4" >
@@ -175,7 +181,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     Group
                   </Col>
                   <Col>
-                  {data?.product?.category.name.split("-")[1]}
+                  {getAttributeValue("segment")}
                   </Col>
                 </Row>
               </Col>
@@ -231,18 +237,20 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         <Tab eventKey="specs" title="Technical Specs">
           <Row>
             {data?.product?.attributes.map(({attribute, values}) => {
-              return (
-                <Col lg={6} key={attribute.id}>
-                  <Row className="mb-4">
-                    <Col className="font-weight-bold">
-                      {attribute.name}
-                    </Col>
-                    <Col>
-                      {values[0]?.name}
-                    </Col>
-                  </Row>
-                </Col>
-              )
+              if (attribute.visibleInStorefront && values?.length > 0) {
+                return (
+                  <Col lg={6} key={attribute.id}>
+                    <Row className="mb-4">
+                      <Col className="font-weight-bold">
+                        {attribute.name}
+                      </Col>
+                      <Col>
+                        {values[0].name}
+                      </Col>
+                    </Row>
+                  </Col>
+                )
+              }
             })}
           </Row>
         </Tab>
