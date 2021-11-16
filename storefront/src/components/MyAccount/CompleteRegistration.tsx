@@ -1,23 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
-import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
-
-import { User, AddressInput, CountryCode } from '../../generated/graphql';
+import { useForm, useWatch } from 'react-hook-form';
+import { gql, useMutation } from '@apollo/client';
+import { AddressInput } from '../../generated/graphql';
 import usStates from '../../utils/us-states.json';
 import caStates from '../../utils/ca-states.json';
 import countries from '../../utils/countries.json';
 
+import { useHistory } from 'react-router-dom';
+
+// import {
+//   jobTitleOptions,
+//   revenueOptions,
+//   numberOfEmployeesOptions,
+//   descriptionOfBusinessOptions,
+// } from '../Forms/misc/options';
+
 interface CompleteRegistrationProps {}
 
 type FormValues = {
-  companyName: string;
-  tradeName: string;
   customerAddress: string;
   city: string;
   country: string;
   countryArea: string;
   postalCode: string;
-  companyUrl: string;
   taxId: string;
   vatId: string;
   shippingName: string;
@@ -37,14 +43,42 @@ type AddressMutationInput = {
   input: AddressInput;
 };
 
-export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...props }) => {
+const ADD_COMPLETE_REGISTRATION_FORM = gql`
+  mutation addCompleteRegistrationForm($input: CompleteRegistrationInput!) {
+    addCompleteRegistrationForm(input: $input) {
+      user {
+        id
+      }
+    }
+  }
+`;
 
+export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...props }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
+    getValues,
+    setValue,
   } = useForm<FormValues>();
+  const [submitCompleteRegistration, submitCompleteRegistrationResponse] = useMutation(ADD_COMPLETE_REGISTRATION_FORM);
+  const history = useHistory();
+
+  // Additional fields
+  const [nonDisclosure, setNonDisclosure] = useState(false);
+  const [terms, setTerms] = useState(false);
+  // const [businessDescription, setBusinessDescription] = useState([]);
+  const [exportComplianceCheck, setExportComplianceCheck] = useState<string | null>(null);
+  const [resellerCertificate, setResellerCertificate] = useState(null);
+
+  const disableSubmit = !nonDisclosure || !terms || !exportComplianceCheck || isSubmitting || !resellerCertificate;
+  // const disableSubmit = false;
+
+  // const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+  //   control,
+  //   name: 'businessDescription',
+  // });
 
   const textInput = (name: keyof FormValues, label: string, required: boolean = false) => {
     return (
@@ -56,6 +90,16 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
           <Form.Control type="text" {...register(name)} />
         )}
         {errors[name] ? <span>This field is required</span> : null}
+      </Form.Group>
+    );
+  };
+
+  const numInput = (name: keyof FormValues, label: string) => {
+    return (
+      <Form.Group>
+        <Form.Label>{label}</Form.Label>
+        <Form.Control type="number" {...register(name)} />
+        {errors[name] ? <span className="invalid-feedback">This field is required</span> : null}
       </Form.Group>
     );
   };
@@ -93,13 +137,13 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
     }
   };
 
-  const zipInput = () => {
+  const zipInput = (name) => {
     return (
       <Form.Group>
         <Form.Label>Postal Code</Form.Label>
         <Form.Control
           type="text"
-          {...register('postalCode', {
+          {...register(name, {
             required: {
               value: true,
               message: 'Postal code is required.',
@@ -118,9 +162,101 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             },
           })}
         />
-        {errors['postalCode'] ? <span>{errors.postalCode.message}</span> : null}
+        {errors[name] ? <span>{errors[name].message}</span> : null}
       </Form.Group>
     );
+  };
+
+  const toggleSameAsBusinessAddress = (e) => {
+    const checked = e.target.checked;
+
+    if (!checked) {
+      return;
+    }
+    const values = getValues();
+
+    const { customerAddress, city, countryArea, postalCode, country } = values;
+
+    if (customerAddress) {
+      setValue('shippingAddress', customerAddress);
+    }
+
+    if (city) {
+      setValue('shippingCity', city);
+    }
+
+    if (countryArea) {
+      setValue('shippingCountryArea', countryArea);
+    }
+
+    if (postalCode) {
+      setValue('shippingPostalCode', postalCode);
+    }
+
+    if (country) {
+      setValue('shippingCountry', country);
+    }
+  };
+
+  // const handleToggleBusinessDescription = (e) => {
+  //   const val = e.target.value;
+  //   const checked = e.target.checked;
+  //   if (checked) {
+  //     setBusinessDescription([...businessDescription, val]);
+  //   } else {
+  //     let newBusinessDescription = businessDescription.filter((x) => x !== val);
+  //     setBusinessDescription(newBusinessDescription);
+  //   }
+  // };
+
+  // const businessDescriptionCheckbox = ({ value, label }, index) => {
+  //   return (
+  //     <Col sm={6} key={index}>
+  //       <Form.Check
+  //         custom
+  //         className="mb-2"
+  //         type="checkbox"
+  //         onChange={handleToggleBusinessDescription}
+  //         id={value}
+  //         label={label}
+  //       />
+  //     </Col>
+  //   );
+  // };
+
+  useEffect(() => {
+    if (submitCompleteRegistrationResponse.data) {
+      console.log('submitCompleteRegistrationResponse.data: ', submitCompleteRegistrationResponse.data);
+      history.push('/');
+    }
+  }, [submitCompleteRegistrationResponse]);
+
+  const onSubmit = async (data) => {
+    try {
+      data['exportComplianceCheck'] = exportComplianceCheck;
+      if (resellerCertificate) {
+        data['resellerCertificate'] = resellerCertificate;
+      }
+      submitCompleteRegistration({ variables: { input: data } });
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = Object(event.currentTarget.files)[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const metadata = `name: ${file.name}, type: ${file.type}, size: ${file.size}, contents:`;
+        const contents = evt.target.result;
+        setResellerCertificate({
+          contents,
+          filename: file.name,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -138,35 +274,27 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
         </Col>
       </Row>
 
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Row className="justify-content-center">
           <Col xl={6}>
             <h3 className="h4 font-weight-bold">Business Information</h3>
-
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Job Title</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-              >
-                <option>Please Select</option>
-                <option>Option 2</option>
+              <Form.Control as="select" custom {...register('jobTitle', { required: true })}>
+                {jobTitleOptions()}
               </Form.Control>
-            </Form.Group>
-            {textInput('companyName', 'Legal Company Name', true)}
-            {textInput('tradeName', 'Trade Name/DBA', true)}
+            </Form.Group> */}
+
+            {/* {textInput('companyName', 'Legal Company Name', true)}
+            {textInput('tradeName', 'Trade Name/DBA', true)} */}
             {textInput('customerAddress', 'Customer Address', true)}
             {textInput('city', 'City', true)}
             <Form.Row>
-              <Col lg={8}>
-                {textInput('countryArea', 'State/Province', true)}
-              </Col>
-              <Col lg={4}>
-                {zipInput()}
-              </Col>
+              <Col lg={8}>{textInput('countryArea', 'State/Province', true)}</Col>
+              <Col lg={4}>{zipInput('postalCode')}</Col>
             </Form.Row>
             {locationSelect('country', 'Country', countries)}
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Company Type</Form.Label>
               <div>
                 <Form.Check
@@ -175,6 +303,9 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                   type="radio"
                   name="companyType"
                   label="Public"
+                  id="public"
+                  value="public"
+                  {...register('companyType', { required: true })}
                 />
                 <Form.Check
                   inline
@@ -182,93 +313,36 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                   type="radio"
                   name="companyType"
                   label="Private"
+                  id="private"
+                  value="private"
+                  {...register('companyType', { required: true })}
                 />
               </div>
-            </Form.Group>
-            {textInput('companyUrl', 'Company URL', true)}
+            </Form.Group> */}
+            {/* {textInput('companyUrl', 'Company URL', true)} */}
             {textInput('taxId', 'Federal Tax ID', true)}
             {textInput('vatId', 'VAT ID')}
-            <Form.Group>
+            {/* <Form.Group>
               <Form.Label>Revenue</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-                required
-              >
-                <option>Please Select</option>
-                <option>Option 2</option>
+              <Form.Control as="select" custom required>
+                {revenueOptions()}
               </Form.Control>
             </Form.Group>
             <Form.Group>
               <Form.Label>Number of Employees</Form.Label>
-              <Form.Control
-                as="select"
-                custom
-                required
-              >
-                <option>Please Select</option>
-                <option>Option 2</option>
+              <Form.Control as="select" custom required>
+                {numberOfEmployeesOptions()}
               </Form.Control>
-            </Form.Group>
-            <Form.Group as={Row}>
+            </Form.Group> */}
+
+            {/* <Form.Group as={Row}>
               <Col xs={12}>
                 <Form.Label>Description of Business (select all that apply)</Form.Label>
               </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Aerospace"
-                />
-              </Col>
-              <Col sm={6}>
-                <Form.Check
-                  custom
-                  className="mb-2"
-                  type="checkbox"
-                  name="businessDescription"
-                  label="Industrial Automation"
-                />
-              </Col>
-            </Form.Group>
+              {descriptionOfBusinessOptions().map((option, index) => {
+                return businessDescriptionCheckbox(option, index);
+              })}
+            </Form.Group> */}
           </Col>
         </Row>
 
@@ -283,18 +357,16 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
                 custom
                 type="checkbox"
                 label="Same as business address"
+                id="sameAsBusinessAddress"
+                onChange={toggleSameAsBusinessAddress}
               />
             </Form.Group>
             {textInput('shippingName', 'Ship to Name', true)}
             {textInput('shippingAddress', 'Address', true)}
             {textInput('shippingCity', 'City', true)}
             <Form.Row>
-              <Col lg={8}>
-                {textInput('shippingCountryArea', 'State/Province', true)}
-              </Col>
-              <Col lg={4}>
-                {zipInput()}
-              </Col>
+              <Col lg={8}>{textInput('shippingCountryArea', 'State/Province', true)}</Col>
+              <Col lg={4}>{zipInput('shippingPostalCode')}</Col>
             </Form.Row>
             {locationSelect('shippingCountry', 'Country', countries)}
           </Col>
@@ -308,10 +380,8 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
 
             <Form.Group>
               <Form.Label>Reseller Certificate</Form.Label>
-              <Form.File
-                label="Select file to upload"
-                custom
-              />
+              {resellerCertificate && <p>{resellerCertificate.filename}</p>}
+              <Form.File label="Select file to upload" custom onChange={handleFileChange} />
             </Form.Group>
           </Col>
         </Row>
@@ -323,48 +393,70 @@ export const CompleteRegistration: React.FC<CompleteRegistrationProps> = ({ ...p
             <h3 className="h4 font-weight-bold">Agreements</h3>
 
             <Form.Group>
-              <div className="custom-control custom-checkbox mb-2">
+              <div className="custom-control custom-checkbox mb-2 pl-0">
                 <Form.Check
-                  className="custom-control-input"
-                  id="test1"
+                  custom
+                  id="terms"
                   type="checkbox"
                   required
+                  checked={terms}
+                  onChange={(e) => setTerms(!terms)}
+                  label={
+                    <>
+                      I have read and agree to the <a href="/">Terms and Conditions</a>
+                    </>
+                  }
                 />
-                <Form.Label className="custom-control-label">I have read and agree to the <a href="/">Terms and Conditions</a></Form.Label>
               </div>
-              <div className="custom-control custom-checkbox mb-2">
+              <div className="custom-control custom-checkbox mb-2 pl-0">
                 <Form.Check
-                  className="custom-control-input"
+                  custom
+                  id="non-disclosure"
                   type="checkbox"
                   required
+                  checked={nonDisclosure}
+                  onChange={(e) => setNonDisclosure(!nonDisclosure)}
+                  label={
+                    <>
+                      I have read and agree to the <a href="/">Non-Disclosure Agreement</a>
+                    </>
+                  }
                 />
-                <Form.Label className="custom-control-label">I have read and agree to the <a href="/">Non-Disclosure Agreement</a></Form.Label>
               </div>
             </Form.Group>
             <Form.Group>
-              <Form.Label>I have read and agree to the <a href="/">Export Compliance Check</a>, and certify that this document is being signed</Form.Label>
+              <Form.Label>
+                I have read and agree to the <a href="/">Export Compliance Check</a>, and certify that this document is
+                being signed
+              </Form.Label>
               <Form.Check
                 custom
                 className="mb-2"
                 type="radio"
-                name="exportComplianceCheck"
                 label="on behalf of itself, its subsidiaries, and affiliates"
-                required
+                id="exportComplianceCheck-1"
+                value="1"
+                checked={exportComplianceCheck == '1'}
+                onChange={() => setExportComplianceCheck('1')}
               />
               <Form.Check
                 custom
                 className="mb-2"
                 type="radio"
-                name="exportComplianceCheck"
-                label="only for the locations in the country specified in the address line below"
-                required
+                label="only for the locations in the country specified in the Business Information form above"
+                id="exportComplianceCheck-2"
+                value="2"
+                checked={exportComplianceCheck == '2'}
+                onChange={() => setExportComplianceCheck('2')}
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">Complete</Button>
+            <Button variant="primary" type="submit" disabled={disableSubmit}>
+              Complete
+            </Button>
           </Col>
         </Row>
       </Form>
     </div>
-  )
-}
+  );
+};

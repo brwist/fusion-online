@@ -84,7 +84,7 @@ export interface ShippingInventoryProps {
 }
 
 export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
-  mutation checkoutShippingAddressUpdate($checkoutId: String!, $shippingAddress: AddressInput!) {
+  mutation checkoutShippingAddressUpdate($checkoutId: ID!, $shippingAddress: AddressInput!) {
     checkoutShippingAddressUpdate(checkoutId: $checkoutId, shippingAddress: $shippingAddress) {
       errors {
         field
@@ -92,7 +92,9 @@ export const CHECKOUT_SHIPPING_ADDRESS_UPDATE = gql`
       }
       checkout {
         id
-        shippingAddress
+        shippingAddress {
+          id
+        }
       }
       checkoutErrors {
         field
@@ -365,8 +367,9 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
           </tbody>
         </Table>
         <div className="add-option">
-        <FontAwesomeIcon icon={faPlus}/><Link to="/account/shipping">Add Shipping Address</Link>
-      </div>
+          <FontAwesomeIcon icon={faPlus} />
+          <Link to="/account/shipping">Add Shipping Address</Link>
+        </div>
         <h5>Domestic Shipping Method</h5>
         <Table className="mb-4" borderless striped responsive>
           <thead className="border-bottom">
