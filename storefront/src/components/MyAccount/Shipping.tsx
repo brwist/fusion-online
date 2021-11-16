@@ -61,6 +61,8 @@ export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
             <Row>
               <Col>
                 <div className="mb-2">
+                  {address?.shipToName}
+                  <br />
                   {address?.firstName} {address?.lastName}
                   <br />
                   {address?.streetAddress1}
@@ -74,10 +76,6 @@ export const Shipping: React.FC<ShippingProps> = ({ ...props }) => {
                   <Button variant="link" className="small px-0">
                     EDIT ADDRESS
                   </Button>{' '}
-                  |{' '}
-                  <Button variant="link" className="small px-0">
-                    REMOVE ADDRESS
-                  </Button>
                 </div>
               </Col>
               {address?.isDefaultShippingAddress && (
