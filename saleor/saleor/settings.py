@@ -255,6 +255,8 @@ INSTALLED_APPS = [
     "saleor.wishlist",
     "saleor.app",
     "saleor.fusion_online",
+    "saleor.list",
+
     # External apps
     "corsheaders",
     "rest_framework",
@@ -269,6 +271,7 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "phonenumber_field",
+    
 ]
 
 

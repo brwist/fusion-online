@@ -22,7 +22,7 @@ const showSuccessNotification = (
 
   if (successful) {
     hide();
-    /*alert.show(
+    /* alert.show(
       {
         title: data.accountRegister.requiresConfirmation
           ? intl.formatMessage({
@@ -32,7 +32,7 @@ const showSuccessNotification = (
           : intl.formatMessage({ defaultMessage: "New user has been created" }),
       },
       { type: "success", timeout: 5000 }
-    );*/
+    ); */
   }
 };
 
@@ -47,7 +47,7 @@ const RegisterForm: React.FC<{ hide: () => void }> = ({ hide }) => {
       {(registerCustomer, { loading, data }) => {
         return (
           <Form
-            autocomplete="off"
+            // autocomplete="off"
             errors={maybe(() => data.accountRegister.errors, [])}
             onSubmit={(event, { email, password }) => {
               event.preventDefault();
