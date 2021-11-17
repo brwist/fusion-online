@@ -40,7 +40,7 @@ export const OpenOrders: React.FC<OpenOrdersProps> = ({
                   <strong>{line?.variant?.product.metadata
                     .find((data) => data.key === 'mcode')
                     ?.value
-                  }</strong> {line?.productSku}
+                  }</strong> <small>{line?.productSku}</small>
                 </div>
                 <div>
                   <Link to={`/products/${line?.variant?.product.id}`}>{line?.variant?.product.name}</Link>

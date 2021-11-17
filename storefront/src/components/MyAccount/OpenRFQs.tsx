@@ -30,7 +30,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
             <td colSpan={2}>
               <div className="rfq-item">
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>INTEL</strong> <small>123456789</small>
                 </div>
                 <div>
                   <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
@@ -46,7 +46,7 @@ export const OpenRFQs: React.FC<OpenRFQsProps> = ({
               </div>
               <div className="rfq-item">
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>INTEL</strong> <small>123456789</small>
                 </div>
                 <div>
                   <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>

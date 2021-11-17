@@ -132,12 +132,10 @@ export const NavBar: React.FC<NavBarProps> = ({
                   <NavDropdown.Item as="div"><Link to="/account/shipping">Shipping</Link></NavDropdown.Item>
                   <NavDropdown.Item as="div"><Link to="/account/manage-profile">Manage Profile</Link></NavDropdown.Item>
                   <NavDropdown.Item as="div"><Link to="/account/saved-parts">Saved Parts</Link></NavDropdown.Item>
-                  <NavDropdown.Item as="div" onClick={() => signOut()}>Sign Out</NavDropdown.Item>
+                  <NavDropdown.Item as="div"><a href="#" onClick={() => signOut()}>Sign Out</a></NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown as="li" title="My Parts" id="parts-dropdown">
                   <NavDropdown.Item as="div"><Link to="/account/saved-parts">All Lists</Link></NavDropdown.Item>
-                  <NavDropdown.Item as="div">List 1</NavDropdown.Item>
-                  <NavDropdown.Item as="div">List 2</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>

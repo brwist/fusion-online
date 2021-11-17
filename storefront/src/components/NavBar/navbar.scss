@@ -88,12 +88,15 @@
                 }
 
                 .dropdown-item {
-                    padding: 0.5rem 1rem;
+                    padding: 0;
                     font-size: 12px;
                     text-transform: uppercase;
 
                     a {
+                        display: block;
+                        padding: 0.5rem 1rem;
                         text-decoration: none;
+                        cursor: pointer;
                     }
                 }
 
