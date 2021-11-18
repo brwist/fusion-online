@@ -255,7 +255,7 @@ INSTALLED_APPS = [
     "saleor.wishlist",
     "saleor.app",
     "saleor.fusion_online",
-    "saleor.list",
+    "saleor.fusion_online.parts_list",
 
     # External apps
     "corsheaders",
