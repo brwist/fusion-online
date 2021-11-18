@@ -34,7 +34,7 @@ const ProductList: React.SFC<{
           </Link>
           <div className="cart__list__item__details">
             <p data-test="price">
-              <TaxedMoney taxedMoney={line.variant.pricing.price} />
+              <TaxedMoney taxedMoney={line.variant.pricing?.price} />
             </p>
             <Link to={productUrl}>
               <p data-test="name">{line.variant.product.name}</p>
