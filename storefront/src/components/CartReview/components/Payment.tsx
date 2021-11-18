@@ -133,8 +133,8 @@ export const Payment = ({ setActiveTab }) => {
       countryArea: selectedPaymentMethod.billingDetails.address.state,
     };
 
-    const setBillingAddressResponse = await setBillingAddress(billingAddress);
-    console.log('setBillingAddressResponse: ', setBillingAddressResponse);
+    // const setBillingAddressResponse = await setBillingAddress(billingAddress);
+    // console.log('setBillingAddressResponse: ', setBillingAddressResponse);
 
     const cardData = {
       brand: selectedPaymentMethod?.brand,
