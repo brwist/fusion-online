@@ -52,7 +52,7 @@ class RFQLineItem(models.Model):
     99999999             DEFAULT
     """
     commodity_code = models.IntegerField()
-    rms_response_id = models.IntegerField(null=True)
+    rms_quote_detail_id = models.IntegerField(null=True)
     rfq_submission = models.ForeignKey(
         RFQSubmission,
         related_name="items",
@@ -73,7 +73,7 @@ class RFQResponse(models.Model):
     description = models.CharField(max_length=300)
     coo = models.CharField(max_length=60, null=True)
     lead_time_days = models.CharField(max_length=50)
-    rms_response_id = models.IntegerField(null=True)
+    rms_quote_detail_id = models.IntegerField(null=True)
     notes = models.TextField(null=True)
     line_item = models.OneToOneField(RFQLineItem, on_delete=models.CASCADE, related_name="response")
 
