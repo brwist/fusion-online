@@ -28,5 +28,6 @@ urlpatterns = [
     # webhook
     path("install-webhook", hubspot_views.install_webhook),
     path("contact/changed", hubspot_views.update_contact_approval_status),
-    path("parts/<int:pk>",parts_list_views.PartsView.as_view()),
+    path("parts<int:pk>",parts_list_views.PartsView.as_view()),
+    path("partlist/<int:pk>",parts_list_views.PartListView.as_view())
 ]
