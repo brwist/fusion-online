@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: RocketChips API
   description: Manage RocketChips catalog and customer data.<br/><br/><a href="/changelog.md.txt">Changelog</a>
-  version: 0.0.10
+  version: 0.0.11
 servers:
   - url: https://api-sandbox.fusiononline.io/fo-api
     description: Sandbox environment
@@ -265,60 +265,6 @@ components:
         all_description:
           type: string
           maxLength: 250
-        cpu_family:
-          type: string
-          maxLength: 100
-        cpu_type:
-          type: string
-          maxLength: 100
-        cpu_model:
-          type: string
-          maxLength: 100
-        memory_ddr:
-          type: string
-          maxLength: 100
-        memory_type:
-          type: string
-          maxLength: 100
-        memory_density:
-          type: string
-          maxLength: 100
-        memory_rank_org:
-          type: string
-          maxLength: 100
-        memory_speed:
-          type: string
-          maxLength: 100
-        storage_class:
-          type: string
-          maxLength: 100
-        storage_capacity:
-          type: string
-          maxLength: 100
-        storage_size:
-          type: string
-          maxLength: 100
-        storage_type:
-          type: string
-          maxLength: 100
-        gpu_line:
-          type: string
-          maxLength: 100
-        gpu_model:
-          type: string
-          maxLength: 100
-        gpu_memory_config:
-          type: string
-          maxLength: 100
-        gpu_interface:
-          type: string
-          maxLength: 100
-        gpu_cooling:
-          type: string
-          maxLength: 100
-        gpu_packaging:
-          type: string
-          maxLength: 100
       required:
         - item_master_id
         - mpn
@@ -380,9 +326,9 @@ components:
           maxLength: 60
         lead_time_days:
           $ref: '#/components/schemas/LeadTimeDays'
-        rms_response_id:
+        rms_quote_detail_id:
           type: integer
-          description: ID of the RFQ response in RMS
+          description: ID of the quote detail in RMS
       required:
         - result_status
         - mpn
@@ -470,6 +416,9 @@ components:
               quantity:
                 type: integer
                 minimum: 1
+              rms_quote_detail_id:
+                type: integer
+                example: 1
               unit_sell_price:
                 $ref: '#/components/schemas/Decimal'
             required:

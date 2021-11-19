@@ -44,13 +44,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
       <Card>
         <Card.Body>
           <Row>
-            <Col lg={4}>
+            <Col lg={4} className="small">
               <strong>Order Number:</strong> {data?.orderByToken?.number}
             </Col>
-            <Col lg={4}>
+            <Col lg={4} className="small">
               <strong>Purchase Date:</strong> {moment(data?.orderByToken?.created).format('MMM DD, YYYY')}
             </Col>
-            <Col lg={4} className="text-right">
+            <Col lg={4} className="small text-right">
               <strong>Total:</strong> ${data?.orderByToken?.total?.gross.amount}
             </Col>
           </Row>
@@ -115,16 +115,16 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
 
           <Row>
             <Col lg={4}>
-              <div className="font-weight-bold">
+              <div className="font-weight-bold small">
                 Ship Date:
               </div>
-              {data?.orderByToken?.status === 'FULFILLED' ? 
+              {data?.orderByToken?.status === 'FULFILLED' ?
                 moment(data?.orderByToken?.fulfillments[0]?.created).format('MMM DD, YYYY') :
                 data?.orderByToken?.statusDisplay
               }
             </Col>
             <Col lg={4}>
-              <div className="font-weight-bold">
+              <div className="font-weight-bold small">
                 Shipping Address
               </div>
               {data?.orderByToken?.shippingAddress?.firstName} {data?.orderByToken?.shippingAddress?.lastName}<br />
@@ -161,7 +161,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                     </div>
                   </Col>
                   <Col lg={3}>
-                    <div className="font-weight-bold">
+                    <div className="font-weight-bold small">
                       Per Unit Price
                     </div>
                     <div>
@@ -169,13 +169,13 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
                     </div>
                   </Col>
                   <Col lg={1} className="text-center">
-                    <div className="font-weight-bold">
+                    <div className="font-weight-bold small">
                       Qty
                     </div>
                     {line?.quantity}
                   </Col>
                   <Col lg={3} className="text-right">
-                    <div className="font-weight-bold">
+                    <div className="font-weight-bold small">
                       Product Total
                     </div>
                     ${line?.totalPrice?.gross.amount}
@@ -188,7 +188,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({
             })}
           <hr />
 
-          <div className="font-weight-bold">
+          <div className="font-weight-bold small">
             Notes
           </div>
           <div>

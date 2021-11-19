@@ -31,38 +31,17 @@ class ProductSerializer(serializers.Serializer):
     vendors = VendorSerializer(many=True)
     category_id = serializers.ChoiceField(choices=CATEGORY_ID_CHOICES)
     all_description = serializers.CharField(max_length=250, required=False)
-    cpu_family = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    cpu_type = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    cpu_model = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    memory_ddr = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    memory_type = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    memory_density = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    memory_rank_org = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    memory_speed = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    storage_class = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    storage_capacity = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    storage_size = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    storage_type = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_line = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_model = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_memory_config = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_interface = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_cooling = serializers.CharField(max_length=100, required=False, allow_blank=True)
-    gpu_packaging = serializers.CharField(max_length=100, required=False, allow_blank=True)
+
 
     def create(self, validated_data): 
         if CATEGORY_ID_DICT[validated_data["category_id"]].startswith("CPU"):
             product_type_slug = "cpu"
-            attr_slugs = ["cpu_family", "cpu_type", "cpu_model"]
         elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("GPU"):
             product_type_slug = "gpu"
-            attr_slugs =["gpu_line", "gpu_model", "gpu_memory_config", "gpu_interface", "gpu_cooling", "gpu_packaging"]
         elif CATEGORY_ID_DICT[validated_data["category_id"]].startswith("Mem"):
             product_type_slug = "memory"
-            attr_slugs = ["memory_ddr", "memory_type", "memory_density", "memory_rank_org", "memory_speed"]
         else:
             product_type_slug = "storage"
-            attr_slugs = ["storage_class", "storage_capacity", "storage_size", "storage_type"]
         category_name = CATEGORY_ID_DICT[validated_data["category_id"]]
 
         # map request data to product model fields and create new product
@@ -78,15 +57,6 @@ class ProductSerializer(serializers.Serializer):
 
         product = Product.objects.create(**product_data)
         print("--PRODUCT CREATED--")
-        
-        # assign attribute values to the newly created product for each attribute of the specified category
-        # attribute values that do not exist will be created
-        for attr_slug in attr_slugs: 
-            attribute = Attribute.objects.get(slug=attr_slug)
-            if validated_data.get(attr_slug, None):
-                attribute_value = AttributeValue.objects.get_or_create(name=validated_data[attr_slug], slug=slugify(validated_data[attr_slug], allow_unicode=True), attribute=attribute)
-                associate_attribute_values_to_instance(product, attribute, attribute_value[0])
-        print("--ATTRIBUTE VALUES STORED--")
 
         # save mcode, mpn, item_master_id as public metadata
         product_queryset = Product.objects.filter(pk=product.pk)

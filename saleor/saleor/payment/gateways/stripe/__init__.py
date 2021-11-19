@@ -245,9 +245,12 @@ def fill_card_details(intent: stripe.PaymentIntent, response: GatewayResponse):
 
 
 def retrieve_payment_method(payment_method_id, config: GatewayConfig):
-    client = _get_client(**config.connection_params)
-    card = client.PaymentMethod.retrieve(payment_method_id)
-    return card
+    try:
+        client = _get_client(**config.connection_params)
+        card = client.PaymentMethod.retrieve(payment_method_id)
+        return card
+    except:
+        return None
 
 
 def create_stripe_customer(config: GatewayConfig, user: User):

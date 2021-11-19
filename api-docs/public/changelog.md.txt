@@ -1,6 +1,11 @@
 RocketChips API Changelog
 ==========================
 
+### 2021-11-18 (version 0.0.11):
+  - Rename rms_response_id property to rms_quote_detail_id in the RFQ response schema.
+  - Include rms_response_id in the sales order line item schema.
+  - Drop support for all commodity-specific attributes in the product create API.
+
 ### 2021-10-25 (version 0.0.10):
   - Make certain fields no longer required in RFQLineItem schema and add the notes property to the RFQLineItem schema.
 

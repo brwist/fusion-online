@@ -212,7 +212,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
   // Set default shipping address
   useEffect(() => {
     if (addressQuery.data) {
-      const defaultAddress = addressQuery.data.me.addresses[0];
+      console.log('addressQuery.data: ', addressQuery.data);
+      const defaultAddress = addressQuery.data.me?.addresses[0];
       setSelectedAddress(defaultAddress);
     }
   }, [addressQuery]);
@@ -320,7 +321,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
             </tr>
           </thead>
           <tbody>
-            {addressQuery?.data?.me.addresses.map((address, index: number) => {
+            {addressQuery?.data?.me?.addresses.map((address, index: number) => {
               const {
                 id,
                 firstName,
@@ -332,6 +333,7 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
                 country,
                 postalCode,
                 companyName,
+                shipToName,
               } = address;
               const checked = id === selectedAddress?.id;
               return (
@@ -354,6 +356,8 @@ export const ShippingInventory: React.FC<ShippingInventoryProps> = ({ items, set
                     {companyName}
                   </td>
                   <td>
+                    {shipToName}
+                    <br />
                     {`${streetAddress1} ${streetAddress2}`}
                     <br />
                     {`${city}, ${countryArea} ${postalCode}`}

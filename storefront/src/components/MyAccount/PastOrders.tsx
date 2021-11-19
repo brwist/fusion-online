@@ -27,7 +27,7 @@ export const PastOrders: React.FC<PastOrdersProps> = ({
             <tr>
               <td>
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>INTEL</strong> <small>123456789</small>
                 </div>
                 <div>
                   <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
@@ -73,7 +73,7 @@ export const PastOrders: React.FC<PastOrdersProps> = ({
             <tr>
               <td>
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>INTEL</strong> <small>123456789</small>
                 </div>
                 <div>
                   <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>
@@ -102,7 +102,7 @@ export const PastOrders: React.FC<PastOrdersProps> = ({
             <tr>
               <td>
                 <div>
-                  <strong>INTEL</strong> 123456789
+                  <strong>INTEL</strong> <small>123456789</small>
                 </div>
                 <div>
                   <Link to="/">Intel® Pentium® Gold 7505 Processor</Link>

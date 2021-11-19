@@ -50,11 +50,14 @@ export const Payment = ({ setActiveTab }) => {
 
   useEffect(() => {
     if (paymentMethodsQuery.data) {
-      const cards = paymentMethodsQuery.data.me.stripeCards;
-      const defaultCardId = paymentMethodsQuery.data.me.defaultStripeCard;
-      let defaultCard = defaultCardId ? cards.find((x) => x.id === defaultCardId) : cards[0];
-      setSelectedPaymentMethod(defaultCard);
-      setDefaultStripeCard(paymentMethodsQuery.data.me.defaultStripeCard);
+      const cards = paymentMethodsQuery.data.me?.stripeCards;
+      const defaultCardId = paymentMethodsQuery.data.me?.defaultStripeCard;
+      if (cards) {
+        let defaultCard = defaultCardId ? cards.find((x) => x.id === defaultCardId) : cards[0];
+        setSelectedPaymentMethod(defaultCard);
+      }
+
+      setDefaultStripeCard(paymentMethodsQuery.data.me?.defaultStripeCard);
     }
   }, [paymentMethodsQuery, setSelectedPaymentMethod]);
 
@@ -130,8 +133,8 @@ export const Payment = ({ setActiveTab }) => {
       countryArea: selectedPaymentMethod.billingDetails.address.state,
     };
 
-    const setBillingAddressResponse = await setBillingAddress(billingAddress);
-    console.log('setBillingAddressResponse: ', setBillingAddressResponse);
+    // const setBillingAddressResponse = await setBillingAddress(billingAddress);
+    // console.log('setBillingAddressResponse: ', setBillingAddressResponse);
 
     const cardData = {
       brand: selectedPaymentMethod?.brand,
@@ -172,7 +175,8 @@ export const Payment = ({ setActiveTab }) => {
         </tbody>
       </Table>
       <div className="add-option">
-        <FontAwesomeIcon icon={faPlus}/><Link to="/account/payments">Add Payment Method</Link>
+        <FontAwesomeIcon icon={faPlus} />
+        <Link to="/account/payments">Add Payment Method</Link>
       </div>
       <Button onClick={handleContinue} disabled={disableContinue}>
         Continue to Agreement

@@ -30,10 +30,11 @@ class SalesOrderItemSerializer(ModelSerializer):
     item_master_id = IntegerField()
     mpn = CharField(read_only=True)
     mcode = CharField(read_only=True)
+    rms_quote_detail_id = IntegerField(read_only=True, allow_null=True)
 
     class Meta:
         model = OrderLine
-        fields = ['item_master_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price']
+        fields = ['item_master_id', 'cipn', 'mpn', 'mcode', 'quantity', 'unit_sell_price', "rms_quote_detail_id"]
 
 class ShipToFieldSerializer(ModelSerializer):
     fo_ship_to_address_ref_id = IntegerField(source="pk")
