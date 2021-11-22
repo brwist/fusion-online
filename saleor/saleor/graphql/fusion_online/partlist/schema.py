@@ -1,25 +1,43 @@
-import graphene
 from saleor.saleor.fusion_online.parts_list.models import PartList
-from .mutation import (
-    PartsListCreate
-)
-from .resolvers import resolve_part
-from .types import Parts
+import graphene
+from graphene_django import DjangoObjectType, DjangoListField 
 
-class MenuQueries(graphene.ObjectType):
-    Parts = graphene.Field(
-        Parts,
-        id=graphene.Argument(graphene.ID, description="ID of the parts."),
-        list_name=graphene.Argument(graphene.String, description="The part's name."),
-        roketchip_user=graphene.Argument(graphene.Int, description="The part's user."),
-        
-    )
-    
 
-    def resolve_part(self, info, **data):
-        return resolve_part(info, data.get("id"), data.get("list_name"), data.get("roketchip_user"))
+class PartListType(DjangoObjectType): 
+    class Meta:
+        model = PartList
+        fields = "__all__"
 
-class MenuMutations(graphene.ObjectType):
-    menu_create = PartsListCreate.Field()
-    
+class Query(graphene.ObjectType):
+    all_part_list = graphene.List(PartListType)
+    part_list = graphene.Field(PartListType, partlist_id=graphene.Int())
 
+    def resolve_all_books(self, info, **kwargs):
+        return PartList.objects.all()
+
+    def resolve_book(self, info, partlist_id):
+        return PartList.objects.get(pk=partlist_id)
+
+
+
+class BookInput(graphene.InputObjectType):
+    id = graphene.ID()
+    roketchip_user = graphene.Int()
+
+
+
+
+class CreateBook(graphene.Mutation):
+    class Arguments:
+        book_data = BookInput(required=True)
+
+    book = graphene.Field(PartListType)
+
+    @staticmethod
+    def mutate(root, info, book_data=None):
+        book_instance = PartList( 
+            list_name=book_data.list_name,
+            roketchip_user=book_data.roketchip_user,
+        )
+        book_instance.save()
+        return CreateBook(partlist=book_instance)
