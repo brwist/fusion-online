@@ -5,7 +5,7 @@ from .rfq import views as rfq_views
 from .shipping_address import views as shipping_address_views
 from .orders import views as order_views
 from .hubspot import views as hubspot_views
-from .parts_list import views as parts_list_views
+# from .parts_list import views as parts_list_views
 
 urlpatterns = [
     path("products", product_views.post_handler),
@@ -28,6 +28,6 @@ urlpatterns = [
     # webhook
     path("install-webhook", hubspot_views.install_webhook),
     path("contact/changed", hubspot_views.update_contact_approval_status),
-    path("parts<int:pk>",parts_list_views.PartsView.as_view()),
-    path("partlist/<int:pk>",parts_list_views.PartListView.as_view())
+#     path("parts<int:pk>",parts_list_views.PartsView.as_view()),
+#     path("partlist/<int:pk>",parts_list_views.PartListView.as_view())
 ]

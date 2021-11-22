@@ -2,14 +2,12 @@ from django.db import models
 from enum import auto
 
 
-# Part list model which will have more than one parts
-class PartList(models.Model):
-    list_name = models.CharField(max_length=50)
-    roketchip_user = models.ForeignKey(
-        "account.User", on_delete=models.CASCADE
-    )  # relation with current logged in user
+class PartLists(models.Model):
+    lists_name = models.CharField(max_length=50)
+    roketchip_user = models.ForeignKey("account.User", on_delete=models.CASCADE)
     created_date = models.DateField(auto_now=True)
-    updated_date = models.DateField()
+    updated_date = models.DateField(null=True)
+
 
 class Parts(models.Model):
     mpn = models.CharField(max_length=50)
@@ -17,6 +15,8 @@ class Parts(models.Model):
     master_id = models.IntegerField()
     name = models.CharField(max_length=50)
     partlist = models.ForeignKey(
-        PartList, on_delete=models.CASCADE
+        PartLists, on_delete=models.CASCADE
     )  # relation with part list which will have more than one part
          
+            
+            
