@@ -339,7 +339,7 @@ export const PricingDetailDrawer: React.FC<PricingDetailDrawerProps> = (
   const offerTableRows = productItemMasterId && offers?.map(offer => (
       <StyledTableRow key={offer?.offerId}>
         <StyledTableCell>{offer?.offerId}</StyledTableCell>
-        <StyledTableCell>{offer?.vendor.vendorNumber}</StyledTableCell>
+        <StyledTableCell>{offer?.vendor.vendorName}</StyledTableCell>
         <StyledTableCell align="right">{offer?.dateAdded ? moment(parseInt(offer.dateAdded)).format("MM/DD/YY") : "-"}</StyledTableCell>
         <StyledTableCell align="right">{offer?.coo || "-"}</StyledTableCell>
         <StyledTableCell align="right">{formatLeadTime(offer?.leadTimeDays)}</StyledTableCell>
