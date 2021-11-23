@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('list_name', models.CharField(max_length=50)),
                 ('created_date', models.DateField(auto_now=True)),
                 ('updated_date', models.DateField()),
-                ('roketchip_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('rocketchip_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(

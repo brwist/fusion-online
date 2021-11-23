@@ -17,7 +17,7 @@ class PartListQueries(graphene.ObjectType):
 class BookInput(graphene.InputObjectType):
     id = graphene.ID()
     lists_name = graphene.String()   
-    roketchip_user_id = graphene.Int()
+    rocketchip_user_id = graphene.Int()
 
 
 class CreateBook(graphene.Mutation):
@@ -30,7 +30,7 @@ class CreateBook(graphene.Mutation):
     def mutate(root, info, book_data=None):
         book_instance = PartLists( 
             lists_name=book_data.lists_name,
-            roketchip_user_id=book_data.roketchip_user_id
+            rocketchip_user_id=book_data.rocketchip_user_id
             
         )
         book_instance.save()
@@ -55,7 +55,7 @@ class UpdatePartList(graphene.Mutation):
 
         if book_instance:
             book_instance.lists_name = book_data.lists_name
-            book_instance.roketchip_user_id = book_data.roketchip_user_id
+            book_instance.rocketchip_user_id = book_data.rocketchip_user_id
             book_instance.save()
 
             return UpdatePartList(book=book_instance)

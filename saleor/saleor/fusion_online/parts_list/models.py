@@ -3,7 +3,7 @@ from django.db import models
 
 class PartLists(models.Model):
     lists_name = models.CharField(max_length=50)
-    roketchip_user = models.ForeignKey("account.User", on_delete=models.CASCADE)
+    rocketchip_user = models.ForeignKey("account.User", on_delete=models.CASCADE)
     created_date = models.DateField(auto_now=True)
     updated_date = models.DateField(null=True)
 

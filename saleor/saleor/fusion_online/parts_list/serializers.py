@@ -13,4 +13,4 @@ class PartsSerializers(serializers.ModelSerializer):
 class PartListSerializers(serializers.ModelSerializer):
     class Meta:
         model = PartList
-        fields = ['list_name','roketchip_user','created_date','updated_date']
+        fields = ['list_name','rocketchip_user','created_date','updated_date']

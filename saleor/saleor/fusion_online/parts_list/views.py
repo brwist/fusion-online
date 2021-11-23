@@ -74,7 +74,7 @@ class PartListView(APIView):
         try:
             partlist = PartListSerializers(PartList.objects.get(pk=pk))
             partlist.list_name = request.data.get("list_name")
-            partlist.roketchip_user.request.data.get("roketchip_user")
+            partlist.rocketchip_user.request.data.get("rocketchip_user")
             partlist.created_date.request.data.get("created_date")
             partlist.updated_date.request.data.get("updated_date")
             serializer = PartListSerializers(partlist)
