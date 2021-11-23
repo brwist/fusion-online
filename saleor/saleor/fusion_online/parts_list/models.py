@@ -1,5 +1,4 @@
 from django.db import models
-from enum import auto
 
 
 class PartLists(models.Model):

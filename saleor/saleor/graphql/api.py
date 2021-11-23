@@ -21,7 +21,8 @@ from .translations.schema import TranslationQueries
 from .warehouse.schema import StockQueries, WarehouseMutations, WarehouseQueries
 from .webhook.schema import WebhookMutations, WebhookQueries
 from .fusion_online.offer.schema import OfferQueries
-from .fusion_online.partlist.schema import PartListMutation, PartListQuery
+from .fusion_online.partlist.schema import PartListMutation, PartListQueries, UpdatePartListMutation, DeletePartListMutation
+from .fusion_online.parts.schema import PartMutation, PartQueries, UpdatePartMutation, DeletePartMutation
 
 class Query(
     AccountQueries,
@@ -44,7 +45,8 @@ class Query(
     WarehouseQueries,
     WebhookQueries,
     OfferQueries,
-    PartListQuery
+    PartListQueries,
+    PartQueries
 ):
     pass
 
@@ -68,9 +70,14 @@ class Mutation(
     ShopMutations,
     WarehouseMutations,
     WebhookMutations,
-    PartListMutation
+    PartListMutation,
+    UpdatePartListMutation,
+    DeletePartListMutation,
+    PartMutation,
+    UpdatePartMutation,
+    DeletePartMutation
 ):
     pass
 
 
-schema = build_schema(Query, mutation=Mutation)
+schema = build_schema(query=Query, mutation=Mutation)
