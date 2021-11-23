@@ -21,7 +21,7 @@ from .translations.schema import TranslationQueries
 from .warehouse.schema import StockQueries, WarehouseMutations, WarehouseQueries
 from .webhook.schema import WebhookMutations, WebhookQueries
 from .fusion_online.offer.schema import OfferQueries
-from .fusion_online.partlist.schema import PartListMutation, PartQuery
+from .fusion_online.partlist.schema import PartListMutation, PartListQuery
 
 class Query(
     AccountQueries,
@@ -44,7 +44,7 @@ class Query(
     WarehouseQueries,
     WebhookQueries,
     OfferQueries,
-    PartQuery
+    PartListQuery
 ):
     pass
 

@@ -1,14 +1,14 @@
 from saleor.fusion_online.parts_list.models import PartLists
 import graphene
-from graphene_django import DjangoObjectType, DjangoListField 
+from graphene_django import DjangoObjectType 
 
 
 class PartListsType(DjangoObjectType): 
     class Meta:
         model = PartLists
-        fields = ['lists_name','roketchip_user']
+        fields = ('lists_name','roketchip_user')
 
-class PartQuery(graphene.ObjectType):
+class PartListQuery(graphene.ObjectType):
     all_part_list = graphene.List(PartListsType)
     part_list = graphene.Field(PartListsType, PartLists_id=graphene.Int())
 
@@ -21,7 +21,6 @@ class PartQuery(graphene.ObjectType):
 
 
 class BookInput(graphene.InputObjectType):
-    id = graphene.ID()
     lists_name = graphene.String()   
     roketchip_user_id = graphene.Int()
 
@@ -31,12 +30,12 @@ class CreateBook(graphene.Mutation):
         book_data = BookInput(required=True)
 
     book = graphene.Field(PartListsType)
-
+    
     @staticmethod
     def mutate(root, info, book_data=None):
         book_instance = PartLists( 
             lists_name=book_data.lists_name,
-            roketchip_user=book_data.roketchip_user_id
+            roketchip_user_id=book_data.roketchip_user_id
             
         )
         book_instance.save()
