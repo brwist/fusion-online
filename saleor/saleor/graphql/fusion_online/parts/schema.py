@@ -1,6 +1,6 @@
-from saleor.fusion_online.parts_list.models import Parts
+from saleor.fusion_online.parts_list.models import PartLists, Parts
 import graphene
-from graphene_django import DjangoObjectType 
+from graphene_django import DjangoObjectType
 
 
 class PartsType(DjangoObjectType): 
@@ -10,8 +10,9 @@ class PartsType(DjangoObjectType):
 
 class PartQueries(graphene.ObjectType):
     all_part = graphene.List(PartsType)
-
     def resolve_all_part(self, info, **kwargs):
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         return Parts.objects.all()
 
 class PartInput(graphene.InputObjectType):
@@ -31,6 +32,8 @@ class CreatePart(graphene.Mutation):
     
     @staticmethod
     def mutate(root, info, part_data=None):
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         part_instance = Parts( 
             mpn=part_data.mpn,
             mcode=part_data.mcode,
@@ -56,7 +59,8 @@ class UpdatePart(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, part_data=None, id=None):
-
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         part_instance = Parts.objects.get(pk=part_data.id)
 
         if part_instance:
@@ -84,6 +88,8 @@ class DeletePart(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, id):
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         part_instance = Parts.objects.get(pk=id)
         part_instance.delete()
           

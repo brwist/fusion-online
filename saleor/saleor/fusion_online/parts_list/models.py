@@ -14,7 +14,7 @@ class Parts(models.Model):
     master_id = models.IntegerField()
     name = models.CharField(max_length=50)
     partlist = models.ForeignKey(
-        PartLists, on_delete=models.CASCADE
+        PartLists, on_delete=models.CASCADE,related_name='part'
     )  # relation with part list which will have more than one part
          
             

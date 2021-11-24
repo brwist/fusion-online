@@ -1,6 +1,6 @@
 from saleor.fusion_online.parts_list.models import PartLists
 import graphene
-from graphene_django import DjangoObjectType 
+from graphene_django import DjangoObjectType
 
 
 class PartListsType(DjangoObjectType): 
@@ -12,7 +12,9 @@ class PartListQueries(graphene.ObjectType):
     all_part_lists = graphene.List(PartListsType)
 
     def resolve_all_part_lists(self, info, **kwargs):
-        return PartLists.objects.all()
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
+        return PartLists.objects.filter(rocketchip_user=info.context.user)
 
 class PartListInput(graphene.InputObjectType):
     id = graphene.ID()
@@ -28,6 +30,8 @@ class CreatePartList(graphene.Mutation):
     
     @staticmethod
     def mutate(root, info, part_list_data=None):
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         partlist_instance = PartLists( 
             lists_name=part_list_data.lists_name,
             rocketchip_user_id=part_list_data.rocketchip_user_id
@@ -44,13 +48,14 @@ class PartListMutation(graphene.ObjectType):
 
 class UpdatePartList(graphene.Mutation):
     class Arguments:
-        part_list_data = PartListInput(required=True)
+        part_list_data   = PartListInput(required=True)
 
     partlist = graphene.Field(PartListsType)
 
     @staticmethod
     def mutate(root, info, part_list_data=None, id=None):
-
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         partlist_instance = PartLists.objects.get(pk=part_list_data.id)
 
         if partlist_instance:
@@ -76,6 +81,8 @@ class DeletePartList(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, id):
+        if info.context.user.is_anonymous:
+            raise Exception('Authentication Failure!')
         partlist_instance = PartLists.objects.get(pk=id)
         partlist_instance.delete()
           
