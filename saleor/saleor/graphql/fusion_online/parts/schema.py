@@ -14,7 +14,7 @@ class PartQueries(graphene.ObjectType):
     def resolve_all_part(self, info, **kwargs):
         return Parts.objects.all()
 
-class BookInputParts(graphene.InputObjectType):
+class PartInput(graphene.InputObjectType):
     id = graphene.ID()
     mpn = graphene.String()   
     mcode = graphene.String()
@@ -25,22 +25,22 @@ class BookInputParts(graphene.InputObjectType):
 
 class CreatePart(graphene.Mutation):
     class Arguments:
-        book_data = BookInputParts(required=True)
+        part_data = PartInput(required=True)
 
-    book = graphene.Field(PartsType)
+    part = graphene.Field(PartsType)
     
     @staticmethod
-    def mutate(root, info, book_data=None):
-        book_instance = Parts( 
-            mpn=book_data.mpn,
-            mcode=book_data.mcode,
-            master_id=book_data.master_id,
-            name=book_data.name,
-            partlist_id=book_data.partlist_id
+    def mutate(root, info, part_data=None):
+        part_instance = Parts( 
+            mpn=part_data.mpn,
+            mcode=part_data.mcode,
+            master_id=part_data.master_id,
+            name=part_data.name,
+            partlist_id=part_data.partlist_id
             
         )
-        book_instance.save()
-        return CreatePart(book=book_instance)
+        part_instance.save()
+        return CreatePart(part=part_instance)
 
 class PartMutation(graphene.ObjectType):
     create_part = CreatePart.Field()
@@ -50,25 +50,25 @@ class PartMutation(graphene.ObjectType):
 
 class UpdatePart(graphene.Mutation):
     class Arguments:
-        book_data = BookInputParts(required=True)
+        part_data = PartInput(required=True)
 
-    book = graphene.Field(PartsType)
+    part = graphene.Field(PartsType)
 
     @staticmethod
-    def mutate(root, info, book_data=None, id=None):
+    def mutate(root, info, part_data=None, id=None):
 
-        book_instance = Parts.objects.get(pk=book_data.id)
+        part_instance = Parts.objects.get(pk=part_data.id)
 
-        if book_instance:
-            book_instance.mpn = book_data.mpn
-            book_instance.mcode = book_data.mcode
-            book_instance.master_id = book_data.master_id
-            book_instance.name = book_data.name
-            book_instance.partlist_id = book_data.partlist_id
-            book_instance.save()
+        if part_instance:
+            part_instance.mpn = part_data.mpn
+            part_instance.mcode = part_data.mcode
+            part_instance.master_id = part_data.master_id
+            part_instance.name = part_data.name
+            part_instance.partlist_id = part_data.partlist_id
+            part_instance.save()
 
-            return UpdatePart(book=book_instance)
-        return UpdatePart(book=None)
+            return UpdatePart(part=part_instance)
+        return UpdatePart(part=None)
 
 
 class UpdatePartMutation(graphene.ObjectType):
@@ -80,12 +80,12 @@ class DeletePart(graphene.Mutation):
     class Arguments:
         id = graphene.ID()
     
-    book = graphene.Field(PartsType)
+    part = graphene.Field(PartsType)
 
     @staticmethod
     def mutate(root, info, id):
-        book_instance = Parts.objects.get(pk=id)
-        book_instance.delete()
+        part_instance = Parts.objects.get(pk=id)
+        part_instance.delete()
           
         return None
 

@@ -14,56 +14,56 @@ class PartListQueries(graphene.ObjectType):
     def resolve_all_part_lists(self, info, **kwargs):
         return PartLists.objects.all()
 
-class BookInput(graphene.InputObjectType):
+class PartListInput(graphene.InputObjectType):
     id = graphene.ID()
     lists_name = graphene.String()   
     rocketchip_user_id = graphene.Int()
 
 
-class CreateBook(graphene.Mutation):
+class CreatePartList(graphene.Mutation):
     class Arguments:
-        book_data = BookInput(required=True)
+        part_list_data = PartListInput(required=True)
 
-    book = graphene.Field(PartListsType)
+    partlist = graphene.Field(PartListsType)
     
     @staticmethod
-    def mutate(root, info, book_data=None):
-        book_instance = PartLists( 
-            lists_name=book_data.lists_name,
-            rocketchip_user_id=book_data.rocketchip_user_id
+    def mutate(root, info, part_list_data=None):
+        partlist_instance = PartLists( 
+            lists_name=part_list_data.lists_name,
+            rocketchip_user_id=part_list_data.rocketchip_user_id
             
         )
-        book_instance.save()
-        return CreateBook(book=book_instance)
+        partlist_instance.save()
+        return CreatePartList(partlist=partlist_instance)
 
 class PartListMutation(graphene.ObjectType):
-    create_book = CreateBook.Field()
+    create_partlist = CreatePartList.Field()
 
 
 
 
 class UpdatePartList(graphene.Mutation):
     class Arguments:
-        book_data = BookInput(required=True)
+        part_list_data = PartListInput(required=True)
 
-    book = graphene.Field(PartListsType)
+    partlist = graphene.Field(PartListsType)
 
     @staticmethod
-    def mutate(root, info, book_data=None, id=None):
+    def mutate(root, info, part_list_data=None, id=None):
 
-        book_instance = PartLists.objects.get(pk=book_data.id)
+        partlist_instance = PartLists.objects.get(pk=part_list_data.id)
 
-        if book_instance:
-            book_instance.lists_name = book_data.lists_name
-            book_instance.rocketchip_user_id = book_data.rocketchip_user_id
-            book_instance.save()
+        if partlist_instance:
+            partlist_instance.lists_name = part_list_data.lists_name
+            partlist_instance.rocketchip_user_id = part_list_data.rocketchip_user_id
+            partlist_instance.save()
 
-            return UpdatePartList(book=book_instance)
-        return UpdatePartList(book=None)
+            return UpdatePartList(partlist=partlist_instance)
+        return UpdatePartList(partlist=None)
 
 
 class UpdatePartListMutation(graphene.ObjectType):
-    update_book = UpdatePartList.Field()
+    update_partlist = UpdatePartList.Field()
 
 
 
@@ -72,16 +72,16 @@ class DeletePartList(graphene.Mutation):
     class Arguments:
         id = graphene.ID()
     
-    book = graphene.Field(PartListsType)
+    partlist = graphene.Field(PartListsType)
 
     @staticmethod
     def mutate(root, info, id):
-        book_instance = PartLists.objects.get(pk=id)
-        book_instance.delete()
+        partlist_instance = PartLists.objects.get(pk=id)
+        partlist_instance.delete()
           
         return None
 
 
  
 class DeletePartListMutation(graphene.ObjectType):
-    delete_book = DeletePartList.Field()       
+    delete_partlist = DeletePartList.Field()       
