@@ -21,6 +21,9 @@ import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import Switch from "@material-ui/core/Switch";
 import { useState } from "react";
+import { useProductTypeUpdateMutation } from "@saleor/productTypes/mutations";
+import useNotifier from "@saleor/hooks/useNotifier";
+import { commonMessages } from "@saleor/intl";
 
 import {
   ProductTypeDetails_productType_productAttributes,
@@ -62,15 +65,56 @@ interface ProductTypeAttributesProps extends ListActions {
   onAttributeClick: (id: string) => void;
   onAttributeReorder: ReorderAction;
   onAttributeUnassign: (id: string) => void;
+  // onHasAttributeToggle: (featuredProduct: boolean) => void;
 }
 
 const numberOfColumns = 5;
 
 const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
   const [check, setCheck] = useState(false);
-  const switchHandler = event => {
-    setCheck(event.target.checked);
+  const notify = useNotifier();
+
+  const [errors, setErrors] = React.useState({
+    addAttributeErrors: [],
+    editAttributeErrors: []
+  });
+
+  const [
+    updateProductType,
+    updateProductTypeOpts
+  ] = useProductTypeUpdateMutation({
+    onCompleted: updateData => {
+      if (
+        !updateData.productTypeUpdate.errors ||
+        updateData.productTypeUpdate.errors.length === 0
+      ) {
+        notify({
+          status: "success",
+          text: intl.formatMessage(commonMessages.savedChanges)
+        });
+      } else if (
+        updateData.productTypeUpdate.errors !== null &&
+        updateData.productTypeUpdate.errors.length > 0
+      ) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          formErrors: updateData.productTypeUpdate.errors
+        }));
+      }
+    }
+  });
+
+  const handleProductTypeAttributeToggle = (featuredProduct: boolean) => {
+    updateProductType({
+      variables: {
+        id,
+        input: {
+          featuredProduct
+        }
+      }
+    });
   };
+
   const {
     attributes,
 
@@ -85,9 +129,9 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     onAttributeClick,
     onAttributeReorder,
     onAttributeUnassign
+    // onHasAttributeToggle
   } = props;
   const classes = useStyles(props);
-
   const intl = useIntl();
 
   return (
@@ -165,17 +209,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
             attributes,
             (attribute, attributeIndex) => {
               const isSelected = attribute ? isChecked(attribute.id) : false;
+              // console.log("-------attribute.featuredProduct-------",attribute.featuredProduct)
 
               return (
                 <SortableTableRow
                   selected={isSelected}
                   className={!!attribute ? classes.link : undefined}
                   hover={!!attribute}
-                  onClick={
-                    !!attribute
-                      ? () => onAttributeClick(attribute.id)
-                      : undefined
-                  }
                   key={maybe(() => attribute.id)}
                   index={attributeIndex || 0}
                   data-test="id"
@@ -189,7 +229,15 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       onChange={() => toggle(attribute.id)}
                     />
                   </TableCell>
-                  <TableCell className={classes.colName} data-test="name">
+                  <TableCell
+                    className={classes.colName}
+                    onClick={
+                      !!attribute
+                        ? () => onAttributeClick(attribute.id)
+                        : undefined
+                    }
+                    data-test="name"
+                  >
                     {maybe(() => attribute.name) ? (
                       attribute.name
                     ) : (
@@ -207,12 +255,15 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                   {type === AttributeTypeEnum.PRODUCT ? (
                     <TableCell className={classes.colAction}>
                       <Switch
-                        id={`${maybe(() => attribute.id)}`}
-                        checked={check}
-                        disabled={disabled}
+                        // id={maybe(() => attribute.id)}
+                        defaultChecked={attribute.featuredProduct}
+                        // disabled={disabled}
+
                         color="primary"
                         name="attributeToogle"
-                        onChange={switchHandler}
+                        onChange={() => handleProductTypeAttributeToggle}
+                        // onChange={(e)=>{attribute.featuredProduct=e.target.checked}}
+                        // onChange={(event)=> {handleCheck(event.target.checked)}}
                       />
                     </TableCell>
                   ) : (

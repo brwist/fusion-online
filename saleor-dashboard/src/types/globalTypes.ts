@@ -1433,6 +1433,7 @@ export interface ProductTypeInput {
   isDigital?: boolean | null;
   weight?: any | null;
   taxCode?: string | null;
+  featuredProduct?: boolean;
 }
 
 export interface ProductTypeSortingInput {
