@@ -13,9 +13,10 @@ class AttributeSortField(graphene.Enum):
     IS_VARIANT_ONLY = ["is_variant_only", "name", "slug"]
     VISIBLE_IN_STOREFRONT = ["visible_in_storefront", "name", "slug"]
     FILTERABLE_IN_STOREFRONT = ["filterable_in_storefront", "name", "slug"]
-    FILTERABLE_IN_DASHBOARD = ["filterable_in_dashboard", "name", "slug"]
     STOREFRONT_SEARCH_POSITION = ["storefront_search_position", "name", "pk"]
     AVAILABLE_IN_GRID = ["available_in_grid", "name", "pk"]
+    FEATURED_PRODUCT = ['featured_product', 'name', 'slug']
+    
 
     @property
     def description(self):

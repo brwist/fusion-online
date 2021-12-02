@@ -402,6 +402,7 @@ type Attribute implements Node & ObjectWithMetadata {
   values: [AttributeValue]
   valueRequired: Boolean!
   visibleInStorefront: Boolean!
+  featuredProduct:Boolean!
   filterableInStorefront: Boolean!
   filterableInDashboard: Boolean!
   availableInGrid: Boolean!
@@ -463,6 +464,7 @@ input AttributeCreateInput {
   valueRequired: Boolean
   isVariantOnly: Boolean
   visibleInStorefront: Boolean
+  featuredProduct:Boolean
   filterableInStorefront: Boolean
   filterableInDashboard: Boolean
   storefrontSearchPosition: Int
@@ -479,6 +481,7 @@ input AttributeFilterInput {
   valueRequired: Boolean
   isVariantOnly: Boolean
   visibleInStorefront: Boolean
+  featuredProduct:Boolean
   filterableInStorefront: Boolean
   filterableInDashboard: Boolean
   availableInGrid: Boolean
@@ -566,6 +569,7 @@ input AttributeUpdateInput {
   valueRequired: Boolean
   isVariantOnly: Boolean
   visibleInStorefront: Boolean
+  featuredProduct:Boolean
   filterableInStorefront: Boolean
   filterableInDashboard: Boolean
   storefrontSearchPosition: Int

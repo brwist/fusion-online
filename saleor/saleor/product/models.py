@@ -731,6 +731,8 @@ class Attribute(ModelWithMetadata):
     storefront_search_position = models.IntegerField(default=0, blank=True)
     available_in_grid = models.BooleanField(default=True, blank=True)
 
+    featured_product = models.BooleanField(default=False, blank=True)
+
     objects = AttributeQuerySet.as_manager()
     translated = TranslationProxy()
 

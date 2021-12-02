@@ -16,6 +16,9 @@ class AttributeDescriptions:
     AVAILABLE_IN_GRID = (
         "Whether the attribute can be displayed in the admin product list."
     )
+    FEATURE_ATTRIBUTE = (
+        "By default value is false for feature attribute"
+    )
 
 
 class AttributeValueDescriptions:
