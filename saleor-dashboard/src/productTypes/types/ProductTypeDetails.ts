@@ -34,6 +34,7 @@ export interface ProductTypeDetails_productType_productAttributes {
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
+  featuredProduct: boolean;
 }
 
 export interface ProductTypeDetails_productType_variantAttributes {
@@ -44,6 +45,7 @@ export interface ProductTypeDetails_productType_variantAttributes {
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
+  featuredProduct: boolean;
 }
 
 export interface ProductTypeDetails_productType_weight {

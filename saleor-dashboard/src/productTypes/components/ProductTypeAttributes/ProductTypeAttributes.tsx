@@ -19,6 +19,8 @@ import { ListActions, ReorderAction } from "@saleor/types";
 import { AttributeTypeEnum } from "@saleor/types/globalTypes";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import Switch from "@material-ui/core/Switch";
+import { useState } from "react";
 
 import {
   ProductTypeDetails_productType_productAttributes,
@@ -65,6 +67,10 @@ interface ProductTypeAttributesProps extends ListActions {
 const numberOfColumns = 5;
 
 const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
+  const [check, setCheck] = useState(false);
+  const switchHandler = event => {
+    setCheck(event.target.checked);
+  };
   const {
     attributes,
 
@@ -144,6 +150,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                 description="attribute internal name"
               />
             </TableCell>
+            {type === AttributeTypeEnum.PRODUCT ? (
+              <TableCell className={classes.colName}>
+                <FormattedMessage defaultMessage="Featured" />
+              </TableCell>
+            ) : (
+              ""
+            )}
             <TableCell />
           </TableHead>
         )}
@@ -190,6 +203,22 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       <Skeleton />
                     )}
                   </TableCell>
+
+                  {type === AttributeTypeEnum.PRODUCT ? (
+                    <TableCell className={classes.colAction}>
+                      <Switch
+                        id={`${maybe(() => attribute.id)}`}
+                        checked={check}
+                        disabled={disabled}
+                        color="primary"
+                        name="attributeToogle"
+                        onChange={switchHandler}
+                      />
+                    </TableCell>
+                  ) : (
+                    ""
+                  )}
+
                   <TableCell className={classes.colAction}>
                     <IconButton
                       onClick={stopPropagation(() =>

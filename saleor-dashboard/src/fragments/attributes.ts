@@ -10,6 +10,7 @@ export const attributeFragment = gql`
     visibleInStorefront
     filterableInDashboard
     filterableInStorefront
+    featuredProduct
   }
 `;
 
