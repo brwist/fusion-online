@@ -29,6 +29,7 @@ import {
   ProductTypeDetails_productType_productAttributes,
   ProductTypeDetails_productType_variantAttributes
 } from "../../types/ProductTypeDetails";
+import { attribute } from "@saleor/attributes/fixtures";
 
 const useStyles = makeStyles(
   {
@@ -104,20 +105,27 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     }
   });
 
-  const handleProductTypeAttributeToggle = (featuredProduct: boolean) => {
-    updateProductType({
-      variables: {
-        id,
-        input: {
-          featuredProduct
-        }
+  const handleProductTypeAttributeToggle = (featuredProduct: boolean, id) => {
+    const updatedAttributes = props?.attributes.map(attributes => {
+      if (attributes.id === id) {
+        return { ...attribute, featuredProduct: true };
+      } else {
+        return attribute;
       }
     });
+
+    // updateProductType({
+    //   variables: {
+    //     id,
+    //     input: {
+    //       featuredProduct
+    //     }
+    //   }
+    // });
   };
 
   const {
     attributes,
-
     disabled,
     isChecked,
     selected,
@@ -209,7 +217,6 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
             attributes,
             (attribute, attributeIndex) => {
               const isSelected = attribute ? isChecked(attribute.id) : false;
-              // console.log("-------attribute.featuredProduct-------",attribute.featuredProduct)
 
               return (
                 <SortableTableRow
@@ -261,7 +268,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
 
                         color="primary"
                         name="attributeToogle"
-                        onChange={() => handleProductTypeAttributeToggle}
+                        onChange={e => {
+                          handleProductTypeAttributeToggle(
+                            e.target.checked,
+                            attribute.id
+                          );
+                        }}
+
                         // onChange={(e)=>{attribute.featuredProduct=e.target.checked}}
                         // onChange={(event)=> {handleCheck(event.target.checked)}}
                       />
