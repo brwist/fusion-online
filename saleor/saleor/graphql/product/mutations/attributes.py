@@ -54,7 +54,6 @@ class AttributeCreateInput(graphene.InputObjectType):
     available_in_grid = graphene.Boolean(
         required=False, description=AttributeDescriptions.AVAILABLE_IN_GRID
     )
-    featured_product = graphene.Boolean(description=AttributeDescriptions.FEATURE_ATTRIBUTE)
 
 
 class AttributeUpdateInput(graphene.InputObjectType):
@@ -89,7 +88,6 @@ class AttributeUpdateInput(graphene.InputObjectType):
     available_in_grid = graphene.Boolean(
         required=False, description=AttributeDescriptions.AVAILABLE_IN_GRID
     )
-    featured_product = graphene.Boolean(description=AttributeDescriptions.FEATURE_ATTRIBUTE)
 
 
 class AttributeAssignInput(graphene.InputObjectType):

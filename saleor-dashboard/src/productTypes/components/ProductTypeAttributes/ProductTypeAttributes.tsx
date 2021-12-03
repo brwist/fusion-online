@@ -7,6 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CardTitle from "@saleor/components/CardTitle";
 import Checkbox from "@saleor/components/Checkbox";
+import ControlledSwitch from "@saleor/components/ControlledSwitch";
 import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import Skeleton from "@saleor/components/Skeleton";
 import {
@@ -19,17 +20,11 @@ import { ListActions, ReorderAction } from "@saleor/types";
 import { AttributeTypeEnum } from "@saleor/types/globalTypes";
 import React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import Switch from "@material-ui/core/Switch";
-import { useState } from "react";
-import { useProductTypeUpdateMutation } from "@saleor/productTypes/mutations";
-import useNotifier from "@saleor/hooks/useNotifier";
-import { commonMessages } from "@saleor/intl";
 
 import {
   ProductTypeDetails_productType_productAttributes,
   ProductTypeDetails_productType_variantAttributes
 } from "../../types/ProductTypeDetails";
-import { attribute } from "@saleor/attributes/fixtures";
 
 const useStyles = makeStyles(
   {
@@ -58,74 +53,23 @@ const useStyles = makeStyles(
 
 interface ProductTypeAttributesProps extends ListActions {
   attributes:
-    | ProductTypeDetails_productType_productAttributes[]
-    | ProductTypeDetails_productType_variantAttributes[];
+  | ProductTypeDetails_productType_productAttributes[]
+  | ProductTypeDetails_productType_variantAttributes[];
   disabled: boolean;
   type: string;
   onAttributeAssign: (type: AttributeTypeEnum) => void;
   onAttributeClick: (id: string) => void;
   onAttributeReorder: ReorderAction;
   onAttributeUnassign: (id: string) => void;
-  // onHasAttributeToggle: (featuredProduct: boolean) => void;
+  onChange: (featuredProduct: boolean) => void;
 }
 
 const numberOfColumns = 5;
 
 const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
-  const [check, setCheck] = useState(false);
-  const notify = useNotifier();
-
-  const [errors, setErrors] = React.useState({
-    addAttributeErrors: [],
-    editAttributeErrors: []
-  });
-
-  const [
-    updateProductType,
-    updateProductTypeOpts
-  ] = useProductTypeUpdateMutation({
-    onCompleted: updateData => {
-      if (
-        !updateData.productTypeUpdate.errors ||
-        updateData.productTypeUpdate.errors.length === 0
-      ) {
-        notify({
-          status: "success",
-          text: intl.formatMessage(commonMessages.savedChanges)
-        });
-      } else if (
-        updateData.productTypeUpdate.errors !== null &&
-        updateData.productTypeUpdate.errors.length > 0
-      ) {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          formErrors: updateData.productTypeUpdate.errors
-        }));
-      }
-    }
-  });
-
-  const handleProductTypeAttributeToggle = (featuredProduct: boolean, id) => {
-    const updatedAttributes = props?.attributes.map(attributes => {
-      if (attributes.id === id) {
-        return { ...attribute, featuredProduct: true };
-      } else {
-        return attribute;
-      }
-    });
-
-    // updateProductType({
-    //   variables: {
-    //     id,
-    //     input: {
-    //       featuredProduct
-    //     }
-    //   }
-    // });
-  };
-
   const {
     attributes,
+
     disabled,
     isChecked,
     selected,
@@ -136,10 +80,12 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     onAttributeAssign,
     onAttributeClick,
     onAttributeReorder,
-    onAttributeUnassign
-    // onHasAttributeToggle
+    onAttributeUnassign,
+    onChange
   } = props;
+
   const classes = useStyles(props);
+
   const intl = useIntl();
 
   return (
@@ -154,13 +100,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
         title={
           type === AttributeTypeEnum.PRODUCT
             ? intl.formatMessage({
-                defaultMessage: "Product Attributes",
-                description: "section header"
-              })
+              defaultMessage: "Product Attributes",
+              description: "section header"
+            })
             : intl.formatMessage({
-                defaultMessage: "Variant Attributes",
-                description: "section header"
-              })
+              defaultMessage: "Variant Attributes",
+              description: "section header"
+            })
         }
         toolbar={
           <Button
@@ -202,13 +148,9 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                 description="attribute internal name"
               />
             </TableCell>
-            {type === AttributeTypeEnum.PRODUCT ? (
-              <TableCell className={classes.colName}>
-                <FormattedMessage defaultMessage="Featured" />
-              </TableCell>
-            ) : (
-              ""
-            )}
+            <TableCell className={classes.colName}>
+              <FormattedMessage defaultMessage="Featured" />
+            </TableCell>
             <TableCell />
           </TableHead>
         )}
@@ -223,6 +165,11 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                   selected={isSelected}
                   className={!!attribute ? classes.link : undefined}
                   hover={!!attribute}
+                  onClick={
+                    !!attribute
+                      ? () => onAttributeClick(attribute.id)
+                      : undefined
+                  }
                   key={maybe(() => attribute.id)}
                   index={attributeIndex || 0}
                   data-test="id"
@@ -236,15 +183,7 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       onChange={() => toggle(attribute.id)}
                     />
                   </TableCell>
-                  <TableCell
-                    className={classes.colName}
-                    onClick={
-                      !!attribute
-                        ? () => onAttributeClick(attribute.id)
-                        : undefined
-                    }
-                    data-test="name"
-                  >
+                  <TableCell className={classes.colName} data-test="name">
                     {maybe(() => attribute.name) ? (
                       attribute.name
                     ) : (
@@ -258,31 +197,25 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       <Skeleton />
                     )}
                   </TableCell>
-
-                  {type === AttributeTypeEnum.PRODUCT ? (
-                    <TableCell className={classes.colAction}>
-                      <Switch
-                        // id={maybe(() => attribute.id)}
-                        defaultChecked={attribute.featuredProduct}
-                        // disabled={disabled}
-
-                        color="primary"
-                        name="attributeToogle"
-                        onChange={e => {
-                          handleProductTypeAttributeToggle(
-                            e.target.checked,
-                            attribute.id
-                          );
-                        }}
-
-                        // onChange={(e)=>{attribute.featuredProduct=e.target.checked}}
-                        // onChange={(event)=> {handleCheck(event.target.checked)}}
-                      />
-                    </TableCell>
-                  ) : (
-                    ""
-                  )}
-
+                  <TableCell
+                    // disableClickPropagation
+                    onClick={stopPropagation(onChange)} 
+                    className={classes.colName}
+                    data-test="featured"
+                  >
+                    <ControlledSwitch
+                      checked={maybe(() => attribute.featuredProduct != undefined) ? (attribute.featuredProduct) : true}
+                      disabled={false}
+                      label={''}
+                      name="isFeatured"
+                      // onChange={onChange}
+                    // onChange={event => event.stopPropagation() && alert(event.target.value) && event.preventDefault()}
+                    // onChange={stopPropagation(() =>
+                    //   alert(attribute.id)
+                    // )}
+                    // onChange={event => onHasVariantsToggle(event.target.value)}
+                    />
+                  </TableCell>
                   <TableCell className={classes.colAction}>
                     <IconButton
                       onClick={stopPropagation(() =>

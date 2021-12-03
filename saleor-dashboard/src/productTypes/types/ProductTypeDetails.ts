@@ -31,10 +31,10 @@ export interface ProductTypeDetails_productType_productAttributes {
   id: string;
   name: string | null;
   slug: string | null;
+  featuredProduct: boolean | null;
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
-  featuredProduct: boolean;
 }
 
 export interface ProductTypeDetails_productType_variantAttributes {
@@ -45,7 +45,6 @@ export interface ProductTypeDetails_productType_variantAttributes {
   visibleInStorefront: boolean;
   filterableInDashboard: boolean;
   filterableInStorefront: boolean;
-  featuredProduct: boolean;
 }
 
 export interface ProductTypeDetails_productType_weight {
@@ -59,7 +58,6 @@ export interface ProductTypeDetails_productType {
   id: string;
   name: string;
   hasVariants: boolean;
-  featuredProduct: boolean;
   isShippingRequired: boolean;
   taxType: ProductTypeDetails_productType_taxType | null;
   metadata: (ProductTypeDetails_productType_metadata | null)[];

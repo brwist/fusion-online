@@ -428,7 +428,6 @@ class AttributeFilter(django_filters.FilterSet):
             "value_required",
             "is_variant_only",
             "visible_in_storefront",
-            "featured_product",
             "filterable_in_storefront",
             "filterable_in_dashboard",
             "available_in_grid",

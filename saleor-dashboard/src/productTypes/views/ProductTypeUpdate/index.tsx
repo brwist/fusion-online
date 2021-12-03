@@ -100,7 +100,6 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
         id,
         input: {
           hasVariants: formData.hasVariants,
-          // featuredProduct: formData.featuredProduct,
           isShippingRequired: formData.isShippingRequired,
           name: formData.name,
           productAttributes: formData.productAttributes.map(
@@ -202,15 +201,6 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
                     }
                   }
                 });
-              // const handleProductTypeAttributeToggle = (featuredProduct: boolean) =>
-              // updateProductType({
-              //   variables: {
-              //     id,
-              //     input: {
-              //       featuredProduct
-              //     }
-              //   }
-              // });
               const handleAssignAttribute = () =>
                 assignAttribute.mutate({
                   id,
@@ -293,7 +283,6 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
                       )
                     }
                     onHasVariantsToggle={handleProductTypeVariantsToggle}
-                    // onHasAttributeToggle={handleProductTypeAttributeToggle}
                     onSubmit={handleSubmit}
                     productAttributeList={{
                       isChecked: productAttributeListActions.isSelected,

@@ -20,7 +20,6 @@ interface ControlledSwitchProps {
   secondLabel?: string | React.ReactNode;
   uncheckedLabel?: string | React.ReactNode;
   onChange?(event: React.ChangeEvent<any>);
-  onClick?(event: any);
 }
 
 export const ControlledSwitch: React.FC<ControlledSwitchProps> = props => {
@@ -31,8 +30,7 @@ export const ControlledSwitch: React.FC<ControlledSwitchProps> = props => {
     label,
     name,
     secondLabel,
-    uncheckedLabel,
-    onClick
+    uncheckedLabel
   } = props;
 
   const classes = useStyles(props);
@@ -43,9 +41,6 @@ export const ControlledSwitch: React.FC<ControlledSwitchProps> = props => {
         <Switch
           onChange={() =>
             onChange({ target: { name, value: !checked } } as any)
-          }
-          onClick={() =>
-            onClick({ target: { name, value: !checked } } as any)
           }
           checked={checked}
           color="primary"

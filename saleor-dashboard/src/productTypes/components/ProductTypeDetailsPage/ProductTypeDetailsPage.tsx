@@ -37,7 +37,6 @@ interface ChoiceType {
 export interface ProductTypeForm extends MetadataFormData {
   name: string;
   hasVariants: boolean;
-  featuredProduct: boolean;
   isShippingRequired: boolean;
   taxType: string;
   productAttributes: ChoiceType[];
@@ -62,7 +61,6 @@ export interface ProductTypeDetailsPageProps {
   onBack: () => void;
   onDelete: () => void;
   onHasVariantsToggle: (hasVariants: boolean) => void;
-  // onHasAttributeToggle: (featuredProduct: boolean) => void;
   onSubmit: (data: ProductTypeForm) => SubmitPromise;
 }
 
@@ -95,7 +93,6 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
   onBack,
   onDelete,
   onHasVariantsToggle,
-  // onHasAttributeToggle,
   onSubmit
 }) => {
   const intl = useIntl();
@@ -112,10 +109,6 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
     hasVariants:
       maybe(() => productType.hasVariants) !== undefined
         ? productType.hasVariants
-        : false,
-    featuredProduct:
-      maybe(() => productType.featuredProduct) !== undefined
-        ? productType.featuredProduct
         : false,
     isShippingRequired:
       maybe(() => productType.isShippingRequired) !== undefined
@@ -199,7 +192,6 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                   onAttributeReorder={(event: ReorderEvent) =>
                     onAttributeReorder(event, AttributeTypeEnum.PRODUCT)
                   }
-                  // onHasAttributeToggle={onHasAttributeToggle}
                   onAttributeUnassign={onAttributeUnassign}
                   {...productAttributeList}
                 />
@@ -226,7 +218,6 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                       onAttributeReorder={(event: ReorderEvent) =>
                         onAttributeReorder(event, AttributeTypeEnum.VARIANT)
                       }
-                      // onHasAttributeToggle={onHasAttributeToggle}
                       onAttributeUnassign={onAttributeUnassign}
                       {...variantAttributeList}
                     />

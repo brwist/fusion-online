@@ -16,9 +16,7 @@ class AttributeDescriptions:
     AVAILABLE_IN_GRID = (
         "Whether the attribute can be displayed in the admin product list."
     )
-    FEATURE_ATTRIBUTE = (
-        "By default value is false for feature attribute"
-    )
+    FEATURED_PRODUCT = ["FEATURED_PRODUCT"]
 
 
 class AttributeValueDescriptions:
@@ -26,3 +24,5 @@ class AttributeValueDescriptions:
     NAME = "Name of a value displayed in the interface."
     SLUG = "Internal representation of a value (unique per attribute)."
     TYPE = "Type of value (used only when `value` field is set)."
+    FEATURED_PRODUCT = "FEATURED_PRODUCT"
+

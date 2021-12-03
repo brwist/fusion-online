@@ -42,7 +42,8 @@ class AttributeValue(CountableDjangoObjectType):
     translation = TranslationField(
         AttributeValueTranslation, type_name="attribute value"
     )
-    input_type = AttributeInputTypeEnum(description=AttributeDescriptions.INPUT_TYPE)    
+    input_type = AttributeInputTypeEnum(description=AttributeDescriptions.INPUT_TYPE)
+
     class Meta:
         description = "Represents a value of an attribute."
         only_fields = ["id"]
@@ -64,6 +65,7 @@ class Attribute(CountableDjangoObjectType):
 
     name = graphene.String(description=AttributeDescriptions.NAME)
     slug = graphene.String(description=AttributeDescriptions.SLUG)
+    featured_product = graphene.Boolean(description=AttributeDescriptions.FEATURED_PRODUCT)
 
     values = graphene.List(AttributeValue, description=AttributeDescriptions.VALUES)
 
@@ -82,7 +84,7 @@ class Attribute(CountableDjangoObjectType):
     available_in_grid = graphene.Boolean(
         description=AttributeDescriptions.AVAILABLE_IN_GRID, required=True
     )
-    featured_product = graphene.Boolean(description=AttributeDescriptions.FEATURE_ATTRIBUTE, required=True)
+
     translation = TranslationField(AttributeTranslation, type_name="attribute")
 
     storefront_search_position = graphene.Int(
