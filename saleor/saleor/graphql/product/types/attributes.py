@@ -89,6 +89,9 @@ class Attribute(CountableDjangoObjectType):
     storefront_search_position = graphene.Int(
         description=AttributeDescriptions.STOREFRONT_SEARCH_POSITION, required=True
     )
+    featured = graphene.Boolean(
+        description="Featured Info"
+    )
 
     class Meta:
         description = (
@@ -98,6 +101,12 @@ class Attribute(CountableDjangoObjectType):
         only_fields = ["id", "product_types", "product_variant_types"]
         interfaces = [relay.Node, ObjectWithMetadata]
         model = models.Attribute
+    
+    def resolve_featured(root: models.Attribute, info):
+        attr_obj = models.AttributeProduct.objects.filter(attribute_id=root.id).last()
+        if attr_obj:
+            return attr_obj.featured
+        return False
 
     @staticmethod
     def resolve_values(root: models.Attribute, info):

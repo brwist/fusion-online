@@ -625,6 +625,7 @@ class AttributeProduct(SortableModel):
         through_fields=("assignment", "product"),
         related_name="attributesrelated",
     )
+    featured = models.BooleanField(default=False)
 
     objects = AssociatedAttributeQuerySet.as_manager()
 
