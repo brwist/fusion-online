@@ -9,6 +9,7 @@ from django.db.models import Q, QuerySet
 from django.utils.text import slugify
 from graphene.types import InputObjectType
 from graphql_relay import from_global_id
+from saleor.graphql.product.types.attributes import Attribute
 
 from ....core.exceptions import PermissionDenied
 from ....core.permissions import ProductPermissions, ProductTypePermissions
@@ -1509,6 +1510,11 @@ class ProductVariantClearPrivateMeta(ClearMetaBaseMutation):
         error_type_field = "product_errors"
 
 
+class ProductTypeAttributeInput(graphene.InputObjectType):
+    id = graphene.ID(source='pk')
+    value = graphene.Boolean()
+
+
 class ProductTypeInput(graphene.InputObjectType):
     name = graphene.String(description="Name of the product type.")
     slug = graphene.String(description="Product type slug.")
@@ -1540,6 +1546,10 @@ class ProductTypeInput(graphene.InputObjectType):
     )
     weight = WeightScalar(description="Weight of the ProductType items.")
     tax_code = graphene.String(description="Tax rate for enabled tax gateway.")
+    is_featured = graphene.List(
+        ProductTypeAttributeInput,
+        required=False
+    )
 
 
 class ProductTypeCreate(ModelMutation):
@@ -1620,6 +1630,16 @@ class ProductTypeUpdate(ProductTypeCreate):
     @classmethod
     def save(cls, info, instance, cleaned_input):
         variant_attr = cleaned_input.get("variant_attributes")
+        featured_attr = cleaned_input.get("is_featured")
+        if featured_attr:
+            attribute_product_obj = models.AttributeProduct.objects.filter(
+                product_type=instance.id
+            )
+            for data in featured_attr:
+                attr_pk = from_global_id_strict_type(
+                    data['id'], Attribute, field="pk"
+                )
+                attribute_product_obj.filter(attribute=attr_pk).update(featured=data['value'])
         if variant_attr:
             variant_attr = set(variant_attr)
             variant_attr_ids = [attr.pk for attr in variant_attr]

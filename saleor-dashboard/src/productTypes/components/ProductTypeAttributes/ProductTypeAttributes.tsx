@@ -17,13 +17,14 @@ import TableHead from "@saleor/components/TableHead";
 import { maybe, renderCollection, stopPropagation } from "@saleor/misc";
 import { ListActions, ReorderAction } from "@saleor/types";
 import { AttributeTypeEnum } from "@saleor/types/globalTypes";
-import React from "react";
+import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import {
   ProductTypeDetails_productType_productAttributes,
   ProductTypeDetails_productType_variantAttributes
 } from "../../types/ProductTypeDetails";
+import Switch from "@material-ui/core/Switch";
 
 const useStyles = makeStyles(
   {
@@ -38,7 +39,7 @@ const useStyles = makeStyles(
     },
     colName: {},
     colSlug: {
-      width: 300
+      width: 200
     },
     link: {
       cursor: "pointer"
@@ -67,7 +68,6 @@ const numberOfColumns = 5;
 const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
   const {
     attributes,
-
     disabled,
     isChecked,
     selected,
@@ -144,12 +144,12 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                 defaultMessage="Slug"
                 description="attribute internal name"
               />
-              <TableCell className={classes.colName}>
-                <FormattedMessage
-                  defaultMessage="Featured"
-                  description="attribute internal name"
-                />
-              </TableCell>
+            </TableCell>
+            <TableCell className={classes.colName}>
+              <FormattedMessage
+                defaultMessage="Featured"
+                description="attribute internal name"
+              />
             </TableCell>
             <TableCell />
           </TableHead>
@@ -198,15 +198,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                     )}
                   </TableCell>
                   <TableCell className={classes.colName} data-test="featured">
-                    {maybe(() => attribute.featured) ? (
-                      attribute.featured ? (
-                        "Yes"
-                      ) : (
-                        "No"
-                      )
-                    ) : (
-                      <Skeleton />
-                    )}
+                    <Switch
+                      checked={attribute?.featured ? true : false}
+                      value={attribute?.featured ? true : false}
+                      color="primary"
+                      name="featured"
+                      onClick={stopPropagation(() => alert(attribute.id))}
+                    />
                   </TableCell>
                   <TableCell className={classes.colAction}>
                     <IconButton
