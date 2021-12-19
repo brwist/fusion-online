@@ -730,6 +730,7 @@ class ProductType(CountableDjangoObjectType):
 
     @staticmethod
     def resolve_product_attributes(root: models.ProductType, info):
+        info.context.product_type_id = root.id
         return ProductAttributesByProductTypeIdLoader(info.context).load(root.pk)
 
     @staticmethod

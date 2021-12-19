@@ -123,6 +123,7 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
           <col />
           <col className={classes.colName} />
           <col className={classes.colSlug} />
+          <col className={classes.colName} />
           <col className={classes.colAction} />
         </colgroup>
         {attributes?.length > 0 && (
@@ -143,6 +144,12 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                 defaultMessage="Slug"
                 description="attribute internal name"
               />
+              <TableCell className={classes.colName}>
+                <FormattedMessage
+                  defaultMessage="Featured"
+                  description="attribute internal name"
+                />
+              </TableCell>
             </TableCell>
             <TableCell />
           </TableHead>
@@ -186,6 +193,17 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                   <TableCell className={classes.colSlug} data-test="slug">
                     {maybe(() => attribute.slug) ? (
                       attribute.slug
+                    ) : (
+                      <Skeleton />
+                    )}
+                  </TableCell>
+                  <TableCell className={classes.colName} data-test="featured">
+                    {maybe(() => attribute.featured) ? (
+                      attribute.featured ? (
+                        "Yes"
+                      ) : (
+                        "No"
+                      )
                     ) : (
                       <Skeleton />
                     )}

@@ -567,6 +567,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZTo5",
       name: "Author",
       slug: "author",
+      featured: false,
       visibleInStorefront: true
     },
     {
@@ -576,6 +577,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZToxMQ==",
       name: "Language",
       slug: "language",
+      featured: false,
       visibleInStorefront: true
     },
     {
@@ -585,6 +587,7 @@ export const productType: ProductTypeDetails_productType = {
       id: "UHJvZHVjdEF0dHJpYnV0ZToxMA==",
       name: "Publisher",
       slug: "publisher",
+      featured: false,
       visibleInStorefront: true
     }
   ],
@@ -598,13 +601,15 @@ export const productType: ProductTypeDetails_productType = {
       ...attributes[1],
       filterableInDashboard: true,
       filterableInStorefront: false,
-      visibleInStorefront: true
+      visibleInStorefront: true,
+      featured: false
     },
     {
       ...attributes[6],
       filterableInDashboard: true,
       filterableInStorefront: false,
-      visibleInStorefront: true
+      visibleInStorefront: true,
+      featured: false
     }
   ],
   weight: {

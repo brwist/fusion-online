@@ -7,6 +7,7 @@ export const attributeFragment = gql`
     id
     name
     slug
+    featured
     visibleInStorefront
     filterableInDashboard
     filterableInStorefront
