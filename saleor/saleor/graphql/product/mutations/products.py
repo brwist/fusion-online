@@ -1511,8 +1511,8 @@ class ProductVariantClearPrivateMeta(ClearMetaBaseMutation):
 
 
 class ProductTypeAttributeInput(graphene.InputObjectType):
-    id = graphene.ID(source='pk')
-    value = graphene.Boolean()
+    id = graphene.ID(description="Id of an attribute to update.")
+    value = graphene.Boolean(description="Featured value for attribute.")
 
 
 class ProductTypeInput(graphene.InputObjectType):
@@ -1548,7 +1548,8 @@ class ProductTypeInput(graphene.InputObjectType):
     tax_code = graphene.String(description="Tax rate for enabled tax gateway.")
     is_featured = graphene.List(
         ProductTypeAttributeInput,
-        required=False
+        required=False,
+        description="Featured attribute for product type."
     )
 
 

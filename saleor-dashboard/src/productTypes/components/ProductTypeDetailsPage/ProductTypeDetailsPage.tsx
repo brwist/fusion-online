@@ -41,6 +41,7 @@ export interface ProductTypeForm extends MetadataFormData {
   taxType: string;
   productAttributes: ChoiceType[];
   variantAttributes: ChoiceType[];
+  isFeatured: any;
   weight: number;
 }
 
@@ -56,6 +57,8 @@ export interface ProductTypeDetailsPageProps {
   variantAttributeList: ListActions;
   onAttributeAdd: (type: AttributeTypeEnum) => void;
   onAttributeClick: (id: string) => void;
+  onFeaturedClick: (id: string, checked: any) => void;
+  featured: any;
   onAttributeReorder: (event: ReorderEvent, type: AttributeTypeEnum) => void;
   onAttributeUnassign: (id: string) => void;
   onBack: () => void;
@@ -90,6 +93,8 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
   onAttributeUnassign,
   onAttributeReorder,
   onAttributeClick,
+  onFeaturedClick,
+  featured,
   onBack,
   onDelete,
   onHasVariantsToggle,
@@ -130,6 +135,13 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
         ? productType.variantAttributes.map(attribute => ({
             label: attribute.name,
             value: attribute.id
+          }))
+        : [],
+    isFeatured:
+      maybe(() => productType.productAttributes) !== undefined
+        ? productType.productAttributes.map(attribute => ({
+            value: attribute.id,
+            featured: attribute.featured
           }))
         : [],
     weight: maybe(() => productType.weight.value)
@@ -189,6 +201,8 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                   type={AttributeTypeEnum.PRODUCT}
                   onAttributeAssign={onAttributeAdd}
                   onAttributeClick={onAttributeClick}
+                  onFeaturedClick={onFeaturedClick}
+                  featured={featured}
                   onAttributeReorder={(event: ReorderEvent) =>
                     onAttributeReorder(event, AttributeTypeEnum.PRODUCT)
                   }
@@ -215,6 +229,8 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                       type={AttributeTypeEnum.VARIANT}
                       onAttributeAssign={onAttributeAdd}
                       onAttributeClick={onAttributeClick}
+                      onFeaturedClick={onFeaturedClick}
+                      featured={featured}
                       onAttributeReorder={(event: ReorderEvent) =>
                         onAttributeReorder(event, AttributeTypeEnum.VARIANT)
                       }

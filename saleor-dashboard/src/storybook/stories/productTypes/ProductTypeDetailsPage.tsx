@@ -18,6 +18,8 @@ const props: Omit<ProductTypeDetailsPageProps, "classes"> = {
   errors: [],
   onAttributeAdd: () => undefined,
   onAttributeClick: () => undefined,
+  onFeaturedClick: () => undefined,
+  featured: [],
   onAttributeReorder: () => undefined,
   onAttributeUnassign: () => undefined,
   onBack: () => undefined,

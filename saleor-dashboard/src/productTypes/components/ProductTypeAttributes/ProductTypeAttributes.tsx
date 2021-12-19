@@ -39,7 +39,7 @@ const useStyles = makeStyles(
     },
     colName: {},
     colSlug: {
-      width: 200
+      width: 250
     },
     link: {
       cursor: "pointer"
@@ -59,6 +59,8 @@ interface ProductTypeAttributesProps extends ListActions {
   type: string;
   onAttributeAssign: (type: AttributeTypeEnum) => void;
   onAttributeClick: (id: string) => void;
+  onFeaturedClick: (id: string, checked: any) => void;
+  featured: any;
   onAttributeReorder: ReorderAction;
   onAttributeUnassign: (id: string) => void;
 }
@@ -77,6 +79,8 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     type,
     onAttributeAssign,
     onAttributeClick,
+    onFeaturedClick,
+    featured,
     onAttributeReorder,
     onAttributeUnassign
   } = props;
@@ -198,12 +202,19 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                     )}
                   </TableCell>
                   <TableCell className={classes.colName} data-test="featured">
+                    {featured?.[attributeIndex]?.featured + "test"}
                     <Switch
-                      checked={attribute?.featured ? true : false}
-                      value={attribute?.featured ? true : false}
+                      checked={featured?.[attributeIndex]?.featured}
+                      value={featured?.[attributeIndex]?.featured}
                       color="primary"
                       name="featured"
-                      onClick={stopPropagation(() => alert(attribute.id))}
+                      onClick={event => {
+                        event.stopPropagation();
+                      }}
+                      onChange={event => {
+                        alert(event.target.value);
+                        onFeaturedClick(attribute.id, event.target.value);
+                      }}
                     />
                   </TableCell>
                   <TableCell className={classes.colAction}>

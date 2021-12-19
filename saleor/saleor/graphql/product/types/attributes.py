@@ -90,7 +90,8 @@ class Attribute(CountableDjangoObjectType):
         description=AttributeDescriptions.STOREFRONT_SEARCH_POSITION, required=True
     )
     featured = graphene.Boolean(
-        description="Whether the attribute is featured or not."
+        description="Whether the attribute is featured or not.",
+        required=False
     )
 
     class Meta:
@@ -104,12 +105,13 @@ class Attribute(CountableDjangoObjectType):
     
     @staticmethod
     def resolve_featured(root: models.Attribute, info):
-        product_type_id = info.context.product_type_id
-        attr_obj = models.AttributeProduct.objects.filter(
-            attribute_id=root.id,
-            product_type_id=product_type_id).last()
-        if attr_obj:
-            return attr_obj.featured
+        if hasattr(info.context, "product_type_id"):
+            product_type_id = info.context.product_type_id
+            attr_obj = models.AttributeProduct.objects.filter(
+                attribute_id=root.id,
+                product_type_id=product_type_id).last()
+            if attr_obj:
+                return attr_obj.featured
         return False
 
     @staticmethod

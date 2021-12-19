@@ -109,6 +109,12 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
           variantAttributes: formData.variantAttributes.map(
             choice => choice.value
           ),
+          isFeatured: formData.isFeatured.map(
+            (data: { value: any; featured: any }) => ({
+              id: data.value,
+              value: data.featured
+            })
+          ),
           weight: formData.weight
         }
       }
@@ -127,6 +133,10 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
         }
 
         const closeModal = () => navigate(productTypeUrl(id), true);
+
+        const [featured, setFeatured] = React.useState(
+          data?.productType.productAttributes
+        );
 
         const handleAttributeAssignSuccess = (data: AssignAttribute) => {
           if (data.attributeAssign.errors.length === 0) {
@@ -265,6 +275,14 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
                     onAttributeClick={attributeId =>
                       navigate(attributeUrl(attributeId))
                     }
+                    onFeaturedClick={(attributeId, checked) => {
+                      // console.log(attributeId);
+                      // let data = featured;
+                      // data.map((value,i)=> {
+                      // })
+                      // setFeatured(data);
+                    }}
+                    featured={featured}
                     onAttributeReorder={handleAttributeReorder}
                     onAttributeUnassign={attributeId =>
                       navigate(
