@@ -17,7 +17,7 @@ import {
   useMetadataUpdate,
   usePrivateMetadataUpdate
 } from "@saleor/utils/metadata/updateMetadata";
-import React from "react";
+import React, { useEffect } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import ProductTypeAttributeUnassignDialog from "../../components/ProductTypeAttributeUnassignDialog";
@@ -137,6 +137,10 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
         const [featured, setFeatured] = React.useState(
           data?.productType.productAttributes
         );
+
+        useEffect(() => {
+          setFeatured(data?.productType.productAttributes);
+        }, [data]);
 
         const handleAttributeAssignSuccess = (data: AssignAttribute) => {
           if (data.attributeAssign.errors.length === 0) {
@@ -275,12 +279,13 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
                     onAttributeClick={attributeId =>
                       navigate(attributeUrl(attributeId))
                     }
-                    onFeaturedClick={(attributeId, checked) => {
-                      // console.log(attributeId);
-                      // let data = featured;
-                      // data.map((value,i)=> {
-                      // })
-                      // setFeatured(data);
+                    onFeaturedClick={(attributeIndex, checked) => {
+                      const temp = featured
+                        ? featured
+                        : data?.productType.productAttributes;
+                      temp[attributeIndex].featured = checked;
+                      // console.log(temp);
+                      setFeatured(temp);
                     }}
                     featured={featured}
                     onAttributeReorder={handleAttributeReorder}

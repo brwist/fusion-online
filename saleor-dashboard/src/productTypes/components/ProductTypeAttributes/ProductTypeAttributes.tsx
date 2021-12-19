@@ -17,7 +17,7 @@ import TableHead from "@saleor/components/TableHead";
 import { maybe, renderCollection, stopPropagation } from "@saleor/misc";
 import { ListActions, ReorderAction } from "@saleor/types";
 import { AttributeTypeEnum } from "@saleor/types/globalTypes";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import {
@@ -87,6 +87,20 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
   const classes = useStyles(props);
 
   const intl = useIntl();
+
+  const [pfeatured, setPfeatured] = useState([]);
+
+  useEffect(() => {
+    setPfeatured(featured);
+  }, [props]);
+
+  const handleChange = (i: number, value: boolean) => {
+    const x = document.getElementById("featured" + i) as HTMLInputElement;
+    x.checked = value;
+    const temp = pfeatured;
+    temp[i].featured = value;
+    setPfeatured(temp);
+  };
 
   return (
     <Card
@@ -201,22 +215,28 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       <Skeleton />
                     )}
                   </TableCell>
-                  <TableCell className={classes.colName} data-test="featured">
-                    {featured?.[attributeIndex]?.featured + "test"}
-                    <Switch
-                      checked={featured?.[attributeIndex]?.featured}
-                      value={featured?.[attributeIndex]?.featured}
-                      color="primary"
-                      name="featured"
-                      onClick={event => {
-                        event.stopPropagation();
-                      }}
-                      onChange={event => {
-                        alert(event.target.value);
-                        onFeaturedClick(attribute.id, event.target.value);
-                      }}
-                    />
-                  </TableCell>
+                  {pfeatured && (
+                    <TableCell className={classes.colName} data-test="featured">
+                      {pfeatured?.[attributeIndex]?.featured + ""}
+                      <Switch
+                        checked={pfeatured?.[attributeIndex]?.featured}
+                        value={pfeatured?.[attributeIndex]?.featured}
+                        color="primary"
+                        name="featured"
+                        id={"featured" + attributeIndex}
+                        onClick={event => {
+                          event.stopPropagation();
+                        }}
+                        onChange={event => {
+                          onFeaturedClick(
+                            attributeIndex + "",
+                            event.target.checked
+                          );
+                          handleChange(attributeIndex, event.target.checked);
+                        }}
+                      />
+                    </TableCell>
+                  )}
                   <TableCell className={classes.colAction}>
                     <IconButton
                       onClick={stopPropagation(() =>
