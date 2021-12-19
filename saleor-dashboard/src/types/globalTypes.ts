@@ -1430,7 +1430,7 @@ export interface ProductTypeInput {
   productAttributes?: (string | null)[] | null;
   variantAttributes?: (string | null)[] | null;
   isShippingRequired?: boolean | null;
-  isFeatured?: (string | null)[] | null;
+  isFeatured?: any | null;
   isDigital?: boolean | null;
   weight?: any | null;
   taxCode?: string | null;

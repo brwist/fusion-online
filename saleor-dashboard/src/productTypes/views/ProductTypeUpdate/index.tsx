@@ -77,6 +77,12 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
           status: "success",
           text: intl.formatMessage(commonMessages.savedChanges)
         });
+        localStorage.setItem(
+          "attributes",
+          JSON.stringify(
+            updateData.productTypeUpdate.productType.productAttributes
+          )
+        );
       } else if (
         updateData.productTypeUpdate.errors !== null &&
         updateData.productTypeUpdate.errors.length > 0
@@ -94,6 +100,8 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
 
   const handleBack = () => navigate(productTypeListUrl());
 
+  const [featured, setFeatured] = React.useState([]);
+
   const handleProductTypeUpdate = async (formData: ProductTypeForm) => {
     const result = await updateProductType({
       variables: {
@@ -109,17 +117,14 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
           variantAttributes: formData.variantAttributes.map(
             choice => choice.value
           ),
-          isFeatured: formData.isFeatured.map(
-            (data: { value: any; featured: any }) => ({
-              id: data.value,
-              value: data.featured
-            })
-          ),
+          isFeatured: featured.map(data => ({
+            id: data.id,
+            value: data.featured
+          })),
           weight: formData.weight
         }
       }
     });
-
     return result.data.productTypeUpdate.errors;
   };
 
@@ -127,19 +132,20 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
     <TypedProductTypeDetailsQuery displayLoader variables={{ id }}>
       {({ data, loading: dataLoading }) => {
         const productType = data?.productType;
-
         if (productType === null) {
           return <NotFoundPage onBack={handleBack} />;
         }
 
         const closeModal = () => navigate(productTypeUrl(id), true);
 
-        const [featured, setFeatured] = React.useState(
-          data?.productType.productAttributes
-        );
-
         useEffect(() => {
-          setFeatured(data?.productType.productAttributes);
+          if (featured?.length === 0 && productType) {
+            setFeatured(productType.productAttributes);
+            // console.log(productType.productAttributes)
+          }
+          // if(featured?.length > 0) {
+          //   window.location.reload();
+          // }
         }, [data]);
 
         const handleAttributeAssignSuccess = (data: AssignAttribute) => {
@@ -284,7 +290,6 @@ export const ProductTypeUpdate: React.FC<ProductTypeUpdateProps> = ({
                         ? featured
                         : data?.productType.productAttributes;
                       temp[attributeIndex].featured = checked;
-                      // console.log(temp);
                       setFeatured(temp);
                     }}
                     featured={featured}

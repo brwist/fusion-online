@@ -162,7 +162,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
 
   return (
     <Form initial={formInitialData} onSubmit={handleSubmit} confirmLeave>
-      {({ change, data, hasChanged, submit }) => {
+      {({ change, triggerChange, data, hasChanged, submit }) => {
         const changeMetadata = makeMetadataChangeHandler(change);
 
         return (
@@ -203,6 +203,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                   onAttributeClick={onAttributeClick}
                   onFeaturedClick={onFeaturedClick}
                   featured={featured}
+                  onChange={triggerChange}
                   onAttributeReorder={(event: ReorderEvent) =>
                     onAttributeReorder(event, AttributeTypeEnum.PRODUCT)
                   }
@@ -231,6 +232,7 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
                       onAttributeClick={onAttributeClick}
                       onFeaturedClick={onFeaturedClick}
                       featured={featured}
+                      onChange={triggerChange}
                       onAttributeReorder={(event: ReorderEvent) =>
                         onAttributeReorder(event, AttributeTypeEnum.VARIANT)
                       }

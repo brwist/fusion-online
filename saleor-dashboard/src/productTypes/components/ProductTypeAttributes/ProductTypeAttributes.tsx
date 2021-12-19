@@ -25,6 +25,7 @@ import {
   ProductTypeDetails_productType_variantAttributes
 } from "../../types/ProductTypeDetails";
 import Switch from "@material-ui/core/Switch";
+import { attribute } from "@saleor/attributes/fixtures";
 
 const useStyles = makeStyles(
   {
@@ -61,6 +62,7 @@ interface ProductTypeAttributesProps extends ListActions {
   onAttributeClick: (id: string) => void;
   onFeaturedClick: (id: string, checked: any) => void;
   featured: any;
+  onChange: any;
   onAttributeReorder: ReorderAction;
   onAttributeUnassign: (id: string) => void;
 }
@@ -81,6 +83,7 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
     onAttributeClick,
     onFeaturedClick,
     featured,
+    onChange,
     onAttributeReorder,
     onAttributeUnassign
   } = props;
@@ -91,15 +94,23 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
   const [pfeatured, setPfeatured] = useState([]);
 
   useEffect(() => {
-    setPfeatured(featured);
-  }, [props]);
+    if (featured.length > 0) {
+      if (localStorage.getItem("attributes")) {
+        setPfeatured(JSON.parse(localStorage.getItem("attributes")));
+      } else {
+        localStorage.setItem("attributes", JSON.stringify(featured));
+        setPfeatured(featured);
+      }
+    }
+  }, [featured]);
 
-  const handleChange = (i: number, value: boolean) => {
-    const x = document.getElementById("featured" + i) as HTMLInputElement;
-    x.checked = value;
+  const handleChange = (i: number, value: any) => {
+    setPfeatured([]);
     const temp = pfeatured;
     temp[i].featured = value;
-    setPfeatured(temp);
+    setTimeout(() => {
+      setPfeatured(temp);
+    });
   };
 
   return (
@@ -215,15 +226,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                       <Skeleton />
                     )}
                   </TableCell>
-                  {pfeatured && (
+                  {pfeatured && pfeatured.length > 0 ? (
                     <TableCell className={classes.colName} data-test="featured">
-                      {pfeatured?.[attributeIndex]?.featured + ""}
                       <Switch
                         checked={pfeatured?.[attributeIndex]?.featured}
                         value={pfeatured?.[attributeIndex]?.featured}
                         color="primary"
-                        name="featured"
-                        id={"featured" + attributeIndex}
+                        name="isFeatured"
                         onClick={event => {
                           event.stopPropagation();
                         }}
@@ -233,8 +242,13 @@ const ProductTypeAttributes: React.FC<ProductTypeAttributesProps> = props => {
                             event.target.checked
                           );
                           handleChange(attributeIndex, event.target.checked);
+                          onChange();
                         }}
                       />
+                    </TableCell>
+                  ) : (
+                    <TableCell className={classes.colName} data-test="featured">
+                      <Switch checked={false} color="primary" />
                     </TableCell>
                   )}
                   <TableCell className={classes.colAction}>
